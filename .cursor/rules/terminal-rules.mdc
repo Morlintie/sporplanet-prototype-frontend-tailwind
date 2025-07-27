@@ -1,0 +1,9 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+1. Do not install any dependencies without my permisson. If you need a dependency ask me to install it.
+2. Do not run application. I will do it manually.
+3. Do not run any powershell script.

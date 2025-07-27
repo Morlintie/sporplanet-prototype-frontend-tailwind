@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+-Lazy load custom css files. Do not mount them if they are not necessary.
+
+-Unless I say you to use custom css do not use it.

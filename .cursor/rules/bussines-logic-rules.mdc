@@ -1,0 +1,31 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+-We will develop with you an application that provides a platform for sport lovers who are searching for friends to play specifically soccer with each other. This platform got a bunch of ideas to raise profit from its logic.
+
+-First we will provide an environment for sport lovers who are trying to find friends to paly soccer but struggling while doing it. Sporplanet (our application name) will provide a platform for such individuals for find each other and play soccer with each other.
+
+##Our main concept are:
+
+### 1. Match Adverts
+
+People can rent pitches (from our pitch rent service or from another pitch rent provider) and organize matches between each other and if they struggling to find lack of player they can publish that matches advert on our platform.
+
+### 2. Goalkeeper Marketplace
+
+Goalkeepers can make their own advertisement via our platform and can play at matches for a price. If their willing to play for free their free to do so.
+
+### 3.Pitch Renting
+
+People can rent pitches from our pitch rent provider via our platform. They can use that pitches later on to create adverts.
+
+### 4. Tournaments
+
+As an organization we will organize multiple tournaments. People can see and register to our tournaments via our website that we will code together.
+
+Our target to reach out to people on Turkey that are playing football with their friends and provide those services for them.
+
+- While coding keep in mind those considerations and concerns.
