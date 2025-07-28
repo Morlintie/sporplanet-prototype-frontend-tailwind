@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -26,56 +28,11 @@ function App() {
           {/* Login Route */}
           <Route path="/login" element={<Login />} />
 
-          {/* About Route */}
-          <Route
-            path="/about"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    About SporPlanet
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    Learn more about our platform
-                  </p>
-                </div>
-              </div>
-            }
-          />
+          {/* Signup Route */}
+          <Route path="/signup" element={<Signup />} />
 
-          {/* Sports Route */}
-          <Route
-            path="/sports"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Sports
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    Explore different sports
-                  </p>
-                </div>
-              </div>
-            }
-          />
-
-          {/* Contact Route */}
-          <Route
-            path="/contact"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Contact Us
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    Get in touch with our team
-                  </p>
-                </div>
-              </div>
-            }
-          />
+          {/* Forgot Password Route */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* 404 Not Found Route */}
           <Route
