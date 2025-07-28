@@ -1,0 +1,106 @@
+import Header from "../components/shared/Header";
+import Footer from "../components/shared/Footer";
+import MatchesFeature from "../components/home/MatchesFeature";
+import ReservationFeature from "../components/home/ReservationFeature";
+import GoalkeeperFeature from "../components/home/GoalkeeperFeature";
+import TournamentFeature from "../components/home/TournamentFeature";
+
+function HomePage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <Header />
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-green-600 via-green-700 to-green-800 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+                         <h1 className="text-4xl md:text-6xl font-bold mb-6">
+               Futbol Tutkun
+               <span className="text-green-200"> Burada Başlıyor</span>
+             </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-green-100">
+              Arkadaşlarını bul, maç organize et, saha kirala, kaleci keşfet. 
+              Türkiye'nin en büyük futbol topluluğuna katıl!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-50 transition-colors cursor-pointer">
+                Hemen Başla
+              </button>
+              <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-green-700 transition-colors cursor-pointer">
+                Nasıl Çalışır?
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Futbol Dünyanda Her Şey
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              SporPlanet ile futbol tutkunu ile ilgili tüm ihtiyaçlarını karşılayabilirsin. 
+              Maç bulma'dan saha kiralamaya, kaleci arami'dan turnuvalara kadar!
+            </p>
+          </div>
+
+          {/* Feature Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <MatchesFeature />
+            <ReservationFeature />
+            <GoalkeeperFeature />
+            <TournamentFeature />
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="bg-green-600 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">25K+</div>
+              <div className="text-green-200">Aktif Oyuncu</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">5K+</div>
+              <div className="text-green-200">Günlük Maçlar</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">1K+</div>
+              <div className="text-green-200">Futbol Sahası</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">100+</div>
+              <div className="text-green-200">Turnuva</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+            Hazır mısın?
+          </h2>
+          <p className="text-lg text-gray-600 mb-8">
+            Binlerce futbol sever seni bekliyor. Hemen üye ol ve futbol maceran başlasın!
+          </p>
+          <button className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-colors cursor-pointer">
+            Ücretsiz Üye Ol
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
+}
+
+export default HomePage; 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/login-background.css";
+import "../../styles/auth-background.css";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -43,14 +43,14 @@ function ForgotPassword() {
             <div className="flex justify-center mb-2">
               <button
                 onClick={handleLogoClick}
-                className="w-14 h-14 flex items-center justify-center rounded-full cursor-pointer"
+                className="w-20 h-20 flex items-center justify-center rounded-full cursor-pointer"
                 tabIndex="0"
                 aria-label="Ana sayfaya git"
               >
                 <img
-                  src="https://res.cloudinary.com/dppjlhdth/image/upload/v1749137675/SporPlanet_Transparent_Logo_Planet_oqmmcp.png"
+                  src="https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png"
                   alt="SporPlanet Logo"
-                  className="w-14 h-14 object-contain"
+                  className="w-20 h-20 object-contain"
                 />
               </button>
             </div>

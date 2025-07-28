@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
+import HomePage from "./pages/HomePage";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+
 
 function App() {
   return (
@@ -9,21 +11,7 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         <Routes>
           {/* Home Route */}
-          <Route
-            path="/"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                    Welcome to SporPlanet
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    Your Sports Universe Awaits
-                  </p>
-                </div>
-              </div>
-            }
-          />
+          <Route path="/" element={<HomePage />} />
 
           {/* Login Route */}
           <Route path="/login" element={<Login />} />

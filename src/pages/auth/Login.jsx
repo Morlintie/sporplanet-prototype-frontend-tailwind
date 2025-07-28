@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/login-background.css";
+import "../../styles/auth-background.css";
 
-function Signup() {
+function Login() {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleFullNameChange = (e) => {
-    setFullName(e.target.value);
-  };
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -21,23 +15,23 @@ function Signup() {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
+  const handleGoogleLogin = () => {
+    // Google login logic will be added later
+    console.log("Google login clicked");
   };
 
-  const handleGoogleSignup = () => {
-    // Google signup logic will be added later
-    console.log("Google signup clicked");
-  };
-
-  const handleSignup = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    // Signup logic will be added later
-    console.log("Signup clicked", { fullName, email, password, confirmPassword });
+    // Login logic will be added later
+    console.log("Login clicked", { email, password });
   };
 
-  const handleLogin = () => {
-    navigate("/login");
+  const handleForgotPassword = () => {
+    navigate("/forgot-password");
+  };
+
+  const handleCreateAccount = () => {
+    navigate("/signup");
   };
 
   const handleLogoClick = () => {
@@ -58,37 +52,36 @@ function Signup() {
             {/* Blurred effects around the card */}
             <div className="card-blur-violet"></div>
             <div className="card-blur-pink"></div>
-            
-                         {/* Logo */}
-             <div className="flex justify-center mb-2">
-                               <button
-                  onClick={handleLogoClick}
-                  className="w-14 h-14 flex items-center justify-center  rounded-full cursor-pointer"
-                  tabIndex="0"
-                  aria-label="Ana sayfaya git"
-                >
-                 <img
-                   src="https://res.cloudinary.com/dppjlhdth/image/upload/v1749137675/SporPlanet_Transparent_Logo_Planet_oqmmcp.png"
-                   alt="SporPlanet Logo"
-                   className="w-14 h-14 object-contain"
-                 />
-               </button>
-             </div>
+            {/* Logo */}
+            <div className="flex justify-center mb-2">
+              <button
+                onClick={handleLogoClick}
+                className="w-20 h-20 flex items-center justify-center rounded-full cursor-pointer"
+                tabIndex="0"
+                aria-label="Ana sayfaya git"
+              >
+                <img
+                  src="https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png"
+                  alt="SporPlanet Logo"
+                  className="w-20 h-20 object-contain"
+                />
+              </button>
+            </div>
 
             {/* Title */}
             <div className="text-center mb-3">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                Hesap Oluştur
+                Giriş Yap
               </h1>
-              <p className="text-gray-600">Futbol maceranız başlasın</p>
+              <p className="text-gray-600">Hesabınıza giriş yapın</p>
             </div>
 
-            {/* Google Signup Button */}
+            {/* Google Login Button */}
             <button
-              onClick={handleGoogleSignup}
+              onClick={handleGoogleLogin}
               className="w-4/5 mx-auto flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-2 px-4 mb-3 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
               tabIndex="0"
-              aria-label="Google ile kayıt ol"
+              aria-label="Google ile giriş yap"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -121,30 +114,8 @@ function Signup() {
               </div>
             </div>
 
-            {/* Signup Form */}
-            <form onSubmit={handleSignup}>
-              {/* Full Name Input */}
-              <div className="mb-3 flex justify-center">
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={handleFullNameChange}
-                  placeholder="Ad Soyad *"
-                  className="w-4/5 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-green-400 focus:bg-white transition-all duration-200"
-                  style={{
-                    boxShadow: "none",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow =
-                      "0 0 0 3px rgba(34, 197, 94, 0.2)")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                  required
-                  tabIndex="0"
-                  aria-label="Ad Soyad"
-                />
-              </div>
-
+            {/* Login Form */}
+            <form onSubmit={handleLogin}>
               {/* Email Input */}
               <div className="mb-3 flex justify-center">
                 <input
@@ -189,29 +160,19 @@ function Signup() {
                 />
               </div>
 
-              {/* Confirm Password Input */}
-              <div className="mb-3 flex justify-center">
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  placeholder="Şifre tekrar *"
-                  className="w-4/5 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-green-400 focus:bg-white transition-all duration-200"
-                  style={{
-                    boxShadow: "none",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow =
-                      "0 0 0 3px rgba(34, 197, 94, 0.2)")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                  required
+              {/* Forgot Password Link */}
+              <div className="text-right mb-3">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-green-500 hover:text-green-600 text-sm font-normal focus:outline-none focus:underline cursor-pointer"
                   tabIndex="0"
-                  aria-label="Şifre tekrar"
-                />
+                >
+                  Şifremi Unuttum
+                </button>
               </div>
 
-              {/* Signup Button */}
+              {/* Login Button */}
               <div className="flex justify-center mb-3">
                 <button
                   type="submit"
@@ -226,9 +187,9 @@ function Signup() {
                     (e.target.style.backgroundColor = "rgb(0, 128, 0)")
                   }
                   tabIndex="0"
-                  aria-label="Kayıt ol"
+                  aria-label="Giriş yap"
                 >
-                  Kayıt Ol
+                  Giriş Yap
                 </button>
               </div>
 
@@ -236,17 +197,17 @@ function Signup() {
               <div className="w-4/5 mx-auto border-t border-gray-200 mb-3"></div>
             </form>
 
-            {/* Login Link */}
+            {/* Create Account Link */}
             <div className="text-center mt-3">
               <span className="text-gray-600 text-xs">
-                Zaten bir hesabınız var mı?{" "}
+                Henüz bir hesabınız yok mu?{" "}
               </span>
               <button
-                onClick={handleLogin}
+                onClick={handleCreateAccount}
                 className="text-green-500 hover:text-green-600 text-sm font-normal focus:outline-none focus:underline cursor-pointer"
                 tabIndex="0"
               >
-                Giriş Yap
+                Hesap Oluştur
               </button>
             </div>
           </div>
@@ -256,4 +217,4 @@ function Signup() {
   );
 }
 
-export default Signup; 
+export default Login; 
