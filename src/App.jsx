@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import ReservationPage from "./pages/nav-links/ReservationPage";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -12,6 +13,9 @@ function App() {
         <Routes>
           {/* Home Route */}
           <Route path="/" element={<HomePage />} />
+
+          {/* Reservation Route */}
+          <Route path="/reservation" element={<ReservationPage />} />
 
           {/* Login Route */}
           <Route path="/login" element={<Login />} />
