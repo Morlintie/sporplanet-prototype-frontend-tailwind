@@ -1,29 +1,269 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../styles/auth-background.css";
+
+// Loading Spinner Component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center">
+    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+  </div>
+);
+
+// Error and Success Message Translation
+const translateMessage = (message, isSuccess = false) => {
+  if (isSuccess) {
+    // Success message translations
+    if (message.includes("Login successful")) {
+      return "Giriş başarılı! Yönlendiriliyorsunuz...";
+    }
+    return message; // Return original if no translation found
+  } else {
+    // Error message translations
+    if (
+      message.includes("You have been banned") ||
+      message.includes("please get contact with your customer service")
+    ) {
+      return "Hesabınız yasaklanmış. Lütfen müşteri hizmetleri ile iletişime geçin.";
+    }
+    if (
+      message.includes("User couldn't found") ||
+      message.includes("User not found")
+    ) {
+      return "Kullanıcı bulunamadı. E-posta adresinizi kontrol edin.";
+    }
+    if (
+      message.includes("Your account haven't been verified yet") ||
+      message.includes("haven't been verified")
+    ) {
+      return "Hesabınız henüz doğrulanmamış. Lütfen e-posta adresinizi kontrol edin.";
+    }
+    if (
+      message.includes("The password is not correct") ||
+      message.includes("password is not correct")
+    ) {
+      return "Şifre yanlış. Lütfen tekrar deneyin.";
+    }
+    if (message.includes("E11000") && message.includes("email")) {
+      return "Bu e-posta adresi zaten kayıtlı.";
+    }
+    if (message.includes("Please provide email and password")) {
+      return "Lütfen e-posta ve şifre bilgilerini girin.";
+    }
+    if (message.includes("Invalid credentials")) {
+      return "Geçersiz giriş bilgileri.";
+    }
+    if (message.includes("Please provide required data")) {
+      return "Lütfen gerekli bilgileri sağlayın.";
+    }
+    if (message.includes("Network Error") || message.includes("fetch")) {
+      return "Bağlantı hatası. Lütfen internet bağlantınızı kontrol edin.";
+    }
+    if (message.includes("Internal Server Error") || message.includes("500")) {
+      return "Sunucu hatası. Lütfen daha sonra tekrar deneyin.";
+    }
+    if (message.includes("Bad Request") || message.includes("400")) {
+      return "Geçersiz istek. Lütfen bilgilerinizi kontrol edin.";
+    }
+    if (message.includes("Unauthorized") || message.includes("401")) {
+      return "Yetkisiz erişim. Giriş bilgilerinizi kontrol edin.";
+    }
+    if (message.includes("Forbidden") || message.includes("403")) {
+      return "Erişim yasak. Yetkiniz bulunmuyor.";
+    }
+    if (message.includes("Google authentication failed")) {
+      return "Google ile giriş başarısız. Lütfen tekrar deneyin.";
+    }
+    if (message.includes("OAuth")) {
+      return "Google kimlik doğrulama hatası. Lütfen tekrar deneyin.";
+    }
+
+    // If no specific translation found, return a generic error message
+    return "Bir hata oluştu. Lütfen tekrar deneyin.";
+  }
+};
 
 function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // UI state
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // Validation state
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  // Google OAuth callback handler
+  useEffect(() => {
+    const statusCode = searchParams.get("statusCode");
+    const message = searchParams.get("message");
+    const userId = searchParams.get("userId");
+
+    if (statusCode && message) {
+      // Handle Google OAuth error
+      setError(translateMessage(message, false));
+      // Clear URL parameters
+      navigate("/auth/login", { replace: true });
+    } else if (userId) {
+      // Handle Google OAuth success - request cookies
+      handleGoogleCookieRequest(userId);
+    }
+  }, [searchParams, navigate]);
+
+  // Request cookies after successful Google OAuth
+  const handleGoogleCookieRequest = async (userId) => {
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch(
+        `/api/v1/auth/google/cookie?userId=${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || "Google authentication failed");
+      }
+
+      // Success - redirect to home page
+      setSuccess(translateMessage(data.msg, true));
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+    } catch (err) {
+      setError(translateMessage(err.message, false));
+    } finally {
+      setIsLoading(false);
+      // Clear URL parameters
+      navigate("/auth/login", { replace: true });
+    }
+  };
+
+  // Validation functions
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const minLength = password.length >= 6;
+    const hasLetterOrNumber = /[a-zA-Z0-9]/.test(password);
+
+    return {
+      isValid: minLength && hasLetterOrNumber,
+      minLength,
+      hasLetterOrNumber,
+    };
+  };
+
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+    const value = e.target.value;
+    setEmail(value);
+    setError("");
+
+    if (value && !validateEmail(value)) {
+      setEmailError("Geçerli bir e-posta adresi girin");
+    } else {
+      setEmailError("");
+    }
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    const value = e.target.value;
+    setPassword(value);
+    setError("");
+
+    if (value) {
+      const validation = validatePassword(value);
+      if (!validation.isValid) {
+        const errors = [];
+        if (!validation.minLength) errors.push("En az 6 karakter");
+        if (!validation.hasLetterOrNumber)
+          errors.push("En az 1 harf veya rakam");
+
+        setPasswordError(`Şifre gereksinimleri: ${errors.join(", ")}`);
+      } else {
+        setPasswordError("");
+      }
+    } else {
+      setPasswordError("");
+    }
   };
 
   const handleGoogleLogin = () => {
-    // Google login logic will be added later
-    console.log("Google login clicked");
+    // Redirect to backend Google OAuth route
+    window.location.href = "/api/v1/auth/google";
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Login logic will be added later
-    console.log("Login clicked", { email, password });
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
+
+    // Check for validation errors
+    if (emailError || passwordError) {
+      setError("Lütfen tüm alanları doğru şekilde doldurun");
+      setIsLoading(false);
+      return;
+    }
+
+    // Final validation check
+    if (!validateEmail(email)) {
+      setEmailError("Geçerli bir e-posta adresi girin");
+      setIsLoading(false);
+      return;
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      setPasswordError("Şifre gereksinimlerini karşılamıyor");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.msg || "Login failed");
+      }
+
+      // Success - redirect to home page
+      setSuccess(translateMessage(data.msg, true));
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+    } catch (err) {
+      setError(translateMessage(err.message, false));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -52,6 +292,7 @@ function Login() {
             {/* Blurred effects around the card */}
             <div className="card-blur-violet"></div>
             <div className="card-blur-pink"></div>
+
             {/* Logo */}
             <div className="flex justify-center mb-2">
               <button
@@ -76,10 +317,23 @@ function Login() {
               <p className="text-gray-600">Hesabınıza giriş yapın</p>
             </div>
 
+            {/* Error/Success Messages */}
+            {error && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-red-600 text-sm text-center">{error}</p>
+              </div>
+            )}
+            {success && (
+              <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-green-600 text-sm text-center">{success}</p>
+              </div>
+            )}
+
             {/* Google Login Button */}
             <button
               onClick={handleGoogleLogin}
-              className="w-4/5 mx-auto flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-2 px-4 mb-3 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
+              disabled={isLoading}
+              className="w-4/5 mx-auto flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-2 px-4 mb-3 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               tabIndex="0"
               aria-label="Google ile giriş yap"
             >
@@ -117,55 +371,78 @@ function Login() {
             {/* Login Form */}
             <form onSubmit={handleLogin}>
               {/* Email Input */}
-              <div className="mb-3 flex justify-center">
+              <div className="mb-3 flex flex-col items-center">
                 <input
                   type="email"
                   value={email}
                   onChange={handleEmailChange}
                   placeholder="E-posta adresi *"
-                  className="w-4/5 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-green-400 focus:bg-white transition-all duration-200"
+                  disabled={isLoading}
+                  className={`w-4/5 px-4 py-2 bg-gray-50 border rounded-md focus:outline-none focus:bg-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    emailError
+                      ? "border-red-400 focus:border-red-400"
+                      : "border-gray-200 focus:border-green-400"
+                  }`}
                   style={{
                     boxShadow: "none",
                   }}
                   onFocus={(e) =>
-                    (e.target.style.boxShadow =
-                      "0 0 0 3px rgba(34, 197, 94, 0.2)")
+                    (e.target.style.boxShadow = emailError
+                      ? "0 0 0 3px rgba(239, 68, 68, 0.2)"
+                      : "0 0 0 3px rgba(34, 197, 94, 0.2)")
                   }
                   onBlur={(e) => (e.target.style.boxShadow = "none")}
                   required
                   tabIndex="0"
                   aria-label="E-posta adresi"
                 />
+                {emailError && (
+                  <p className="text-red-500 text-xs mt-1 w-4/5 text-left">
+                    {emailError}
+                  </p>
+                )}
               </div>
 
               {/* Password Input */}
-              <div className="mb-3 flex justify-center">
+              <div className="mb-3 flex flex-col items-center">
                 <input
                   type="password"
                   value={password}
                   onChange={handlePasswordChange}
                   placeholder="Şifre *"
-                  className="w-4/5 px-4 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-green-400 focus:bg-white transition-all duration-200"
+                  disabled={isLoading}
+                  className={`w-4/5 px-4 py-2 bg-gray-50 border rounded-md focus:outline-none focus:bg-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    passwordError
+                      ? "border-red-400 focus:border-red-400"
+                      : "border-gray-200 focus:border-green-400"
+                  }`}
                   style={{
                     boxShadow: "none",
                   }}
                   onFocus={(e) =>
-                    (e.target.style.boxShadow =
-                      "0 0 0 3px rgba(34, 197, 94, 0.2)")
+                    (e.target.style.boxShadow = passwordError
+                      ? "0 0 0 3px rgba(239, 68, 68, 0.2)"
+                      : "0 0 0 3px rgba(34, 197, 94, 0.2)")
                   }
                   onBlur={(e) => (e.target.style.boxShadow = "none")}
                   required
                   tabIndex="0"
                   aria-label="Şifre"
                 />
+                {passwordError && (
+                  <p className="text-red-500 text-xs mt-1 w-4/5 text-left">
+                    {passwordError}
+                  </p>
+                )}
               </div>
 
               {/* Forgot Password Link */}
-              <div className="text-right mb-3">
+              <div className="text-right mb-3 w-4/5 mx-auto">
                 <button
                   type="button"
                   onClick={handleForgotPassword}
-                  className="text-green-500 hover:text-green-600 text-sm font-normal focus:outline-none focus:underline cursor-pointer"
+                  disabled={isLoading}
+                  className="text-green-500 hover:text-green-600 text-sm font-normal focus:outline-none focus:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   tabIndex="0"
                 >
                   Şifremi Unuttum
@@ -176,20 +453,12 @@ function Login() {
               <div className="flex justify-center mb-3">
                 <button
                   type="submit"
-                  className="w-4/5 text-white font-semibold py-2 px-4 rounded-md transition-colors focus:outline-none cursor-pointer"
-                  style={{
-                    backgroundColor: "rgb(0, 128, 0)",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "rgb(0, 100, 0)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = "rgb(0, 128, 0)")
-                  }
+                  disabled={isLoading}
+                  className="w-4/5 bg-[rgb(0,128,0)] hover:bg-[rgb(0,100,0)] text-white font-semibold py-2 px-4 rounded-md transition-colors cursor-pointer focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                   tabIndex="0"
                   aria-label="Giriş yap"
                 >
-                  Giriş Yap
+                  {isLoading ? <LoadingSpinner /> : "Giriş Yap"}
                 </button>
               </div>
 
@@ -204,7 +473,8 @@ function Login() {
               </span>
               <button
                 onClick={handleCreateAccount}
-                className="text-green-500 hover:text-green-600 text-sm font-normal focus:outline-none focus:underline cursor-pointer"
+                disabled={isLoading}
+                className="text-green-500 hover:text-green-600 text-sm font-normal focus:outline-none focus:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 tabIndex="0"
               >
                 Hesap Oluştur
@@ -217,4 +487,4 @@ function Login() {
   );
 }
 
-export default Login; 
+export default Login;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../styles/auth-background.css";
+import PopupSpinner from "../../components/shared/PopupSpinner";
 
 // Loading Spinner Component
 const LoadingSpinner = () => (
@@ -100,6 +101,7 @@ function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showRedirectSpinner, setShowRedirectSpinner] = useState(false);
 
   // Validation state
   const [emailError, setEmailError] = useState("");
@@ -350,11 +352,18 @@ function Signup() {
         throw new Error(data.msg || "Verification failed");
       }
 
-      // Success - redirect to login
+      // Success - show message then redirect to login
       setSuccess(translateMessage(data.msg, true));
+
+      // Show success message for 1 second, then show popup spinner
+      setTimeout(() => {
+        setShowRedirectSpinner(true);
+      }, 1000);
+
+      // Redirect after total 3 seconds
       setTimeout(() => {
         navigate("/auth/login");
-      }, 2000);
+      }, 3000);
     } catch (err) {
       setError(translateMessage(err.message, false));
     } finally {
@@ -698,7 +707,7 @@ function Signup() {
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           disabled={isLoading || timeLeft <= 0}
                           maxLength="1"
-                          className="w-12 h-12 text-center text-lg font-bold bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-green-400 focus:bg-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-12 h-12 text-center text-lg font-bold bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:border-green-400 focus:bg-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{
                             boxShadow: "none",
                           }}
@@ -762,6 +771,12 @@ function Signup() {
           </div>
         </div>
       </div>
+
+      {/* Popup Spinner for Redirect */}
+      <PopupSpinner
+        isVisible={showRedirectSpinner}
+        message="Giriş sayfasına yönlendiriliyorsunuz..."
+      />
     </div>
   );
 }
