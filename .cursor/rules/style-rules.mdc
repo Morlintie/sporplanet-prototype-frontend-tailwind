@@ -12,13 +12,57 @@ alwaysApply: true
 
 #Style Rules
 
-### Primary Button Rules
+## Primary Button Rules
 
+###Color
+-Primary Button Hover Background Color: rgb(0, 100, 0)
 -Primary Button Background Color: rgb(0, 128, 0)
 -Primary Button Writing Color:rgb(255, 255, 255)
--Primary Button Border Radius: 6px
--Primary Button Hover Background Color: rgb(0, 100, 0)
+
+### Typography
+
 -Primary Button Font Weight: font-semibold
 -Primary Button Font Size: 1rem
+-Primary Button Border Radius: 6px
+
+### Interactive
+
 -Primary Button Cursor: Pointer
 -Primary Button Transitions: transition colors
+
+## Link Font Rules
+
+### Text Color
+
+- Link Font Text Color: text-green-500
+- Link Font Hover Color: text-green-600
+
+### Typography
+
+- Link Font Size: text-sm
+- Link Font Weight: font-normal
+
+### Interactive State
+
+focus:outline-none
+focus:underline = text-decoration: underline
+cursor-pointer
+
+#### Disabled States
+
+disabled:opacity-50  
+disabled:cursor-not-allowed
+
+### Container Styling
+
+-The button is wrapped in a div with:
+
+text-right = text-align: right
+mb-3
+w-4/5
+mx-auto
+
+### Accessibility
+
+-tabIndex="0"
+-Proper aria handling through focus states
