@@ -2,6 +2,23 @@
 alwaysApply: true
 ---
 
+##General Style Rules
+
 -Lazy load custom css files. Do not mount them if they are not necessary.
 
 -Unless I say you to use custom css do not use it.
+
+## Use this styling rules for our stylings. Use this rules in tailwind unless I explicitly tell you to use custom css instead (even if I declared the style rules in custom css like rgb() use the tailwind counterpart of them if I did not say to use custom css. The rules might declared in tailwind css if I did not specify to use custom css use tailwind but if I specify to use custom css for them use custom css counterpart of that tailwind rules. ) Do not add any styling to specified elements unless told to you.
+
+#Style Rules
+
+### Primary Button Rules
+
+-Primary Button Background Color: rgb(0, 128, 0)
+-Primary Button Writing Color:rgb(255, 255, 255)
+-Primary Button Border Radius: 6px
+-Primary Button Hover Background Color: rgb(0, 100, 0)
+-Primary Button Font Weight: font-semibold
+-Primary Button Font Size: 1rem
+-Primary Button Cursor: Pointer
+-Primary Button Transitions: transition colors
