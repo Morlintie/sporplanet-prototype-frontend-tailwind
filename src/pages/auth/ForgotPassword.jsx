@@ -34,7 +34,7 @@ function ForgotPassword() {
           {/* Green blur positioned behind the card */}
           <div className="background-green-blur-card"></div>
 
-          <div className="bg-white/85 backdrop-blur-md rounded-3xl shadow-2xl p-5 w-full max-w-lg relative overflow-hidden">
+          <div className="bg-white/85 backdrop-blur-md rounded-3xl shadow-2xl p-4 w-full max-w-md relative overflow-hidden">
             {/* Blurred effects around the card */}
             <div className="card-blur-violet"></div>
             <div className="card-blur-pink"></div>
