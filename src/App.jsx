@@ -4,6 +4,7 @@ import ReservationPage from "./pages/nav-links/ReservationPage";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import GoogleFailure from "./pages/auth/GoogleFailure";
 
 
 function App() {
@@ -16,15 +17,14 @@ function App() {
 
           {/* Reservation Route */}
           <Route path="/reservation" element={<ReservationPage />} />
+           
+          {/* Auth Routes */}
+          <Route path="/auth/google-failure" element={<GoogleFailure />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
 
-          {/* Login Route */}
-          <Route path="/login" element={<Login />} />
 
-          {/* Signup Route */}
-          <Route path="/signup" element={<Signup />} />
-
-          {/* Forgot Password Route */}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* 404 Not Found Route */}
           <Route
