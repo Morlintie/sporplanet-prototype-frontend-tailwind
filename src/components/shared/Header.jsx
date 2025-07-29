@@ -10,7 +10,7 @@ function Header() {
   };
 
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   const toggleDarkMode = () => {

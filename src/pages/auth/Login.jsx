@@ -27,11 +27,11 @@ function Login() {
   };
 
   const handleForgotPassword = () => {
-    navigate("/forgot-password");
+    navigate("/auth/forgot-password");
   };
 
   const handleCreateAccount = () => {
-    navigate("/signup");
+    navigate("/auth/signup");
   };
 
   const handleLogoClick = () => {

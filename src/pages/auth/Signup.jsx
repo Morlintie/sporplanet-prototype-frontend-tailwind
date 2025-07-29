@@ -37,7 +37,7 @@ function Signup() {
   };
 
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   const handleLogoClick = () => {

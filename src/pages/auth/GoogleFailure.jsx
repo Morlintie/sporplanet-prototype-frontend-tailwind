@@ -24,7 +24,7 @@ const GoogleFailure = () => {
   return (
     <div className="google-failure-background">
         <div className="flex items-center justify-center min-h-screen p-4">
-          <div className="failure-card-blur w-full max-w-md rounded-3xl p-8 text-center">
+          <div className="failure-card-blur w-full max-w-xl rounded-3xl p-6 text-center">
             {/* Logo */}
             <div className="mb-6">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4">

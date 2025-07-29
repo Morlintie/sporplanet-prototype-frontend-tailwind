@@ -17,7 +17,7 @@ function ForgotPassword() {
   };
 
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   const handleLogoClick = () => {
