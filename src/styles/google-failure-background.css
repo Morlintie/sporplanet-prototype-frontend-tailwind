@@ -2,56 +2,62 @@
 .google-failure-background {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, 
-    #ffffff 0%,        /* Sol üst beyaz */
-    #f0fdf4 20%,       /* Sol taraf beyaz devam */
-    #f3e7df 40%,       /* Çok açık pembe geçiş */
-    #f3cece 60%,       /* Açık pembe */
-    #f4baba 80%,       /* Yumuşak açık kırmızı */
-    #f57b7b 100%       /* Sol alt açık kırmızı */
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    /* Sol üst beyaz */ #f0fdf4 20%,
+    /* Sol taraf beyaz devam */ #f3e7df 40%,
+    /* Çok açık pembe geçiş */ #f3cece 60%,
+    /* Açık pembe */ #f4baba 80%,
+    /* Yumuşak açık kırmızı */ #f57b7b 100% /* Sol alt açık kırmızı */
   );
 }
-
-
 
 .failure-card-blur {
   position: relative;
   backdrop-filter: blur(25px);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.566);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 8px 32px 0 rgba(239, 68, 68, 0.18),
-    0 4px 20px 0 rgba(248, 113, 113, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.08),
+  box-shadow: 0 8px 32px 0 rgba(239, 68, 68, 0.18),
+    0 4px 20px 0 rgba(248, 113, 113, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .failure-card-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: -150px;
   width: 300px;
   height: 300px;
   transform: translateY(-50%);
-  background: radial-gradient(circle,
-    rgba(255, 0, 0, 0.9) 0%, 
-    rgba(255, 0, 0, 0.7) 25%, 
-    rgba(255, 0, 0, 0.5) 40%, 
-    rgba(255, 0, 0, 0.3) 60%, 
-    transparent 80%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 0, 0, 0.9) 0%,
+    rgba(255, 0, 0, 0.7) 25%,
+    rgba(255, 0, 0, 0.5) 40%,
+    rgba(255, 0, 0, 0.3) 60%,
+    transparent 80%
+  );
   filter: blur(100px);
   pointer-events: none;
 }
 
 .failure-card-blur::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -40px;
   right: -30px;
   width: 175px;
   height: 175px;
-  background: radial-gradient(circle, rgba(0, 128, 0, 0.9) 0%, rgba(0, 128, 0, 0.7) 25%, rgba(0, 128, 0, 0.5) 40%, rgba(0, 128, 0, 0.3) 60%, transparent 80%);
+  background: radial-gradient(
+    circle,
+    rgba(0, 128, 0, 0.9) 0%,
+    rgba(0, 128, 0, 0.7) 25%,
+    rgba(0, 128, 0, 0.5) 40%,
+    rgba(0, 128, 0, 0.3) 60%,
+    transparent 80%
+  );
   filter: blur(25px);
   pointer-events: none;
   border-radius: 50%;
@@ -63,26 +69,12 @@
   transition: all 0.3s ease;
 }
 
-.failure-button-blur:hover {
-  backdrop-filter: blur(12px);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 8px 25px rgba(34, 197, 94, 0.4),
-    0 4px 15px rgba(22, 163, 74, 0.2),
-    0 0 0 2px rgba(34, 197, 94, 0.1);
-}
-
-
-
-
-
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .failure-card-blur {
     backdrop-filter: blur(15px);
-    
   }
-  
+
   .floating-blur-element {
     display: none;
   }
