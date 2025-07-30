@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import "../../styles/auth-background.css";
 
 // Loading Spinner Component
@@ -84,7 +85,15 @@ const translateMessage = (message, isSuccess = false) => {
 
 function Login() {
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -236,6 +245,34 @@ function Login() {
     }
 
     try {
+      // Mock authentication - Replace with real API call later
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock successful login
+      const mockUserData = {
+        id: 1,
+        firstName: "Ahmet",
+        lastName: "Yılmaz",
+        email: email,
+        phone: "+90 532 123 45 67",
+        birthDate: "1990-05-15",
+        gender: "male",
+        city: "İstanbul",
+        district: "Beşiktaş"
+      };
+
+      // Use auth context login
+      login(mockUserData);
+      
+      // Success message and redirect
+      setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+
+      // TODO: Replace with real API call
+      /*
       const response = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: {
@@ -254,11 +291,14 @@ function Login() {
         throw new Error(data.msg || "Login failed");
       }
 
-      // Success - redirect to home page
+      // Use auth context login with real user data
+      login(data.user);
+      
       setSuccess(translateMessage(data.msg, true));
       setTimeout(() => {
         navigate("/");
       }, 1500);
+      */
     } catch (err) {
       setError(translateMessage(err.message, false));
     } finally {

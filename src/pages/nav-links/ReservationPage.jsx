@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import Header from "../../components/shared/Header";
 import Footer from "../../components/shared/Footer";
 import ReservationHero from "../../components/reservation/ReservationHero";
@@ -7,6 +9,8 @@ import ReservationFilters from "../../components/reservation/ReservationFilters"
 import PitchList from "../../components/reservation/PitchList";
 
 function ReservationPage() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -200,8 +204,16 @@ function ReservationPage() {
   };
 
   const handleReservation = (pitchId) => {
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      // Redirect to login page
+      navigate("/auth/login");
+      return;
+    }
+    
     console.log(`Rezervasyon yapıldı: Saha ${pitchId}`);
     // Reservation logic will be implemented later
+    alert(`Rezervasyon başarılı! Saha ID: ${pitchId}`);
   };
 
   const handleSearch = () => {

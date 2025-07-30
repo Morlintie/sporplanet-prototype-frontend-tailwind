@@ -1,9 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
 import MatchesPage from "./pages/nav-links/MatchesPage";
 import GoalkeeperPage from "./pages/nav-links/GoalkeeperPage";
 import TournamentsPage from "./pages/nav-links/TournamentsPage";
+import ProfilePage from "./pages/ProfilePage";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -12,45 +15,50 @@ import GoogleFailure from "./pages/auth/GoogleFailure";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-gray-50">
-        <Routes>
-          {/* Home Route */}
-          <Route path="/" element={<HomePage />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="min-h-screen bg-gray-50">
+          <Routes>
+            {/* Public Routes - No Authentication Required */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/matches" element={<MatchesPage />} />
+            <Route path="/reservation" element={<ReservationPage />} />
+            <Route path="/goalkeeper" element={<GoalkeeperPage />} />
+            <Route path="/tournaments" element={<TournamentsPage />} />
 
-          {/* Nav Links Routes */}
-          <Route path="/matches" element={<MatchesPage />} />
-          <Route path="/reservation" element={<ReservationPage />} />
-          <Route path="/goalkeeper" element={<GoalkeeperPage />} />
-          <Route path="/tournaments" element={<TournamentsPage />} />
-           
-          {/* Auth Routes */}
-          <Route path="/auth/google-failure" element={<GoogleFailure />} />
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            {/* Protected Routes - Require Authentication */}
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+             
+            {/* Public Auth Routes */}
+            <Route path="/auth/google-failure" element={<GoogleFailure />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/signup" element={<Signup />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
 
-
-
-          {/* 404 Not Found Route */}
-          <Route
-            path="*"
-            element={
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold text-red-600 mb-4">
-                    404 - Page Not Found
-                  </h1>
-                  <p className="text-lg text-gray-600">
-                    The page you're looking for doesn't exist
-                  </p>
+            {/* 404 Not Found Route */}
+            <Route
+              path="*"
+              element={
+                <div className="flex items-center justify-center min-h-screen">
+                  <div className="text-center">
+                    <h1 className="text-4xl font-bold text-red-600 mb-4">
+                      404 - Page Not Found
+                    </h1>
+                    <p className="text-lg text-gray-600">
+                      The page you're looking for doesn't exist
+                    </p>
+                  </div>
                 </div>
-              </div>
-            }
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
+              }
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
