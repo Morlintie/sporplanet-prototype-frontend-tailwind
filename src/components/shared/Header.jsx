@@ -20,10 +20,10 @@ function Header() {
   };
 
   const navLinks = [
-    { name: "Maçlar", path: "/matches" },
-    { name: "Rezervasyon", path: "/reservation" },
-    { name: "Kaleci", path: "/goalkeeper" },
-    { name: "Turnuva ve Ligler", path: "/tournaments" },
+    { name: "Maç İlanları", path: "/matches" },
+    { name: "Halısaha Rezervasyonu", path: "/reservation" },
+    { name: "Kaleciler", path: "/goalkeeper" },
+    { name: "Turnuvalar", path: "/tournaments" },
   ];
 
   const handleNavClick = (path) => {

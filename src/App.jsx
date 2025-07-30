@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
+import MatchesPage from "./pages/nav-links/MatchesPage";
+import GoalkeeperPage from "./pages/nav-links/GoalkeeperPage";
+import TournamentsPage from "./pages/nav-links/TournamentsPage";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -15,8 +18,11 @@ function App() {
           {/* Home Route */}
           <Route path="/" element={<HomePage />} />
 
-          {/* Reservation Route */}
+          {/* Nav Links Routes */}
+          <Route path="/matches" element={<MatchesPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
+          <Route path="/goalkeeper" element={<GoalkeeperPage />} />
+          <Route path="/tournaments" element={<TournamentsPage />} />
            
           {/* Auth Routes */}
           <Route path="/auth/google-failure" element={<GoogleFailure />} />
