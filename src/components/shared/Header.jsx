@@ -5,7 +5,6 @@ import { useAuth } from "../../contexts/AuthContext";
 function Header() {
   const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogoClick = () => {
@@ -27,12 +26,6 @@ function Header() {
   const handleLogout = () => {
     logout();
     navigate("/");
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    // Dark mode logic will be implemented later
-    console.log("Dark mode toggled:", !isDarkMode);
   };
 
   const toggleMobileMenu = () => {
@@ -85,28 +78,8 @@ function Header() {
             ))}
           </nav>
 
-          {/* Right Side - Login & Dark Mode */}
+          {/* Right Side - Auth Buttons */}
           <div className="flex items-center space-x-4">
-            {/* Dark Mode Toggle - Hidden on Mobile */}
-            <button
-              onClick={toggleDarkMode}
-              className="hidden md:block p-2 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
-              tabIndex="0"
-              aria-label="Dark mode toggle"
-            >
-              {isDarkMode ? (
-                // Sun icon for light mode
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              ) : (
-                // Moon icon for dark mode
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </button>
-
             {/* Auth Buttons - Hidden on Mobile */}
             <div className="hidden md:flex items-center space-x-4">
               {isAuthenticated ? (
@@ -162,12 +135,12 @@ function Header() {
             >
               {isMobileMenuOpen ? (
                 // X icon when menu is open
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
                 // Hamburger icon when menu is closed
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -251,29 +224,7 @@ function Header() {
                 </div>
               )}
               
-              {/* Dark Mode Toggle for Mobile */}
-              <div className="border-t border-gray-200 my-2"></div>
-              <button
-                onClick={toggleDarkMode}
-                className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors cursor-pointer focus:outline-none focus:text-green-600 focus:bg-gray-50"
-                tabIndex="0"
-              >
-                {isDarkMode ? (
-                  <>
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    Açık Tema
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                    Koyu Tema
-                  </>
-                )}
-              </button>
+
             </div>
           </div>
         )}
