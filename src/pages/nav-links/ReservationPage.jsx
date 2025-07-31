@@ -7,6 +7,8 @@ import ReservationHero from "../../components/reservation/ReservationHero";
 import SearchAndSort from "../../components/reservation/SearchAndSort";
 import ReservationFilters from "../../components/reservation/ReservationFilters";
 import PitchList from "../../components/reservation/PitchList";
+import PitchCard from "../../components/reservation/PitchCard";
+import dummyData from "../../../dummydata.json";
 
 function ReservationPage() {
   const navigate = useNavigate();
@@ -23,136 +25,90 @@ function ReservationPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("default");
   const [filteredPitches, setFilteredPitches] = useState([]);
+  const [pitches, setPitches] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pitchesPerPage] = useState(18);
 
-  // Mock data for pitches
-  const pitches = [
-    {
-      id: 1,
-      name: "Beşiktaş Spor Kompleksi",
-      location: "Beşiktaş, İstanbul",
-      city: "İstanbul",
-      district: "Beşiktaş",
-      price: 200,
-      rating: 4.8,
-      capacity: "7v7",
-      pitchType: "indoor",
-      cameraSystem: true,
-      shoeRental: true,
-      image:
-        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
-      features: ["Halı Saha", "Işıklandırma", "Soyunma Odası", "Otopark"],
-      availableHours: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"],
-    },
-    {
-      id: 2,
-      name: "Kadıköy Futbol Sahası",
-      location: "Kadıköy, İstanbul",
-      city: "İstanbul",
-      district: "Kadıköy",
-      price: 180,
-      rating: 4.6,
-      capacity: "6v6",
-      pitchType: "outdoor",
-      cameraSystem: false,
-      shoeRental: false,
-      image:
-        "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=250&fit=crop",
-      features: ["Halı Saha", "Işıklandırma", "Soyunma Odası"],
-      availableHours: [
-        "08:00",
-        "09:00",
-        "10:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-      ],
-    },
-    {
-      id: 3,
-      name: "Şişli Premium Saha",
-      location: "Şişli, İstanbul",
-      city: "İstanbul",
-      district: "Şişli",
-      price: 300,
-      rating: 4.9,
-      capacity: "8v8",
-      pitchType: "indoor",
-      cameraSystem: true,
-      shoeRental: true,
-      image:
-        "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=250&fit=crop",
-      features: [
-        "Halı Saha",
-        "Işıklandırma",
-        "Soyunma Odası",
-        "Otopark",
-        "Kafeterya",
-      ],
-      availableHours: ["10:00", "11:00", "12:00", "15:00", "16:00", "17:00"],
-    },
-    {
-      id: 4,
-      name: "Gaziosmanpaşa Arena",
-      location: "Gaziosmanpaşa, İstanbul",
-      city: "İstanbul",
-      district: "Gaziosmanpaşa",
-      price: 220,
-      rating: 4.5,
-      capacity: "7v7",
-      pitchType: "outdoor",
-      cameraSystem: true,
-      shoeRental: false,
-      image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop",
-      features: ["Halı Saha", "Işıklandırma", "Soyunma Odası"],
-      availableHours: ["09:00", "10:00", "11:00", "14:00", "15:00"],
-    },
-    {
-      id: 5,
-      name: "Ataşehir Spor Merkezi",
-      location: "Ataşehir, İstanbul",
-      city: "İstanbul",
-      district: "Ataşehir",
-      price: 250,
-      rating: 4.7,
-      capacity: "11v11",
-      pitchType: "outdoor",
-      cameraSystem: false,
-      shoeRental: true,
-      image:
-        "https://images.unsplash.com/photo-1590077428593-a55bb07c4665?w=400&h=250&fit=crop",
-      features: [
-        "Halı Saha",
-        "Işıklandırma",
-        "Soyunma Odası",
-        "Otopark",
-        "Duş",
-      ],
-      availableHours: ["08:00", "09:00", "10:00", "13:00", "14:00", "15:00"],
-    },
-    {
-      id: 6,
-      name: "Maltepe Futbol Sahası",
-      location: "Maltepe, İstanbul",
-      city: "İstanbul",
-      district: "Maltepe",
-      price: 170,
-      rating: 4.3,
-      capacity: "5v5",
-      pitchType: "indoor",
-      cameraSystem: false,
-      shoeRental: false,
-      image:
-        "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=400&h=250&fit=crop",
-      features: ["Halı Saha", "Işıklandırma"],
-      availableHours: ["09:00", "10:00", "11:00", "16:00", "17:00"],
-    },
-  ];
+  // Transform dummy data to pitch format
+  const transformDummyDataToPitch = (item) => {
+    const address = item.location?.address;
+    const location = address 
+      ? `${address.street}, ${address.neighborhood}, ${address.city}`
+      : "Lokasyon bilgisi yok";
 
-  // Initialize filtered pitches on component mount
+    // Generate features based on facilities
+    const features = [];
+    if (item.facilities?.changingRooms) features.push("Soyunma Odası");
+    if (item.facilities?.showers) features.push("Duş");
+    if (item.specifications?.hasLighting) features.push("Işıklandırma");
+    if (item.facilities?.parking) features.push("Otopark");
+    if (item.facilities?.camera) features.push("Kamera Sistemi");
+    if (item.facilities?.shoeRenting) features.push("Ayakkabı Kiralama");
+    if (item.facilities?.otherAmenities) {
+      item.facilities.otherAmenities.forEach(amenity => {
+        if (amenity === "wifi") features.push("WiFi");
+        if (amenity === "cafe") features.push("Kafeterya");
+        if (amenity === "locker") features.push("Dolap");
+        if (amenity === "snack bar") features.push("Snack Bar");
+      });
+    }
+
+    // Surface type mapping
+    const surfaceTypeMap = {
+      "artificial_turf": "Yapay Çim",
+      "natural_grass": "Doğal Çim", 
+      "indoor_court": "Kapalı Kort"
+    };
+    
+    if (item.specifications?.surfaceType && surfaceTypeMap[item.specifications.surfaceType]) {
+      features.push(surfaceTypeMap[item.specifications.surfaceType]);
+    }
+
+    // Generate available hours (mock data)
+    const generateAvailableHours = () => {
+      const allHours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+      const randomCount = Math.floor(Math.random() * 6) + 4; // 4-9 hours
+      return allHours.sort(() => 0.5 - Math.random()).slice(0, randomCount).sort();
+    };
+
+    return {
+      id: item.company || Math.random().toString(36).substr(2, 9),
+      name: item.name || "İsimsiz Saha",
+      description: item.description || "",
+      location,
+      city: address?.city || "Bilinmeyen Şehir",
+      district: address?.district || "Bilinmeyen İlçe",
+      price: Math.round((item.pricing?.hourlyRate || 50000) / 100), // Convert kuruş to TL
+      nightPrice: Math.round((item.pricing?.nightHourlyRate || 60000) / 100),
+      rating: item.rating?.averageRating || 0,
+      totalReviews: item.rating?.totalReviews || 0,
+      capacity: `${item.specifications?.recommendedCapacity?.players || 10} oyuncu`,
+      pitchType: item.specifications?.isIndoor ? "indoor" : "outdoor",
+      surfaceType: item.specifications?.surfaceType || "artificial_turf",
+      hasLighting: item.specifications?.hasLighting || false,
+      cameraSystem: item.facilities?.camera || false,
+      shoeRental: item.facilities?.shoeRenting || false,
+      image: item.media?.images?.[0]?.url || "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
+      features,
+      facilities: item.facilities || {},
+      status: item.status || "active",
+      refundAllowed: item.refundAllowed || false,
+      availableHours: generateAvailableHours()
+    };
+  };
+
+  // Load and transform dummy data
   useEffect(() => {
-    setFilteredPitches(pitches);
+    try {
+      const transformedPitches = dummyData.map(transformDummyDataToPitch);
+      console.log(`Loaded ${transformedPitches.length} pitches from dummy data`);
+      setPitches(transformedPitches);
+      setFilteredPitches(transformedPitches);
+    } catch (error) {
+      console.error("Error loading dummy data:", error);
+      setPitches([]);
+      setFilteredPitches([]);
+    }
   }, []);
 
   // Apply filters function
@@ -239,6 +195,7 @@ function ReservationPage() {
     }
 
     setFilteredPitches(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   };
 
   // Sort function
@@ -294,6 +251,7 @@ function ReservationPage() {
     // Apply sorting immediately
     const sorted = sortPitches(filteredPitches, sortValue);
     setFilteredPitches(sorted);
+    setCurrentPage(1); // Reset to first page when sorting changes
   };
 
   const clearAllFilters = () => {
@@ -308,11 +266,66 @@ function ReservationPage() {
     setSelectedRating("");
     setSearchTerm("");
     setSortBy("default");
+    setCurrentPage(1);
 
     // Tüm sahaları göster
     setTimeout(() => {
       setFilteredPitches(pitches);
     }, 100);
+  };
+
+  // Pagination logic
+  const indexOfLastPitch = currentPage * pitchesPerPage;
+  const indexOfFirstPitch = indexOfLastPitch - pitchesPerPage;
+  const currentPitches = filteredPitches.slice(indexOfFirstPitch, indexOfLastPitch);
+  const totalPages = Math.ceil(filteredPitches.length / pitchesPerPage);
+
+  // Change page
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total pages is less than or equal to maxVisiblePages
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      // Show first page
+      pageNumbers.push(1);
+      
+      if (currentPage > 3) {
+        pageNumbers.push('...');
+      }
+      
+      // Show pages around current page
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = start; i <= end; i++) {
+        if (!pageNumbers.includes(i)) {
+          pageNumbers.push(i);
+        }
+      }
+      
+      if (currentPage < totalPages - 2) {
+        pageNumbers.push('...');
+      }
+      
+      // Show last page
+      if (!pageNumbers.includes(totalPages)) {
+        pageNumbers.push(totalPages);
+      }
+    }
+    
+    return pageNumbers;
   };
 
   return (
@@ -330,6 +343,11 @@ function ReservationPage() {
             </h2>
             <p className="text-gray-600 text-lg">
               {filteredPitches.length} saha bulundu
+              {totalPages > 1 && (
+                <span className="ml-2">
+                  (Sayfa {currentPage} / {totalPages})
+                </span>
+              )}
             </p>
           </div>
         </div>
@@ -348,7 +366,7 @@ function ReservationPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column - Pitch List */}
           <div className="lg:w-3/4">
-            {filteredPitches.length === 0 ? (
+            {currentPitches.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-400 mb-4">
                   <svg
@@ -373,91 +391,89 @@ function ReservationPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredPitches.map((pitch) => (
-                  <div
-                    key={pitch.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    {/* Pitch Image */}
-                    <div className="relative h-48 bg-gray-200">
-                      <img
-                        src={pitch.image}
-                        alt={pitch.name}
-                        className="w-full h-full object-cover"
-                      />
-                      {/* Rating Badge */}
-                      <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded-full shadow-sm">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <svg
-                              key={i}
-                              className={`w-4 h-4 ${
-                                i < Math.floor(pitch.rating)
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                          <span className="text-sm font-medium text-gray-700 ml-1">
-                            {pitch.rating}
-                          </span>
-                        </div>
-                      </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {currentPitches.map((pitch) => (
+                    <PitchCard
+                      key={pitch.id}
+                      pitch={pitch}
+                      onReservation={handleReservation}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8">
+                    {/* Mobile Pagination Info */}
+                    <div className="sm:hidden text-center mb-4">
+                      <p className="text-sm text-gray-600">
+                        Sayfa {currentPage} / {totalPages} - Toplam {filteredPitches.length} saha
+                      </p>
                     </div>
 
-                    {/* Pitch Info */}
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {pitch.name}
-                      </h3>
+                    {/* Pagination Controls */}
+                    <div className="flex justify-center">
+                      <nav className="flex items-center space-x-1 sm:space-x-2">
+                        {/* Previous Button */}
+                        <button
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                            currentPage === 1
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                          }`}
+                        >
+                          <span className="hidden sm:inline">Önceki</span>
+                          <span className="sm:hidden">‹</span>
+                        </button>
 
-                      <p className="text-gray-600 text-sm mb-3">
-                        {pitch.location}
-                      </p>
-
-                      {/* Features */}
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {pitch.features.slice(0, 3).map((feature) => (
-                          <span
-                            key={feature}
-                            className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                        {pitch.features.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                            +{pitch.features.length - 3} daha
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Price and Button */}
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <span className="text-xl font-bold text-gray-900">
-                            ₺{pitch.price}
-                          </span>
-                          <span className="text-gray-500 text-sm">/saat</span>
+                        {/* Page Numbers */}
+                        <div className="flex items-center space-x-1">
+                          {getPageNumbers().map((pageNumber, index) => (
+                            <button
+                              key={index}
+                              onClick={() => typeof pageNumber === 'number' && handlePageChange(pageNumber)}
+                              disabled={typeof pageNumber !== 'number'}
+                              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-md text-xs sm:text-sm font-medium transition-colors flex items-center justify-center ${
+                                pageNumber === currentPage
+                                  ? 'bg-[rgb(0,128,0)] text-white shadow-md'
+                                  : typeof pageNumber === 'number'
+                                  ? 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
+                                  : 'bg-transparent text-gray-400 cursor-default'
+                              }`}
+                            >
+                              {pageNumber}
+                            </button>
+                          ))}
                         </div>
 
+                        {/* Next Button */}
                         <button
-                          onClick={() => handleReservation(pitch.id)}
-                          className="bg-[rgb(0,128,0)] text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-[rgb(0,100,0)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors cursor-pointer"
-                          tabIndex="0"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                            currentPage === totalPages
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                          }`}
                         >
-                          Rezervasyon Yap
+                          <span className="hidden sm:inline">Sonraki</span>
+                          <span className="sm:hidden">›</span>
                         </button>
-                      </div>
+                      </nav>
+                    </div>
+
+                    {/* Desktop Pagination Info */}
+                    <div className="hidden sm:block text-center mt-4">
+                      <p className="text-sm text-gray-600">
+                        Gösterilen: {indexOfFirstPitch + 1}-{Math.min(indexOfLastPitch, filteredPitches.length)} / {filteredPitches.length} saha
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
 

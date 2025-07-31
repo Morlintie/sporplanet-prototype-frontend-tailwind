@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import dummyData from "../../../dummydata.json";
+
 function ReservationFilters({
   selectedCity,
   setSelectedCity,
@@ -20,58 +23,61 @@ function ReservationFilters({
   onSearch,
   onClearFilters,
 }) {
-  const cities = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"];
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState({});
+  const [capacityOptions, setCapacityOptions] = useState([]);
 
-  const districts = {
-    İstanbul: [
-      "Beşiktaş",
-      "Kadıköy",
-      "Şişli",
-      "Gaziosmanpaşa",
-      "Ataşehir",
-      "Maltepe",
-      "Üsküdar",
-      "Beyoğlu",
-      "Fatih",
-    ],
-    Ankara: [
-      "Çankaya",
-      "Keçiören",
-      "Yenimahalle",
-      "Mamak",
-      "Sincan",
-      "Altındağ",
-      "Gölbaşı",
-    ],
-    İzmir: [
-      "Konak",
-      "Bornova",
-      "Karşıyaka",
-      "Buca",
-      "Bayraklı",
-      "Gaziemir",
-      "Balçova",
-    ],
-    Bursa: ["Osmangazi", "Nilüfer", "Yıldırım", "Gemlik", "İnegöl", "Mudanya"],
-    Antalya: [
-      "Muratpaşa",
-      "Kepez",
-      "Konyaaltı",
-      "Aksu",
-      "Alanya",
-      "Manavgat",
-      "Serik",
-    ],
-  };
+  // Extract unique cities, districts and capacities from dummy data
+  useEffect(() => {
+    try {
+      // Extract cities
+      const uniqueCities = [...new Set(dummyData.map(item => item.location?.address?.city).filter(Boolean))];
+      console.log(`Found ${uniqueCities.length} unique cities:`, uniqueCities);
+      setCities(uniqueCities.sort());
 
-  const capacityOptions = [
-    { value: "", label: "Tüm Kapasiteler" },
-    { value: "5v5", label: "5v5 (10 kişi)" },
-    { value: "6v6", label: "6v6 (12 kişi)" },
-    { value: "7v7", label: "7v7 (14 kişi)" },
-    { value: "8v8", label: "8v8 (16 kişi)" },
-    { value: "11v11", label: "11v11 (22 kişi)" },
-  ];
+      // Extract districts grouped by city
+      const districtsMap = {};
+      dummyData.forEach(item => {
+        const city = item.location?.address?.city;
+        const district = item.location?.address?.district;
+        if (city && district) {
+          if (!districtsMap[city]) {
+            districtsMap[city] = new Set();
+          }
+          districtsMap[city].add(district);
+        }
+      });
+
+      // Convert sets to arrays and sort
+      const districtsObj = {};
+      Object.keys(districtsMap).forEach(city => {
+        districtsObj[city] = [...districtsMap[city]].sort();
+      });
+      setDistricts(districtsObj);
+
+      // Extract unique capacities
+      const uniqueCapacities = [...new Set(dummyData.map(item => {
+        const players = item.specifications?.recommendedCapacity?.players;
+        return players ? `${players} oyuncu` : null;
+      }).filter(Boolean))];
+      
+      const capacityOpts = [
+        { value: "", label: "Tüm Kapasiteler" },
+        ...uniqueCapacities.sort().map(capacity => ({
+          value: capacity,
+          label: capacity
+        }))
+      ];
+      setCapacityOptions(capacityOpts);
+
+    } catch (error) {
+      console.error("Error processing dummy data for filters:", error);
+      // Fallback values
+      setCities([]);
+      setDistricts({});
+      setCapacityOptions([{ value: "", label: "Tüm Kapasiteler" }]);
+    }
+  }, []);
 
   // Checkbox handlers
   const handlePitchTypeChange = (type) => {

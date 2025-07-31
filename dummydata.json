@@ -1,0 +1,1879 @@
+[
+  {
+    "name": "Sezgin A.Ş. Sahası",
+    "description": "Ratione velit suscipit esse perferendis error optio neque. Esse nam cum repellendus fugit eius. Cumque tenetur accusantium doloribus natus sed soluta hic.",
+    "location": {
+      "address": {
+        "street": "Duran Glens",
+        "neighborhood": "Spring",
+        "city": "Korutürkshire",
+        "district": "port",
+        "postalCode": "74577",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        103.502582,
+        -43.387844
+      ]
+    },
+    "company": "17c20cb7-edf8-45e3-afd0-e1cc5e1fd50b",
+    "specifications": {
+      "dimensions": {
+        "length": 40,
+        "width": 25
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": false,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 29
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": false,
+      "camera": true,
+      "otherAmenities": []
+    },
+    "pricing": {
+      "hourlyRate": 59039,
+      "nightHourlyRate": 65757,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.71,
+      "weekendMultiplier": 1.33
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://placekitten.com/217/534",
+          "caption": "Saha görüntüsü",
+          "public_id": "a521e120-c9ba-4293-b396-68923ef1218a",
+          "isPrimary": true,
+          "size": 3402
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0543584378",
+      "email": "rusensensoy@durmus.com",
+      "website": "https://soylu.net/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/abdulcemalarsoy",
+        "facebook": "https://facebook.com/nurdeniz91",
+        "twitter": "https://twitter.com/aycagul88"
+      }
+    },
+    "rating": {
+      "averageRating": 2.4,
+      "totalReviews": 92
+    },
+    "refundAllowed": true,
+    "status": "maintenance",
+    "totalBookings": 583,
+    "totalRevenue": 2335500,
+    "middlemanShare": 120035,
+    "tags": [
+      "indoor",
+      "spor"
+    ],
+    "searchKeywords": [
+      "kiralık saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2024-08-23T10:58:00.041112",
+    "nextMaintenanceDate": "2026-01-05T10:58:00.041126",
+    "createdAt": "2025-07-31T10:58:00.041130",
+    "updatedAt": "2025-07-31T10:58:00.041132"
+  },
+  {
+    "name": "Aselsan Sahası",
+    "description": "Perferendis commodi laborum magni eos. Consectetur nemo fuga molestias quis doloribus enim. Ut ut atque dolorem quis. Ipsa enim animi explicabo ad.",
+    "location": {
+      "address": {
+        "street": "Dirlik Springs",
+        "neighborhood": "Lights",
+        "city": "Mujdechester",
+        "district": "bury",
+        "postalCode": "51568",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -96.618789,
+        84.825381
+      ]
+    },
+    "company": "8c9d2432-6116-4daf-92dc-303148cd4426",
+    "specifications": {
+      "dimensions": {
+        "length": 56,
+        "width": 27
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": true,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 39
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": false,
+      "parking": true,
+      "shoeRenting": false,
+      "camera": true,
+      "otherAmenities": [
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 54192,
+      "nightHourlyRate": 43860,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.64,
+      "weekendMultiplier": 1.48
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/311/405",
+          "caption": "Saha görüntüsü",
+          "public_id": "3290d96d-2793-439a-808b-65ee95ba0616",
+          "isPrimary": true,
+          "size": 992
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0535345633",
+      "email": "mcamurcuoglu@duran.com",
+      "website": "https://www.sezer.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/muarra32",
+        "facebook": "https://facebook.com/hanbikenkisakurek",
+        "twitter": "https://twitter.com/xcorlu"
+      }
+    },
+    "rating": {
+      "averageRating": 3.5,
+      "totalReviews": 15
+    },
+    "refundAllowed": true,
+    "status": "inactive",
+    "totalBookings": 191,
+    "totalRevenue": 2979300,
+    "middlemanShare": 115904,
+    "tags": [
+      "indoor",
+      "spor",
+      "halısaha"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2025-03-20T10:58:00.041577",
+    "nextMaintenanceDate": "2026-07-17T10:58:00.041584",
+    "createdAt": "2025-07-31T10:58:00.041588",
+    "updatedAt": "2025-07-31T10:58:00.041589"
+  },
+  {
+    "name": "ŞOK Marketler Sahası",
+    "description": "Possimus nihil molestiae odit quam. Voluptas facere quaerat cupiditate. Aperiam eligendi reprehenderit blanditiis. Sequi facilis et laudantium cum.",
+    "location": {
+      "address": {
+        "street": "Soylu Mission",
+        "neighborhood": "Estates",
+        "city": "West Özgeport",
+        "district": "shire",
+        "postalCode": "72086",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        80.148748,
+        16.46169
+      ]
+    },
+    "company": "ef369786-e628-4f79-bd76-9b754560004f",
+    "specifications": {
+      "dimensions": {
+        "length": 30,
+        "width": 36
+      },
+      "surfaceType": "indoor_court",
+      "isIndoor": false,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 13
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": true,
+      "camera": true,
+      "otherAmenities": []
+    },
+    "pricing": {
+      "hourlyRate": 56934,
+      "nightHourlyRate": 61119,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.68,
+      "weekendMultiplier": 1.71
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://placeimg.com/823/975/any",
+          "caption": "Saha görüntüsü",
+          "public_id": "ec29e0c8-d519-4b8e-82c4-6653a1432b8e",
+          "isPrimary": true,
+          "size": 3152
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0554843374",
+      "email": "aliseydiertas@turk.com",
+      "website": "http://www.akcay.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/tugcancamurcuoglu",
+        "facebook": "https://facebook.com/tunckilic40",
+        "twitter": "https://twitter.com/ilalmis10"
+      }
+    },
+    "rating": {
+      "averageRating": 0.4,
+      "totalReviews": 22
+    },
+    "refundAllowed": false,
+    "status": "active",
+    "totalBookings": 650,
+    "totalRevenue": 714300,
+    "middlemanShare": 47740,
+    "tags": [
+      "spor"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2024-10-17T10:58:00.042025",
+    "nextMaintenanceDate": "2026-06-09T10:58:00.042032",
+    "createdAt": "2025-07-31T10:58:00.042035",
+    "updatedAt": "2025-07-31T10:58:00.042037"
+  },
+  {
+    "name": "Çamurcuoğlu Ltd. Sahası",
+    "description": "Cumque ab laboriosam rerum ipsa. Exercitationem debitis culpa perspiciatis atque numquam eos aut.\nSunt assumenda consequuntur perferendis. Voluptates praesentium occaecati ipsum alias ut aut.",
+    "location": {
+      "address": {
+        "street": "Aslan Lodge",
+        "neighborhood": "Stream",
+        "city": "Sakaryamouth",
+        "district": "bury",
+        "postalCode": "55981",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        138.455885,
+        77.2489635
+      ]
+    },
+    "company": "51f4d4f2-1925-45be-9b23-5fb60da861eb",
+    "specifications": {
+      "dimensions": {
+        "length": 36,
+        "width": 23
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": false,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 18
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": true,
+      "camera": false,
+      "otherAmenities": []
+    },
+    "pricing": {
+      "hourlyRate": 36937,
+      "nightHourlyRate": 46068,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.82,
+      "weekendMultiplier": 1.31
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/288/177",
+          "caption": "Saha görüntüsü",
+          "public_id": "3ab6a718-0a16-4ff6-9be5-91893345ebf7",
+          "isPrimary": true,
+          "size": 3774
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0588414933",
+      "email": "nafiiakar@hotmail.com",
+      "website": "https://www.selcuk.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/bilgeyepelek",
+        "facebook": "https://facebook.com/seneryurdanur",
+        "twitter": "https://twitter.com/yilmaztaskan"
+      }
+    },
+    "rating": {
+      "averageRating": 4.7,
+      "totalReviews": 29
+    },
+    "refundAllowed": true,
+    "status": "active",
+    "totalBookings": 735,
+    "totalRevenue": 1698200,
+    "middlemanShare": 99835,
+    "tags": [
+      "gece maç",
+      "halısaha"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "kiralık saha"
+    ],
+    "lastMaintenanceDate": "2024-10-12T10:58:00.042419",
+    "nextMaintenanceDate": "2025-08-31T10:58:00.042427",
+    "createdAt": "2025-07-31T10:58:00.042431",
+    "updatedAt": "2025-07-31T10:58:00.042432"
+  },
+  {
+    "name": "EnerjiSA Sahası",
+    "description": "Deleniti consectetur odio officia exercitationem iure autem. Assumenda cum dignissimos animi beatae.",
+    "location": {
+      "address": {
+        "street": "İçimbike Walks",
+        "neighborhood": "Wall",
+        "city": "New Selvi",
+        "district": "bury",
+        "postalCode": "41953",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        45.60696,
+        -47.906245
+      ]
+    },
+    "company": "525219e7-a197-40ec-a638-2a821236fe23",
+    "specifications": {
+      "dimensions": {
+        "length": 41,
+        "width": 20
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": false,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 19
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": false,
+      "camera": true,
+      "otherAmenities": [
+        "wifi",
+        "locker"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 52784,
+      "nightHourlyRate": 53998,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.95,
+      "weekendMultiplier": 1.85
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/731/344",
+          "caption": "Saha görüntüsü",
+          "public_id": "a2cf3bc9-2abe-4086-874b-88be473630c1",
+          "isPrimary": true,
+          "size": 512
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0529596908",
+      "email": "ertasayduru@a101.net",
+      "website": "http://yuksel.org/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/demireroz",
+        "facebook": "https://facebook.com/arcandurdu",
+        "twitter": "https://twitter.com/ersecgulen"
+      }
+    },
+    "rating": {
+      "averageRating": 2.1,
+      "totalReviews": 41
+    },
+    "refundAllowed": false,
+    "status": "maintenance",
+    "totalBookings": 318,
+    "totalRevenue": 4682200,
+    "middlemanShare": 130385,
+    "tags": [
+      "gece maç",
+      "futbol"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "kiralık saha"
+    ],
+    "lastMaintenanceDate": "2024-11-12T10:58:00.042825",
+    "nextMaintenanceDate": "2026-06-28T10:58:00.042831",
+    "createdAt": "2025-07-31T10:58:00.042834",
+    "updatedAt": "2025-07-31T10:58:00.042835"
+  },
+  {
+    "name": "Sezer Şti. Sahası",
+    "description": "Modi sed quod provident vero quam dolores. Repellendus ratione illum eius ea tenetur.",
+    "location": {
+      "address": {
+        "street": "Yorulmaz Junction",
+        "neighborhood": "Parks",
+        "city": "Yükselbury",
+        "district": "furt",
+        "postalCode": "73204",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -8.531828,
+        76.906211
+      ]
+    },
+    "company": "20490505-145b-4373-b793-0c83acb23be1",
+    "specifications": {
+      "dimensions": {
+        "length": 58,
+        "width": 29
+      },
+      "surfaceType": "indoor_court",
+      "isIndoor": false,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 12,
+        "spectators": 47
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": false,
+      "camera": true,
+      "otherAmenities": [
+        "wifi"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 49628,
+      "nightHourlyRate": 54454,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.16,
+      "weekendMultiplier": 1.78
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://placeimg.com/65/255/any",
+          "caption": "Saha görüntüsü",
+          "public_id": "46514b55-1be7-4f18-bb2e-63640c774509",
+          "isPrimary": true,
+          "size": 3678
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0596289060",
+      "email": "ecegul89@akcay.com",
+      "website": "https://www.akca.info/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/vgul",
+        "facebook": "https://facebook.com/unal55",
+        "twitter": "https://twitter.com/senerozerdinc"
+      }
+    },
+    "rating": {
+      "averageRating": 1.2,
+      "totalReviews": 49
+    },
+    "refundAllowed": false,
+    "status": "maintenance",
+    "totalBookings": 37,
+    "totalRevenue": 112100,
+    "middlemanShare": 16347,
+    "tags": [
+      "spor"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "kiralık saha"
+    ],
+    "lastMaintenanceDate": "2025-06-28T10:58:00.043335",
+    "nextMaintenanceDate": "2026-03-05T10:58:00.043342",
+    "createdAt": "2025-07-31T10:58:00.043346",
+    "updatedAt": "2025-07-31T10:58:00.043347"
+  },
+  {
+    "name": "Duran Zengin Ltd. Sahası",
+    "description": "Mollitia optio dolor voluptates cumque soluta. Dolor dolorum perspiciatis. Necessitatibus accusamus quasi minus odio est.\nEaque omnis fugiat quo tempore.",
+    "location": {
+      "address": {
+        "street": "Yüksel Burgs",
+        "neighborhood": "Locks",
+        "city": "Lake Mahigül",
+        "district": "side",
+        "postalCode": "73939",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        128.553797,
+        -1.295767
+      ]
+    },
+    "company": "526749f6-b84a-47d5-83ae-e9bbb179fb7f",
+    "specifications": {
+      "dimensions": {
+        "length": 36,
+        "width": 23
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": true,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 46
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": false,
+      "parking": false,
+      "shoeRenting": false,
+      "camera": false,
+      "otherAmenities": [
+        "wifi",
+        "cafe",
+        "locker"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 43783,
+      "nightHourlyRate": 58612,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.77,
+      "weekendMultiplier": 1.34
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/983/804",
+          "caption": "Saha görüntüsü",
+          "public_id": "07fdc080-7979-4657-8f2a-dff95387c3f0",
+          "isPrimary": true,
+          "size": 949
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0598072775",
+      "email": "akarnurmelek@gmail.com",
+      "website": "http://eraslan.net/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/dumanlinafii",
+        "facebook": "https://facebook.com/varlikinonu",
+        "twitter": "https://twitter.com/stevetoglu"
+      }
+    },
+    "rating": {
+      "averageRating": 0.8,
+      "totalReviews": 53
+    },
+    "refundAllowed": false,
+    "status": "inactive",
+    "totalBookings": 81,
+    "totalRevenue": 9360400,
+    "middlemanShare": 66739,
+    "tags": [
+      "futbol",
+      "gece maç",
+      "spor"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2024-08-10T10:58:00.043724",
+    "nextMaintenanceDate": "2025-08-20T10:58:00.043730",
+    "createdAt": "2025-07-31T10:58:00.043733",
+    "updatedAt": "2025-07-31T10:58:00.043735"
+  },
+  {
+    "name": "İhsanoğlu A.Ş. Sahası",
+    "description": "Iure officiis cum temporibus quis.\nQuam aspernatur cupiditate quaerat eveniet quo facere aperiam. Distinctio illum id aspernatur perferendis architecto. Expedita sunt unde.",
+    "location": {
+      "address": {
+        "street": "Akçay Canyon",
+        "neighborhood": "Gateway",
+        "city": "Göksevton",
+        "district": "bury",
+        "postalCode": "73875",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        153.02718,
+        -13.0295565
+      ]
+    },
+    "company": "953645a6-edb7-4ba7-8a2c-92ea7c923cef",
+    "specifications": {
+      "dimensions": {
+        "length": 33,
+        "width": 31
+      },
+      "surfaceType": "natural_grass",
+      "isIndoor": false,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 12
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": false,
+      "camera": false,
+      "otherAmenities": []
+    },
+    "pricing": {
+      "hourlyRate": 58508,
+      "nightHourlyRate": 47382,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.84,
+      "weekendMultiplier": 1.3
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://dummyimage.com/63x388",
+          "caption": "Saha görüntüsü",
+          "public_id": "e6fe7e77-69cb-4ad0-945a-02c4277ef100",
+          "isPrimary": true,
+          "size": 142
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0505912556",
+      "email": "suha18@hotmail.com",
+      "website": "https://www.inonu.info/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/yildirimgokcebalan",
+        "facebook": "https://facebook.com/ihsanogludemiriz",
+        "twitter": "https://twitter.com/duruoz41"
+      }
+    },
+    "rating": {
+      "averageRating": 0.8,
+      "totalReviews": 15
+    },
+    "refundAllowed": true,
+    "status": "inactive",
+    "totalBookings": 925,
+    "totalRevenue": 2178000,
+    "middlemanShare": 171288,
+    "tags": [
+      "halısaha"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2025-06-08T10:58:00.044186",
+    "nextMaintenanceDate": "2026-02-10T10:58:00.044194",
+    "createdAt": "2025-07-31T10:58:00.044197",
+    "updatedAt": "2025-07-31T10:58:00.044199"
+  },
+  {
+    "name": "Aselsan Sahası",
+    "description": "Alias quasi saepe doloribus optio in repellat at. Excepturi accusantium illum dignissimos cupiditate provident. Laboriosam totam sint voluptates adipisci.",
+    "location": {
+      "address": {
+        "street": "Durmuş Burg",
+        "neighborhood": "Mountains",
+        "city": "South Basımside",
+        "district": "chester",
+        "postalCode": "76249",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        31.560243,
+        21.756583
+      ]
+    },
+    "company": "86cd9131-bef6-4c99-8d46-3b985f22f3a0",
+    "specifications": {
+      "dimensions": {
+        "length": 60,
+        "width": 25
+      },
+      "surfaceType": "natural_grass",
+      "isIndoor": false,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 36
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": true,
+      "camera": true,
+      "otherAmenities": [
+        "locker",
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 30753,
+      "nightHourlyRate": 54417,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.06,
+      "weekendMultiplier": 1.34
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://placeimg.com/864/566/any",
+          "caption": "Saha görüntüsü",
+          "public_id": "c46dfee3-914b-44e4-884e-61f6d514142a",
+          "isPrimary": true,
+          "size": 456
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0570048757",
+      "email": "karsoy@yahoo.com",
+      "website": "https://firat.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/melulfirat",
+        "facebook": "https://facebook.com/telim34",
+        "twitter": "https://twitter.com/wbilge"
+      }
+    },
+    "rating": {
+      "averageRating": 4.6,
+      "totalReviews": 95
+    },
+    "refundAllowed": false,
+    "status": "inactive",
+    "totalBookings": 878,
+    "totalRevenue": 9625300,
+    "middlemanShare": 74212,
+    "tags": [
+      "futbol"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2024-10-14T10:58:00.044557",
+    "nextMaintenanceDate": "2026-06-26T10:58:00.044564",
+    "createdAt": "2025-07-31T10:58:00.044567",
+    "updatedAt": "2025-07-31T10:58:00.044569"
+  },
+  {
+    "name": "Ford Otosan Sahası",
+    "description": "Vitae dolor animi illum nisi voluptate. Aliquam hic soluta voluptate saepe illo expedita.",
+    "location": {
+      "address": {
+        "street": "Tarhan Street",
+        "neighborhood": "Shores",
+        "city": "Ertenville",
+        "district": "haven",
+        "postalCode": "03548",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        67.022944,
+        55.2082015
+      ]
+    },
+    "company": "d5351aae-6d6b-4efa-b91c-9fd16ca330e8",
+    "specifications": {
+      "dimensions": {
+        "length": 38,
+        "width": 27
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": false,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 31
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": true,
+      "shoeRenting": true,
+      "camera": false,
+      "otherAmenities": [
+        "locker"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 42889,
+      "nightHourlyRate": 50136,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.67,
+      "weekendMultiplier": 1.58
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://dummyimage.com/880x230",
+          "caption": "Saha görüntüsü",
+          "public_id": "48cc14bd-5c93-46a6-b1bd-e5a9d5f65d90",
+          "isPrimary": true,
+          "size": 372
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0543151359",
+      "email": "zuferarslan@yahoo.com",
+      "website": "http://sezgin.net/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/hanbikenocalan",
+        "facebook": "https://facebook.com/zaslan",
+        "twitter": "https://twitter.com/mefarettin70"
+      }
+    },
+    "rating": {
+      "averageRating": 2.9,
+      "totalReviews": 77
+    },
+    "refundAllowed": false,
+    "status": "active",
+    "totalBookings": 327,
+    "totalRevenue": 2924300,
+    "middlemanShare": 164648,
+    "tags": [
+      "spor",
+      "gece maç"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "kiralık saha"
+    ],
+    "lastMaintenanceDate": "2025-05-28T10:58:00.044906",
+    "nextMaintenanceDate": "2025-12-30T10:58:00.044912",
+    "createdAt": "2025-07-31T10:58:00.044915",
+    "updatedAt": "2025-07-31T10:58:00.044917"
+  },
+  {
+    "name": "LC Waikiki Sahası",
+    "description": "Illo odio tempora accusantium molestias pariatur dolor. Autem repellat possimus veritatis pariatur.",
+    "location": {
+      "address": {
+        "street": "Erginel Avenue",
+        "neighborhood": "Knolls",
+        "city": "South Zemzemstad",
+        "district": "berg",
+        "postalCode": "37739",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -121.902614,
+        -9.44048
+      ]
+    },
+    "company": "b9538310-9750-4a8c-8c79-e2d655a1d028",
+    "specifications": {
+      "dimensions": {
+        "length": 43,
+        "width": 20
+      },
+      "surfaceType": "natural_grass",
+      "isIndoor": true,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 49
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": false,
+      "parking": true,
+      "shoeRenting": true,
+      "camera": false,
+      "otherAmenities": [
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 58065,
+      "nightHourlyRate": 46650,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.19,
+      "weekendMultiplier": 1.28
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://placeimg.com/28/300/any",
+          "caption": "Saha görüntüsü",
+          "public_id": "07c50177-b460-4847-8659-f59d3afb5baa",
+          "isPrimary": true,
+          "size": 4194
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0579059935",
+      "email": "rasulmansiz@bilgin.com",
+      "website": "https://www.gulen.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/czengin",
+        "facebook": "https://facebook.com/zorluzelha",
+        "twitter": "https://twitter.com/oarslan"
+      }
+    },
+    "rating": {
+      "averageRating": 0.6,
+      "totalReviews": 73
+    },
+    "refundAllowed": false,
+    "status": "maintenance",
+    "totalBookings": 475,
+    "totalRevenue": 395300,
+    "middlemanShare": 158458,
+    "tags": [
+      "indoor"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "kiralık saha"
+    ],
+    "lastMaintenanceDate": "2024-08-28T10:58:00.045308",
+    "nextMaintenanceDate": "2026-03-05T10:58:00.045315",
+    "createdAt": "2025-07-31T10:58:00.045318",
+    "updatedAt": "2025-07-31T10:58:00.045319"
+  },
+  {
+    "name": "Yaman A.Ş. Sahası",
+    "description": "Ex inventore saepe a ab at quidem. Facilis a illo impedit quos culpa.",
+    "location": {
+      "address": {
+        "street": "Delil Circle",
+        "neighborhood": "Village",
+        "city": "New Arziyemouth",
+        "district": "town",
+        "postalCode": "31126",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -173.969032,
+        -83.2153615
+      ]
+    },
+    "company": "07adc693-804b-4a12-82e8-1a33d25b6606",
+    "specifications": {
+      "dimensions": {
+        "length": 36,
+        "width": 30
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": true,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 41
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": false,
+      "shoeRenting": false,
+      "camera": false,
+      "otherAmenities": []
+    },
+    "pricing": {
+      "hourlyRate": 55577,
+      "nightHourlyRate": 51328,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.28,
+      "weekendMultiplier": 1.47
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/677/661",
+          "caption": "Saha görüntüsü",
+          "public_id": "cbbbbc03-94b8-4e52-8335-1a25e06e748b",
+          "isPrimary": true,
+          "size": 4175
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0571749737",
+      "email": "ergonulsakarya@yahoo.com",
+      "website": "https://www.koruturk.org/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/filit96",
+        "facebook": "https://facebook.com/kelami02",
+        "twitter": "https://twitter.com/cetinvacibe"
+      }
+    },
+    "rating": {
+      "averageRating": 2.9,
+      "totalReviews": 24
+    },
+    "refundAllowed": false,
+    "status": "active",
+    "totalBookings": 995,
+    "totalRevenue": 9377700,
+    "middlemanShare": 181380,
+    "tags": [
+      "indoor"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "kiralık saha"
+    ],
+    "lastMaintenanceDate": "2025-01-22T10:58:00.045838",
+    "nextMaintenanceDate": "2025-09-18T10:58:00.045846",
+    "createdAt": "2025-07-31T10:58:00.045849",
+    "updatedAt": "2025-07-31T10:58:00.045851"
+  },
+  {
+    "name": "Havelsan Sahası",
+    "description": "Eius illo beatae quaerat. Harum earum perspiciatis nisi.\nInventore repellat recusandae nisi neque ut officiis nostrum.",
+    "location": {
+      "address": {
+        "street": "Özertem Villages",
+        "neighborhood": "Ports",
+        "city": "Sezerchester",
+        "district": "bury",
+        "postalCode": "89202",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        73.5451,
+        -25.097004
+      ]
+    },
+    "company": "6d2b59a8-351a-49f0-9cdc-d04c218cdb80",
+    "specifications": {
+      "dimensions": {
+        "length": 34,
+        "width": 24
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": false,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 9
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": true,
+      "parking": true,
+      "shoeRenting": false,
+      "camera": true,
+      "otherAmenities": [
+        "snack bar",
+        "wifi"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 42129,
+      "nightHourlyRate": 45057,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.98,
+      "weekendMultiplier": 1.48
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://dummyimage.com/522x583",
+          "caption": "Saha görüntüsü",
+          "public_id": "d79c9197-f8cc-4482-876a-e559698ea0eb",
+          "isPrimary": true,
+          "size": 2788
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0556287844",
+      "email": "yurtguven29@inonu.org",
+      "website": "http://www.aselsan.net/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/firatbelkize",
+        "facebook": "https://facebook.com/mazlumcorlu",
+        "twitter": "https://twitter.com/duranbelgizar"
+      }
+    },
+    "rating": {
+      "averageRating": 2.2,
+      "totalReviews": 100
+    },
+    "refundAllowed": true,
+    "status": "active",
+    "totalBookings": 628,
+    "totalRevenue": 5419000,
+    "middlemanShare": 40306,
+    "tags": [
+      "gece maç",
+      "halısaha"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2025-04-02T10:58:00.046268",
+    "nextMaintenanceDate": "2026-06-21T10:58:00.046274",
+    "createdAt": "2025-07-31T10:58:00.046277",
+    "updatedAt": "2025-07-31T10:58:00.046279"
+  },
+  {
+    "name": "Opet Sahası",
+    "description": "Eius facilis cumque nemo quibusdam non. Minus commodi fuga deleniti ad ex. Assumenda est ipsum nihil.\nEaque enim asperiores minus. Sed rem nam repellat.",
+    "location": {
+      "address": {
+        "street": "Hezniye Meadow",
+        "neighborhood": "Curve",
+        "city": "South Gönenfurt",
+        "district": "burgh",
+        "postalCode": "47030",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -11.838459,
+        -84.4280005
+      ]
+    },
+    "company": "0c6db054-bbb2-4714-8271-4d343db833f9",
+    "specifications": {
+      "dimensions": {
+        "length": 60,
+        "width": 23
+      },
+      "surfaceType": "indoor_court",
+      "isIndoor": false,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 49
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": false,
+      "parking": true,
+      "shoeRenting": false,
+      "camera": true,
+      "otherAmenities": [
+        "wifi",
+        "locker"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 59133,
+      "nightHourlyRate": 54821,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.81,
+      "weekendMultiplier": 1.81
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/974/626",
+          "caption": "Saha görüntüsü",
+          "public_id": "ce9bbb8c-b8a2-4b40-b5e2-ed9daa08abad",
+          "isPrimary": true,
+          "size": 547
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0596994686",
+      "email": "doguhanfirat@turk.net",
+      "website": "http://www.sisecam.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/zyilmaz",
+        "facebook": "https://facebook.com/zorlurabbiye",
+        "twitter": "https://twitter.com/altinisin87"
+      }
+    },
+    "rating": {
+      "averageRating": 3.7,
+      "totalReviews": 72
+    },
+    "refundAllowed": false,
+    "status": "active",
+    "totalBookings": 589,
+    "totalRevenue": 4763800,
+    "middlemanShare": 103297,
+    "tags": [
+      "gece maç",
+      "halısaha",
+      "indoor"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2025-06-22T10:58:00.046693",
+    "nextMaintenanceDate": "2026-01-14T10:58:00.046699",
+    "createdAt": "2025-07-31T10:58:00.046702",
+    "updatedAt": "2025-07-31T10:58:00.046704"
+  },
+  {
+    "name": "Zorlu Soylu A.Ş. Sahası",
+    "description": "Impedit perspiciatis cupiditate fugiat architecto nisi repellendus. Modi reprehenderit consequuntur harum. Accusantium quas laudantium tenetur doloremque.",
+    "location": {
+      "address": {
+        "street": "Aslan Lodge",
+        "neighborhood": "Flats",
+        "city": "Soylufort",
+        "district": "chester",
+        "postalCode": "35202",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        145.147806,
+        83.7557615
+      ]
+    },
+    "company": "224ce27b-fa0f-45de-88b2-ae809ba06146",
+    "specifications": {
+      "dimensions": {
+        "length": 56,
+        "width": 23
+      },
+      "surfaceType": "natural_grass",
+      "isIndoor": true,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 3
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": true,
+      "shoeRenting": false,
+      "camera": false,
+      "otherAmenities": [
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 46099,
+      "nightHourlyRate": 47618,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.77,
+      "weekendMultiplier": 1.13
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://dummyimage.com/846x631",
+          "caption": "Saha görüntüsü",
+          "public_id": "d1490f93-8f8f-4e52-a40d-4e32e412728d",
+          "isPrimary": true,
+          "size": 2136
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0583124166",
+      "email": "lutfiulker@hotmail.com",
+      "website": "https://www.aselsan.net/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/feyha25",
+        "facebook": "https://facebook.com/atilhanerdogan",
+        "twitter": "https://twitter.com/zufer82"
+      }
+    },
+    "rating": {
+      "averageRating": 0.4,
+      "totalReviews": 75
+    },
+    "refundAllowed": true,
+    "status": "inactive",
+    "totalBookings": 748,
+    "totalRevenue": 6298600,
+    "middlemanShare": 180655,
+    "tags": [
+      "halısaha",
+      "gece maç",
+      "futbol"
+    ],
+    "searchKeywords": [
+      "futbol sahası",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2025-05-31T10:58:00.047065",
+    "nextMaintenanceDate": "2025-10-11T10:58:00.047071",
+    "createdAt": "2025-07-31T10:58:00.047074",
+    "updatedAt": "2025-07-31T10:58:00.047075"
+  },
+  {
+    "name": "Ergül Şti. Sahası",
+    "description": "Reprehenderit consequatur accusantium ex. Odit assumenda iste. Occaecati optio occaecati.\nCumque error mollitia ex eos distinctio. Dolore ullam quod deserunt. Ad esse voluptatibus reiciendis enim.",
+    "location": {
+      "address": {
+        "street": "Arslan Dale",
+        "neighborhood": "Union",
+        "city": "Sezerview",
+        "district": "mouth",
+        "postalCode": "34457",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        160.860258,
+        78.332899
+      ]
+    },
+    "company": "5e4c1808-d741-4738-9aaf-3a5cc3b518ea",
+    "specifications": {
+      "dimensions": {
+        "length": 48,
+        "width": 32
+      },
+      "surfaceType": "indoor_court",
+      "isIndoor": true,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 32
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": true,
+      "shoeRenting": true,
+      "camera": true,
+      "otherAmenities": [
+        "snack bar",
+        "locker",
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 48200,
+      "nightHourlyRate": 60559,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.66,
+      "weekendMultiplier": 1.71
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://dummyimage.com/831x689",
+          "caption": "Saha görüntüsü",
+          "public_id": "d5fc0ba2-c0bc-4d21-8afc-f64c1de72df9",
+          "isPrimary": true,
+          "size": 2253
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0501150832",
+      "email": "ntevetoglu@gulen.com",
+      "website": "http://petkim.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/asu16",
+        "facebook": "https://facebook.com/aguclu",
+        "twitter": "https://twitter.com/sevlaakcay"
+      }
+    },
+    "rating": {
+      "averageRating": 0.4,
+      "totalReviews": 81
+    },
+    "refundAllowed": false,
+    "status": "maintenance",
+    "totalBookings": 703,
+    "totalRevenue": 9825200,
+    "middlemanShare": 152104,
+    "tags": [
+      "futbol",
+      "indoor",
+      "gece maç"
+    ],
+    "searchKeywords": [
+      "kiralık saha",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2025-07-22T10:58:00.047514",
+    "nextMaintenanceDate": "2026-04-03T10:58:00.047522",
+    "createdAt": "2025-07-31T10:58:00.047528",
+    "updatedAt": "2025-07-31T10:58:00.047531"
+  },
+  {
+    "name": "Arsoy Şti. Sahası",
+    "description": "Aut debitis cum consequuntur. Possimus dolor occaecati ipsam temporibus.\nArchitecto optio minima natus unde ex corporis nobis. Quisquam quam numquam ea cum.",
+    "location": {
+      "address": {
+        "street": "Hayrioğlu Station",
+        "neighborhood": "Squares",
+        "city": "Lake Özge",
+        "district": "shire",
+        "postalCode": "43311",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -82.229159,
+        -46.67803
+      ]
+    },
+    "company": "ee9678c0-4c50-44b1-b4f0-af48164c4402",
+    "specifications": {
+      "dimensions": {
+        "length": 54,
+        "width": 39
+      },
+      "surfaceType": "natural_grass",
+      "isIndoor": true,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 16
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": false,
+      "parking": true,
+      "shoeRenting": false,
+      "camera": false,
+      "otherAmenities": [
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 30938,
+      "nightHourlyRate": 63951,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.59,
+      "weekendMultiplier": 1.06
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://placeimg.com/637/787/any",
+          "caption": "Saha görüntüsü",
+          "public_id": "9ba73907-0b10-41dc-8443-d6adbd2f95cc",
+          "isPrimary": true,
+          "size": 732
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0511796660",
+      "email": "cakcay@ergul.com",
+      "website": "https://sezgin.net/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/kergul",
+        "facebook": "https://facebook.com/demirelburakhan",
+        "twitter": "https://twitter.com/tsakarya"
+      }
+    },
+    "rating": {
+      "averageRating": 0.9,
+      "totalReviews": 19
+    },
+    "refundAllowed": true,
+    "status": "active",
+    "totalBookings": 715,
+    "totalRevenue": 9659400,
+    "middlemanShare": 131048,
+    "tags": [
+      "futbol"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2025-01-09T10:58:00.047889",
+    "nextMaintenanceDate": "2026-06-19T10:58:00.047895",
+    "createdAt": "2025-07-31T10:58:00.047898",
+    "updatedAt": "2025-07-31T10:58:00.047900"
+  },
+  {
+    "name": "Öcalan Akdeniz Ltd. Sahası",
+    "description": "Neque dignissimos veritatis cum totam tempora. Modi distinctio rerum distinctio quaerat dolores amet veniam. Soluta ipsa corrupti.",
+    "location": {
+      "address": {
+        "street": "Akar Run",
+        "neighborhood": "Views",
+        "city": "Port Sitiview",
+        "district": "town",
+        "postalCode": "18346",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        119.177761,
+        -43.7999305
+      ]
+    },
+    "company": "6511c9db-67ee-46a3-ab0e-47edfa373f79",
+    "specifications": {
+      "dimensions": {
+        "length": 30,
+        "width": 40
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": true,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 12,
+        "spectators": 42
+      }
+    },
+    "facilities": {
+      "changingRooms": false,
+      "showers": false,
+      "parking": false,
+      "shoeRenting": true,
+      "camera": false,
+      "otherAmenities": [
+        "locker",
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 37191,
+      "nightHourlyRate": 66530,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.84,
+      "weekendMultiplier": 1.2
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://www.lorempixel.com/858/38",
+          "caption": "Saha görüntüsü",
+          "public_id": "cdf5313e-99fc-42ed-a7cd-a26cbd01618d",
+          "isPrimary": true,
+          "size": 2307
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0563639894",
+      "email": "kiramettinergul@hotmail.com",
+      "website": "https://www.yorulmaz.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/kibarcamurcuoglu",
+        "facebook": "https://facebook.com/secme66",
+        "twitter": "https://twitter.com/udemir"
+      }
+    },
+    "rating": {
+      "averageRating": 1.2,
+      "totalReviews": 38
+    },
+    "refundAllowed": true,
+    "status": "active",
+    "totalBookings": 634,
+    "totalRevenue": 7887700,
+    "middlemanShare": 75628,
+    "tags": [
+      "futbol"
+    ],
+    "searchKeywords": [
+      "halı saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2024-09-14T10:58:00.048265",
+    "nextMaintenanceDate": "2026-03-17T10:58:00.048273",
+    "createdAt": "2025-07-31T10:58:00.048278",
+    "updatedAt": "2025-07-31T10:58:00.048280"
+  },
+  {
+    "name": "Akar Ltd. Sahası",
+    "description": "Quo facilis fugiat modi. Ullam hic tempora iste voluptatibus aliquam. Illo nulla eius.",
+    "location": {
+      "address": {
+        "street": "Demir Valleys",
+        "neighborhood": "Point",
+        "city": "West Mehmedview",
+        "district": "furt",
+        "postalCode": "25571",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        165.445289,
+        -12.87734
+      ]
+    },
+    "company": "df11ea17-b1fa-4857-a6b9-1ab0f25e5d0e",
+    "specifications": {
+      "dimensions": {
+        "length": 60,
+        "width": 35
+      },
+      "surfaceType": "artificial_turf",
+      "isIndoor": false,
+      "hasLighting": false,
+      "recommendedCapacity": {
+        "players": 14,
+        "spectators": 33
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": true,
+      "shoeRenting": true,
+      "camera": true,
+      "otherAmenities": [
+        "wifi"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 39680,
+      "nightHourlyRate": 61607,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.66,
+      "weekendMultiplier": 1.26
+    },
+    "closed": true,
+    "media": {
+      "images": [
+        {
+          "url": "https://placekitten.com/574/188",
+          "caption": "Saha görüntüsü",
+          "public_id": "0cbd04b0-979b-40c2-86d0-1c71bba7f4f6",
+          "isPrimary": true,
+          "size": 1355
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0562479132",
+      "email": "carsoy@ertas.com",
+      "website": "https://www.koruturk.org/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/kyorulmaz",
+        "facebook": "https://facebook.com/koraysener",
+        "twitter": "https://twitter.com/ieraslan"
+      }
+    },
+    "rating": {
+      "averageRating": 3.0,
+      "totalReviews": 34
+    },
+    "refundAllowed": true,
+    "status": "active",
+    "totalBookings": 454,
+    "totalRevenue": 1341200,
+    "middlemanShare": 80686,
+    "tags": [
+      "halısaha",
+      "gece maç"
+    ],
+    "searchKeywords": [
+      "kiralık saha",
+      "halı saha"
+    ],
+    "lastMaintenanceDate": "2025-03-07T10:58:00.048695",
+    "nextMaintenanceDate": "2025-12-23T10:58:00.048701",
+    "createdAt": "2025-07-31T10:58:00.048705",
+    "updatedAt": "2025-07-31T10:58:00.048706"
+  },
+  {
+    "name": "Masomo Sahası",
+    "description": "Aliquid cupiditate quis illo nisi. Repudiandae impedit eveniet praesentium iusto reiciendis voluptate. Iusto eos harum.",
+    "location": {
+      "address": {
+        "street": "Yorulmaz Centers",
+        "neighborhood": "Run",
+        "city": "New Musaffashire",
+        "district": "fort",
+        "postalCode": "22839",
+        "country": "Turkey"
+      },
+      "type": "Point",
+      "coordinates": [
+        -101.437291,
+        -79.8275215
+      ]
+    },
+    "company": "4da63c10-f893-4254-b299-a731a6891c6f",
+    "specifications": {
+      "dimensions": {
+        "length": 54,
+        "width": 40
+      },
+      "surfaceType": "indoor_court",
+      "isIndoor": true,
+      "hasLighting": true,
+      "recommendedCapacity": {
+        "players": 10,
+        "spectators": 33
+      }
+    },
+    "facilities": {
+      "changingRooms": true,
+      "showers": true,
+      "parking": true,
+      "shoeRenting": true,
+      "camera": false,
+      "otherAmenities": [
+        "wifi",
+        "locker",
+        "cafe"
+      ]
+    },
+    "pricing": {
+      "hourlyRate": 43718,
+      "nightHourlyRate": 57576,
+      "currency": "TRY",
+      "specialDayMultiplier": 1.79,
+      "weekendMultiplier": 1.1
+    },
+    "closed": false,
+    "media": {
+      "images": [
+        {
+          "url": "https://placekitten.com/703/224",
+          "caption": "Saha görüntüsü",
+          "public_id": "9ba014ef-bc83-462d-9522-143722aafad8",
+          "isPrimary": true,
+          "size": 1850
+        }
+      ],
+      "videos": []
+    },
+    "contact": {
+      "phone": "0518644521",
+      "email": "belgizar56@turk.info",
+      "website": "https://www.zengin.com/",
+      "socialMedia": {
+        "instagram": "https://instagram.com/ummahaniseven",
+        "facebook": "https://facebook.com/pakgunduz",
+        "twitter": "https://twitter.com/rkisakurek"
+      }
+    },
+    "rating": {
+      "averageRating": 3.8,
+      "totalReviews": 89
+    },
+    "refundAllowed": false,
+    "status": "maintenance",
+    "totalBookings": 550,
+    "totalRevenue": 7196700,
+    "middlemanShare": 183000,
+    "tags": [
+      "indoor"
+    ],
+    "searchKeywords": [
+      "kiralık saha",
+      "futbol sahası"
+    ],
+    "lastMaintenanceDate": "2024-11-22T10:58:00.049039",
+    "nextMaintenanceDate": "2026-03-16T10:58:00.049044",
+    "createdAt": "2025-07-31T10:58:00.049047",
+    "updatedAt": "2025-07-31T10:58:00.049048"
+  }
+]
