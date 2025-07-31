@@ -50,7 +50,7 @@
     "media": {
       "images": [
         {
-          "url": "https://placekitten.com/217/534",
+          "url": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=250&fit=crop",
           "caption": "Saha görüntüsü",
           "public_id": "a521e120-c9ba-4293-b396-68923ef1218a",
           "isPrimary": true,
@@ -128,7 +128,7 @@
       "showers": false,
       "parking": true,
       "shoeRenting": false,
-      "camera": true,
+      "camera": false,
       "otherAmenities": [
         "cafe"
       ]
@@ -145,6 +145,13 @@
       "images": [
         {
           "url": "https://www.lorempixel.com/311/405",
+          "caption": "Saha görüntüsü",
+          "public_id": "3290d96d-2793-439a-808b-65ee95ba0616",
+          "isPrimary": false,
+          "size": 992
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=250&fit=crop",
           "caption": "Saha görüntüsü",
           "public_id": "3290d96d-2793-439a-808b-65ee95ba0616",
           "isPrimary": true,
@@ -168,7 +175,7 @@
       "totalReviews": 15
     },
     "refundAllowed": true,
-    "status": "inactive",
+    "status": "active",
     "totalBookings": 191,
     "totalRevenue": 2979300,
     "middlemanShare": 115904,
@@ -237,7 +244,7 @@
     "media": {
       "images": [
         {
-          "url": "https://placeimg.com/823/975/any",
+          "url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
           "caption": "Saha görüntüsü",
           "public_id": "ec29e0c8-d519-4b8e-82c4-6653a1432b8e",
           "isPrimary": true,
@@ -328,7 +335,7 @@
     "media": {
       "images": [
         {
-          "url": "https://www.lorempixel.com/288/177",
+          "url": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=250&fit=crop",
           "caption": "Saha görüntüsü",
           "public_id": "3ab6a718-0a16-4ff6-9be5-91893345ebf7",
           "isPrimary": true,
@@ -423,7 +430,7 @@
     "media": {
       "images": [
         {
-          "url": "https://www.lorempixel.com/731/344",
+          "url": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=250&fit=crop",
           "caption": "Saha görüntüsü",
           "public_id": "a2cf3bc9-2abe-4086-874b-88be473630c1",
           "isPrimary": true,
@@ -636,7 +643,7 @@
       "totalReviews": 53
     },
     "refundAllowed": false,
-    "status": "inactive",
+    "status": "active",
     "totalBookings": 81,
     "totalRevenue": 9360400,
     "middlemanShare": 66739,
@@ -729,7 +736,7 @@
       "totalReviews": 15
     },
     "refundAllowed": true,
-    "status": "inactive",
+    "status": "active",
     "totalBookings": 925,
     "totalRevenue": 2178000,
     "middlemanShare": 171288,
@@ -823,7 +830,7 @@
       "totalReviews": 95
     },
     "refundAllowed": false,
-    "status": "inactive",
+    "status": "active",
     "totalBookings": 878,
     "totalRevenue": 9625300,
     "middlemanShare": 74212,
@@ -1077,7 +1084,14 @@
     "media": {
       "images": [
         {
-          "url": "https://www.lorempixel.com/677/661",
+          "url": "https://images.unsplash.com/photo-1590077428593-a55bb07c4665?w=400&h=250&fit=crop",
+          "caption": "Saha görüntüsü",
+          "public_id": "cbbbbc03-94b8-4e52-8335-1a25e06e748b",
+          "isPrimary": false,
+          "size": 4175
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=400&h=250&fit=crop",
           "caption": "Saha görüntüsü",
           "public_id": "cbbbbc03-94b8-4e52-8335-1a25e06e748b",
           "isPrimary": true,
@@ -1249,7 +1263,7 @@
       "showers": false,
       "parking": true,
       "shoeRenting": false,
-      "camera": true,
+      "camera": false,
       "otherAmenities": [
         "wifi",
         "locker"
@@ -1385,7 +1399,7 @@
       "totalReviews": 75
     },
     "refundAllowed": true,
-    "status": "inactive",
+    "status": "active",
     "totalBookings": 748,
     "totalRevenue": 6298600,
     "middlemanShare": 180655,

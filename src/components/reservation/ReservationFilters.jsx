@@ -30,14 +30,18 @@ function ReservationFilters({
   // Extract unique cities, districts and capacities from dummy data
   useEffect(() => {
     try {
+      // Filter out inactive pitches first
+      const activePitches = dummyData.filter(item => item.status !== 'inactive');
+      console.log(`Processing filters from ${activePitches.length} active pitches (${dummyData.length - activePitches.length} inactive excluded)`);
+      
       // Extract cities
-      const uniqueCities = [...new Set(dummyData.map(item => item.location?.address?.city).filter(Boolean))];
+      const uniqueCities = [...new Set(activePitches.map(item => item.location?.address?.city).filter(Boolean))];
       console.log(`Found ${uniqueCities.length} unique cities:`, uniqueCities);
       setCities(uniqueCities.sort());
 
       // Extract districts grouped by city
       const districtsMap = {};
-      dummyData.forEach(item => {
+      activePitches.forEach(item => {
         const city = item.location?.address?.city;
         const district = item.location?.address?.district;
         if (city && district) {
@@ -55,18 +59,16 @@ function ReservationFilters({
       });
       setDistricts(districtsObj);
 
-      // Extract unique capacities
-      const uniqueCapacities = [...new Set(dummyData.map(item => {
-        const players = item.specifications?.recommendedCapacity?.players;
-        return players ? `${players} oyuncu` : null;
-      }).filter(Boolean))];
-      
+      // Generate capacity options from 5v5 to 11v11
       const capacityOpts = [
         { value: "", label: "Tüm Kapasiteler" },
-        ...uniqueCapacities.sort().map(capacity => ({
-          value: capacity,
-          label: capacity
-        }))
+        { value: "10 oyuncu", label: "5v5 (10 oyuncu)" },
+        { value: "12 oyuncu", label: "6v6 (12 oyuncu)" },
+        { value: "14 oyuncu", label: "7v7 (14 oyuncu)" },
+        { value: "16 oyuncu", label: "8v8 (16 oyuncu)" },
+        { value: "18 oyuncu", label: "9v9 (18 oyuncu)" },
+        { value: "20 oyuncu", label: "10v10 (20 oyuncu)" },
+        { value: "22 oyuncu", label: "11v11 (22 oyuncu)" }
       ];
       setCapacityOptions(capacityOpts);
 
@@ -75,7 +77,16 @@ function ReservationFilters({
       // Fallback values
       setCities([]);
       setDistricts({});
-      setCapacityOptions([{ value: "", label: "Tüm Kapasiteler" }]);
+      setCapacityOptions([
+        { value: "", label: "Tüm Kapasiteler" },
+        { value: "10 oyuncu", label: "5v5 (10 oyuncu)" },
+        { value: "12 oyuncu", label: "6v6 (12 oyuncu)" },
+        { value: "14 oyuncu", label: "7v7 (14 oyuncu)" },
+        { value: "16 oyuncu", label: "8v8 (16 oyuncu)" },
+        { value: "18 oyuncu", label: "9v9 (18 oyuncu)" },
+        { value: "20 oyuncu", label: "10v10 (20 oyuncu)" },
+        { value: "22 oyuncu", label: "11v11 (22 oyuncu)" }
+      ]);
     }
   }, []);
 

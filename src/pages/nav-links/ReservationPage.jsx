@@ -32,7 +32,7 @@ function ReservationPage() {
   const transformDummyDataToPitch = (item) => {
     const address = item.location?.address;
     const location = address 
-      ? `${address.street}, ${address.neighborhood}, ${address.city}`
+      ? `${address.district}, ${address.city}`
       : "Lokasyon bilgisi yok";
 
     // Generate features based on facilities
@@ -87,7 +87,8 @@ function ReservationPage() {
       hasLighting: item.specifications?.hasLighting || false,
       cameraSystem: item.facilities?.camera || false,
       shoeRental: item.facilities?.shoeRenting || false,
-      image: item.media?.images?.[0]?.url || "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
+      image: item.media?.images?.find(img => img.isPrimary)?.url || 
+             item.media?.images?.[0]?.url ,
       features,
       facilities: item.facilities || {},
       status: item.status || "active",
@@ -99,7 +100,11 @@ function ReservationPage() {
   // Load and transform dummy data
   useEffect(() => {
     try {
-      const transformedPitches = dummyData.map(transformDummyDataToPitch);
+      // Filter out inactive pitches before transforming
+      const activePitches = dummyData.filter(item => item.status !== 'inactive');
+      console.log(`Filtering pitches: ${activePitches.length} active / ${dummyData.length} total (${dummyData.length - activePitches.length} inactive filtered out)`);
+      
+      const transformedPitches = activePitches.map(transformDummyDataToPitch);
       console.log(`Loaded ${transformedPitches.length} pitches from dummy data`);
       setPitches(transformedPitches);
       setFilteredPitches(transformedPitches);
@@ -216,9 +221,18 @@ function ReservationPage() {
   };
 
   const handleReservation = (pitchId) => {
+    // Find the pitch to check its status
+    const pitch = currentPitches.find(p => p.id === pitchId);
+    
+    if (pitch?.status === 'maintenance') {
+      // For maintenance pitches, show contact info
+      alert(`İletişim Bilgileri:\n\nTelefon: +90 212 555 0123\nE-posta: info@sporplanet.com\n\nBu saha yakında rezervasyona açılacaktır. Detaylı bilgi için bizimle iletişime geçin.`);
+      console.log(`İletişim talebi: Saha ${pitchId} (Bakımda)`);
+    } else {
+      // Normal reservation logic
     console.log(`Rezervasyon yapıldı: Saha ${pitchId}`);
-    // Reservation logic will be implemented later
     alert(`Rezervasyon başarılı! Saha ID: ${pitchId}`);
+    }
   };
 
   const handleSearch = () => {
@@ -408,10 +422,10 @@ function ReservationPage() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {currentPitches.map((pitch) => (
                     <PitchCard
-                      key={pitch.id}
+                    key={pitch.id}
                       pitch={pitch}
                       onReservation={handleReservation}
                     />
@@ -479,7 +493,7 @@ function ReservationPage() {
                           <span className="sm:hidden">›</span>
                         </button>
                       </nav>
-                    </div>
+                      </div>
 
                     {/* Desktop Pagination Info */}
                     <div className="hidden sm:block text-center mt-4">
