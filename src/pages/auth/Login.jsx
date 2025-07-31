@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 import "../../styles/auth-background.css";
 
 // Loading Spinner Component
@@ -85,15 +84,7 @@ const translateMessage = (message, isSuccess = false) => {
 
 function Login() {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -247,8 +238,8 @@ function Login() {
     try {
       // Mock authentication - Replace with real API call later
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Mock successful login
       const mockUserData = {
         id: 1,
@@ -259,12 +250,9 @@ function Login() {
         birthDate: "1990-05-15",
         gender: "male",
         city: "İstanbul",
-        district: "Beşiktaş"
+        district: "Beşiktaş",
       };
 
-      // Use auth context login
-      login(mockUserData);
-      
       // Success message and redirect
       setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
       setTimeout(() => {
@@ -291,8 +279,6 @@ function Login() {
         throw new Error(data.msg || "Login failed");
       }
 
-      // Use auth context login with real user data
-      login(data.user);
       
       setSuccess(translateMessage(data.msg, true));
       setTimeout(() => {
