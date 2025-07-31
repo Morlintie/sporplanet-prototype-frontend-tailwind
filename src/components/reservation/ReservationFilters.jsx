@@ -1,5 +1,5 @@
-function ReservationFilters({ 
-  selectedCity, 
+function ReservationFilters({
+  selectedCity,
   setSelectedCity,
   selectedDistrict,
   setSelectedDistrict,
@@ -13,19 +13,55 @@ function ReservationFilters({
   setSelectedPitchTypes,
   selectedCameraSystems,
   setSelectedCameraSystems,
+  selectedShoeRental,
+  setSelectedShoeRental,
   selectedRating,
   setSelectedRating,
   onSearch,
-  onClearFilters
+  onClearFilters,
 }) {
   const cities = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"];
 
   const districts = {
-    "İstanbul": ["Beşiktaş", "Kadıköy", "Şişli", "Gaziosmanpaşa", "Ataşehir", "Maltepe", "Üsküdar", "Beyoğlu", "Fatih"],
-    "Ankara": ["Çankaya", "Keçiören", "Yenimahalle", "Mamak", "Sincan", "Altındağ", "Gölbaşı"],
-    "İzmir": ["Konak", "Bornova", "Karşıyaka", "Buca", "Bayraklı", "Gaziemir", "Balçova"],
-    "Bursa": ["Osmangazi", "Nilüfer", "Yıldırım", "Gemlik", "İnegöl", "Mudanya"],
-    "Antalya": ["Muratpaşa", "Kepez", "Konyaaltı", "Aksu", "Alanya", "Manavgat", "Serik"]
+    İstanbul: [
+      "Beşiktaş",
+      "Kadıköy",
+      "Şişli",
+      "Gaziosmanpaşa",
+      "Ataşehir",
+      "Maltepe",
+      "Üsküdar",
+      "Beyoğlu",
+      "Fatih",
+    ],
+    Ankara: [
+      "Çankaya",
+      "Keçiören",
+      "Yenimahalle",
+      "Mamak",
+      "Sincan",
+      "Altındağ",
+      "Gölbaşı",
+    ],
+    İzmir: [
+      "Konak",
+      "Bornova",
+      "Karşıyaka",
+      "Buca",
+      "Bayraklı",
+      "Gaziemir",
+      "Balçova",
+    ],
+    Bursa: ["Osmangazi", "Nilüfer", "Yıldırım", "Gemlik", "İnegöl", "Mudanya"],
+    Antalya: [
+      "Muratpaşa",
+      "Kepez",
+      "Konyaaltı",
+      "Aksu",
+      "Alanya",
+      "Manavgat",
+      "Serik",
+    ],
   };
 
   const capacityOptions = [
@@ -34,13 +70,13 @@ function ReservationFilters({
     { value: "6v6", label: "6v6 (12 kişi)" },
     { value: "7v7", label: "7v7 (14 kişi)" },
     { value: "8v8", label: "8v8 (16 kişi)" },
-    { value: "11v11", label: "11v11 (22 kişi)" }
+    { value: "11v11", label: "11v11 (22 kişi)" },
   ];
 
   // Checkbox handlers
   const handlePitchTypeChange = (type) => {
     if (selectedPitchTypes.includes(type)) {
-      setSelectedPitchTypes(selectedPitchTypes.filter(t => t !== type));
+      setSelectedPitchTypes(selectedPitchTypes.filter((t) => t !== type));
     } else {
       setSelectedPitchTypes([...selectedPitchTypes, type]);
     }
@@ -48,9 +84,19 @@ function ReservationFilters({
 
   const handleCameraSystemChange = (system) => {
     if (selectedCameraSystems.includes(system)) {
-      setSelectedCameraSystems(selectedCameraSystems.filter(s => s !== system));
+      setSelectedCameraSystems(
+        selectedCameraSystems.filter((s) => s !== system)
+      );
     } else {
       setSelectedCameraSystems([...selectedCameraSystems, system]);
+    }
+  };
+
+  const handleShoeRentalChange = (rental) => {
+    if (selectedShoeRental.includes(rental)) {
+      setSelectedShoeRental(selectedShoeRental.filter((r) => r !== rental));
+    } else {
+      setSelectedShoeRental([...selectedShoeRental, rental]);
     }
   };
 
@@ -63,7 +109,7 @@ function ReservationFilters({
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Filtreler</h3>
-      
+
       <div className="space-y-6">
         {/* City Filter */}
         <div>
@@ -94,17 +140,20 @@ function ReservationFilters({
             onChange={(e) => setSelectedDistrict(e.target.value)}
             disabled={!selectedCity}
             className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-sm ${
-              !selectedCity ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : ''
+              !selectedCity
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : ""
             }`}
           >
             <option value="">
               {selectedCity ? "İlçe Seçin" : "Önce İl Seçin"}
             </option>
-            {selectedCity && districts[selectedCity]?.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
+            {selectedCity &&
+              districts[selectedCity]?.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
           </select>
         </div>
 
@@ -195,7 +244,9 @@ function ReservationFilters({
                 onChange={() => handleCameraSystemChange("yes")}
                 className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
               />
-              <span className="ml-2 text-sm text-gray-700">Kamera Sistemi Var</span>
+              <span className="ml-2 text-sm text-gray-700">
+                Kamera Sistemi Var
+              </span>
             </label>
             <label className="flex items-center cursor-pointer">
               <input
@@ -204,7 +255,40 @@ function ReservationFilters({
                 onChange={() => handleCameraSystemChange("no")}
                 className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
               />
-              <span className="ml-2 text-sm text-gray-700">Kamera Sistemi Yok</span>
+              <span className="ml-2 text-sm text-gray-700">
+                Kamera Sistemi Yok
+              </span>
+            </label>
+          </div>
+        </div>
+
+        {/* Shoe Rental Filter */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Ayakkabı Kiralama
+          </label>
+          <div className="space-y-2">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedShoeRental.includes("yes")}
+                onChange={() => handleShoeRentalChange("yes")}
+                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+              />
+              <span className="ml-2 text-sm text-gray-700">
+                Ayakkabı Kiralama Var
+              </span>
+            </label>
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectedShoeRental.includes("no")}
+                onChange={() => handleShoeRentalChange("no")}
+                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+              />
+              <span className="ml-2 text-sm text-gray-700">
+                Ayakkabı Kiralama Yok
+              </span>
             </label>
           </div>
         </div>
@@ -228,16 +312,16 @@ function ReservationFilters({
         </div>
 
         {/* Apply Filters Button */}
-        <button 
+        <button
           onClick={onSearch}
-          className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors font-medium cursor-pointer text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          className="w-full bg-[rgb(0,128,0)] text-white py-2 px-4 rounded-md hover:bg-[rgb(0,100,0)] transition-colors font-semibold cursor-pointer text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           tabIndex="0"
         >
           Filtreleri Uygula
         </button>
 
         {/* Clear Filters */}
-        <button 
+        <button
           onClick={onClearFilters}
           className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors font-medium cursor-pointer text-sm"
           tabIndex="0"
@@ -249,4 +333,4 @@ function ReservationFilters({
   );
 }
 
-export default ReservationFilters; 
+export default ReservationFilters;

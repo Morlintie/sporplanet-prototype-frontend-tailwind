@@ -2,15 +2,23 @@
 alwaysApply: true
 ---
 
-##General Style Rules
+#General Style Rules
 
 -Lazy load custom css files. Do not mount them if they are not necessary.
 
 -Unless I say you to use custom css do not use it.
 
-## Use this styling rules for our stylings. Use this rules in tailwind unless I explicitly tell you to use custom css instead (even if I declared the style rules in custom css like rgb() use the tailwind counterpart of them if I did not say to use custom css. The rules might declared in tailwind css if I did not specify to use custom css use tailwind but if I specify to use custom css for them use custom css counterpart of that tailwind rules. ) Do not add any styling to specified elements unless told to you.
+# Use this styling rules for our stylings. Use this rules in tailwind unless I explicitly tell you to use custom css instead (even if I declared the style rules in custom css like rgb() use the tailwind counterpart of them if I did not say to use custom css. The rules might declared in tailwind css if I did not specify to use custom css use tailwind but if I specify to use custom css for them use custom css counterpart of that tailwind rules. ) Do not add any styling to specified elements unless told to you.
 
 #Style Rules
+
+## media query breakpoints
+
+- Split the media query breakpoints into three point: mobile, tablet, desktop
+- Use tailwind builtin breakpoints
+- For mobile up to tablet use sm: prefix at tailwind classes
+- For tablet up to desktop use md: prefix at tailwind classes
+- For desktop and above use lg: prefix at tailwind classes.
 
 ## Primary Button Rules
 
