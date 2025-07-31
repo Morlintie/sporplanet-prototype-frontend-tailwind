@@ -1,5 +1,8 @@
 ---
-description:
-globs:
-alwaysApply: false
+alwaysApply: true
 ---
+
+-Backend is hosted on port localhost:5000
+-Backend is got an prefix as "/api/v1" for route route
+-Backend uses cookies for authentication so always use credentials:"include" for every request that made to backend
+-Always include proper error handling for every backend request.

@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 import Header from "../../components/shared/Header";
 import Footer from "../../components/shared/Footer";
 import ReservationHero from "../../components/reservation/ReservationHero";
 import SearchAndSort from "../../components/reservation/SearchAndSort";
 import ReservationFilters from "../../components/reservation/ReservationFilters";
+import MobileFilters from "../../components/reservation/MobileFilters";
 import PitchList from "../../components/reservation/PitchList";
 
 function ReservationPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -260,13 +259,6 @@ function ReservationPage() {
   };
 
   const handleReservation = (pitchId) => {
-    // Check if user is authenticated
-    if (!isAuthenticated) {
-      // Redirect to login page
-      navigate("/auth/login");
-      return;
-    }
-
     console.log(`Rezervasyon yapıldı: Saha ${pitchId}`);
     // Reservation logic will be implemented later
     alert(`Rezervasyon başarılı! Saha ID: ${pitchId}`);
@@ -341,6 +333,30 @@ function ReservationPage() {
         sortBy={sortBy}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+      />
+
+      {/* Mobile Filters - Show only on mobile and tablet */}
+      <MobileFilters
+        selectedCity={selectedCity}
+        setSelectedCity={setSelectedCity}
+        selectedDistrict={selectedDistrict}
+        setSelectedDistrict={setSelectedDistrict}
+        minPrice={minPrice}
+        setMinPrice={setMinPrice}
+        maxPrice={maxPrice}
+        setMaxPrice={setMaxPrice}
+        selectedCapacity={selectedCapacity}
+        setSelectedCapacity={setSelectedCapacity}
+        selectedPitchTypes={selectedPitchTypes}
+        setSelectedPitchTypes={setSelectedPitchTypes}
+        selectedCameraSystems={selectedCameraSystems}
+        setSelectedCameraSystems={setSelectedCameraSystems}
+        selectedShoeRental={selectedShoeRental}
+        setSelectedShoeRental={setSelectedShoeRental}
+        selectedRating={selectedRating}
+        setSelectedRating={setSelectedRating}
+        onSearch={handleSearch}
+        onClearFilters={clearAllFilters}
       />
 
       {/* Main Content - Two Column Layout */}
@@ -461,8 +477,8 @@ function ReservationPage() {
             )}
           </div>
 
-          {/* Right Column - Filters Sidebar */}
-          <div className="lg:w-1/4">
+          {/* Right Column - Filters Sidebar - Hide on mobile and tablet */}
+          <div className="hidden lg:block lg:w-1/4">
             <ReservationFilters
               selectedCity={selectedCity}
               setSelectedCity={setSelectedCity}
