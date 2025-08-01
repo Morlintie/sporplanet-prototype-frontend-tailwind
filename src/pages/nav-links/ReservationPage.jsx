@@ -71,7 +71,7 @@ function ReservationPage() {
     };
 
     return {
-      id: item.company || Math.random().toString(36).substr(2, 9),
+      id: item.company,
       name: item.name || "İsimsiz Saha",
       description: item.description || "",
       location,
@@ -88,7 +88,8 @@ function ReservationPage() {
       cameraSystem: item.facilities?.camera || false,
       shoeRental: item.facilities?.shoeRenting || false,
       image: item.media?.images?.find(img => img.isPrimary)?.url || 
-             item.media?.images?.[0]?.url ,
+             item.media?.images?.[0]?.url || 
+             "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
       features,
       facilities: item.facilities || {},
       status: item.status || "active",

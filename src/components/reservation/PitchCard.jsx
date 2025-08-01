@@ -1,6 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 function PitchCard({ pitch, onReservation }) {
+  const navigate = useNavigate();
+  
   const handleReservation = () => {
-    onReservation(pitch.id);
+    // Navigate to pitch detail page instead of direct reservation
+    navigate(`/reservation/${pitch.id}`);
   };
 
   // Render stars for rating
@@ -83,7 +88,11 @@ function PitchCard({ pitch, onReservation }) {
         <img
           src={pitch.image}
           alt={pitch.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
+          onError={(e) => {
+            console.log("Image failed to load:", pitch.image);
+            e.target.src = "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop";
+          }}
         />
         {/* Status Badge */}
         <div className="absolute top-3 left-3">
