@@ -1,6 +1,7 @@
 function SearchAndSort({
   onSearch,
   onSort,
+  onNearbySearch,
   sortBy,
   searchTerm,
   setSearchTerm,
@@ -63,7 +64,7 @@ function SearchAndSort({
 
             {/* Nearby Places Button */}
             <button
-              onClick={() => console.log("Yakınımdakileri bul clicked")}
+              onClick={onNearbySearch}
               className="bg-[rgb(0,128,0)] hover:bg-[rgb(0,100,0)] text-white font-semibold py-2 px-4 rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 whitespace-nowrap"
               tabIndex="0"
             >

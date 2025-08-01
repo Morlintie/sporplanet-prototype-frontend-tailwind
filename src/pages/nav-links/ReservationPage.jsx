@@ -8,6 +8,7 @@ import ReservationFilters from "../../components/reservation/ReservationFilters"
 import MobileFilters from "../../components/reservation/MobileFilters";
 import PitchList from "../../components/reservation/PitchList";
 import PitchCard from "../../components/reservation/PitchCard";
+import LocationPermissionPopup from "../../components/shared/LocationPermissionPopup";
 
 function ReservationPage() {
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ function ReservationPage() {
   const [error, setError] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [backendLimit, setBackendLimit] = useState(18);
+
+  // Location permission and nearby search states
+  const [showLocationPopup, setShowLocationPopup] = useState(false);
+  const [isNearbySearch, setIsNearbySearch] = useState(false);
+  const [currentCoordinates, setCurrentCoordinates] = useState(null);
 
   // Transform dummy data to pitch format
   const transformDummyDataToPitch = (item) => {
@@ -59,7 +65,6 @@ function ReservationPage() {
     const surfaceTypeMap = {
       artificial_turf: "Yapay Çim",
       natural_grass: "Doğal Çim",
-      indoor_court: "Kapalı Kort",
     };
 
     if (
@@ -139,6 +144,20 @@ function ReservationPage() {
       "Rating cannot be greater than 5.": "Puan 5'ten büyük olamaz.",
       "No pitch found.":
         "Saha bulunamadı. Arama kriterlerinizi değiştirerek tekrar deneyin.",
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "Please provide valid capacity limits": "Geçerli kapasite değeri girin.",
+      "Please provide valid facility data": "Geçerli tesis bilgisi girin.",
+      "Invalid pitch type selection": "Geçersiz saha tipi seçimi.",
+      "Invalid camera system selection": "Geçersiz kamera sistemi seçimi.",
+      "Invalid sort parameter": "Geçersiz sıralama parametresi.",
+      "Sort field not supported": "Sıralama alanı desteklenmiyor.",
+      "Location access denied":
+        "Konum erişimi reddedildi. Lütfen tarayıcı ayarlarınızdan konum iznini etkinleştirin.",
+      "Location not available":
+        "Konum bilgisi alınamadı. Lütfen daha sonra tekrar deneyin.",
+      "Location timeout": "Konum bilgisi alınamadı. Zaman aşımı oluştu.",
+      "Invalid search query": "Geçersiz arama sorgusu.",
+      "Search term too short": "Arama terimi çok kısa. En az 2 karakter girin.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -151,18 +170,191 @@ function ReservationPage() {
     );
   };
 
+  // Build query parameters for backend filters
+  const buildFilterQueryParams = (
+    page = 1,
+    currentSortBy = null,
+    filterOverrides = {}
+  ) => {
+    const params = new URLSearchParams();
+
+    // Always include page
+    params.append("page", page.toString());
+
+    // Use filterOverrides if provided, otherwise use current state
+    const activeCity = filterOverrides.hasOwnProperty("selectedCity")
+      ? filterOverrides.selectedCity
+      : selectedCity;
+    const activeDistrict = filterOverrides.hasOwnProperty("selectedDistrict")
+      ? filterOverrides.selectedDistrict
+      : selectedDistrict;
+    const activePitchTypes = filterOverrides.hasOwnProperty(
+      "selectedPitchTypes"
+    )
+      ? filterOverrides.selectedPitchTypes
+      : selectedPitchTypes;
+    const activeCameraSystems = filterOverrides.hasOwnProperty(
+      "selectedCameraSystems"
+    )
+      ? filterOverrides.selectedCameraSystems
+      : selectedCameraSystems;
+    const activeRating = filterOverrides.hasOwnProperty("selectedRating")
+      ? filterOverrides.selectedRating
+      : selectedRating;
+
+    // City filter (İl)
+    if (activeCity) {
+      params.append("city", activeCity);
+    }
+
+    // District filter (İlçe)
+    if (activeDistrict) {
+      params.append("district", activeDistrict);
+    }
+
+    // Pitch Type filter (isIndoor) - only send if exactly one option is selected
+    if (activePitchTypes.length === 1) {
+      if (activePitchTypes.includes("indoor")) {
+        params.append("isIndoor", "true");
+      } else if (activePitchTypes.includes("outdoor")) {
+        params.append("isIndoor", "false");
+      }
+    }
+
+    // Camera System filter (camera) - only send if exactly one option is selected
+    if (activeCameraSystems.length === 1) {
+      if (activeCameraSystems.includes("yes")) {
+        params.append("camera", "true");
+      } else if (activeCameraSystems.includes("no")) {
+        params.append("camera", "false");
+      }
+    }
+
+    // Rating filter - send as >=value format
+    if (activeRating) {
+      params.append("rating", `>=${activeRating}`);
+    }
+
+    // Sort filter - send as query parameter
+    // Use currentSortBy if provided, otherwise use state sortBy
+    const activeSortBy = currentSortBy !== null ? currentSortBy : sortBy;
+    if (activeSortBy && activeSortBy !== "default") {
+      let sortValue;
+      switch (activeSortBy) {
+        case "price-low":
+          sortValue = "pricing.hourlyRate";
+          break;
+        case "price-high":
+          sortValue = "-pricing.hourlyRate";
+          break;
+        case "rating":
+          sortValue = "-rating.averageRating";
+          break;
+        case "name":
+          sortValue = "name";
+          break;
+        default:
+          // Don't send sort parameter for default or unknown values
+          break;
+      }
+      if (sortValue) {
+        params.append("sort", sortValue);
+      }
+    }
+
+    return params.toString();
+  };
+
+  // Build request body for backend filters (pricing and other body filters)
+  const buildFilterRequestBody = (filterOverrides = {}) => {
+    const body = {};
+
+    // Use filterOverrides if provided, otherwise use current state
+    const activeMinPrice = filterOverrides.hasOwnProperty("minPrice")
+      ? filterOverrides.minPrice
+      : minPrice;
+    const activeMaxPrice = filterOverrides.hasOwnProperty("maxPrice")
+      ? filterOverrides.maxPrice
+      : maxPrice;
+    const activeSelectedCapacity = filterOverrides.hasOwnProperty(
+      "selectedCapacity"
+    )
+      ? filterOverrides.selectedCapacity
+      : selectedCapacity;
+    const activeSelectedShoeRental = filterOverrides.hasOwnProperty(
+      "selectedShoeRental"
+    )
+      ? filterOverrides.selectedShoeRental
+      : selectedShoeRental;
+    const activeSearchTerm = filterOverrides.hasOwnProperty("searchTerm")
+      ? filterOverrides.searchTerm
+      : searchTerm;
+
+    // Pricing filter
+    if (activeMinPrice || activeMaxPrice) {
+      body.pricing = {};
+      if (activeMinPrice) {
+        body.pricing.lowerLimit = parseFloat(activeMinPrice);
+      }
+      if (activeMaxPrice) {
+        body.pricing.upperLimit = parseFloat(activeMaxPrice);
+      }
+    }
+
+    // Capacity filter (recommendedCapacity)
+    if (activeSelectedCapacity) {
+      // Extract number of players from capacity value (e.g., "10 oyuncu" → 10)
+      const playersMatch = activeSelectedCapacity.match(/(\d+) oyuncu/);
+      if (playersMatch) {
+        const playersCount = parseInt(playersMatch[1]);
+        body.recommendedCapacity = {
+          players: playersCount,
+        };
+      }
+    }
+
+    // Facilities filter - only send if exactly one option is selected
+    if (activeSelectedShoeRental.length === 1) {
+      body.facilities = body.facilities || {};
+      if (activeSelectedShoeRental.includes("yes")) {
+        body.facilities.shoeRenting = "true";
+      } else if (activeSelectedShoeRental.includes("no")) {
+        body.facilities.shoeRenting = "false";
+      }
+    }
+
+    // Search filter - send search term if provided
+    if (activeSearchTerm && activeSearchTerm.trim()) {
+      body.search = activeSearchTerm.trim();
+    }
+
+    return body;
+  };
+
   // Fetch pitches from backend
-  const fetchPitches = async (page = 1) => {
+  const fetchPitches = async (
+    page = 1,
+    sortValue = null,
+    filterOverrides = {}
+  ) => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch(`/api/v1/pitch?page=${page}`, {
-        method: "GET",
+      const queryParams = buildFilterQueryParams(
+        page,
+        sortValue,
+        filterOverrides
+      );
+      const requestBody = buildFilterRequestBody(filterOverrides);
+
+      const response = await fetch(`/api/v1/pitch/getAll?${queryParams}`, {
+        method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -242,6 +434,129 @@ function ReservationPage() {
     }
   };
 
+  // Fetch nearby pitches from backend
+  const fetchNearbyPitches = async (coordinates) => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/v1/pitch/surrounding`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ coordinates }),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorMessage;
+        } catch (parseError) {
+          console.error("Error parsing error response:", parseError);
+          if (response.status >= 500) {
+            errorMessage = "Server Error";
+          } else if (!navigator.onLine) {
+            errorMessage = "Network Error";
+          }
+        }
+
+        setError(translateMessage(errorMessage));
+        setFilteredPitches([]);
+        setTotalCount(0);
+        setBackendLimit(18);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Yakın sahalar başarıyla alındı:", data);
+
+      // Transform backend data to frontend format
+      const transformedPitches = data.pitches.map(transformDummyDataToPitch);
+
+      setFilteredPitches(transformedPitches);
+      setTotalCount(data.totalCount || 0);
+      setBackendLimit(data.limit || 18);
+      setCurrentPage(1); // Always page 1 for nearby search (no pagination support)
+      setIsNearbySearch(true);
+      setCurrentCoordinates(coordinates);
+    } catch (error) {
+      console.error("Yakın sahalar fetch hatası:", error);
+      setError(translateMessage("Network Error"));
+      setFilteredPitches([]);
+      setTotalCount(0);
+      setBackendLimit(18);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get user's current location
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve([position.coords.longitude, position.coords.latitude]);
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              reject(new Error("Location access denied"));
+              break;
+            case error.POSITION_UNAVAILABLE:
+              reject(new Error("Location not available"));
+              break;
+            case error.TIMEOUT:
+              reject(new Error("Location timeout"));
+              break;
+            default:
+              reject(new Error("Location not available"));
+              break;
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000, // 5 minutes
+        }
+      );
+    });
+  };
+
+  // Handle nearby search button click
+  const handleNearbySearch = () => {
+    setShowLocationPopup(true);
+  };
+
+  // Handle location permission acceptance
+  const handleLocationAccept = async () => {
+    setShowLocationPopup(false);
+    setLoading(true);
+
+    try {
+      const coordinates = await getCurrentLocation();
+      console.log("Kullanıcı konumu alındı:", coordinates);
+      await fetchNearbyPitches(coordinates);
+    } catch (error) {
+      console.error("Konum alma hatası:", error);
+      setError(translateMessage(error.message));
+      setLoading(false);
+    }
+  };
+
+  // Handle location permission decline
+  const handleLocationDecline = () => {
+    setShowLocationPopup(false);
+  };
+
   // Load pitches from backend
   useEffect(() => {
     fetchPitches();
@@ -250,8 +565,9 @@ function ReservationPage() {
   // Apply filters function
   // Apply filters - now triggers backend fetch
   const applyFilters = () => {
-    // For now, just refetch from page 1 with current filters
-    // TODO: Implement backend filtering in next step
+    // Switch back to regular search when filters are applied
+    setIsNearbySearch(false);
+    setCurrentCoordinates(null);
     fetchPitches(1);
   };
 
@@ -309,12 +625,26 @@ function ReservationPage() {
   const handleSort = (sortValue) => {
     setSortBy(sortValue);
     console.log("Sıralama değişti:", sortValue);
-    // TODO: Implement backend sorting in next step
-    // For now, just refetch from page 1
-    fetchPitches(1);
+    // Refetch pitches with new sorting from page 1, passing the sort value directly
+    fetchPitches(1, sortValue);
   };
 
   const clearAllFilters = () => {
+    // Define cleared filter values
+    const clearedFilters = {
+      selectedCity: "",
+      selectedDistrict: "",
+      minPrice: "",
+      maxPrice: "",
+      selectedCapacity: "",
+      selectedPitchTypes: [],
+      selectedCameraSystems: [],
+      selectedShoeRental: [],
+      selectedRating: "",
+      searchTerm: "",
+    };
+
+    // Update state with cleared values
     setSelectedCity("");
     setSelectedDistrict("");
     setMinPrice("");
@@ -325,10 +655,15 @@ function ReservationPage() {
     setSelectedShoeRental([]);
     setSelectedRating("");
     setSearchTerm("");
-    setSortBy("default");
+    // Note: Keep sortBy unchanged - only clear filter cart data, not sort
 
-    // Refetch all pitches from page 1
-    fetchPitches(1);
+    // Reset nearby search state when clearing filters
+    setIsNearbySearch(false);
+    setCurrentCoordinates(null);
+
+    // Refetch all pitches from page 1 with filters cleared but sort preserved
+    // Pass cleared filter values directly to bypass state delay
+    fetchPitches(1, null, clearedFilters);
   };
 
   // Pagination logic (backend-driven)
@@ -342,7 +677,13 @@ function ReservationPage() {
   // Change page
   const handlePageChange = (pageNumber) => {
     if (pageNumber !== currentPage) {
-      fetchPitches(pageNumber);
+      if (isNearbySearch && currentCoordinates) {
+        // Nearby search doesn't support pagination - do nothing
+        return;
+      } else {
+        // Regular search pagination
+        fetchPitches(pageNumber);
+      }
       // Scroll to top when page changes
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -417,6 +758,7 @@ function ReservationPage() {
       <SearchAndSort
         onSearch={applyFilters}
         onSort={handleSort}
+        onNearbySearch={handleNearbySearch}
         sortBy={sortBy}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -517,6 +859,40 @@ function ReservationPage() {
               </div>
             ) : (
               <>
+                {/* Nearby Search Indicator */}
+                {isNearbySearch && (
+                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <svg
+                        className="w-5 h-5 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <p className="text-sm text-green-800">
+                        <span className="font-medium">
+                          Yakınınızdaki sahalar gösteriliyor
+                        </span>
+                        {" - "}7 km çapında bulunan tüm sahalar
+                        listelenmektedir.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {currentPitches.map((pitch) => (
                     <PitchCard
@@ -528,7 +904,7 @@ function ReservationPage() {
                 </div>
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {totalPages > 1 && !isNearbySearch && (
                   <div className="mt-8">
                     {/* Mobile Pagination Info */}
                     <div className="sm:hidden text-center mb-4">
@@ -636,6 +1012,13 @@ function ReservationPage() {
       </div>
 
       <Footer />
+
+      {/* Location Permission Popup */}
+      <LocationPermissionPopup
+        isVisible={showLocationPopup}
+        onAccept={handleLocationAccept}
+        onDecline={handleLocationDecline}
+      />
     </div>
   );
 }

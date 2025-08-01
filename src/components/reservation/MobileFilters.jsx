@@ -1,4 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  getCities,
+  getDistricts,
+  capacityOptions,
+} from "../../utils/turkeyLocationData";
 
 function MobileFilters({
   selectedCity,
@@ -23,6 +28,24 @@ function MobileFilters({
   onClearFilters,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [cities] = useState(getCities());
+
+  // Get districts for selected city
+  const getAvailableDistricts = () => {
+    return selectedCity ? getDistricts(selectedCity) : [];
+  };
+
+  // Reset district when city changes
+  useEffect(() => {
+    if (selectedCity) {
+      const availableDistricts = getDistricts(selectedCity);
+      if (!availableDistricts.includes(selectedDistrict)) {
+        setSelectedDistrict("");
+      }
+    } else {
+      setSelectedDistrict("");
+    }
+  }, [selectedCity, selectedDistrict, setSelectedDistrict]);
   const handlePitchTypeChange = (type) => {
     setSelectedPitchTypes((prev) =>
       prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
@@ -112,17 +135,19 @@ function MobileFilters({
                 <div className="space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Şehir
+                      İl
                     </label>
                     <select
                       value={selectedCity}
                       onChange={(e) => setSelectedCity(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-sm"
                     >
-                      <option value="">Tüm Şehirler</option>
-                      <option value="İstanbul">İstanbul</option>
-                      <option value="Ankara">Ankara</option>
-                      <option value="İzmir">İzmir</option>
+                      <option value="">İl Seçin</option>
+                      {cities.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -133,20 +158,21 @@ function MobileFilters({
                     <select
                       value={selectedDistrict}
                       onChange={(e) => setSelectedDistrict(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-sm"
                       disabled={!selectedCity}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-sm ${
+                        !selectedCity
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : ""
+                      }`}
                     >
-                      <option value="">Tüm İlçeler</option>
-                      {selectedCity === "İstanbul" && (
-                        <>
-                          <option value="Beşiktaş">Beşiktaş</option>
-                          <option value="Kadıköy">Kadıköy</option>
-                          <option value="Şişli">Şişli</option>
-                          <option value="Gaziosmanpaşa">Gaziosmanpaşa</option>
-                          <option value="Ataşehir">Ataşehir</option>
-                          <option value="Maltepe">Maltepe</option>
-                        </>
-                      )}
+                      <option value="">
+                        {selectedCity ? "İlçe Seçin" : "Önce İl Seçin"}
+                      </option>
+                      {getAvailableDistricts().map((district) => (
+                        <option key={district} value={district}>
+                          {district}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -182,19 +208,18 @@ function MobileFilters({
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Kapasite
+                      Saha Kapasitesi
                     </label>
                     <select
                       value={selectedCapacity}
                       onChange={(e) => setSelectedCapacity(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-sm"
                     >
-                      <option value="">Tüm Kapasiteler</option>
-                      <option value="5v5">5v5</option>
-                      <option value="6v6">6v6</option>
-                      <option value="7v7">7v7</option>
-                      <option value="8v8">8v8</option>
-                      <option value="11v11">11v11</option>
+                      {capacityOptions.map((capacity) => (
+                        <option key={capacity.value} value={capacity.value}>
+                          {capacity.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
