@@ -19,7 +19,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/matches" element={<MatchesPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
-          <Route path="/reservation/:pitchId" element={<PitchDetailPage />} />
+          <Route path="/pitch-detail/:pitchId" element={<PitchDetailPage />} />
           <Route path="/goalkeeper" element={<GoalkeeperPage />} />
           <Route path="/tournaments" element={<TournamentsPage />} />
 
