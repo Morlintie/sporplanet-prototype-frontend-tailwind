@@ -8,7 +8,6 @@ import ReservationFilters from "../../components/reservation/ReservationFilters"
 import MobileFilters from "../../components/reservation/MobileFilters";
 import PitchList from "../../components/reservation/PitchList";
 import PitchCard from "../../components/reservation/PitchCard";
-import dummyData from "../../../dummydata.json";
 
 function ReservationPage() {
   const navigate = useNavigate();
@@ -27,11 +26,15 @@ function ReservationPage() {
   const [pitches, setPitches] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pitchesPerPage] = useState(18);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
+  const [backendLimit, setBackendLimit] = useState(18);
 
   // Transform dummy data to pitch format
   const transformDummyDataToPitch = (item) => {
     const address = item.location?.address;
-    const location = address 
+    const location = address
       ? `${address.district}, ${address.city}`
       : "Lokasyon bilgisi yok";
 
@@ -44,7 +47,7 @@ function ReservationPage() {
     if (item.facilities?.camera) features.push("Kamera Sistemi");
     if (item.facilities?.shoeRenting) features.push("Ayakkabı Kiralama");
     if (item.facilities?.otherAmenities) {
-      item.facilities.otherAmenities.forEach(amenity => {
+      item.facilities.otherAmenities.forEach((amenity) => {
         if (amenity === "wifi") features.push("WiFi");
         if (amenity === "cafe") features.push("Kafeterya");
         if (amenity === "locker") features.push("Dolap");
@@ -54,20 +57,40 @@ function ReservationPage() {
 
     // Surface type mapping
     const surfaceTypeMap = {
-      "artificial_turf": "Yapay Çim",
-      "natural_grass": "Doğal Çim", 
-      "indoor_court": "Kapalı Kort"
+      artificial_turf: "Yapay Çim",
+      natural_grass: "Doğal Çim",
+      indoor_court: "Kapalı Kort",
     };
-    
-    if (item.specifications?.surfaceType && surfaceTypeMap[item.specifications.surfaceType]) {
+
+    if (
+      item.specifications?.surfaceType &&
+      surfaceTypeMap[item.specifications.surfaceType]
+    ) {
       features.push(surfaceTypeMap[item.specifications.surfaceType]);
     }
 
     // Generate available hours (mock data)
     const generateAvailableHours = () => {
-      const allHours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+      const allHours = [
+        "08:00",
+        "09:00",
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:00",
+        "16:00",
+        "17:00",
+        "18:00",
+        "19:00",
+        "20:00",
+      ];
       const randomCount = Math.floor(Math.random() * 6) + 4; // 4-9 hours
-      return allHours.sort(() => 0.5 - Math.random()).slice(0, randomCount).sort();
+      return allHours
+        .sort(() => 0.5 - Math.random())
+        .slice(0, randomCount)
+        .sort();
     };
 
     return {
@@ -81,126 +104,155 @@ function ReservationPage() {
       nightPrice: Math.round((item.pricing?.nightHourlyRate || 60000) / 100),
       rating: item.rating?.averageRating || 0,
       totalReviews: item.rating?.totalReviews || 0,
-      capacity: `${item.specifications?.recommendedCapacity?.players || 10} oyuncu`,
+      capacity: `${
+        item.specifications?.recommendedCapacity?.players || 10
+      } oyuncu`,
       pitchType: item.specifications?.isIndoor ? "indoor" : "outdoor",
       surfaceType: item.specifications?.surfaceType || "artificial_turf",
       hasLighting: item.specifications?.hasLighting || false,
       cameraSystem: item.facilities?.camera || false,
       shoeRental: item.facilities?.shoeRenting || false,
-      image: item.media?.images?.find(img => img.isPrimary)?.url || 
-             item.media?.images?.[0]?.url || 
-             "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
+      image:
+        item.media?.images?.find((img) => img.isPrimary)?.url ||
+        item.media?.images?.[0]?.url,
       features,
       facilities: item.facilities || {},
       status: item.status || "active",
       refundAllowed: item.refundAllowed || false,
-      availableHours: generateAvailableHours()
+      availableHours: generateAvailableHours(),
     };
   };
 
-  // Load and transform dummy data
-  useEffect(() => {
+  // Error message translation function
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages
+      "You have been banned, please get contact with our customer service.":
+        "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+      "Please provide valid pricing limits": "Geçerli fiyat aralığı girin.",
+      "Please provide a valid rating query.": "Geçerli bir puan sorgusu girin.",
+      "Rating cannot be greater than 5.": "Puan 5'ten büyük olamaz.",
+      "No pitch found.":
+        "Saha bulunamadı. Arama kriterlerinizi değiştirerek tekrar deneyin.",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
+
+  // Fetch pitches from backend
+  const fetchPitches = async (page = 1) => {
+    setLoading(true);
+    setError("");
+
     try {
-      // Filter out inactive pitches before transforming
-      const activePitches = dummyData.filter(item => item.status !== 'inactive');
-      console.log(`Filtering pitches: ${activePitches.length} active / ${dummyData.length} total (${dummyData.length - activePitches.length} inactive filtered out)`);
-      
-      const transformedPitches = activePitches.map(transformDummyDataToPitch);
-      console.log(`Loaded ${transformedPitches.length} pitches from dummy data`);
-      setPitches(transformedPitches);
-      setFilteredPitches(transformedPitches);
+      const response = await fetch(`/api/v1/pitch?page=${page}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          // If can't parse error response, use status-based messages
+          if (response.status === 404) {
+            errorMessage = "No pitch found.";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error("Error parsing response JSON:", jsonError);
+        throw new Error("Server Error");
+      }
+
+      if (data.pitches && Array.isArray(data.pitches)) {
+        // Filter out inactive pitches before transforming
+        const activePitches = data.pitches.filter(
+          (item) => item.status !== "inactive"
+        );
+        console.log(
+          `Filtering pitches: ${activePitches.length} active / ${
+            data.pitches.length
+          } total (${
+            data.pitches.length - activePitches.length
+          } inactive filtered out)`
+        );
+
+        const transformedPitches = activePitches.map(transformDummyDataToPitch);
+        console.log(
+          `Loaded ${transformedPitches.length} pitches from backend (page ${page})`
+        );
+
+        // Update pagination data from backend
+        setTotalCount(data.totalCount || 0);
+        setBackendLimit(data.limit || 18);
+
+        setPitches(transformedPitches);
+        setFilteredPitches(transformedPitches);
+        setCurrentPage(page);
+      } else {
+        throw new Error("No pitch found.");
+      }
     } catch (error) {
-      console.error("Error loading dummy data:", error);
+      console.error("Error fetching pitches:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        setError(translateMessage("Failed to fetch"));
+      } else {
+        const translatedError = translateMessage(error.message);
+        setError(translatedError);
+      }
+
       setPitches([]);
       setFilteredPitches([]);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Load pitches from backend
+  useEffect(() => {
+    fetchPitches();
   }, []);
 
   // Apply filters function
+  // Apply filters - now triggers backend fetch
   const applyFilters = () => {
-    let filtered = [...pitches];
-
-    // City filter
-    if (selectedCity) {
-      filtered = filtered.filter((pitch) => pitch.city === selectedCity);
-    }
-
-    // District filter
-    if (selectedDistrict) {
-      filtered = filtered.filter(
-        (pitch) => pitch.district === selectedDistrict
-      );
-    }
-
-    // Price range filter
-    if (minPrice) {
-      filtered = filtered.filter((pitch) => pitch.price >= parseInt(minPrice));
-    }
-    if (maxPrice) {
-      filtered = filtered.filter((pitch) => pitch.price <= parseInt(maxPrice));
-    }
-
-    // Capacity filter
-    if (selectedCapacity) {
-      filtered = filtered.filter(
-        (pitch) => pitch.capacity === selectedCapacity
-      );
-    }
-
-    // Pitch type filter
-    if (selectedPitchTypes.length > 0) {
-      filtered = filtered.filter((pitch) =>
-        selectedPitchTypes.includes(pitch.pitchType)
-      );
-    }
-
-    // Camera system filter
-    if (selectedCameraSystems.length > 0) {
-      filtered = filtered.filter((pitch) => {
-        const hasCameraSystem = pitch.cameraSystem;
-        return selectedCameraSystems.some(
-          (system) =>
-            (system === "yes" && hasCameraSystem) ||
-            (system === "no" && !hasCameraSystem)
-        );
-      });
-    }
-
-    // Shoe rental filter
-    if (selectedShoeRental.length > 0) {
-      filtered = filtered.filter((pitch) => {
-        const hasShoeRental = pitch.shoeRental;
-        return selectedShoeRental.some(
-          (rental) =>
-            (rental === "yes" && hasShoeRental) ||
-            (rental === "no" && !hasShoeRental)
-        );
-      });
-    }
-
-    // Rating filter
-    if (selectedRating) {
-      filtered = filtered.filter(
-        (pitch) => pitch.rating >= parseFloat(selectedRating)
-      );
-    }
-
-    // Search term filter
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (pitch) =>
-          pitch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          pitch.location.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Apply sorting
-    if (sortBy !== "default") {
-      filtered = sortPitches(filtered, sortBy);
-    }
-
-    setFilteredPitches(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
+    // For now, just refetch from page 1 with current filters
+    // TODO: Implement backend filtering in next step
+    fetchPitches(1);
   };
 
   // Sort function
@@ -223,16 +275,18 @@ function ReservationPage() {
 
   const handleReservation = (pitchId) => {
     // Find the pitch to check its status
-    const pitch = currentPitches.find(p => p.id === pitchId);
-    
-    if (pitch?.status === 'maintenance') {
+    const pitch = currentPitches.find((p) => p.id === pitchId);
+
+    if (pitch?.status === "maintenance") {
       // For maintenance pitches, show contact info
-      alert(`İletişim Bilgileri:\n\nTelefon: +90 212 555 0123\nE-posta: info@sporplanet.com\n\nBu saha yakında rezervasyona açılacaktır. Detaylı bilgi için bizimle iletişime geçin.`);
+      alert(
+        `İletişim Bilgileri:\n\nTelefon: +90 212 555 0123\nE-posta: info@sporplanet.com\n\nBu saha yakında rezervasyona açılacaktır. Detaylı bilgi için bizimle iletişime geçin.`
+      );
       console.log(`İletişim talebi: Saha ${pitchId} (Bakımda)`);
     } else {
       // Normal reservation logic
-    console.log(`Rezervasyon yapıldı: Saha ${pitchId}`);
-    alert(`Rezervasyon başarılı! Saha ID: ${pitchId}`);
+      console.log(`Rezervasyon yapıldı: Saha ${pitchId}`);
+      alert(`Rezervasyon başarılı! Saha ID: ${pitchId}`);
     }
   };
 
@@ -255,10 +309,9 @@ function ReservationPage() {
   const handleSort = (sortValue) => {
     setSortBy(sortValue);
     console.log("Sıralama değişti:", sortValue);
-    // Apply sorting immediately
-    const sorted = sortPitches(filteredPitches, sortValue);
-    setFilteredPitches(sorted);
-    setCurrentPage(1); // Reset to first page when sorting changes
+    // TODO: Implement backend sorting in next step
+    // For now, just refetch from page 1
+    fetchPitches(1);
   };
 
   const clearAllFilters = () => {
@@ -273,32 +326,33 @@ function ReservationPage() {
     setSelectedRating("");
     setSearchTerm("");
     setSortBy("default");
-    setCurrentPage(1);
 
-    // Tüm sahaları göster
-    setTimeout(() => {
-      setFilteredPitches(pitches);
-    }, 100);
+    // Refetch all pitches from page 1
+    fetchPitches(1);
   };
 
-  // Pagination logic
-  const indexOfLastPitch = currentPage * pitchesPerPage;
-  const indexOfFirstPitch = indexOfLastPitch - pitchesPerPage;
-  const currentPitches = filteredPitches.slice(indexOfFirstPitch, indexOfLastPitch);
-  const totalPages = Math.ceil(filteredPitches.length / pitchesPerPage);
+  // Pagination logic (backend-driven)
+  const currentPitches = filteredPitches; // Backend already provides paginated data
+  const totalPages = totalCount > 0 ? Math.ceil(totalCount / backendLimit) : 0;
+  const indexOfFirstPitch =
+    totalCount > 0 ? (currentPage - 1) * backendLimit + 1 : 0;
+  const indexOfLastPitch =
+    totalCount > 0 ? Math.min(currentPage * backendLimit, totalCount) : 0;
 
   // Change page
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    // Scroll to top when page changes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (pageNumber !== currentPage) {
+      fetchPitches(pageNumber);
+      // Scroll to top when page changes
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       // Show all pages if total pages is less than or equal to maxVisiblePages
       for (let i = 1; i <= totalPages; i++) {
@@ -307,31 +361,31 @@ function ReservationPage() {
     } else {
       // Show first page
       pageNumbers.push(1);
-      
+
       if (currentPage > 3) {
-        pageNumbers.push('...');
+        pageNumbers.push("...");
       }
-      
+
       // Show pages around current page
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-      
+
       for (let i = start; i <= end; i++) {
         if (!pageNumbers.includes(i)) {
           pageNumbers.push(i);
         }
       }
-      
+
       if (currentPage < totalPages - 2) {
-        pageNumbers.push('...');
+        pageNumbers.push("...");
       }
-      
+
       // Show last page
       if (!pageNumbers.includes(totalPages)) {
         pageNumbers.push(totalPages);
       }
     }
-    
+
     return pageNumbers;
   };
 
@@ -349,7 +403,7 @@ function ReservationPage() {
               Mevcut Sahalar
             </h2>
             <p className="text-gray-600 text-lg">
-              {filteredPitches.length} saha bulundu
+              {totalCount} saha bulundu
               {totalPages > 1 && (
                 <span className="ml-2">
                   (Sayfa {currentPage} / {totalPages})
@@ -397,7 +451,47 @@ function ReservationPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column - Pitch List */}
           <div className="lg:w-3/4">
-            {currentPitches.length === 0 ? (
+            {loading ? (
+              <div className="col-span-full text-center py-12">
+                <div className="flex flex-col items-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mb-4"></div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Sahalar yükleniyor...
+                  </h3>
+                  <p className="text-gray-500">
+                    Lütfen bekleyin, veriler getiriliyor.
+                  </p>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="col-span-full text-center py-12">
+                <div className="text-red-400 mb-4">
+                  <svg
+                    className="w-16 h-16 mx-auto"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Hata Oluştu
+                </h3>
+                <p className="text-gray-500 mb-4">{error}</p>
+                <button
+                  onClick={() => fetchPitches(1)}
+                  className="bg-[rgb(0,128,0)] text-white px-4 py-2 rounded-md hover:bg-[rgb(0,100,0)] transition-colors font-semibold"
+                >
+                  Tekrar Dene
+                </button>
+              </div>
+            ) : currentPitches.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-400 mb-4">
                   <svg
@@ -423,10 +517,10 @@ function ReservationPage() {
               </div>
             ) : (
               <>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {currentPitches.map((pitch) => (
                     <PitchCard
-                    key={pitch.id}
+                      key={pitch.id}
                       pitch={pitch}
                       onReservation={handleReservation}
                     />
@@ -439,7 +533,8 @@ function ReservationPage() {
                     {/* Mobile Pagination Info */}
                     <div className="sm:hidden text-center mb-4">
                       <p className="text-sm text-gray-600">
-                        Sayfa {currentPage} / {totalPages} - Toplam {filteredPitches.length} saha
+                        Sayfa {currentPage} / {totalPages} - Toplam {totalCount}{" "}
+                        saha
                       </p>
                     </div>
 
@@ -452,8 +547,8 @@ function ReservationPage() {
                           disabled={currentPage === 1}
                           className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                             currentPage === 1
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
                           }`}
                         >
                           <span className="hidden sm:inline">Önceki</span>
@@ -465,14 +560,17 @@ function ReservationPage() {
                           {getPageNumbers().map((pageNumber, index) => (
                             <button
                               key={index}
-                              onClick={() => typeof pageNumber === 'number' && handlePageChange(pageNumber)}
-                              disabled={typeof pageNumber !== 'number'}
+                              onClick={() =>
+                                typeof pageNumber === "number" &&
+                                handlePageChange(pageNumber)
+                              }
+                              disabled={typeof pageNumber !== "number"}
                               className={`w-8 h-8 sm:w-10 sm:h-10 rounded-md text-xs sm:text-sm font-medium transition-colors flex items-center justify-center ${
                                 pageNumber === currentPage
-                                  ? 'bg-[rgb(0,128,0)] text-white shadow-md'
-                                  : typeof pageNumber === 'number'
-                                  ? 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
-                                  : 'bg-transparent text-gray-400 cursor-default'
+                                  ? "bg-[rgb(0,128,0)] text-white shadow-md"
+                                  : typeof pageNumber === "number"
+                                  ? "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400"
+                                  : "bg-transparent text-gray-400 cursor-default"
                               }`}
                             >
                               {pageNumber}
@@ -486,20 +584,21 @@ function ReservationPage() {
                           disabled={currentPage === totalPages}
                           className={`px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                             currentPage === totalPages
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
                           }`}
                         >
                           <span className="hidden sm:inline">Sonraki</span>
                           <span className="sm:hidden">›</span>
                         </button>
                       </nav>
-                      </div>
+                    </div>
 
                     {/* Desktop Pagination Info */}
                     <div className="hidden sm:block text-center mt-4">
                       <p className="text-sm text-gray-600">
-                        Gösterilen: {indexOfFirstPitch + 1}-{Math.min(indexOfLastPitch, filteredPitches.length)} / {filteredPitches.length} saha
+                        Gösterilen: {indexOfFirstPitch}-{indexOfLastPitch} /{" "}
+                        {totalCount} saha
                       </p>
                     </div>
                   </div>
