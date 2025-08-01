@@ -9,13 +9,15 @@ import PitchFeaturesSection from "../components/pitch-detail/PitchFeaturesSectio
 import PitchReviewsSection from "../components/pitch-detail/PitchReviewsSection";
 import PitchReservationCard from "../components/pitch-detail/PitchReservationCard";
 import PitchLocationMapSection from "../components/pitch-detail/PitchLocationMapSection";
+import PitchVideosSection from "../components/pitch-detail/PitchVideosSection";
+import PitchCommentForm from "../components/pitch-detail/PitchCommentForm";
 import dummyData from "../../dummydata.json";
 
 function PitchDetailPage() {
   const { pitchId } = useParams();
   const navigate = useNavigate();
   const [pitch, setPitch] = useState(null);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState("");
   const [loading, setLoading] = useState(true);
   const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
@@ -118,6 +120,28 @@ function PitchDetailPage() {
         lat: item.location?.coordinates?.[1] || 41.0082,
         lng: item.location?.coordinates?.[0] || 28.9784,
       },
+      dimensions: {
+        length: item.specifications?.dimensions?.length || 30,
+        width: item.specifications?.dimensions?.width || 50,
+      },
+      // Mock video data - gerçek projede item.media?.videos'dan gelecek
+      hasVideos: true, // Test için her saha video'lu
+      videos: [
+        {
+          id: 1,
+          url: "https://www.w3schools.com/html/mov_bbb.mp4",
+          thumbnail: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+          title: `${item.name} - Tanıtım Videosu`,
+          duration: "2:30"
+        },
+        {
+          id: 2,
+          url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+          thumbnail: "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=300&fit=crop",
+          title: `${item.name} - Saha Özellikleri`,
+          duration: "1:45"
+        }
+      ]
     };
   };
 
@@ -230,6 +254,14 @@ function PitchDetailPage() {
     setShowMaintenancePopup(false);
   };
 
+  const handleCommentSubmit = (newComment) => {
+    // Add comment to pitch reviews (in a real app, this would be sent to backend)
+    console.log('New comment submitted:', newComment);
+    
+    // You could update the local state here if needed
+    // For now, just log it since the PitchReviewsSection uses static data
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -269,10 +301,10 @@ function PitchDetailPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* First Row: Reservation + Features */}
+        {/* First & Second Row: Reservation (spans 2 rows) + Features + Location */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Left: Reservation */}
-          <div>
+          {/* Left: Reservation (spans 2 rows) */}
+          <div className="lg:row-span-2">
             <PitchReservationCard
               pitch={pitch}
               selectedDate={selectedDate}
@@ -283,28 +315,55 @@ function PitchDetailPage() {
             />
           </div>
 
-          {/* Right: Features */}
+          {/* Right Top: Features */}
           <div>
             <PitchFeaturesSection pitch={pitch} />
           </div>
-        </div>
 
-        {/* Second Row: Reviews + Location Map */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Left: Reviews */}
-          <div>
-            <PitchReviewsSection pitch={pitch} renderStars={renderStars} />
-          </div>
-
-          {/* Right: Location Map */}
+          {/* Right Bottom: Location */}
           <div>
             <PitchLocationMapSection pitch={pitch} />
           </div>
         </div>
 
-        {/* Third Row: About Section (Full Width) */}
-        <div className="w-full">
-          <PitchAboutSection pitch={pitch} />
+        {/* Third Row: About + Videos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Left: About */}
+          <div>
+            <PitchAboutSection pitch={pitch} />
+          </div>
+
+          {/* Right: Videos */}
+          <div>
+            {pitch.hasVideos && pitch.videos?.length > 0 ? (
+              <PitchVideosSection pitch={pitch} />
+            ) : (
+              <div className="bg-white rounded-lg shadow-sm p-6 h-full flex items-center justify-center">
+                <div className="text-center text-gray-500">
+                  <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-sm">Video bulunmuyor</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Fourth Row: Reviews Section + Comment Form */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left: Reviews Section */}
+          <div>
+            <PitchReviewsSection pitch={pitch} renderStars={renderStars} />
+          </div>
+
+          {/* Right: Comment Form */}
+          <div>
+            <PitchCommentForm 
+              pitch={pitch} 
+              onCommentSubmit={handleCommentSubmit}
+            />
+          </div>
         </div>
       </div>
 

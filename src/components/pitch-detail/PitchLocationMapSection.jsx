@@ -24,8 +24,8 @@ function PitchLocationMapSection({ pitch }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Konum</h2>
+    <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
+      <h2 className="text-2xl font-bold text-center mb-4" style={{ color: 'rgb(0, 128, 0)' }}>Konum</h2>
       
       {/* Address Info */}
       <div className="mb-4">
@@ -37,16 +37,10 @@ function PitchLocationMapSection({ pitch }) {
           />
           <p className="text-gray-700 font-medium">{pitch.fullAddress}</p>
         </div>
-        <p className="text-gray-600 text-sm ml-7">
-          {pitch.location}
-        </p>
-        <p className="text-gray-500 text-xs ml-7 mt-1">
-          {coordinates.lat.toFixed(4)}, {coordinates.lng.toFixed(4)}
-        </p>
       </div>
 
       {/* Interactive Map */}
-      <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
+      <div className="w-full flex-grow bg-gray-100 rounded-lg overflow-hidden border border-gray-300 min-h-[200px]">
         <iframe
           src={getOpenStreetMapUrl()}
           width="100%"
@@ -60,7 +54,7 @@ function PitchLocationMapSection({ pitch }) {
       </div>
 
       {/* Map Actions */}
-      <div className="mt-4 flex gap-2">
+      <div className="mt-auto pt-4 flex gap-2">
         <a
           href={`https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}`}
           target="_blank"
@@ -73,25 +67,12 @@ function PitchLocationMapSection({ pitch }) {
           href={`https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-3 rounded-md text-center transition-colors"
+          className="flex-1 bg-[rgb(0,128,0)] hover:bg-[rgb(0,100,0)] text-white text-sm font-medium py-2 px-3 rounded-md text-center transition-colors"
         >
           Yol Tarifi Al
         </a>
       </div>
 
-      {/* Distance Info */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500">Merkeze Uzaklık</p>
-            <p className="font-medium text-gray-900">~2.5 km</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Ulaşım</p>
-            <p className="font-medium text-gray-900">Metro, Otobüs</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
