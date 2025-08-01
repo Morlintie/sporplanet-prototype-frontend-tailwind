@@ -50,14 +50,62 @@
     "media": {
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=250&fit=crop",
-          "caption": "Saha görüntüsü",
+          "url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop",
+          "caption": "Saha genel görünümü",
           "public_id": "a521e120-c9ba-4293-b396-68923ef1218a",
           "isPrimary": true,
           "size": 3402
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+          "caption": "Saha detay görüntüsü",
+          "public_id": "b521e120-c9ba-4293-b396-68923ef1218b",
+          "isPrimary": false,
+          "size": 2890
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop",
+          "caption": "Tribün görünümü",
+          "public_id": "c521e120-c9ba-4293-b396-68923ef1218c",
+          "isPrimary": false,
+          "size": 3150
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+          "caption": "Gece aydınlatması",
+          "public_id": "d521e120-c9ba-4293-b396-68923ef1218d",
+          "isPrimary": false,
+          "size": 2750
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop",
+          "caption": "Soyunma odaları",
+          "public_id": "e521e120-c9ba-4293-b396-68923ef1218e",
+          "isPrimary": false,
+          "size": 3200
         }
       ],
-      "videos": []
+      "videos": [
+        {
+          "id": 1,
+          "url": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "thumbnail": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+          "title": "Sezgin A.Ş. Sahası - Tanıtım Videosu",
+          "duration": "2:30"
+        },
+        {
+          "id": 2,
+          "url": "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+          "thumbnail": "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=300&fit=crop",
+          "title": "Sezgin A.Ş. Sahası - Saha Özellikleri",
+          "duration": "1:45"
+        }
+      ]
     },
     "contact": {
       "phone": "0543584378",
@@ -72,6 +120,40 @@
     "rating": {
       "averageRating": 2.4,
       "totalReviews": 92
+    },
+    "reviews": [
+      {
+        "id": 1,
+        "userName": "Ahmet Yılmaz",
+        "rating": 4.8,
+        "comment": "Harika bir saha, temiz ve bakımlı. Kesinlikle tavsiye ederim.",
+        "avatar": "A",
+        "date": "2024-01-15",
+        "verified": true
+      },
+      {
+        "id": 2,
+        "userName": "Mehmet Kaya", 
+        "rating": 4.5,
+        "comment": "Çok güzel bir saha, aydınlatması da çok iyi. Tekrar geleceğim.",
+        "avatar": "M",
+        "date": "2024-01-12",
+        "verified": false
+      },
+      {
+        "id": 3,
+        "userName": "Fatma Demir",
+        "rating": 5.0,
+        "comment": "Mükemmel! Soyunma odaları temiz, duşlar sıcak. Çok memnun kaldık.",
+        "avatar": "F", 
+        "date": "2024-01-10",
+        "verified": true
+      }
+    ],
+    "availability": {
+      "unavailableSlots": ["06-07", "07-08"],
+      "bookedSlots": ["09-10", "14-15"],
+      "maintenanceSlots": []
     },
     "refundAllowed": true,
     "status": "maintenance",
@@ -144,18 +226,28 @@
     "media": {
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
-          "caption": "Saha görüntüsü",
-          "public_id": "3290d96d-2793-439a-808b-65ee95ba0616",
-          "isPrimary": false,
-          "size": 992
-        },
-        {
-          "url": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=250&fit=crop",
-          "caption": "Saha görüntüsü",
+          "url": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=300&fit=crop",
+          "caption": "Aselsan Sahası genel görünümü",
           "public_id": "3290d96d-2793-439a-808b-65ee95ba0616",
           "isPrimary": true,
           "size": 992
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop",
+          "caption": "Saha detay görüntüsü",
+          "public_id": "4290d96d-2793-439a-808b-65ee95ba0617",
+          "isPrimary": false,
+          "size": 1250
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=800&h=500&fit=crop",
+          "thumbnail": "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=300&fit=crop",
+          "caption": "Teknik alan görünümü",
+          "public_id": "5290d96d-2793-439a-808b-65ee95ba0618",
+          "isPrimary": false,
+          "size": 1180
         }
       ],
       "videos": []

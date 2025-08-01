@@ -1,32 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 
 function PitchHeroSection({ pitch, renderStars }) {
-  // Mock media for carousel - gerçek projede pitch.media'dan gelecek
-  const mediaItems = [
+  // Get media items from pitch data
+  const mediaItems = pitch?.images?.map(img => ({
+    type: 'image',
+    url: img.url,
+    thumbnail: img.thumbnail || img.url,
+    caption: img.caption
+  })) || [
     {
       type: 'image',
-      url: pitch.image || "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&h=500&fit=crop",
-      thumbnail: pitch.image || "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop"
-    },
-    {
-      type: 'image',
-      url: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=500&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop"
-    },
-    {
-      type: 'image',
-      url: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=500&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop"
-    },
-    {
-      type: 'image',
-      url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=500&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop"
-    },
-    {
-      type: 'image',
-      url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&h=500&fit=crop",
-      thumbnail: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop"
+      url: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&h=500&fit=crop",
+      thumbnail: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop",
+      caption: "Saha görüntüsü"
     }
   ];
 

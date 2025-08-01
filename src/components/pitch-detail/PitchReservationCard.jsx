@@ -142,12 +142,15 @@ function PitchReservationCard({
   const isTimeSlotAvailable = (timeSlot) => {
     if (!selectedDate) return false;
     
-    // Demo amaçlı bazı saatleri rezervasyona uygun yap
-    // Gerçek uygulamada bu veri backend'den gelecek
-    const unavailableSlots = ['06-07', '07-08'];
-    const bookedSlots = ['09-10', '14-15']; // Önceden rezerve edilmiş saatler
+    // Get availability data from pitch
+    const availability = pitch?.availability || {};
+    const unavailableSlots = availability.unavailableSlots || ['06-07', '07-08'];
+    const bookedSlots = availability.bookedSlots || ['09-10', '14-15'];
+    const maintenanceSlots = availability.maintenanceSlots || [];
     
-    return !unavailableSlots.includes(timeSlot) && !bookedSlots.includes(timeSlot);
+    return !unavailableSlots.includes(timeSlot) && 
+           !bookedSlots.includes(timeSlot) && 
+           !maintenanceSlots.includes(timeSlot);
   };
 
   return (

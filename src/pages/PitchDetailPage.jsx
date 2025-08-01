@@ -60,29 +60,7 @@ function PitchDetailPage() {
       features.push(surfaceTypeMap[item.specifications.surfaceType]);
     }
 
-    // Generate available hours (mock data)
-    const generateAvailableHours = () => {
-      const allHours = [
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-        "18:00",
-        "19:00",
-        "20:00",
-      ];
-      const randomCount = Math.floor(Math.random() * 6) + 4; // 4-9 hours
-      return allHours
-        .sort(() => 0.5 - Math.random())
-        .slice(0, randomCount)
-        .sort();
-    };
+
 
     return {
       id: item.company,
@@ -110,11 +88,11 @@ function PitchDetailPage() {
         item.media?.images?.find((img) => img.isPrimary)?.url ||
         item.media?.images?.[0]?.url ||
         "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=250&fit=crop",
+      images: item.media?.images || [],
       features,
       facilities: item.facilities || {},
       status: item.status || "active",
       refundAllowed: item.refundAllowed || false,
-      availableHours: generateAvailableHours(),
       contact: item.contact || {},
       coordinates: {
         lat: item.location?.coordinates?.[1] || 41.0082,
@@ -124,24 +102,17 @@ function PitchDetailPage() {
         length: item.specifications?.dimensions?.length || 30,
         width: item.specifications?.dimensions?.width || 50,
       },
-      // Mock video data - gerçek projede item.media?.videos'dan gelecek
-      hasVideos: true, // Test için her saha video'lu
-      videos: [
-        {
-          id: 1,
-          url: "https://www.w3schools.com/html/mov_bbb.mp4",
-          thumbnail: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
-          title: `${item.name} - Tanıtım Videosu`,
-          duration: "2:30"
-        },
-        {
-          id: 2,
-          url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-          thumbnail: "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=300&fit=crop",
-          title: `${item.name} - Saha Özellikleri`,
-          duration: "1:45"
-        }
-      ]
+      // Video data from media
+      hasVideos: item.media?.videos?.length > 0,
+      videos: item.media?.videos || [],
+      // Reviews data
+      reviews: item.reviews || [],
+      // Availability data
+      availability: item.availability || {
+        unavailableSlots: ['06-07', '07-08'],
+        bookedSlots: ['09-10', '14-15'],
+        maintenanceSlots: []
+      }
     };
   };
 
@@ -255,11 +226,11 @@ function PitchDetailPage() {
   };
 
   const handleCommentSubmit = (newComment) => {
-    // Add comment to pitch reviews (in a real app, this would be sent to backend)
+    // Handle new comment submission (in real app, this would be sent to backend)
     console.log('New comment submitted:', newComment);
     
-    // You could update the local state here if needed
-    // For now, just log it since the PitchReviewsSection uses static data
+    // In a real app, you would update the pitch reviews state or refetch data
+    // For now, the comment is logged and would need backend integration
   };
 
   if (loading) {
