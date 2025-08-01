@@ -17,7 +17,8 @@ function PitchDetailPage() {
   const { pitchId } = useParams();
   const navigate = useNavigate();
   const [pitch, setPitch] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  // Hiçbir tarih otomatik seçili olmasın, kullanıcı manuel seçsin
+  const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [loading, setLoading] = useState(true);
   const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
@@ -204,11 +205,24 @@ function PitchDetailPage() {
     return stars;
   };
 
+  // Tarihi görüntüleme formatına çevir (YYYY-MM-DD -> DD.MM.YYYY)
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const [year, month, day] = dateString.split('-');
+      return `${day}.${month}.${year}`;
+    } catch {
+      return dateString;
+    }
+  };
+
   const handleReservation = () => {
     if (!selectedDate || !selectedTime) {
       alert("Lütfen tarih ve saat seçiniz.");
       return;
     }
+
+    const formattedDate = formatDateForDisplay(selectedDate);
 
     if (pitch?.status === "maintenance") {
       alert(
@@ -216,7 +230,7 @@ function PitchDetailPage() {
       );
     } else {
       alert(
-        `Rezervasyon Onaylandı!\n\nSaha: ${pitch?.name}\nTarih: ${selectedDate}\nSaat: ${selectedTime}\nFiyat: ₺${pitch?.price}`
+        `Rezervasyon Onaylandı!\n\nSaha: ${pitch?.name}\nTarih: ${formattedDate}\nSaat: ${selectedTime}\nFiyat: ₺${pitch?.price}`
       );
     }
   };

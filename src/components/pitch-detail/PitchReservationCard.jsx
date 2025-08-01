@@ -11,12 +11,17 @@ function PitchReservationCard({
 }) {
   const navigate = useNavigate();
   const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarMonth, setCalendarMonth] = useState(new Date());
+  // Bugünün tarihi ile başlat, saat 12:00'da ayarla (timezone sorunlarını önle)
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0);
+  });
 
   // Tarihi görüntüleme formatına çevir (YYYY-MM-DD -> DD.MM.YYYY)
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return '';
     try {
+      // String'i doğrudan bölerek timezone sorunlarını önle
       const [year, month, day] = dateString.split('-');
       return `${day}.${month}.${year}`;
     } catch {
@@ -32,6 +37,20 @@ function PitchReservationCard({
   // Türkçe gün isimleri (kısaltılmış)
   const getTurkishDayNames = () => {
     return ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
+  };
+
+  // Local date formatını kullan (timezone sorunlarını önler)
+  const formatDateToISO = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Bugünün tarihini güvenli şekilde al
+  const getTodayISO = () => {
+    const today = new Date();
+    return formatDateToISO(new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0));
   };
 
   // Ayın günlerini oluştur
@@ -53,11 +72,12 @@ function PitchReservationCard({
     const prevMonth = new Date(year, month - 1, 0);
     for (let i = adjustedStartDay - 1; i >= 0; i--) {
       const day = prevMonth.getDate() - i;
+      const date = new Date(year, month - 1, day);
       days.push({
         day,
         isCurrentMonth: false,
-        date: new Date(year, month - 1, day),
-        dateString: new Date(year, month - 1, day).toISOString().split('T')[0]
+        date,
+        dateString: formatDateToISO(date)
       });
     }
     
@@ -68,7 +88,7 @@ function PitchReservationCard({
         day,
         isCurrentMonth: true,
         date,
-        dateString: date.toISOString().split('T')[0]
+        dateString: formatDateToISO(date)
       });
     }
     
@@ -80,7 +100,7 @@ function PitchReservationCard({
         day,
         isCurrentMonth: false,
         date,
-        dateString: date.toISOString().split('T')[0]
+        dateString: formatDateToISO(date)
       });
     }
     
@@ -240,10 +260,12 @@ function PitchReservationCard({
               {/* Calendar Days */}
               <div className="grid grid-cols-7 gap-1">
                 {generateCalendarDays().map((dayObj, index) => {
-                  const isToday = dayObj.dateString === new Date().toISOString().split('T')[0];
+                  const today = getTodayISO();
+                  const isToday = dayObj.dateString === today;
                   const isSelected = dayObj.dateString === selectedDate;
-                  const isPast = dayObj.date < new Date().setHours(0, 0, 0, 0);
-                  const isDisabled = isPast && dayObj.isCurrentMonth;
+                  // Geçmiş tarihleri kontrol et (bugünden önceki tüm tarihler)
+                  const isPast = dayObj.dateString < today;
+                  const isDisabled = isPast;
 
                   return (
                     <button
@@ -275,7 +297,7 @@ function PitchReservationCard({
               <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between">
                 <button
                   onClick={() => {
-                    const today = new Date().toISOString().split('T')[0];
+                    const today = getTodayISO();
                     handleDateSelect(today);
                   }}
                   className="text-sm text-[rgb(0,128,0)] hover:text-[rgb(0,100,0)] font-medium"
