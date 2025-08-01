@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import dummyData from "../../../dummydata.json";
+import {
+  getCities,
+  getDistricts,
+  capacityOptions,
+} from "../../utils/turkeyLocationData";
 
 function ReservationFilters({
   selectedCity,
@@ -23,72 +27,24 @@ function ReservationFilters({
   onSearch,
   onClearFilters,
 }) {
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState({});
-  const [capacityOptions, setCapacityOptions] = useState([]);
+  const [cities] = useState(getCities());
 
-  // Extract unique cities, districts and capacities from dummy data
+  // Get districts for selected city
+  const getAvailableDistricts = () => {
+    return selectedCity ? getDistricts(selectedCity) : [];
+  };
+
+  // Reset district when city changes
   useEffect(() => {
-    try {
-      // Filter out inactive pitches first
-      const activePitches = dummyData.filter(item => item.status !== 'inactive');
-      console.log(`Processing filters from ${activePitches.length} active pitches (${dummyData.length - activePitches.length} inactive excluded)`);
-      
-      // Extract cities
-      const uniqueCities = [...new Set(activePitches.map(item => item.location?.address?.city).filter(Boolean))];
-      console.log(`Found ${uniqueCities.length} unique cities:`, uniqueCities);
-      setCities(uniqueCities.sort());
-
-      // Extract districts grouped by city
-      const districtsMap = {};
-      activePitches.forEach(item => {
-        const city = item.location?.address?.city;
-        const district = item.location?.address?.district;
-        if (city && district) {
-          if (!districtsMap[city]) {
-            districtsMap[city] = new Set();
-          }
-          districtsMap[city].add(district);
-        }
-      });
-
-      // Convert sets to arrays and sort
-      const districtsObj = {};
-      Object.keys(districtsMap).forEach(city => {
-        districtsObj[city] = [...districtsMap[city]].sort();
-      });
-      setDistricts(districtsObj);
-
-      // Generate capacity options from 5v5 to 11v11
-      const capacityOpts = [
-        { value: "", label: "Tüm Kapasiteler" },
-        { value: "10 oyuncu", label: "5v5 (10 oyuncu)" },
-        { value: "12 oyuncu", label: "6v6 (12 oyuncu)" },
-        { value: "14 oyuncu", label: "7v7 (14 oyuncu)" },
-        { value: "16 oyuncu", label: "8v8 (16 oyuncu)" },
-        { value: "18 oyuncu", label: "9v9 (18 oyuncu)" },
-        { value: "20 oyuncu", label: "10v10 (20 oyuncu)" },
-        { value: "22 oyuncu", label: "11v11 (22 oyuncu)" }
-      ];
-      setCapacityOptions(capacityOpts);
-
-    } catch (error) {
-      console.error("Error processing dummy data for filters:", error);
-      // Fallback values
-      setCities([]);
-      setDistricts({});
-      setCapacityOptions([
-        { value: "", label: "Tüm Kapasiteler" },
-        { value: "10 oyuncu", label: "5v5 (10 oyuncu)" },
-        { value: "12 oyuncu", label: "6v6 (12 oyuncu)" },
-        { value: "14 oyuncu", label: "7v7 (14 oyuncu)" },
-        { value: "16 oyuncu", label: "8v8 (16 oyuncu)" },
-        { value: "18 oyuncu", label: "9v9 (18 oyuncu)" },
-        { value: "20 oyuncu", label: "10v10 (20 oyuncu)" },
-        { value: "22 oyuncu", label: "11v11 (22 oyuncu)" }
-      ]);
+    if (selectedCity) {
+      const availableDistricts = getDistricts(selectedCity);
+      if (!availableDistricts.includes(selectedDistrict)) {
+        setSelectedDistrict("");
+      }
+    } else {
+      setSelectedDistrict("");
     }
-  }, []);
+  }, [selectedCity, selectedDistrict, setSelectedDistrict]);
 
   // Checkbox handlers
   const handlePitchTypeChange = (type) => {
@@ -165,12 +121,11 @@ function ReservationFilters({
             <option value="">
               {selectedCity ? "İlçe Seçin" : "Önce İl Seçin"}
             </option>
-            {selectedCity &&
-              districts[selectedCity]?.map((district) => (
-                <option key={district} value={district}>
-                  {district}
-                </option>
-              ))}
+            {getAvailableDistricts().map((district) => (
+              <option key={district} value={district}>
+                {district}
+              </option>
+            ))}
           </select>
         </div>
 
