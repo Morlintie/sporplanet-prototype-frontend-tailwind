@@ -99,7 +99,7 @@ function ReservationPage() {
     };
 
     return {
-      id: item.company,
+      id: item._id || item.company, // Use _id from backend, fallback to company for compatibility
       name: item.name || "İsimsiz Saha",
       description: item.description || "",
       location,
@@ -590,20 +590,8 @@ function ReservationPage() {
   };
 
   const handleReservation = (pitchId) => {
-    // Find the pitch to check its status
-    const pitch = currentPitches.find((p) => p.id === pitchId);
-
-    if (pitch?.status === "maintenance") {
-      // For maintenance pitches, show contact info
-      alert(
-        `İletişim Bilgileri:\n\nTelefon: +90 212 555 0123\nE-posta: info@sporplanet.com\n\nBu saha yakında rezervasyona açılacaktır. Detaylı bilgi için bizimle iletişime geçin.`
-      );
-      console.log(`İletişim talebi: Saha ${pitchId} (Bakımda)`);
-    } else {
-      // Normal reservation logic
-      console.log(`Rezervasyon yapıldı: Saha ${pitchId}`);
-      alert(`Rezervasyon başarılı! Saha ID: ${pitchId}`);
-    }
+    // Navigate to pitch detail page for all pitches
+    navigate(`/pitch-detail/${pitchId}`);
   };
 
   const handleSearch = (currentSearchTerm = null) => {
@@ -797,7 +785,7 @@ function ReservationPage() {
         setSelectedShoeRental={setSelectedShoeRental}
         selectedRating={selectedRating}
         setSelectedRating={setSelectedRating}
-        onSearch={handleSearch}
+        onSearch={applyFilters}
         onClearFilters={clearAllFilters}
       />
 
@@ -1017,7 +1005,7 @@ function ReservationPage() {
               setSelectedShoeRental={setSelectedShoeRental}
               selectedRating={selectedRating}
               setSelectedRating={setSelectedRating}
-              onSearch={handleSearch}
+              onSearch={applyFilters}
               onClearFilters={clearAllFilters}
             />
           </div>

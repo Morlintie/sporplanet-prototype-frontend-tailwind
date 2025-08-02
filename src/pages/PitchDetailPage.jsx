@@ -11,7 +11,6 @@ import PitchReservationCard from "../components/pitch-detail/PitchReservationCar
 import PitchLocationMapSection from "../components/pitch-detail/PitchLocationMapSection";
 import PitchVideosSection from "../components/pitch-detail/PitchVideosSection";
 import PitchCommentForm from "../components/pitch-detail/PitchCommentForm";
-import dummyData from "../../dummydata.json";
 
 function PitchDetailPage() {
   const { pitchId } = useParams();
@@ -22,9 +21,20 @@ function PitchDetailPage() {
   const [selectedTime, setSelectedTime] = useState("");
   const [loading, setLoading] = useState(true);
   const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
+  const [error, setError] = useState("");
 
-  // Transform dummy data to pitch format (same as ReservationPage)
-  const transformDummyDataToPitch = (item) => {
+  // Reviews states
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsError, setReviewsError] = useState("");
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [currentReviewsCount, setCurrentReviewsCount] = useState(0);
+  const [reviewsLimit, setReviewsLimit] = useState(5);
+  const [canLoadMoreReviews, setCanLoadMoreReviews] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Transform backend data to pitch format
+  const transformBackendDataToPitch = (item) => {
     const address = item.location?.address;
     const location = address
       ? `${address.district}, ${address.city}`
@@ -61,10 +71,8 @@ function PitchDetailPage() {
       features.push(surfaceTypeMap[item.specifications.surfaceType]);
     }
 
-
-
     return {
-      id: item.company,
+      id: item._id || item.company, // Use _id from backend, fallback to company for compatibility
       name: item.name || "İsimsiz Saha",
       description: item.description || "",
       location,
@@ -106,29 +114,81 @@ function PitchDetailPage() {
       // Video data from media
       hasVideos: item.media?.videos?.length > 0,
       videos: item.media?.videos || [],
-      // Reviews data
-      reviews: item.reviews || [],
       // Availability data
       availability: item.availability || {
-        unavailableSlots: ['06-07', '07-08'],
-        bookedSlots: ['09-10', '14-15'],
-        maintenanceSlots: []
-      }
+        unavailableSlots: ["06-07", "07-08"],
+        bookedSlots: ["09-10", "14-15"],
+        maintenanceSlots: [],
+      },
     };
   };
 
-  useEffect(() => {
+  // Error message translation function
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages
+      "You have been banned, please get contact with our customer service.":
+        "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "No pitch found.": "Saha bulunamadı. Aradığınız saha mevcut değil.",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
+
+  // Fetch pitch data from backend
+  const fetchPitchData = async () => {
+    setLoading(true);
+    setError("");
+
     try {
-      // Filter out inactive pitches
-      const activePitches = dummyData.filter(
-        (item) => item.status !== "inactive"
-      );
+      const response = await fetch(`/api/v1/pitch/${pitchId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      // Find the pitch by ID (company field is used as ID)
-      const foundPitch = activePitches.find((item) => item.company === pitchId);
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
 
-      if (foundPitch) {
-        const transformedPitch = transformDummyDataToPitch(foundPitch);
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 404) {
+            errorMessage = "No pitch found.";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Pitch data başarıyla alındı:", data);
+
+      if (data.pitch) {
+        const transformedPitch = transformBackendDataToPitch(data.pitch);
         setPitch(transformedPitch);
 
         // Show maintenance popup if pitch is under maintenance
@@ -136,16 +196,86 @@ function PitchDetailPage() {
           setShowMaintenancePopup(true);
         }
       } else {
-        // Pitch not found, redirect to reservation page
-        navigate("/reservation");
+        throw new Error("No pitch found.");
       }
     } catch (error) {
-      console.error("Error loading pitch details:", error);
-      navigate("/reservation");
+      console.error("Error fetching pitch data:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        setError(translateMessage("Failed to fetch"));
+      } else {
+        const translatedError = translateMessage(error.message);
+        setError(translatedError);
+      }
+
+      // Redirect to reservation page if pitch not found
+      if (error.message.includes("No pitch found")) {
+        navigate("/reservation");
+      }
     } finally {
       setLoading(false);
     }
-  }, [pitchId, navigate]);
+  };
+
+  // Fetch pitch reviews
+  const fetchPitchReviews = async (page = 1) => {
+    if (!pitchId) return;
+
+    try {
+      setReviewsLoading(true);
+      setReviewsError("");
+
+      const url = `/api/v1/pitch/singlePitchReviews/${pitchId}?page=${page}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(errorData || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setReviews(data.pitchReviews || []);
+      setTotalReviews(data.totalReviews || 0);
+      setCurrentReviewsCount(data.countReviews || 0);
+      setReviewsLimit(data.limitReviews || 5);
+      setCurrentPage(page);
+
+      // Check if we can load more reviews
+      setCanLoadMoreReviews(data.countReviews < data.totalReviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      setReviewsError(translateMessage(error.message));
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  // Load more reviews
+  const loadMoreReviews = () => {
+    if (canLoadMoreReviews && !reviewsLoading) {
+      fetchPitchReviews(currentPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    fetchPitchData();
+  }, [pitchId]);
+
+  // Fetch reviews when pitch data is loaded
+  useEffect(() => {
+    if (pitchId && !loading) {
+      fetchPitchReviews(1);
+    }
+  }, [pitchId, loading]);
 
   // Render stars for rating
   const renderStars = (rating) => {
@@ -207,9 +337,9 @@ function PitchDetailPage() {
 
   // Tarihi görüntüleme formatına çevir (YYYY-MM-DD -> DD.MM.YYYY)
   const formatDateForDisplay = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return "";
     try {
-      const [year, month, day] = dateString.split('-');
+      const [year, month, day] = dateString.split("-");
       return `${day}.${month}.${year}`;
     } catch {
       return dateString;
@@ -240,11 +370,8 @@ function PitchDetailPage() {
   };
 
   const handleCommentSubmit = (newComment) => {
-    // Handle new comment submission (in real app, this would be sent to backend)
-    console.log('New comment submitted:', newComment);
-    
-    // In a real app, you would update the pitch reviews state or refetch data
-    // For now, the comment is logged and would need backend integration
+    // TODO: Implement comment submission when reviews are ready
+    console.log("Comment submission not implemented yet:", newComment);
   };
 
   if (loading) {
@@ -253,6 +380,44 @@ function PitchDetailPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Saha bilgileri yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 mb-4">
+            <svg
+              className="w-16 h-16 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Hata Oluştu</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => fetchPitchData()}
+            className="bg-[rgb(0,128,0)] text-white px-6 py-3 rounded-md hover:bg-[rgb(0,100,0)] transition-colors mr-4"
+          >
+            Tekrar Dene
+          </button>
+          <button
+            onClick={() => navigate("/reservation")}
+            className="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors"
+          >
+            Sahalara Dön
+          </button>
         </div>
       </div>
     );
@@ -325,8 +490,18 @@ function PitchDetailPage() {
             ) : (
               <div className="bg-white rounded-lg shadow-sm p-6 h-full flex items-center justify-center">
                 <div className="text-center text-gray-500">
-                  <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  <svg
+                    className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
                   </svg>
                   <p className="text-sm">Video bulunmuyor</p>
                 </div>
@@ -339,13 +514,23 @@ function PitchDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: Reviews Section */}
           <div>
-            <PitchReviewsSection pitch={pitch} renderStars={renderStars} />
+            <PitchReviewsSection
+              pitch={pitch}
+              renderStars={renderStars}
+              reviews={reviews}
+              reviewsLoading={reviewsLoading}
+              reviewsError={reviewsError}
+              totalReviews={totalReviews}
+              currentReviewsCount={currentReviewsCount}
+              canLoadMoreReviews={canLoadMoreReviews}
+              onLoadMoreReviews={loadMoreReviews}
+            />
           </div>
 
           {/* Right: Comment Form */}
           <div>
-            <PitchCommentForm 
-              pitch={pitch} 
+            <PitchCommentForm
+              pitch={pitch}
               onCommentSubmit={handleCommentSubmit}
             />
           </div>
