@@ -238,7 +238,7 @@ function MobileFilters({
                         type="checkbox"
                         checked={selectedPitchTypes.includes("indoor")}
                         onChange={() => handlePitchTypeChange("indoor")}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="w-4 h-4 accent-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                       />
                       <span className="ml-2 text-sm text-gray-700">Kapalı</span>
                     </label>
@@ -247,7 +247,7 @@ function MobileFilters({
                         type="checkbox"
                         checked={selectedPitchTypes.includes("outdoor")}
                         onChange={() => handlePitchTypeChange("outdoor")}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="w-4 h-4 accent-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                       />
                       <span className="ml-2 text-sm text-gray-700">Açık</span>
                     </label>
@@ -265,7 +265,7 @@ function MobileFilters({
                         type="checkbox"
                         checked={selectedCameraSystems.includes("yes")}
                         onChange={() => handleCameraSystemChange("yes")}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="w-4 h-4 accent-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                       />
                       <span className="ml-2 text-sm text-gray-700">Var</span>
                     </label>
@@ -274,7 +274,7 @@ function MobileFilters({
                         type="checkbox"
                         checked={selectedCameraSystems.includes("no")}
                         onChange={() => handleCameraSystemChange("no")}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="w-4 h-4 accent-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                       />
                       <span className="ml-2 text-sm text-gray-700">Yok</span>
                     </label>
@@ -292,7 +292,7 @@ function MobileFilters({
                         type="checkbox"
                         checked={selectedShoeRental.includes("yes")}
                         onChange={() => handleShoeRentalChange("yes")}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="w-4 h-4 accent-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                       />
                       <span className="ml-2 text-sm text-gray-700">Var</span>
                     </label>
@@ -301,7 +301,7 @@ function MobileFilters({
                         type="checkbox"
                         checked={selectedShoeRental.includes("no")}
                         onChange={() => handleShoeRentalChange("no")}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="w-4 h-4 accent-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                       />
                       <span className="ml-2 text-sm text-gray-700">Yok</span>
                     </label>

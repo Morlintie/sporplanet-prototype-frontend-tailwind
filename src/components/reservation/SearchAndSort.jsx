@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 function SearchAndSort({
   onSearch,
   onSort,
@@ -6,6 +8,8 @@ function SearchAndSort({
   searchTerm,
   setSearchTerm,
 }) {
+  const searchTimeoutRef = useRef(null);
+
   const sortOptions = [
     { value: "default", label: "Varsayılan" },
     { value: "price-low", label: "Fiyat (Düşükten Yükseğe)" },
@@ -15,16 +19,27 @@ function SearchAndSort({
   ];
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
     // Trigger search after a short delay to avoid too many calls
-    setTimeout(() => {
-      onSearch();
+    searchTimeoutRef.current = setTimeout(() => {
+      onSearch(newSearchTerm);
     }, 300);
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      onSearch();
+      // Clear any pending timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      onSearch(searchTerm);
     }
   };
 

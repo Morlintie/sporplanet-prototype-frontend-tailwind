@@ -478,7 +478,7 @@ function ReservationPage() {
       const transformedPitches = data.pitches.map(transformDummyDataToPitch);
 
       setFilteredPitches(transformedPitches);
-      setTotalCount(data.totalCount || 0);
+      setTotalCount(data.pitches.length || 0);
       setBackendLimit(data.limit || 18);
       setCurrentPage(1); // Always page 1 for nearby search (no pagination support)
       setIsNearbySearch(true);
@@ -564,11 +564,11 @@ function ReservationPage() {
 
   // Apply filters function
   // Apply filters - now triggers backend fetch
-  const applyFilters = () => {
+  const applyFilters = (filterOverrides = {}) => {
     // Switch back to regular search when filters are applied
     setIsNearbySearch(false);
     setCurrentCoordinates(null);
-    fetchPitches(1);
+    fetchPitches(1, null, filterOverrides);
   };
 
   // Sort function
@@ -606,7 +606,14 @@ function ReservationPage() {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = (currentSearchTerm = null) => {
+    // If a search term is provided, update the state first
+    if (currentSearchTerm !== null) {
+      setSearchTerm(currentSearchTerm);
+    }
+
+    const activeSearchTerm =
+      currentSearchTerm !== null ? currentSearchTerm : searchTerm;
     console.log("Filtreleme uygulanıyor:", {
       selectedCity,
       selectedDistrict,
@@ -617,9 +624,15 @@ function ReservationPage() {
       selectedCameraSystems,
       selectedShoeRental,
       selectedRating,
-      searchTerm,
+      searchTerm: activeSearchTerm,
     });
-    applyFilters();
+
+    // Switch back to regular search when filters are applied
+    setIsNearbySearch(false);
+    setCurrentCoordinates(null);
+
+    // Call fetchPitches directly with the current search term
+    fetchPitches(1, null, { searchTerm: activeSearchTerm });
   };
 
   const handleSort = (sortValue) => {
@@ -756,7 +769,7 @@ function ReservationPage() {
       </div>
 
       <SearchAndSort
-        onSearch={applyFilters}
+        onSearch={handleSearch}
         onSort={handleSort}
         onNearbySearch={handleNearbySearch}
         sortBy={sortBy}
