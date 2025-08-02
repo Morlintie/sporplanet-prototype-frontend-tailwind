@@ -33,6 +33,12 @@ function PitchDetailPage() {
   const [canLoadMoreReviews, setCanLoadMoreReviews] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Booking states
+  const [bookings, setBookings] = useState([]);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
+  const [bookingsError, setBookingsError] = useState("");
+  const [occupiedSlots, setOccupiedSlots] = useState({}); // Format: { "2025-08-09": ["09:00", "19:00"] }
+
   // Transform backend data to pitch format
   const transformBackendDataToPitch = (item) => {
     const address = item.location?.address;
@@ -136,6 +142,7 @@ function PitchDetailPage() {
         "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
       "Please provide required data.": "Gerekli bilgileri girin.",
       "No pitch found.": "Saha bulunamadı. Aradığınız saha mevcut değil.",
+      "No bookings found.": "Bu saha için rezervasyon bulunamadı.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -266,6 +273,84 @@ function PitchDetailPage() {
     }
   };
 
+  // Fetch pitch bookings
+  const fetchPitchBookings = async () => {
+    if (!pitchId) return;
+
+    try {
+      setBookingsLoading(true);
+      setBookingsError("");
+
+      const response = await fetch(
+        `/api/v1/booking/public/pitch/current/${pitchId}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 404) {
+            errorMessage = "No bookings found.";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Booking data başarıyla alındı:", data);
+
+      // Process booking data and extract occupied slots
+      const processedBookings = data.bookings || [];
+      const occupiedSlotsMap = {};
+
+      processedBookings.forEach((booking) => {
+        if (booking.status === "pending" || booking.status === "confirmed") {
+          const startDate = new Date(booking.start);
+
+          // Format date as YYYY-MM-DD for consistency
+          const dateKey = startDate.toISOString().split("T")[0];
+
+          // Format time as HH:MM
+          const timeSlot = startDate.toTimeString().slice(0, 5);
+
+          if (!occupiedSlotsMap[dateKey]) {
+            occupiedSlotsMap[dateKey] = [];
+          }
+
+          occupiedSlotsMap[dateKey].push(timeSlot);
+        }
+      });
+
+      setBookings(processedBookings);
+      setOccupiedSlots(occupiedSlotsMap);
+
+      console.log("Processed occupied slots:", occupiedSlotsMap);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      setBookingsError(translateMessage(error.message));
+    } finally {
+      setBookingsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchPitchData();
   }, [pitchId]);
@@ -274,6 +359,13 @@ function PitchDetailPage() {
   useEffect(() => {
     if (pitchId && !loading) {
       fetchPitchReviews(1);
+    }
+  }, [pitchId, loading]);
+
+  // Fetch bookings when pitch data is loaded
+  useEffect(() => {
+    if (pitchId && !loading) {
+      fetchPitchBookings();
     }
   }, [pitchId, loading]);
 
@@ -462,6 +554,9 @@ function PitchDetailPage() {
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
               handleReservation={handleReservation}
+              occupiedSlots={occupiedSlots}
+              bookingsLoading={bookingsLoading}
+              bookingsError={bookingsError}
             />
           </div>
 
