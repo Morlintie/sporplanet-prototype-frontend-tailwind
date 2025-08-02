@@ -1,3 +1,6 @@
+import { useState } from "react";
+import "../../styles/review-animations.css";
+
 function PitchReviewsSection({
   pitch,
   renderStars,
@@ -9,46 +12,148 @@ function PitchReviewsSection({
   canLoadMoreReviews,
   onLoadMoreReviews,
 }) {
-  // Helper function to format date
+  // State for managing expanded replies
+  const [expandedReplies, setExpandedReplies] = useState({});
+
+  // State for managing reply forms
+  const [replyForms, setReplyForms] = useState({});
+
+  // State for reply input values
+  const [replyTexts, setReplyTexts] = useState({});
+  // Helper function to format date with more detailed format
   const formatDate = (dateString) => {
     if (!dateString) return "Tarih bilinmiyor";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Geçersiz tarih";
+
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      // Show relative time for recent reviews
+      if (diffDays === 0) {
+        return "Bugün";
+      } else if (diffDays === 1) {
+        return "Dün";
+      } else if (diffDays < 7) {
+        return `${diffDays} gün önce`;
+      } else {
+        return date.toLocaleDateString("tr-TR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+    } catch (error) {
+      return "Tarih bilinmiyor";
+    }
   };
 
   // Helper function to get user initials for avatar fallback
   const getInitials = (name) => {
-    if (!name) return "?";
-    const nameParts = name.split(" ");
+    if (!name || typeof name !== "string") return "?";
+    const cleanName = name.trim();
+    if (!cleanName) return "?";
+
+    const nameParts = cleanName.split(/[\s.]+/); // Split by space or dot
     if (nameParts.length >= 2) {
       return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
     }
-    return name[0]?.toUpperCase() || "?";
+    return cleanName[0]?.toUpperCase() || "?";
   };
 
-  // Filter out deleted reviews (backend should handle this, but just in case)
-  const activeReviews = reviews.filter((review) => !review.isDeleted);
+  // Filter out deleted reviews and handle edge cases
+  const activeReviews = (reviews || []).filter((review) => {
+    return review && !review.isDeleted && review.user;
+  });
 
   // Helper to safely get array length
   const getArrayLength = (arr) => {
     return Array.isArray(arr) ? arr.length : 0;
   };
 
-  // Helper to check if review is archived
-  const isArchived = (review) => {
-    return review.archived === true;
+  // Helper to get display rating
+  const getDisplayRating = (review) => {
+    if (!review) return 0;
+    return typeof review.rating === "number" ? review.rating : 0;
   };
 
-  // Helper to get display rating (archived rating if archived, otherwise normal rating)
-  const getDisplayRating = (review) => {
-    if (isArchived(review) && review.archivedRating) {
-      return review.archivedRating;
-    }
-    return review.rating || 0;
+  // Helper to check if user is verified
+  const isUserVerified = (review) => {
+    return review && review.isVerified === true;
+  };
+
+  // Helper to check if review is edited
+  const isReviewEdited = (review) => {
+    return review && review.isEdited === true;
+  };
+
+  // Helper to safely get likes/dislikes count
+  const getLikesCount = (review) => {
+    return getArrayLength(review?.likes);
+  };
+
+  const getDislikesCount = (review) => {
+    return getArrayLength(review?.dislikes);
+  };
+
+  const getRepliesCount = (review) => {
+    return getArrayLength(review?.replies);
+  };
+
+  // Handlers for interactions
+  const handleLike = (reviewId) => {
+    // TODO: Implement backend API call for liking a review
+    console.log("Like review:", reviewId);
+  };
+
+  const handleDislike = (reviewId) => {
+    // TODO: Implement backend API call for disliking a review
+    console.log("Dislike review:", reviewId);
+  };
+
+  const toggleReplies = (reviewId) => {
+    setExpandedReplies((prev) => ({
+      ...prev,
+      [reviewId]: !prev[reviewId],
+    }));
+  };
+
+  const showReplyForm = (reviewId) => {
+    setReplyForms((prev) => ({
+      ...prev,
+      [reviewId]: true,
+    }));
+  };
+
+  const hideReplyForm = (reviewId) => {
+    setReplyForms((prev) => ({
+      ...prev,
+      [reviewId]: false,
+    }));
+    setReplyTexts((prev) => ({
+      ...prev,
+      [reviewId]: "",
+    }));
+  };
+
+  const handleReplyTextChange = (reviewId, text) => {
+    setReplyTexts((prev) => ({
+      ...prev,
+      [reviewId]: text,
+    }));
+  };
+
+  const handleReplySubmit = (reviewId) => {
+    const replyText = replyTexts[reviewId]?.trim();
+    if (!replyText) return;
+
+    // TODO: Implement backend API call for submitting a reply
+    console.log("Submit reply to review:", reviewId, "Text:", replyText);
+
+    // Hide form and clear text
+    hideReplyForm(reviewId);
   };
 
   return (
@@ -145,45 +250,55 @@ function PitchReviewsSection({
                 <div className="flex-1 min-w-0">
                   {/* User Info & Rating */}
                   <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-900">
-                        {review.user?.name || "Anonim Kullanıcı"}
-                        {review.isVerified === true && (
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center">
+                        <h4 className="text-sm font-medium text-gray-900 truncate">
+                          {review.user?.name || "Anonim Kullanıcı"}
+                        </h4>
+                        {isUserVerified(review) && (
                           <span
-                            className="ml-1 text-blue-500"
-                            title="Doğrulanmış"
+                            className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                            title="Doğrulanmış kullanıcı"
                           >
-                            ✓
+                            <svg
+                              className="w-3 h-3 mr-0.5"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            Doğrulanmış
                           </span>
                         )}
-                        {isArchived(review) && (
-                          <span
-                            className="ml-1 text-orange-500 text-xs"
-                            title="Arşivlenen yorum"
-                          >
-                            📁
-                          </span>
-                        )}
-                      </h4>
-                      <p className="text-xs text-gray-500">
+                      </div>
+                      <p className="text-xs text-gray-500 mt-0.5">
                         {formatDate(review.createdAt)}
-                        {review.isEdited === true && (
-                          <span className="ml-1 text-gray-400">
-                            (düzenlendi)
+                        {isReviewEdited(review) && (
+                          <span className="ml-1 text-gray-400 italic">
+                            • düzenlendi
                           </span>
                         )}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      {renderStars(getDisplayRating(review))}
-                      <span className="ml-1 text-sm text-gray-600">
-                        {getDisplayRating(review).toFixed(1)}
-                        {isArchived(review) &&
-                          review.rating !== review.archivedRating && (
-                            <span className="text-xs text-orange-500 ml-1">
-                              (orijinal: {review.rating.toFixed(1)})
+                        {review.updatedAt &&
+                          review.updatedAt !== review.createdAt && (
+                            <span
+                              className="ml-1 text-gray-400"
+                              title={`Son güncelleme: ${formatDate(
+                                review.updatedAt
+                              )}`}
+                            >
+                              • {formatDate(review.updatedAt)}
                             </span>
                           )}
+                      </p>
+                    </div>
+                    <div className="flex items-center ml-4">
+                      {renderStars(getDisplayRating(review))}
+                      <span className="ml-1 text-sm text-gray-600 font-medium">
+                        {getDisplayRating(review).toFixed(1)}
                       </span>
                     </div>
                   </div>
@@ -200,46 +315,155 @@ function PitchReviewsSection({
                     {review.comment || "Yorum içeriği bulunmuyor."}
                   </p>
 
-                  {/* Archived Review Notice */}
-                  {isArchived(review) && (
-                    <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded text-xs text-orange-700">
-                      <span className="font-medium">📁 Arşivlenen yorum:</span>{" "}
-                      Bu yorum arşivlenmiştir ve puanı güncellenmiş olabilir.
-                    </div>
-                  )}
-
                   {/* Review Photos */}
                   {getArrayLength(review.photos) > 0 && (
-                    <div className="mt-3">
-                      <p className="text-xs text-gray-600 mb-2">
-                        Fotoğraflar ({getArrayLength(review.photos)})
-                      </p>
-                      <div className="flex space-x-2 flex-wrap gap-2">
-                        {review.photos.map((photo, index) => (
-                          <img
-                            key={photo.public_id || index}
-                            src={photo.url}
-                            alt={`Yorum fotoğrafı ${index + 1}`}
-                            className="w-16 h-16 rounded object-cover cursor-pointer hover:opacity-80 transition-opacity border border-gray-200"
-                            onClick={() => {
-                              // TODO: Implement photo lightbox
-                              window.open(photo.url, "_blank");
-                            }}
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                            }}
+                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center mb-3">
+                        <svg
+                          className="w-4 h-4 text-gray-600 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
-                        ))}
+                        </svg>
+                        <p className="text-xs font-medium text-gray-700">
+                          Fotoğraflar ({getArrayLength(review.photos)})
+                        </p>
                       </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {review.photos.map((photo, index) => {
+                          if (!photo || !photo.url) return null;
+
+                          return (
+                            <div
+                              key={photo.public_id || `photo-${index}`}
+                              className="relative group cursor-pointer"
+                              onClick={() => {
+                                // TODO: Implement photo lightbox/modal
+                                window.open(photo.url, "_blank");
+                              }}
+                            >
+                              <img
+                                src={photo.url}
+                                alt={`Yorum fotoğrafı ${index + 1}`}
+                                className="w-full h-16 rounded object-cover border border-gray-200 group-hover:opacity-90 transition-opacity shadow-sm"
+                                loading="lazy"
+                                onError={(e) => {
+                                  e.target.parentElement.style.display = "none";
+                                }}
+                              />
+                              {/* Hover overlay */}
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded transition-all duration-200 flex items-center justify-center">
+                                <svg
+                                  className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {getArrayLength(review.photos) > 4 && (
+                        <p className="text-xs text-gray-500 mt-2 text-center">
+                          Fotoğrafları büyütmek için tıklayın
+                        </p>
+                      )}
                     </div>
                   )}
 
-                  {/* Likes/Dislikes */}
-                  <div className="flex items-center space-x-4 mt-3">
-                    {getArrayLength(review.likes) > 0 && (
-                      <button className="flex items-center space-x-1 text-xs text-gray-500 hover:text-green-600 transition-colors">
+                  {/* Interactive Engagement Actions (Likes/Dislikes) */}
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                    <div className="flex items-center space-x-4">
+                      {/* Like Button */}
+                      <button
+                        onClick={() => handleLike(review._id)}
+                        className="flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm review-interaction like-button hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                        title="Beğen"
+                      >
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 text-green-600"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                        </svg>
+                        <span className="font-medium text-green-700">
+                          {getLikesCount(review)}
+                        </span>
+                      </button>
+
+                      {/* Dislike Button */}
+                      <button
+                        onClick={() => handleDislike(review._id)}
+                        className="flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm review-interaction dislike-button hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                        title="Beğenme"
+                      >
+                        <svg
+                          className="w-4 h-4 text-red-600 transform rotate-180"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                        </svg>
+                        <span className="font-medium text-red-700">
+                          {getDislikesCount(review)}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Reply Actions */}
+                    <div className="flex items-center space-x-3">
+                      {/* Reply Count (only show if there are replies) */}
+                      {getRepliesCount(review) > 0 && (
+                        <button
+                          onClick={() => toggleReplies(review._id)}
+                          className="flex items-center space-x-1 text-xs text-gray-600 hover:text-green-600 review-interaction reply-toggle"
+                          title="Cevapları göster/gizle"
+                        >
+                          <svg
+                            className={`w-3 h-3 transition-transform duration-200 ${
+                              expandedReplies[review._id] ? "rotate-180" : ""
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {getRepliesCount(review)} Yorum
+                          </span>
+                        </button>
+                      )}
+
+                      {/* Reply Button */}
+                      <button
+                        onClick={() => showReplyForm(review._id)}
+                        className="flex items-center space-x-1 text-xs text-gray-600 hover:text-green-600 transition-colors px-2 py-1 rounded hover:bg-green-50"
+                        title="Bu yorumu yanıtla"
+                      >
+                        <svg
+                          className="w-3 h-3"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -248,82 +472,158 @@ function PitchReviewsSection({
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7v13m-3-4h-.01M7 16h-.01"
+                            d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
                           />
                         </svg>
-                        <span>{getArrayLength(review.likes)}</span>
+                        <span className="font-medium">Cevap ver</span>
                       </button>
-                    )}
-                    {getArrayLength(review.dislikes) > 0 && (
-                      <button className="flex items-center space-x-1 text-xs text-gray-500 hover:text-red-600 transition-colors">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L15 17V4m-3 4h.01M13 8h.01"
-                          />
-                        </svg>
-                        <span>{getArrayLength(review.dislikes)}</span>
-                      </button>
-                    )}
+                    </div>
                   </div>
 
-                  {/* Replies */}
-                  {getArrayLength(review.replies) > 0 && (
-                    <div className="mt-4 ml-4 space-y-3">
-                      <h6 className="text-xs font-medium text-gray-600 mb-2">
-                        Cevaplar ({getArrayLength(review.replies)})
-                      </h6>
-                      {review.replies.map((reply, index) => (
-                        <div key={index} className="bg-gray-50 rounded-lg p-3">
-                          <div className="flex items-start space-x-2">
-                            <div className="flex-shrink-0">
-                              {reply.user?.profilePicture ? (
-                                <img
-                                  src={reply.user.profilePicture}
-                                  alt={reply.user?.name || "Anonim"}
-                                  className="w-6 h-6 rounded-full object-cover"
-                                  onError={(e) => {
-                                    e.target.style.display = "none";
-                                    e.target.nextSibling.style.display = "flex";
-                                  }}
-                                />
-                              ) : null}
+                  {/* Collapsible Replies Section */}
+                  {getRepliesCount(review) > 0 &&
+                    expandedReplies[review._id] && (
+                      <div className="mt-4 space-y-3 animate-fade-in">
+                        <div className="ml-6 space-y-3">
+                          {review.replies.map((reply, index) => {
+                            if (!reply || !reply.user) return null;
+
+                            return (
                               <div
-                                className={`w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs ${
-                                  reply.user?.profilePicture ? "hidden" : "flex"
-                                }`}
+                                key={reply._id || index}
+                                className="bg-green-50 rounded-lg p-3 border-l-4 border-green-200 reply-item"
+                                style={{ animationDelay: `${index * 100}ms` }}
                               >
-                                {getInitials(reply.user?.name)}
+                                <div className="flex items-start space-x-3">
+                                  {/* Reply User Avatar */}
+                                  <div className="flex-shrink-0">
+                                    {reply.user?.profilePicture ? (
+                                      <img
+                                        src={reply.user.profilePicture}
+                                        alt={reply.user?.name || "Anonim"}
+                                        className="w-7 h-7 rounded-full object-cover border-2 border-white shadow-sm"
+                                        onError={(e) => {
+                                          e.target.style.display = "none";
+                                          e.target.nextSibling.style.display =
+                                            "flex";
+                                        }}
+                                      />
+                                    ) : null}
+                                    <div
+                                      className={`w-7 h-7 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-medium border-2 border-white shadow-sm ${
+                                        reply.user?.profilePicture
+                                          ? "hidden"
+                                          : "flex"
+                                      }`}
+                                    >
+                                      {getInitials(reply.user?.name)}
+                                    </div>
+                                  </div>
+
+                                  {/* Reply Content */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center space-x-2 mb-1">
+                                      <span className="text-xs font-medium text-gray-900 truncate">
+                                        {reply.user?.name || "Anonim"}
+                                      </span>
+                                      {reply.user?.email?.includes("admin") ||
+                                      reply.user?.email?.includes("destek") ? (
+                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                          <svg
+                                            className="w-2.5 h-2.5 mr-0.5"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                          >
+                                            <path
+                                              fillRule="evenodd"
+                                              d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z"
+                                              clipRule="evenodd"
+                                            />
+                                          </svg>
+                                          Saha Temsilcisi
+                                        </span>
+                                      ) : null}
+                                    </div>
+                                    <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
+                                      <span>{formatDate(reply.createdAt)}</span>
+                                      {reply.isEdited === true && (
+                                        <span className="italic text-gray-400">
+                                          • düzenlendi{" "}
+                                          {reply.updatedAt &&
+                                          reply.updatedAt !== reply.createdAt
+                                            ? formatDate(reply.updatedAt)
+                                            : ""}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <p className="text-sm text-gray-700 leading-relaxed">
+                                      {reply.comment ||
+                                        "Yorum içeriği bulunmuyor."}
+                                    </p>
+                                  </div>
+                                </div>
                               </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Reply Form */}
+                  {replyForms[review._id] && (
+                    <div className="mt-4 animate-slide-down">
+                      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div className="flex items-start space-x-3">
+                          {/* Current User Avatar Placeholder */}
+                          <div className="flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-medium">
+                              S
                             </div>
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2">
-                                <span className="text-xs font-medium text-gray-900">
-                                  {reply.user?.name || "Anonim"}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {formatDate(reply.createdAt)}
-                                  {reply.isEdited === true && (
-                                    <span className="ml-1 text-gray-400">
-                                      (düzenlendi)
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                              <p className="text-xs text-gray-700 mt-1">
-                                {reply.comment || "Yorum içeriği yok"}
-                              </p>
+                          </div>
+
+                          {/* Reply Form Content */}
+                          <div className="flex-1">
+                            <div className="mb-3">
+                              <label
+                                htmlFor={`reply-${review._id}`}
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                              >
+                                Yoruma cevap yazın
+                              </label>
+                              <textarea
+                                id={`reply-${review._id}`}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"
+                                placeholder="Cevabınızı buraya yazın..."
+                                value={replyTexts[review._id] || ""}
+                                onChange={(e) =>
+                                  handleReplyTextChange(
+                                    review._id,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex items-center justify-end space-x-3">
+                              <button
+                                onClick={() => hideReplyForm(review._id)}
+                                className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                              >
+                                İptal
+                              </button>
+                              <button
+                                onClick={() => handleReplySubmit(review._id)}
+                                disabled={!replyTexts[review._id]?.trim()}
+                                className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              >
+                                Gönder
+                              </button>
                             </div>
                           </div>
                         </div>
-                      ))}
+                      </div>
                     </div>
                   )}
                 </div>

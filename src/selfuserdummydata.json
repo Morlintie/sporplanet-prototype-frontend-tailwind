@@ -1,0 +1,3402 @@
+[
+  {
+    "_id": "66u100000000000000000001",
+    "name": "ahmet.toraman",
+    "email": "ahmet.toraman@example.com",
+    "googleId": "google-ahmet-001",
+    "isValid": true,
+    "role": "user",
+    "phoneNumber": "+90 532 111 22 33",
+    "description": "Beşiktaş çevresinde akşam maçlarını sever.",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Boğaziçi Üniversitesi",
+    "age": 27,
+    "profilePicture": "https://cdn.example.com/u/ahmet.jpg",
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "friends": [
+      {
+        "_id": "66u100000000000000000010",
+        "name": "elif.kaya",
+        "email": "elif.kaya@example.com",
+        "role": "user",
+        "school": "İTÜ",
+        "age": 24,
+        "profilePicture": "https://cdn.example.com/u/elif.png",
+        "goalKeeper": false,
+        "createdAt": "2025-03-01T10:00:00.000Z",
+        "updatedAt": "2025-06-01T10:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000011",
+        "name": "mert.moda",
+        "email": "mert.moda@example.com",
+        "school": "Marmara Üniversitesi",
+        "age": 23,
+        "profilePicture": "https://cdn.example.com/u/mert.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000001",
+        "name": "Beşiktaş Barbaros Halı Saha",
+        "rating": { "averageRating": 4.5 },
+        "location": {
+          "address": {
+            "street": "Barbaros Bulvarı No:12",
+            "neighborhood": "Abbasağa",
+            "city": "İstanbul",
+            "district": "Beşiktaş",
+            "postalCode": "34353",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.0214, 41.0421]
+        }
+      }
+    ],
+    "favoritePitches": [
+      {
+        "_id": "66p000000000000000000002",
+        "name": "Kadıköy Moda Spor Kompleksi",
+        "description": "Deniz kenarında, duşlu.",
+        "location": {
+          "address": {
+            "street": "Moda Caddesi No:45",
+            "neighborhood": "Moda",
+            "city": "İstanbul",
+            "district": "Kadıköy",
+            "postalCode": "34710",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.025, 40.9865]
+        },
+        "company": "66c200000000000000000001",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 20 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false
+        },
+        "pricing": {
+          "hourlyRate": 1500,
+          "nightHourlyRate": 1700,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.2,
+          "weekendMultiplier": 1.1
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90536 123 45 67",
+          "email": "rezervasyon@modaspor.com"
+        },
+        "rating": { "averageRating": 4.7, "totalReviews": 210 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000001",
+        "pitch": "66p000000000000000000001",
+        "company": "66c200000000000000000002",
+        "bookedBy": "66u100000000000000000001",
+        "start": "2025-08-10T19:00:00.000Z",
+        "status": "confirmed",
+        "totalPlayers": 14,
+        "price": {
+          "hourlyRate": 1200,
+          "currency": "TRY",
+          "multiplier": 1.1,
+          "discount": 0,
+          "tax": 0,
+          "total": 1320,
+          "paid": true,
+          "method": "card",
+          "paidAt": "2025-08-02T12:00:00.000Z"
+        },
+        "notes": "Gece maçı"
+      }
+    ],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000001",
+        "createdBy": "66u100000000000000000001",
+        "name": "Abbasağa Akşam Maçı",
+        "startsAt": "2025-08-15T18:00:00.000Z",
+        "pitch": "66p000000000000000000001",
+        "playersNeeded": 3,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u100000000000000000001",
+            "joinedAt": "2025-08-01T10:00:00.000Z"
+          },
+          {
+            "user": "66u100000000000000000010",
+            "joinedAt": "2025-08-01T11:00:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "Top bizden",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000001"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beşiktaş" },
+    "goalKeeper": false,
+    "favoritePitchesIds": [],
+    "recentlySearchedPitchIds": [],
+    "createdAt": "2025-01-01T10:00:00.000Z",
+    "updatedAt": "2025-07-30T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000002",
+    "name": "elif.kaya",
+    "email": "elif.kaya@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İTÜ",
+    "age": 24,
+    "profilePicture": "https://cdn.example.com/u/elif.png",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-01T12:00:00.000Z",
+    "updatedAt": "2025-06-20T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000003",
+    "name": "mert.moda",
+    "email": "mert.moda@example.com",
+    "isValid": true,
+    "role": "user",
+    "phoneNumber": "+90 533 000 11 22",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Marmara Üniversitesi",
+    "age": 23,
+    "profilePicture": "https://cdn.example.com/u/mert.jpg",
+    "friends": [
+      {
+        "_id": "66u100000000000000000004",
+        "name": "ayse.basak",
+        "email": "ayse.basak@example.com",
+        "role": "user",
+        "school": "İstanbul Üniversitesi",
+        "age": 26,
+        "profilePicture": "https://cdn.example.com/u/ayse.jpg",
+        "goalKeeper": true,
+        "createdAt": "2024-12-22T08:00:00.000Z",
+        "updatedAt": "2025-05-18T08:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Fatih" }
+      }
+    ],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000002",
+        "name": "elif.kaya",
+        "email": "elif.kaya@example.com",
+        "school": "İTÜ",
+        "age": 24,
+        "profilePicture": "https://cdn.example.com/u/elif.png",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000003",
+        "name": "Moda Sahil Çim",
+        "rating": { "averageRating": 4.2 },
+        "location": {
+          "address": {
+            "street": "Moda Caddesi 7",
+            "neighborhood": "Moda",
+            "city": "İstanbul",
+            "district": "Kadıköy",
+            "postalCode": "34710",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.0255, 40.9859]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000002",
+        "pitch": "66p000000000000000000003",
+        "company": "66c200000000000000000003",
+        "bookedBy": "66u100000000000000000003",
+        "start": "2025-09-01T18:00:00.000Z",
+        "status": "pending",
+        "totalPlayers": 10,
+        "price": {
+          "hourlyRate": 900,
+          "currency": "TRY",
+          "multiplier": 1,
+          "discount": 100,
+          "tax": 0,
+          "total": 800,
+          "paid": false,
+          "method": "wallet",
+          "paidAt": "2025-08-01T10:00:00.000Z"
+        }
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-03-12T09:00:00.000Z",
+    "updatedAt": "2025-07-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000004",
+    "name": "ayse.basak",
+    "email": "ayse.basak@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İstanbul Üniversitesi",
+    "age": 26,
+    "profilePicture": "https://cdn.example.com/u/ayse.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [
+      {
+        "_id": "66u100000000000000000003",
+        "name": "mert.moda",
+        "email": "mert.moda@example.com",
+        "role": "user",
+        "school": "Marmara Üniversitesi",
+        "age": 23,
+        "profilePicture": "https://cdn.example.com/u/mert.jpg",
+        "goalKeeper": false,
+        "createdAt": "2025-03-12T09:00:00.000Z",
+        "updatedAt": "2025-07-01T09:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Fatih" },
+    "goalKeeper": true,
+    "createdAt": "2024-12-22T08:00:00.000Z",
+    "updatedAt": "2025-05-18T08:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000005",
+    "name": "cemre.y",
+    "email": "cemre.y@example.com",
+    "isValid": true,
+    "role": "companyOwner",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Yıldız Teknik",
+    "age": 28,
+    "profilePicture": "https://cdn.example.com/u/cemre.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000004",
+        "name": "Bostanlı Deniz Yıldızı",
+        "rating": { "averageRating": 4.0 },
+        "location": {
+          "address": {
+            "street": "Cemal Gürsel Blv. 90",
+            "neighborhood": "Bostanlı",
+            "city": "İzmir",
+            "district": "Karşıyaka",
+            "postalCode": "35590",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [27.0721, 38.4563]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Şişli" },
+    "goalKeeper": false,
+    "createdAt": "2025-04-02T12:05:00.000Z",
+    "updatedAt": "2025-07-29T12:05:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000006",
+    "name": "burak.s",
+    "email": "burak.s@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Ege Üniversitesi",
+    "age": 29,
+    "profilePicture": "https://cdn.example.com/u/burak.jpg",
+    "friends": [],
+    "selfFriendRequests": [
+      {
+        "_id": "66u100000000000000000007",
+        "name": "didem.u",
+        "email": "didem.u@example.com",
+        "role": "user",
+        "school": "Dokuz Eylül",
+        "age": 25,
+        "profilePicture": "https://cdn.example.com/u/didem.jpg",
+        "goalKeeper": false,
+        "createdAt": "2025-02-14T10:00:00.000Z",
+        "updatedAt": "2025-04-14T10:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Bakırköy" }
+      }
+    ],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p000000000000000000005",
+        "name": "Lara Beach Court",
+        "description": "Turistik bölgede yaz akşamlarına özel.",
+        "location": {
+          "address": {
+            "street": "2232 Sk. No:5",
+            "neighborhood": "Güzeloba",
+            "city": "Antalya",
+            "district": "Muratpaşa",
+            "postalCode": "07230",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [30.8543, 36.8566]
+        },
+        "company": "66c200000000000000000004",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 20 }
+        },
+        "facilities": {
+          "changingRooms": false,
+          "showers": false,
+          "parking": true,
+          "shoeRenting": true,
+          "camera": true
+        },
+        "pricing": {
+          "hourlyRate": 1400,
+          "nightHourlyRate": 1650,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.4,
+          "weekendMultiplier": 1.2
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90537 123 45 67",
+          "email": "oyun@larabeachcourt.com"
+        },
+        "rating": { "averageRating": 4.1, "totalReviews": 44 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Ataşehir" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-01T10:00:00.000Z",
+    "updatedAt": "2025-07-01T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000007",
+    "name": "didem.u",
+    "email": "didem.u@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Dokuz Eylül",
+    "age": 25,
+    "profilePicture": "https://cdn.example.com/u/didem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000006",
+        "name": "burak.s",
+        "email": "burak.s@example.com",
+        "school": "Ege Üniversitesi",
+        "age": 29,
+        "profilePicture": "https://cdn.example.com/u/burak.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Ataşehir" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000003",
+        "pitch": "66p000000000000000000002",
+        "company": "66c200000000000000000001",
+        "bookedBy": "66u100000000000000000007",
+        "start": "2025-08-20T17:00:00.000Z",
+        "status": "confirmed",
+        "totalPlayers": 12,
+        "price": {
+          "hourlyRate": 1500,
+          "currency": "TRY",
+          "multiplier": 1.15,
+          "discount": 150,
+          "tax": 0,
+          "total": 1575,
+          "paid": true,
+          "method": "card",
+          "paidAt": "2025-08-02T11:00:00.000Z"
+        }
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bakırköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-14T10:00:00.000Z",
+    "updatedAt": "2025-04-14T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000008",
+    "name": "gokce.t",
+    "email": "gokce.t@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Galatasaray Üniversitesi",
+    "age": 22,
+    "profilePicture": "https://cdn.example.com/u/gokce.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Sarıyer" },
+    "goalKeeper": true,
+    "createdAt": "2025-05-12T09:00:00.000Z",
+    "updatedAt": "2025-07-22T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000009",
+    "name": "zeynep.z",
+    "email": "zeynep.z@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "school": "YTU",
+    "age": 30,
+    "profilePicture": "https://cdn.example.com/u/zeynep.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000006",
+        "name": "Ümraniye Metro Saha",
+        "rating": { "averageRating": 4.5 },
+        "location": {
+          "address": {
+            "street": "Alemdağ Cad. 101",
+            "neighborhood": "Atakent",
+            "city": "İstanbul",
+            "district": "Ümraniye",
+            "postalCode": "34760",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.131, 41.0249]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Ümraniye" },
+    "goalKeeper": false,
+    "createdAt": "2024-11-05T08:30:00.000Z",
+    "updatedAt": "2025-07-28T08:30:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000000a",
+    "name": "arda.k",
+    "email": "arda.k@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İstanbul Bilgi",
+    "age": 21,
+    "profilePicture": "https://cdn.example.com/u/arda.jpg",
+    "friends": [
+      {
+        "_id": "66u10000000000000000000b",
+        "name": "ipek.yl",
+        "email": "ipek.yl@example.com",
+        "role": "user",
+        "school": "İstanbul Bilgi",
+        "age": 22,
+        "profilePicture": "https://cdn.example.com/u/ipek.jpg",
+        "goalKeeper": false,
+        "createdAt": "2025-05-01T10:00:00.000Z",
+        "updatedAt": "2025-06-01T10:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Beyoğlu" }
+      }
+    ],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000004",
+        "pitch": "66p000000000000000000006",
+        "company": "66c200000000000000000005",
+        "bookedBy": "66u10000000000000000000a",
+        "start": "2025-08-05T20:00:00.000Z",
+        "status": "completed",
+        "totalPlayers": 14,
+        "price": {
+          "hourlyRate": 950,
+          "currency": "TRY",
+          "multiplier": 1.15,
+          "discount": 0,
+          "tax": 0,
+          "total": 1092.5,
+          "paid": true,
+          "method": "card",
+          "paidAt": "2025-08-02T10:00:00.000Z"
+        },
+        "notes": "Gece ışıkları"
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beşiktaş" },
+    "goalKeeper": false,
+    "createdAt": "2025-04-09T12:00:00.000Z",
+    "updatedAt": "2025-07-15T12:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000000c",
+    "name": "ipek.yl",
+    "email": "ipek.yl@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İstanbul Bilgi",
+    "age": 22,
+    "profilePicture": "https://cdn.example.com/u/ipek.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beyoğlu" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-01T10:00:00.000Z",
+    "updatedAt": "2025-06-01T10:00:00.000Z"
+  },
+  {
+    "_id": "66u10000000000000000000d",
+    "name": "melis.b",
+    "email": "melis.b@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Koç Üniversitesi",
+    "age": 23,
+    "profilePicture": "https://cdn.example.com/u/melis.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000007",
+        "name": "Mezitli Sahil Saha",
+        "rating": { "averageRating": 3.8 },
+        "location": {
+          "address": {
+            "street": "Sahil Yolu No:20",
+            "neighborhood": "Mezitli",
+            "city": "Mersin",
+            "district": "Mezitli",
+            "postalCode": "33330",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [34.5522, 36.7733]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Sarıyer" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-01T10:00:00.000Z",
+    "updatedAt": "2025-07-20T10:00:00.000Z"
+  },
+  {
+    "_id": "66u10000000000000000000e",
+    "name": "tuna.er",
+    "email": "tuna.er@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "YTÜ",
+    "age": 28,
+    "profilePicture": "https://cdn.example.com/u/tuna.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000005",
+        "pitch": "66p000000000000000000008",
+        "company": "66c200000000000000000006",
+        "bookedBy": "66u10000000000000000000e",
+        "start": "2025-08-22T16:00:00.000Z",
+        "status": "pending",
+        "totalPlayers": 8,
+        "price": {
+          "hourlyRate": 700,
+          "currency": "TRY",
+          "multiplier": 1,
+          "discount": 50,
+          "tax": 0,
+          "total": 650,
+          "paid": false,
+          "method": "cash",
+          "paidAt": "2025-08-01T09:00:00.000Z"
+        },
+        "notes": "Mini maç"
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Üsküdar" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-15T11:00:00.000Z",
+    "updatedAt": "2025-06-15T11:00:00.000Z"
+  },
+  {
+    "_id": "66u10000000000000000000f",
+    "name": "hakan.tk",
+    "email": "hakan.tk@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İstanbul Aydın",
+    "age": 31,
+    "profilePicture": "https://cdn.example.com/u/hakan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000002",
+        "createdBy": "66u100000000000000000019",
+        "name": "Ümraniye Akşam Maçı",
+        "startsAt": "2025-08-12T19:00:00.000Z",
+        "pitch": "66p000000000000000000006",
+        "playersNeeded": 2,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          {
+            "user": "66u100000000000000000019",
+            "joinedAt": "2025-08-01T09:00:00.000Z"
+          },
+          {
+            "user": "66u10000000000000000000f",
+            "joinedAt": "2025-08-01T10:30:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "Kaleci arıyoruz",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000019"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Pendik" },
+    "goalKeeper": true,
+    "createdAt": "2025-04-02T09:00:00.000Z",
+    "updatedAt": "2025-07-18T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000010",
+    "name": "enes.bd",
+    "email": "enes.bd@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İTÜ",
+    "age": 24,
+    "profilePicture": "https://cdn.example.com/u/enes.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kağıthane" },
+    "goalKeeper": false,
+    "createdAt": "2025-03-05T12:00:00.000Z",
+    "updatedAt": "2025-06-05T12:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000011",
+    "name": "selin.ak",
+    "email": "selin.ak@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "İzmir Ekonomi",
+    "age": 23,
+    "profilePicture": "https://cdn.example.com/u/selin.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Ümraniye" },
+    "goalKeeper": false,
+    "createdAt": "2025-03-09T16:00:00.000Z",
+    "updatedAt": "2025-06-09T16:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000012",
+    "name": "baran.u",
+    "email": "baran.u@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Dicle Üniversitesi",
+    "age": 27,
+    "profilePicture": "https://cdn.example.com/u/baran.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000009",
+        "name": "Sur Futbol Merkezi",
+        "rating": { "averageRating": 4.0 },
+        "location": {
+          "address": {
+            "street": "Gazi Cad. No:2",
+            "neighborhood": "Sur",
+            "city": "Diyarbakır",
+            "district": "Sur",
+            "postalCode": "21300",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [40.2306, 37.9144]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bağcılar" },
+    "goalKeeper": false,
+    "createdAt": "2025-04-11T16:00:00.000Z",
+    "updatedAt": "2025-05-11T16:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000013",
+    "name": "ozge.c",
+    "email": "ozge.c@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "KTÜ",
+    "age": 26,
+    "profilePicture": "https://cdn.example.com/u/ozge.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p00000000000000000000a",
+        "name": "Ortahisar Yağmur Saha",
+        "description": "Drenajlı zemin.",
+        "location": {
+          "address": {
+            "street": "Kanuni Bulvarı No:8",
+            "neighborhood": "Ortahisar",
+            "city": "Trabzon",
+            "district": "Ortahisar",
+            "postalCode": "61040",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [39.7168, 41.003]
+        },
+        "company": "66c200000000000000000007",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 14 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": false,
+          "shoeRenting": false,
+          "camera": true
+        },
+        "pricing": {
+          "hourlyRate": 800,
+          "nightHourlyRate": 960,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.1,
+          "weekendMultiplier": 1.05
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90533 123 45 67",
+          "email": "ortahisar@yagmursaha.com"
+        },
+        "rating": { "averageRating": 4.4, "totalReviews": 49 },
+        "refundAllowed": false,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kartal" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-30T15:00:00.000Z",
+    "updatedAt": "2025-03-01T15:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000014",
+    "name": "derya.m",
+    "email": "derya.m@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Anadolu Üniversitesi",
+    "age": 25,
+    "profilePicture": "https://cdn.example.com/u/derya.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [
+      {
+        "_id": "66a100000000000000000003",
+        "createdBy": "66u100000000000000000018",
+        "name": "Odunpazarı Mini Maç",
+        "startsAt": "2025-08-18T17:00:00.000Z",
+        "customPitch": {
+          "name": "Odunpazarı Kapalı",
+          "address": "İki Eylül Cad. No:21",
+          "district": "Odunpazarı",
+          "city": "Eskişehir",
+          "location": { "type": "Point", "coordinates": [30.5206, 39.765] },
+          "photo": {
+            "url": "https://cdn.example.com/p/odun.jpg",
+            "public_id": "p_odun_1"
+          }
+        },
+        "playersNeeded": 2,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u100000000000000000018",
+            "joinedAt": "2025-08-01T09:00:00.000Z"
+          }
+        ],
+        "waitingList": [
+          {
+            "user": "66u100000000000000000014",
+            "requestedAt": "2025-08-02T12:00:00.000Z",
+            "seen": false
+          }
+        ],
+        "notes": "Kapalı saha",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000018"]
+      }
+    ],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-11T19:00:00.000Z",
+    "updatedAt": "2025-03-11T19:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000015",
+    "name": "tamer.gs",
+    "email": "tamer.gs@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "school": "Sakarya Üniversitesi",
+    "age": 32,
+    "profilePicture": "https://cdn.example.com/u/tamer.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000006",
+        "pitch": "66p000000000000000000006",
+        "company": "66c200000000000000000008",
+        "bookedBy": "66u100000000000000000015",
+        "start": "2025-08-12T19:00:00.000Z",
+        "status": "confirmed",
+        "totalPlayers": 14,
+        "price": {
+          "hourlyRate": 950,
+          "currency": "TRY",
+          "multiplier": 1.15,
+          "discount": 0,
+          "tax": 0,
+          "total": 1092.5,
+          "paid": true,
+          "method": "transfer",
+          "paidAt": "2025-08-01T10:00:00.000Z"
+        }
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Ümraniye" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-20T20:00:00.000Z",
+    "updatedAt": "2025-07-20T20:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000016",
+    "name": "sevda.p",
+    "email": "sevda.p@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 20,
+    "profilePicture": "https://cdn.example.com/u/sevda.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Pendik" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-02T18:00:00.000Z",
+    "updatedAt": "2025-07-02T18:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000017",
+    "name": "kaan.oz",
+    "email": "kaan.oz@example.com",
+    "isValid": true,
+    "role": "companyOwner",
+    "archived": false,
+    "isDeleted": false,
+    "age": 33,
+    "profilePicture": "https://cdn.example.com/u/kaan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p00000000000000000000b",
+        "name": "Şahinbey Arena",
+        "description": "Aydınlatma güçlü.",
+        "location": {
+          "address": {
+            "street": "İnönü Cad. 61",
+            "neighborhood": "Yeditepe",
+            "city": "Gaziantep",
+            "district": "Şahinbey",
+            "postalCode": "27080",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [37.3792, 37.0594]
+        },
+        "company": "66c200000000000000000009",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 25 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": true,
+          "camera": true
+        },
+        "pricing": {
+          "hourlyRate": 950,
+          "nightHourlyRate": 1150,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.1
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90550 123 45 67",
+          "email": "rez@sbeyarena.com"
+        },
+        "rating": { "averageRating": 4.3, "totalReviews": 61 },
+        "refundAllowed": false,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Şişli" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-12T13:00:00.000Z",
+    "updatedAt": "2025-01-12T13:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000018",
+    "name": "odunpazari.mod",
+    "email": "odunpazari.mod@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 34,
+    "profilePicture": "https://cdn.example.com/u/odun-mod.png",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-01T09:00:00.000Z",
+    "updatedAt": "2025-02-10T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000019",
+    "name": "umraniye.admin",
+    "email": "umraniye.admin@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 35,
+    "profilePicture": "https://cdn.example.com/u/umr-admin.png",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Ümraniye" },
+    "goalKeeper": false,
+    "createdAt": "2025-03-01T09:00:00.000Z",
+    "updatedAt": "2025-07-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000001a",
+    "name": "fatma.yy",
+    "email": "fatma.yy@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 20,
+    "profilePicture": "https://cdn.example.com/u/fatma.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Maltepe" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-01T09:00:00.000Z",
+    "updatedAt": "2025-06-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000001b",
+    "name": "cem.k",
+    "email": "cem.k@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 33,
+    "profilePicture": "https://cdn.example.com/u/cem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u10000000000000000001c",
+        "name": "sude.n",
+        "email": "sude.n@example.com",
+        "school": "İstanbul Üniversitesi",
+        "age": 22,
+        "profilePicture": "https://cdn.example.com/u/sude.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": true,
+    "createdAt": "2025-04-01T09:00:00.000Z",
+    "updatedAt": "2025-05-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000001c",
+    "name": "sude.n",
+    "email": "sude.n@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 22,
+    "profilePicture": "https://cdn.example.com/u/sude.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000000c",
+        "name": "Bandırma Marin Arena",
+        "rating": { "averageRating": 3.9 },
+        "location": {
+          "address": {
+            "street": "İskele Cad. 9",
+            "neighborhood": "Paşakonak",
+            "city": "Balıkesir",
+            "district": "Bandırma",
+            "postalCode": "10200",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [27.975, 40.353]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-04-01T09:00:00.000Z",
+    "updatedAt": "2025-06-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000001d",
+    "name": "umut.ay",
+    "email": "umut.ay@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 31,
+    "profilePicture": "https://cdn.example.com/u/umut.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [
+      {
+        "_id": "66u10000000000000000001e",
+        "name": "hazal.t",
+        "email": "hazal.t@example.com",
+        "role": "user",
+        "school": "YTÜ",
+        "age": 24,
+        "profilePicture": "https://cdn.example.com/u/hazal.jpg",
+        "goalKeeper": false,
+        "createdAt": "2025-05-01T08:00:00.000Z",
+        "updatedAt": "2025-06-01T08:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Üsküdar" }
+      }
+    ],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Üsküdar" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-01T08:00:00.000Z",
+    "updatedAt": "2025-07-01T08:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000001e",
+    "name": "hazal.t",
+    "email": "hazal.t@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 24,
+    "profilePicture": "https://cdn.example.com/u/hazal.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p00000000000000000000d",
+        "name": "Pendik Marina Court",
+        "description": "Marina manzaralı.",
+        "location": {
+          "address": {
+            "street": "Marina Yolu No:4",
+            "neighborhood": "Batı",
+            "city": "İstanbul",
+            "district": "Pendik",
+            "postalCode": "34890",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.23, 40.874]
+        },
+        "company": "66c200000000000000000010",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 20 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": false,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": true
+        },
+        "pricing": {
+          "hourlyRate": 1150,
+          "nightHourlyRate": 1350,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.2,
+          "weekendMultiplier": 1.2
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90536 123 45 67",
+          "email": "pendik@marinacourt.com"
+        },
+        "rating": { "averageRating": 4.3, "totalReviews": 40 },
+        "refundAllowed": false,
+        "status": "maintenance",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Üsküdar" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-01T08:00:00.000Z",
+    "updatedAt": "2025-06-01T08:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000001f",
+    "name": "muhammed.a",
+    "email": "muhammed.a@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 28,
+    "profilePicture": "https://cdn.example.com/u/muhammed.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000007",
+        "pitch": "66p00000000000000000000e",
+        "company": "66c200000000000000000011",
+        "bookedBy": "66u10000000000000000001f",
+        "start": "2025-08-25T21:00:00.000Z",
+        "status": "confirmed",
+        "totalPlayers": 22,
+        "price": {
+          "hourlyRate": 1800,
+          "currency": "TRY",
+          "multiplier": 1.2,
+          "discount": 0,
+          "tax": 0,
+          "total": 2160,
+          "paid": true,
+          "method": "card",
+          "paidAt": "2025-08-02T10:30:00.000Z"
+        },
+        "notes": "11x11"
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Başakşehir" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-25T22:00:00.000Z",
+    "updatedAt": "2025-07-25T22:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000020",
+    "name": "yusuf.k",
+    "email": "yusuf.k@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 24,
+    "profilePicture": "https://cdn.example.com/u/yusuf.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000005",
+        "name": "cemre.y",
+        "email": "cemre.y@example.com",
+        "school": "Yıldız Teknik",
+        "age": 28,
+        "profilePicture": "https://cdn.example.com/u/cemre.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Şişli" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beyoğlu" },
+    "goalKeeper": false,
+    "createdAt": "2025-03-09T19:00:00.000Z",
+    "updatedAt": "2025-03-10T08:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000021",
+    "name": "gizem.r",
+    "email": "gizem.r@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 27,
+    "profilePicture": "https://cdn.example.com/u/gizem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000004",
+        "createdBy": "66u100000000000000000021",
+        "name": "Kadıköy Sabah Maçı",
+        "startsAt": "2025-08-28T08:00:00.000Z",
+        "pitch": "66p000000000000000000002",
+        "playersNeeded": 4,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u100000000000000000021",
+            "joinedAt": "2025-08-01T08:00:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "Kahvaltı sonrası",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000021"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-02T10:00:00.000Z",
+    "updatedAt": "2025-07-02T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000022",
+    "name": "tugrul.c",
+    "email": "tugrul.c@example.com",
+    "isValid": false,
+    "role": "banned",
+    "archived": true,
+    "isDeleted": false,
+    "age": 34,
+    "profilePicture": "https://cdn.example.com/u/tugrul.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Esenler" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-01T10:00:00.000Z",
+    "updatedAt": "2025-06-01T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000023",
+    "name": "beril.as",
+    "email": "beril.as@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 29,
+    "profilePicture": "https://cdn.example.com/u/beril.jpg",
+    "friends": [],
+    "selfFriendRequests": [
+      {
+        "_id": "66u100000000000000000024",
+        "name": "sarp.k",
+        "email": "sarp.k@example.com",
+        "role": "user",
+        "school": "İTÜ",
+        "age": 25,
+        "profilePicture": "https://cdn.example.com/u/sarp.jpg",
+        "goalKeeper": true,
+        "createdAt": "2025-07-01T12:00:00.000Z",
+        "updatedAt": "2025-07-15T12:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Bakırköy" }
+      }
+    ],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Zeytinburnu" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-01T12:00:00.000Z",
+    "updatedAt": "2025-07-15T12:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000024",
+    "name": "sarp.k",
+    "email": "sarp.k@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 25,
+    "profilePicture": "https://cdn.example.com/u/sarp.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000023",
+        "name": "beril.as",
+        "email": "beril.as@example.com",
+        "school": "—",
+        "age": 29,
+        "profilePicture": "https://cdn.example.com/u/beril.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Zeytinburnu" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bakırköy" },
+    "goalKeeper": true,
+    "createdAt": "2025-07-01T12:00:00.000Z",
+    "updatedAt": "2025-07-15T12:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000025",
+    "name": "ipek.cs",
+    "email": "ipek.cs@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 30,
+    "profilePicture": "https://cdn.example.com/u/ipekcs.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000000f",
+        "name": "Beşiktaş Arena Halı Saha",
+        "rating": { "averageRating": 4.5 },
+        "location": {
+          "address": {
+            "street": "Barbaros Bulvarı No:12",
+            "neighborhood": "Abbasağa",
+            "city": "İstanbul",
+            "district": "Beşiktaş",
+            "postalCode": "34353",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.0214, 41.0421]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beşiktaş" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-20T12:00:00.000Z",
+    "updatedAt": "2025-07-20T12:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000026",
+    "name": "okan.tr",
+    "email": "okan.tr@example.com",
+    "isValid": true,
+    "role": "companyOwner",
+    "archived": false,
+    "isDeleted": false,
+    "age": 38,
+    "profilePicture": "https://cdn.example.com/u/okan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000005",
+        "createdBy": "66u100000000000000000026",
+        "name": "Beşiktaş Öğle Maçı",
+        "startsAt": "2025-08-09T12:00:00.000Z",
+        "pitch": "66p000000000000000000001",
+        "playersNeeded": 5,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          {
+            "user": "66u100000000000000000026",
+            "joinedAt": "2025-08-01T12:00:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "İş çıkışı eklenebilir",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000026"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beşiktaş" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-10T09:00:00.000Z",
+    "updatedAt": "2025-07-10T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000027",
+    "name": "eda.ay",
+    "email": "eda.ay@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 19,
+    "profilePicture": "https://cdn.example.com/u/eda.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Arnavutköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-05T09:00:00.000Z",
+    "updatedAt": "2025-07-05T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000028",
+    "name": "semih.dr",
+    "email": "semih.dr@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 36,
+    "profilePicture": "https://cdn.example.com/u/semih.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000029",
+        "name": "tuna.k",
+        "email": "tuna.k@example.com",
+        "school": "—",
+        "age": 33,
+        "profilePicture": "https://cdn.example.com/u/tunak.jpg",
+        "goalKeeper": true,
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Çekmeköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-01T09:00:00.000Z",
+    "updatedAt": "2025-06-21T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000029",
+    "name": "tuna.k",
+    "email": "tuna.k@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 33,
+    "profilePicture": "https://cdn.example.com/u/tunak.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000010",
+        "name": "Talas City Turf",
+        "rating": { "averageRating": 3.7 },
+        "location": {
+          "address": {
+            "street": "Atatürk Bulvarı 14",
+            "neighborhood": "Talas",
+            "city": "Kayseri",
+            "district": "Talas",
+            "postalCode": "38280",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [35.5562, 38.6891]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": true,
+    "createdAt": "2025-06-21T09:00:00.000Z",
+    "updatedAt": "2025-07-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000002a",
+    "name": "okan.yy",
+    "email": "okan.yy@example.com",
+    "isValid": true,
+    "role": "companyOwner",
+    "archived": false,
+    "isDeleted": false,
+    "age": 40,
+    "profilePicture": "https://cdn.example.com/u/okanyy.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p000000000000000000011",
+        "name": "Karşıyaka Sahil",
+        "description": "Sahil kenarı.",
+        "location": {
+          "address": {
+            "street": "Cemal Gürsel 90",
+            "neighborhood": "Bostanlı",
+            "city": "İzmir",
+            "district": "Karşıyaka",
+            "postalCode": "35590",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [27.0721, 38.4563]
+        },
+        "company": "66c200000000000000000012",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 25 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false
+        },
+        "pricing": {
+          "hourlyRate": 1000,
+          "nightHourlyRate": 1200,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.1,
+          "weekendMultiplier": 1.1
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90550 111 22 33",
+          "email": "info@karsiyakasahil.com"
+        },
+        "rating": { "averageRating": 4.0, "totalReviews": 34 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Maslak" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-02T10:00:00.000Z",
+    "updatedAt": "2025-07-02T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000002b",
+    "name": "berk.yg",
+    "email": "berk.yg@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 26,
+    "profilePicture": "https://cdn.example.com/u/berk.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [
+      {
+        "_id": "66u10000000000000000002c",
+        "name": "elifns.g",
+        "email": "elifns.g@example.com",
+        "role": "user",
+        "school": "—",
+        "age": 20,
+        "profilePicture": "https://cdn.example.com/u/elifns.jpg",
+        "goalKeeper": false,
+        "createdAt": "2025-05-05T10:00:00.000Z",
+        "updatedAt": "2025-05-06T10:00:00.000Z",
+        "location": { "city": "İstanbul", "district": "Sultanbeyli" }
+      }
+    ],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Sancaktepe" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-01T10:00:00.000Z",
+    "updatedAt": "2025-07-01T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000002c",
+    "name": "elifns.g",
+    "email": "elifns.g@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 20,
+    "profilePicture": "https://cdn.example.com/u/elifns.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000008",
+        "pitch": "66p000000000000000000012",
+        "company": "66c200000000000000000013",
+        "bookedBy": "66u10000000000000000002c",
+        "start": "2025-08-30T18:00:00.000Z",
+        "status": "pending",
+        "totalPlayers": 12,
+        "price": {
+          "hourlyRate": 700,
+          "currency": "TRY",
+          "multiplier": 1.05,
+          "discount": 70,
+          "tax": 0,
+          "total": 665,
+          "paid": false,
+          "method": "card",
+          "paidAt": "2025-08-01T09:00:00.000Z"
+        }
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Sultanbeyli" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-05T10:00:00.000Z",
+    "updatedAt": "2025-05-06T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000002d",
+    "name": "salih.d",
+    "email": "salih.d@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 42,
+    "profilePicture": "https://cdn.example.com/u/salih.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u10000000000000000002e",
+        "name": "ercan.t",
+        "email": "ercan.t@example.com",
+        "school": "—",
+        "age": 45,
+        "profilePicture": "https://cdn.example.com/u/ercan.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kartal" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Pendik" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-01T10:00:00.000Z",
+    "updatedAt": "2025-02-01T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000002e",
+    "name": "ercan.t",
+    "email": "ercan.t@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": true,
+    "isDeleted": false,
+    "age": 45,
+    "profilePicture": "https://cdn.example.com/u/ercan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000013",
+        "name": "Nilüfer Pro Arena",
+        "rating": { "averageRating": 3.8 },
+        "location": {
+          "address": {
+            "street": "FSM Bulvarı 120",
+            "neighborhood": "Odunluk",
+            "city": "Bursa",
+            "district": "Nilüfer",
+            "postalCode": "16110",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [28.977, 40.2219]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kartal" },
+    "goalKeeper": false,
+    "createdAt": "2024-12-01T10:00:00.000Z",
+    "updatedAt": "2025-06-01T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000002f",
+    "name": "feyza.er",
+    "email": "feyza.er@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 19,
+    "profilePicture": "https://cdn.example.com/u/feyza.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000006",
+        "createdBy": "66u10000000000000000002f",
+        "name": "Sarıyer Sabah Koşusu + Maç",
+        "startsAt": "2025-09-01T07:00:00.000Z",
+        "address": {
+          "address": "Sarıyer Sahil",
+          "district": "Sarıyer",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.051, 41.17] }
+        },
+        "playersNeeded": 5,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u10000000000000000002f",
+            "joinedAt": "2025-08-01T07:00:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "Sahil sonrası",
+        "status": "open",
+        "adminAdvert": ["66u10000000000000000002f"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Sarıyer" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-12T10:00:00.000Z",
+    "updatedAt": "2025-07-12T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000030",
+    "name": "cihan.k",
+    "email": "cihan.k@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 39,
+    "profilePicture": "https://cdn.example.com/u/cihan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000014",
+        "name": "Palandöken Indoor",
+        "rating": { "averageRating": 4.0 },
+        "location": {
+          "address": {
+            "street": "Palandöken Cad. 3",
+            "neighborhood": "Yıldızkent",
+            "city": "Erzurum",
+            "district": "Palandöken",
+            "postalCode": "25070",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [41.2867, 39.8889]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bakırköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-05T09:00:00.000Z",
+    "updatedAt": "2025-07-05T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000031",
+    "name": "leyla.rr",
+    "email": "leyla.rr@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 29,
+    "profilePicture": "https://cdn.example.com/u/leyla.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000032",
+        "name": "umut.er",
+        "email": "umut.er@example.com",
+        "school": "—",
+        "age": 27,
+        "profilePicture": "https://cdn.example.com/u/umuter.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kağıthane" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kağıthane" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-05T10:00:00.000Z",
+    "updatedAt": "2025-07-05T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000032",
+    "name": "umut.er",
+    "email": "umut.er@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 27,
+    "profilePicture": "https://cdn.example.com/u/umuter.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p000000000000000000015",
+        "name": "Avcılar Denizköşk",
+        "description": "Sahil yolu.",
+        "location": {
+          "address": {
+            "street": "Sahil Yolu",
+            "neighborhood": "Denizköşkler",
+            "city": "İstanbul",
+            "district": "Avcılar",
+            "postalCode": "34320",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [28.722, 40.9775]
+        },
+        "company": "66c200000000000000000014",
+        "specifications": {
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 18 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": false,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false
+        },
+        "pricing": {
+          "hourlyRate": 900,
+          "nightHourlyRate": 1100,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.1
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90506 123 45 67",
+          "email": "avcilar@denizkosk.com"
+        },
+        "rating": { "averageRating": 3.8, "totalReviews": 21 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kağıthane" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-05T10:00:00.000Z",
+    "updatedAt": "2025-07-05T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000033",
+    "name": "pelin.y",
+    "email": "pelin.y@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 20,
+    "profilePicture": "https://cdn.example.com/u/pelin.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000034",
+        "name": "kaan.tn",
+        "email": "kaan.tn@example.com",
+        "school": "—",
+        "age": 20,
+        "profilePicture": "https://cdn.example.com/u/kaantn.jpg",
+        "goalKeeper": true,
+        "location": { "city": "İstanbul", "district": "Beyoğlu" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beyoğlu" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-12T10:00:00.000Z",
+    "updatedAt": "2025-06-12T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000034",
+    "name": "kaan.tn",
+    "email": "kaan.tn@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 20,
+    "profilePicture": "https://cdn.example.com/u/kaantn.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000016",
+        "name": "Serdivan Genç Arena",
+        "rating": { "averageRating": 3.4 },
+        "location": {
+          "address": {
+            "street": "İstiklal Cad. 19",
+            "neighborhood": "Serdivan",
+            "city": "Sakarya",
+            "district": "Serdivan",
+            "postalCode": "54050",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [30.3829, 40.7731]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Beyoğlu" },
+    "goalKeeper": true,
+    "createdAt": "2025-06-12T10:00:00.000Z",
+    "updatedAt": "2025-07-12T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000035",
+    "name": "esra.dd",
+    "email": "esra.dd@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 37,
+    "profilePicture": "https://cdn.example.com/u/esra.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b100000000000000000009",
+        "pitch": "66p000000000000000000017",
+        "company": "66c200000000000000000015",
+        "bookedBy": "66u100000000000000000035",
+        "start": "2025-08-16T18:00:00.000Z",
+        "status": "cancelled",
+        "cancel": {
+          "at": "2025-08-15T12:00:00.000Z",
+          "by": "66u100000000000000000035",
+          "reason": "Hastalık"
+        },
+        "cancelModel": "User",
+        "totalPlayers": 10,
+        "price": {
+          "hourlyRate": 800,
+          "currency": "TRY",
+          "multiplier": 1,
+          "discount": 0,
+          "tax": 0,
+          "total": 800,
+          "paid": false,
+          "method": "card",
+          "paidAt": "2025-08-01T10:00:00.000Z"
+        },
+        "notes": "İade bekleniyor"
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-10T09:00:00.000Z",
+    "updatedAt": "2025-08-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000036",
+    "name": "ali.can",
+    "email": "ali.can@example.com",
+    "isValid": true,
+    "role": "companyOwner",
+    "archived": false,
+    "isDeleted": false,
+    "age": 41,
+    "profilePicture": "https://cdn.example.com/u/ali.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [
+      {
+        "_id": "66p000000000000000000018",
+        "name": "Seyhan Futbol Park",
+        "description": "Doğal çim.",
+        "location": {
+          "address": {
+            "street": "Ziyapaşa Bulvarı 33",
+            "neighborhood": "Kurtuluş",
+            "city": "Adana",
+            "district": "Seyhan",
+            "postalCode": "01160",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [35.3213, 36.9966]
+        },
+        "company": "66c200000000000000000016",
+        "specifications": {
+          "surfaceType": "natural_grass",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 22, "spectators": 100 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": true
+        },
+        "pricing": {
+          "hourlyRate": 2200,
+          "nightHourlyRate": 2500,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.2,
+          "weekendMultiplier": 1.1
+        },
+        "closed": false,
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+90554 123 45 67",
+          "email": "info@seyhanpark.com"
+        },
+        "rating": { "averageRating": 4.6, "totalReviews": 75 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      }
+    ],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Ataşehir" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-10T10:00:00.000Z",
+    "updatedAt": "2025-07-10T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000037",
+    "name": "buse.yy",
+    "email": "buse.yy@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 18,
+    "profilePicture": "https://cdn.example.com/u/buse.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000038",
+        "name": "efe.rr",
+        "email": "efe.rr@example.com",
+        "school": "—",
+        "age": 19,
+        "profilePicture": "https://cdn.example.com/u/efe.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kağıthane" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kağıthane" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-01T10:00:00.000Z",
+    "updatedAt": "2025-07-01T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000038",
+    "name": "efe.rr",
+    "email": "efe.rr@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": true,
+    "isDeleted": false,
+    "age": 19,
+    "profilePicture": "https://cdn.example.com/u/efe.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b10000000000000000000a",
+        "pitch": "66p000000000000000000019",
+        "company": "66c200000000000000000017",
+        "bookedBy": "66u100000000000000000038",
+        "start": "2025-08-18T16:00:00.000Z",
+        "status": "completed",
+        "totalPlayers": 10,
+        "price": {
+          "hourlyRate": 600,
+          "currency": "TRY",
+          "multiplier": 1,
+          "discount": 0,
+          "tax": 0,
+          "total": 600,
+          "paid": true,
+          "method": "cash",
+          "paidAt": "2025-08-01T10:00:00.000Z"
+        }
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kağıthane" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-21T10:00:00.000Z",
+    "updatedAt": "2025-07-21T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000039",
+    "name": "nazli.tr",
+    "email": "nazli.tr@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 30,
+    "profilePicture": "https://cdn.example.com/u/nazli.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000001a",
+        "name": "Çayyolu Indoor",
+        "rating": { "averageRating": 4.2 },
+        "location": {
+          "address": {
+            "street": "Park Caddesi 7",
+            "neighborhood": "Çayyolu",
+            "city": "Ankara",
+            "district": "Çankaya",
+            "postalCode": "06810",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [32.7191, 39.8841]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Sarıyer" },
+    "goalKeeper": false,
+    "createdAt": "2025-04-12T10:00:00.000Z",
+    "updatedAt": "2025-07-12T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000003a",
+    "name": "taha.ee",
+    "email": "taha.ee@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 18,
+    "profilePicture": "https://cdn.example.com/u/taha.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u10000000000000000003b",
+        "name": "kerem.pa",
+        "email": "kerem.pa@example.com",
+        "school": "—",
+        "age": 19,
+        "profilePicture": "https://cdn.example.com/u/kerem.jpg",
+        "goalKeeper": true,
+        "location": { "city": "İstanbul", "district": "Bahçelievler" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bahçelievler" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-22T10:00:00.000Z",
+    "updatedAt": "2025-06-22T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000003b",
+    "name": "kerem.pa",
+    "email": "kerem.pa@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": true,
+    "isDeleted": false,
+    "age": 19,
+    "profilePicture": "https://cdn.example.com/u/kerem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000001b",
+        "name": "Talas Mini",
+        "rating": { "averageRating": 3.6 },
+        "location": {
+          "address": {
+            "street": "İki Eylül Cad. 21",
+            "neighborhood": "Odunpazarı",
+            "city": "Eskişehir",
+            "district": "Odunpazarı",
+            "postalCode": "26010",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [30.5206, 39.765]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bahçelievler" },
+    "goalKeeper": true,
+    "createdAt": "2025-05-22T10:00:00.000Z",
+    "updatedAt": "2025-07-22T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000003c",
+    "name": "yaren.ks",
+    "email": "yaren.ks@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 23,
+    "profilePicture": "https://cdn.example.com/u/yaren.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b10000000000000000000b",
+        "pitch": "66p00000000000000000001c",
+        "company": "66c200000000000000000018",
+        "bookedBy": "66u10000000000000000003c",
+        "start": "2025-08-19T19:00:00.000Z",
+        "status": "confirmed",
+        "totalPlayers": 12,
+        "price": {
+          "hourlyRate": 720,
+          "currency": "TRY",
+          "multiplier": 1.1,
+          "discount": 0,
+          "tax": 0,
+          "total": 792,
+          "paid": true,
+          "method": "card",
+          "paidAt": "2025-08-02T09:00:00.000Z"
+        }
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kartal" },
+    "goalKeeper": false,
+    "createdAt": "2025-03-03T10:00:00.000Z",
+    "updatedAt": "2025-07-03T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000003d",
+    "name": "nida.ss",
+    "email": "nida.ss@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 24,
+    "profilePicture": "https://cdn.example.com/u/nida.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u10000000000000000003e",
+        "name": "duru.mn",
+        "email": "duru.mn@example.com",
+        "school": "—",
+        "age": 23,
+        "profilePicture": "https://cdn.example.com/u/duru.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kadıköy" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000007",
+        "createdBy": "66u10000000000000000003d",
+        "name": "Kadıköy Kadınlar Maçı",
+        "startsAt": "2025-08-26T20:00:00.000Z",
+        "pitch": "66p000000000000000000002",
+        "playersNeeded": 6,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u10000000000000000003d",
+            "joinedAt": "2025-08-02T10:00:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "Fair play",
+        "status": "open",
+        "adminAdvert": ["66u10000000000000000003d"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-10T10:00:00.000Z",
+    "updatedAt": "2025-07-10T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000003e",
+    "name": "duru.mn",
+    "email": "duru.mn@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 23,
+    "profilePicture": "https://cdn.example.com/u/duru.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000001d",
+        "name": "Moda Sahil Çim",
+        "rating": { "averageRating": 4.2 },
+        "location": {
+          "address": {
+            "street": "Moda Caddesi 7",
+            "neighborhood": "Moda",
+            "city": "İstanbul",
+            "district": "Kadıköy",
+            "postalCode": "34710",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.0255, 40.9859]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [
+      {
+        "_id": "66a100000000000000000008",
+        "createdBy": "66u100000000000000000021",
+        "name": "Kadıköy Sabah Maçı",
+        "startsAt": "2025-08-28T08:00:00.000Z",
+        "pitch": "66p000000000000000000002",
+        "playersNeeded": 4,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u100000000000000000021",
+            "joinedAt": "2025-08-01T08:00:00.000Z"
+          }
+        ],
+        "waitingList": [
+          {
+            "user": "66u10000000000000000003e",
+            "requestedAt": "2025-08-02T12:00:00.000Z",
+            "seen": true
+          }
+        ],
+        "notes": "Kahvaltı sonrası",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000021"]
+      }
+    ],
+    "location": { "city": "İstanbul", "district": "Kadıköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-12T10:00:00.000Z",
+    "updatedAt": "2025-07-12T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u10000000000000000003f",
+    "name": "burcu.lr",
+    "email": "burcu.lr@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 28,
+    "profilePicture": "https://cdn.example.com/u/burcu.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000001e",
+        "name": "Mezitli Sahil Saha",
+        "rating": { "averageRating": 3.5 },
+        "location": {
+          "address": {
+            "street": "Sahil Yolu 20",
+            "neighborhood": "Mezitli",
+            "city": "Mersin",
+            "district": "Mezitli",
+            "postalCode": "33330",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [34.5522, 36.7733]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Avcılar" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-02T10:00:00.000Z",
+    "updatedAt": "2025-07-02T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000040",
+    "name": "erdem.ys",
+    "email": "erdem.ys@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 44,
+    "profilePicture": "https://cdn.example.com/u/erdem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Şişli" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-01T09:00:00.000Z",
+    "updatedAt": "2025-07-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000041",
+    "name": "umut.kk",
+    "email": "umut.kk@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": true,
+    "isDeleted": false,
+    "age": 29,
+    "profilePicture": "https://cdn.example.com/u/umutkk.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000042",
+        "name": "meltem.s",
+        "email": "meltem.s@example.com",
+        "school": "—",
+        "age": 28,
+        "profilePicture": "https://cdn.example.com/u/meltem.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Şişli" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Şişli" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-10T09:00:00.000Z",
+    "updatedAt": "2025-06-10T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000042",
+    "name": "meltem.s",
+    "email": "meltem.s@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 28,
+    "profilePicture": "https://cdn.example.com/u/meltem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p00000000000000000001f",
+        "name": "Samsun Atakum Sahil",
+        "rating": { "averageRating": 4.1 },
+        "location": {
+          "address": {
+            "street": "Adnan Menderes Blv. 101",
+            "neighborhood": "Atakum",
+            "city": "Samsun",
+            "district": "Atakum",
+            "postalCode": "55200",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [36.296, 41.3317]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Şişli" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-11T09:00:00.000Z",
+    "updatedAt": "2025-07-11T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000043",
+    "name": "tolga.mm",
+    "email": "tolga.mm@example.com",
+    "isValid": true,
+    "role": "companyOwner",
+    "archived": false,
+    "isDeleted": false,
+    "age": 37,
+    "profilePicture": "https://cdn.example.com/u/tolga.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [
+      {
+        "_id": "66b10000000000000000000c",
+        "pitch": "66p000000000000000000020",
+        "company": "66c200000000000000000019",
+        "bookedBy": "66u100000000000000000043",
+        "start": "2025-08-30T20:00:00.000Z",
+        "status": "pending",
+        "totalPlayers": 12,
+        "price": {
+          "hourlyRate": 1000,
+          "currency": "TRY",
+          "multiplier": 1.2,
+          "discount": 0,
+          "tax": 0,
+          "total": 1200,
+          "paid": false,
+          "method": "transfer",
+          "paidAt": "2025-08-01T09:00:00.000Z"
+        },
+        "notes": "Hafta sonu"
+      }
+    ],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Maltepe" },
+    "goalKeeper": false,
+    "createdAt": "2025-01-20T09:00:00.000Z",
+    "updatedAt": "2025-07-20T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000044",
+    "name": "sinem.rr",
+    "email": "sinem.rr@example.com",
+    "isValid": true,
+    "role": "admin",
+    "archived": false,
+    "isDeleted": false,
+    "age": 34,
+    "profilePicture": "https://cdn.example.com/u/sinem.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000045",
+        "name": "baris.kc",
+        "email": "baris.kc@example.com",
+        "school": "—",
+        "age": 33,
+        "profilePicture": "https://cdn.example.com/u/baris.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Maslak" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [
+      {
+        "_id": "66a100000000000000000009",
+        "createdBy": "66u100000000000000000044",
+        "name": "Maslak Öğle Maçı",
+        "startsAt": "2025-08-14T12:00:00.000Z",
+        "address": {
+          "address": "Maslak Ayazağa",
+          "district": "Sarıyer",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.02, 41.11] }
+        },
+        "playersNeeded": 3,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          {
+            "user": "66u100000000000000000044",
+            "joinedAt": "2025-08-01T12:00:00.000Z"
+          }
+        ],
+        "waitingList": [],
+        "notes": "1 saatlik",
+        "status": "open",
+        "adminAdvert": ["66u100000000000000000044"]
+      }
+    ],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Maslak" },
+    "goalKeeper": false,
+    "createdAt": "2025-05-01T09:00:00.000Z",
+    "updatedAt": "2025-07-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000045",
+    "name": "baris.kc",
+    "email": "baris.kc@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": true,
+    "isDeleted": false,
+    "age": 33,
+    "profilePicture": "https://cdn.example.com/u/baris.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000021",
+        "name": "Ümraniye Metro",
+        "rating": { "averageRating": 4.5 },
+        "location": {
+          "address": {
+            "street": "Alemdağ Cad. 101",
+            "neighborhood": "Atakent",
+            "city": "İstanbul",
+            "district": "Ümraniye",
+            "postalCode": "34760",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.131, 41.0249]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Maslak" },
+    "goalKeeper": false,
+    "createdAt": "2025-04-01T09:00:00.000Z",
+    "updatedAt": "2025-07-01T09:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000046",
+    "name": "aysel.yy",
+    "email": "aysel.yy@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 31,
+    "profilePicture": "https://cdn.example.com/u/aysel.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000047",
+        "name": "kerem.gg",
+        "email": "kerem.gg@example.com",
+        "school": "—",
+        "age": 28,
+        "profilePicture": "https://cdn.example.com/u/keremgg.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Kartal" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kartal" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-20T10:00:00.000Z",
+    "updatedAt": "2025-07-20T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000047",
+    "name": "kerem.gg",
+    "email": "kerem.gg@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": true,
+    "isDeleted": false,
+    "age": 28,
+    "profilePicture": "https://cdn.example.com/u/keremgg.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000022",
+        "name": "İzmit Sanayi Saha",
+        "rating": { "averageRating": 3.8 },
+        "location": {
+          "address": {
+            "street": "Sanayi Cad. 50",
+            "neighborhood": "Sanayi",
+            "city": "Kocaeli",
+            "district": "İzmit",
+            "postalCode": "41060",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.941, 40.7659]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Kartal" },
+    "goalKeeper": false,
+    "createdAt": "2025-06-20T10:00:00.000Z",
+    "updatedAt": "2025-07-20T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000048",
+    "name": "canan.ll",
+    "email": "canan.ll@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 36,
+    "profilePicture": "https://cdn.example.com/u/canan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000023",
+        "name": "Bandırma Marin",
+        "rating": { "averageRating": 3.9 },
+        "location": {
+          "address": {
+            "street": "İskele Cad. 9",
+            "neighborhood": "Paşakonak",
+            "city": "Balıkesir",
+            "district": "Bandırma",
+            "postalCode": "10200",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [27.975, 40.353]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Çekmeköy" },
+    "goalKeeper": false,
+    "createdAt": "2025-02-02T10:00:00.000Z",
+    "updatedAt": "2025-07-02T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000049",
+    "name": "hasan.uu",
+    "email": "hasan.uu@example.com",
+    "isValid": false,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 34,
+    "profilePicture": "https://cdn.example.com/u/hasan.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [
+      {
+        "_id": "66u100000000000000000050",
+        "name": "cansu.op",
+        "email": "cansu.op@example.com",
+        "school": "—",
+        "age": 31,
+        "profilePicture": "https://cdn.example.com/u/cansu.jpg",
+        "goalKeeper": false,
+        "location": { "city": "İstanbul", "district": "Bağcılar" }
+      }
+    ],
+    "recentlySearchedPitch": [],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bağcılar" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-20T10:00:00.000Z",
+    "updatedAt": "2025-07-20T10:00:00.000Z"
+  },
+
+  {
+    "_id": "66u100000000000000000050",
+    "name": "cansu.op",
+    "email": "cansu.op@example.com",
+    "isValid": true,
+    "role": "user",
+    "archived": false,
+    "isDeleted": false,
+    "age": 31,
+    "profilePicture": "https://cdn.example.com/u/cansu.jpg",
+    "friends": [],
+    "selfFriendRequests": [],
+    "friendRequests": [],
+    "recentlySearchedUser": [],
+    "recentlySearchedPitch": [
+      {
+        "_id": "66p000000000000000000024",
+        "name": "Serdivan Arena",
+        "rating": { "averageRating": 3.4 },
+        "location": {
+          "address": {
+            "street": "İstiklal Cad. 19",
+            "neighborhood": "Serdivan",
+            "city": "Sakarya",
+            "district": "Serdivan",
+            "postalCode": "54050",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [30.3829, 40.7731]
+        }
+      }
+    ],
+    "favoritePitches": [],
+    "bookings": [],
+    "advertParticipation": [],
+    "advertWaitingList": [],
+    "location": { "city": "İstanbul", "district": "Bağcılar" },
+    "goalKeeper": false,
+    "createdAt": "2025-07-20T10:00:00.000Z",
+    "updatedAt": "2025-07-20T10:00:00.000Z"
+  }
+]
