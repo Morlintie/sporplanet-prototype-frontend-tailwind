@@ -154,6 +154,8 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setIsAuthenticated(true);
     setError(null);
+    setLoading(false);
+    console.log("User logged in successfully:", userData);
   };
 
   // Update user data (for profile updates)

@@ -9,7 +9,7 @@ function Header() {
   const dropdownRef = useRef(null);
 
   // Auth context
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, loading, logout } = useAuth();
 
   const handleLogoClick = () => {
     navigate("/");
@@ -30,7 +30,7 @@ function Header() {
   const handleLogout = async () => {
     await logout();
     setUserDropdownOpen(false);
-    navigate("/");
+    navigate("/auth/login");
   };
 
   // Generate initials from user name
@@ -108,7 +108,7 @@ function Header() {
           <div className="flex items-center space-x-4">
             {/* Desktop Auth Section */}
             <div className="hidden md:flex items-center space-x-4">
-              {isAuthenticated && user ? (
+              {!loading && isAuthenticated && user ? (
                 // Authenticated User Profile
                 <div className="relative" ref={dropdownRef}>
                   <button
@@ -208,7 +208,7 @@ function Header() {
                     </div>
                   )}
                 </div>
-              ) : (
+              ) : !loading ? (
                 // Login Button for Non-Authenticated Users
                 <button
                   onClick={handleLogin}
@@ -217,6 +217,11 @@ function Header() {
                 >
                   Giriş Yap
                 </button>
+              ) : (
+                // Loading state - show nothing or a small spinner
+                <div className="w-10 h-10 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500"></div>
+                </div>
               )}
             </div>
 
@@ -283,7 +288,7 @@ function Header() {
 
               {/* Mobile Auth Section */}
               <div className="space-y-2">
-                {isAuthenticated && user ? (
+                {!loading && isAuthenticated && user ? (
                   // Authenticated User Mobile Section
                   <>
                     {/* User Profile Info */}
@@ -400,7 +405,7 @@ function Header() {
                       Çıkış Yap
                     </button>
                   </>
-                ) : (
+                ) : !loading ? (
                   // Login Button for Non-Authenticated Users
                   <button
                     onClick={() => {
@@ -425,6 +430,11 @@ function Header() {
                     </svg>
                     Giriş Yap
                   </button>
+                ) : (
+                  // Loading state for mobile
+                  <div className="flex items-center justify-center px-3 py-2">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-500"></div>
+                  </div>
                 )}
               </div>
             </div>

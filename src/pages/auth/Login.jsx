@@ -150,6 +150,10 @@ function Login() {
       setSuccess(translateMessage(data.msg || "Login successful", true));
       setTimeout(() => {
         navigate("/");
+        // Refresh auth state after navigation to ensure consistency
+        setTimeout(() => {
+          checkAuth();
+        }, 100);
       }, 1500);
     } catch (err) {
       console.error("Google authentication error:", err);
@@ -277,8 +281,14 @@ function Login() {
 
         // Success message and redirect
         setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
+
+        // Allow time for the auth state to propagate to all components
         setTimeout(() => {
           navigate("/");
+          // Refresh auth state after navigation to ensure consistency
+          setTimeout(() => {
+            checkAuth();
+          }, 100);
         }, 1500);
       } else {
         // Handle case where user doesn't exist
