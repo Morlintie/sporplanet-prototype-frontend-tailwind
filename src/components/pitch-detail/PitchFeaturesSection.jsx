@@ -55,11 +55,6 @@ function PitchFeaturesSection({ pitch }) {
     { key: 'locker', label: 'Dolap', category: 'Tesis' },
     { key: 'spectator area', label: 'Seyirci Alanı', category: 'Sosyal' },
     {key:'masjid',label:'Mescit',category:'Tesis'},
-    {key:'goolkeperGloves',label:'Kaleci Eldivenleri',category:'Hizmet'},
-    
-    
-    
-
   ];
 
   // Sahanın sahip olduğu özellikler

@@ -61,7 +61,6 @@ function Header() {
   const navLinks = [
     { name: "Maç İlanları", path: "/matches" },
     { name: "Halısaha Rezervasyonu", path: "/reservation" },
-    { name: "Kaleciler", path: "/goalkeeper" },
     { name: "Turnuvalar", path: "/tournaments" },
   ];
 
@@ -187,7 +186,7 @@ function Header() {
 
                       <button
                         onClick={() => {
-                          navigate("/settings");
+                          navigate("/profile?section=settings");
                           setUserDropdownOpen(false);
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"

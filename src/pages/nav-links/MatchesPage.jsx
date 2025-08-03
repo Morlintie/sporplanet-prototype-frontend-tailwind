@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "../../components/shared/Header";
 import Footer from "../../components/shared/Footer";
 import MatchesHero from "../../components/matches/MatchesHero";
@@ -6,9 +7,32 @@ import MatchesList from "../../components/matches/MatchesList";
 import CreateAdModal from "../../components/matches/CreateAdModal";
 
 function MatchesPage() {
+  const location = useLocation();
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prefilledData, setPrefilledData] = useState(null);
+
+  // Check if we should open modal from reservation
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const action = urlParams.get('action');
+    
+    if (action === 'create') {
+      const storedData = localStorage.getItem('createListingData');
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData);
+          setPrefilledData(parsedData);
+          setIsModalOpen(true);
+          // Clear the stored data
+          localStorage.removeItem('createListingData');
+        } catch (error) {
+          console.error('Error parsing stored listing data:', error);
+        }
+      }
+    }
+  }, [location.search]);
 
   // Dummy match data
   const matches = [
@@ -69,7 +93,7 @@ function MatchesPage() {
     },
     {
       id: 5,
-      title: "11v11 Kaleci Aranıyor",
+      title: "11v11 Oyuncu Aranıyor",
       date: "Cumartesi, 10:00",
       location: "Futbol Akademi",
       players: "10/11 oyuncu",
@@ -78,7 +102,7 @@ function MatchesPage() {
       type: "player-ads",
       pricePerPerson: 35,
       difficulty: "Orta Seviye",
-      description: "Sadece kaleci arıyoruz. Diğer pozisyonlar dolu."
+      description: "Sadece 1 oyuncu arıyoruz. Diğer pozisyonlar dolu."
     },
     {
       id: 6,
@@ -170,11 +194,12 @@ function MatchesPage() {
         onCreateAdClick={handleCreateAdClick}
       />
 
-      <CreateAdModal 
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitAd}
-      />
+              <CreateAdModal 
+          isOpen={isModalOpen} 
+          onClose={handleCloseModal} 
+          onSubmit={handleSubmitAd}
+          prefilledData={prefilledData}
+        />
       
       <Footer />
     </div>

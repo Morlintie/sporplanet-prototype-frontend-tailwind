@@ -2,7 +2,6 @@ import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
 import MatchesFeature from "../components/home/MatchesFeature";
 import ReservationFeature from "../components/home/ReservationFeature";
-import GoalkeeperFeature from "../components/home/GoalkeeperFeature";
 import TournamentFeature from "../components/home/TournamentFeature";
 
 function HomePage() {
@@ -25,7 +24,7 @@ function HomePage() {
                <span className="text-green-200"> Burada Başlıyor</span>
              </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-green-100">
-              Arkadaşlarını bul, maç organize et, saha kirala, kaleci keşfet. 
+              Arkadaşlarını bul, maç organize et, saha kirala. 
               Türkiye'nin en büyük futbol topluluğuna katıl!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -49,15 +48,14 @@ function HomePage() {
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               SporPlanet ile futbol tutkunu ile ilgili tüm ihtiyaçlarını karşılayabilirsin. 
-              Maç bulma'dan saha kiralamaya, kaleci arami'dan turnuvalara kadar!
+              Maç bulma'dan saha kiralamaya, turnuvalara kadar!
             </p>
           </div>
 
           {/* Feature Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <MatchesFeature />
             <ReservationFeature />
-            <GoalkeeperFeature />
             <TournamentFeature />
           </div>
         </div>

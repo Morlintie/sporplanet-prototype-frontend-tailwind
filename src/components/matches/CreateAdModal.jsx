@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function CreateAdModal({ isOpen, onClose, onSubmit }) {
+function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
   const [formData, setFormData] = useState({
     type: "team-ads",
     title: "",
@@ -20,6 +20,24 @@ function CreateAdModal({ isOpen, onClose, onSubmit }) {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0);
   });
+
+  // Prefilled data'yı kullan
+  useEffect(() => {
+    if (prefilledData && isOpen) {
+      setFormData({
+        type: "player-ads", // Rezervasyondan gelen veriler genelde oyuncu arayan ilanlar
+        title: prefilledData.title || "",
+        date: prefilledData.date || "",
+        time: prefilledData.time || "",
+        location: prefilledData.location || "",
+        maxPlayers: prefilledData.capacity ? prefilledData.capacity.replace('v', '') : "",
+        currentPlayers: "1", // Rezervasyon sahibi
+        pricePerPerson: prefilledData.price ? prefilledData.price.toString() : "",
+        difficulty: "Orta Seviye",
+        description: `${prefilledData.pitchName} sahasında ${prefilledData.duration} süreyle maç yapacağız. Oyuncu arıyoruz!`
+      });
+    }
+  }, [prefilledData, isOpen]);
 
   // Tarihi görüntüleme formatına çevir (YYYY-MM-DD -> DD.MM.YYYY)
   const formatDateForDisplay = (dateString) => {

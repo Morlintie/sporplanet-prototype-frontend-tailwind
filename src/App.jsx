@@ -3,12 +3,12 @@ import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
 import MatchesPage from "./pages/nav-links/MatchesPage";
-import GoalkeeperPage from "./pages/nav-links/GoalkeeperPage";
 import TournamentsPage from "./pages/nav-links/TournamentsPage";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import GoogleFailure from "./pages/auth/GoogleFailure";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -20,9 +20,8 @@ function App() {
           <Route path="/matches" element={<MatchesPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
           <Route path="/pitch-detail/:pitchId" element={<PitchDetailPage />} />
-          <Route path="/goalkeeper" element={<GoalkeeperPage />} />
           <Route path="/tournaments" element={<TournamentsPage />} />
-
+          <Route path="/profile" element={<ProfilePage />} />
           {/* Protected Routes - Require Authentication */}
 
           {/* Public Auth Routes */}
