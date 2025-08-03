@@ -118,23 +118,34 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      // Call logout endpoint if available
-      await fetch("/api/v1/auth/logout", {
-        method: "POST",
+      // Call logout endpoint to clear server-side tokens and cookies
+      const response = await fetch("/api/v1/auth/logout", {
+        method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-      }).catch(() => {
-        // Ignore logout endpoint errors - just clear local state
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Logout successful:", data.msg || "User logged out");
+      } else {
+        console.warn(
+          "Logout endpoint returned error, clearing local state anyway"
+        );
+      }
     } catch (error) {
       console.error("Logout error:", error);
+      // Even if logout API fails, we still clear local state
     } finally {
-      // Always clear local state
+      // Always clear local authentication state
       setUser(null);
       setIsAuthenticated(false);
       setError(null);
+      setLoading(false);
+
+      console.log("User authentication state cleared");
     }
   };
 
