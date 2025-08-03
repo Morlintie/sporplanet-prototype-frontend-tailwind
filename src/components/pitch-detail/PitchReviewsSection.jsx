@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import AuthRequiredPopup from "../shared/AuthRequiredPopup";
 import "../../styles/review-animations.css";
 
 function PitchReviewsSection({
@@ -11,6 +13,7 @@ function PitchReviewsSection({
   currentReviewsCount,
   canLoadMoreReviews,
   onLoadMoreReviews,
+  onReviewUpdate,
 }) {
   // State for managing expanded replies
   const [expandedReplies, setExpandedReplies] = useState({});
@@ -20,6 +23,40 @@ function PitchReviewsSection({
 
   // State for reply input values
   const [replyTexts, setReplyTexts] = useState({});
+
+  // State for auth required popup
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [authPopupActionType, setAuthPopupActionType] = useState("default");
+
+  // Auth context
+  const { user, isAuthenticated } = useAuth();
+
+  // Error message translation function
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "Please provide all required data.": "Tüm gerekli bilgileri girin.",
+      "Review not found.": "Yorum bulunamadı.",
+      "You have been banned, please get contact with our customer service.":
+        "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Bu işlemi yapmak için giriş yapmalısınız.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
   // Helper function to format date with more detailed format
   const formatDate = (dateString) => {
     if (!dateString) return "Tarih bilinmiyor";
@@ -102,15 +139,146 @@ function PitchReviewsSection({
     return getArrayLength(review?.replies);
   };
 
-  // Handlers for interactions
-  const handleLike = (reviewId) => {
-    // TODO: Implement backend API call for liking a review
-    console.log("Like review:", reviewId);
+  // Auth popup handlers
+  const showAuthRequiredPopup = (actionType) => {
+    setAuthPopupActionType(actionType);
+    setShowAuthPopup(true);
   };
 
-  const handleDislike = (reviewId) => {
-    // TODO: Implement backend API call for disliking a review
-    console.log("Dislike review:", reviewId);
+  const hideAuthRequiredPopup = () => {
+    setShowAuthPopup(false);
+    setAuthPopupActionType("default");
+  };
+
+  // Check if user has already liked a review
+  const hasUserLikedReview = (review) => {
+    if (!isAuthenticated || !user?._id) return false;
+    return review?.likes?.includes(user._id) || false;
+  };
+
+  // Check if user has already disliked a review
+  const hasUserDislikedReview = (review) => {
+    if (!isAuthenticated || !user?._id) return false;
+    return review?.dislikes?.includes(user._id) || false;
+  };
+
+  // Handlers for interactions
+  const handleLike = async (reviewId) => {
+    if (!isAuthenticated || !user?._id) {
+      showAuthRequiredPopup("like");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/v1/pitch-review/like/${reviewId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 401) {
+            errorMessage = "Unauthorized";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status === 404) {
+            errorMessage = "Review not found.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      // Update the review in the parent component
+      if (data.review && onReviewUpdate) {
+        onReviewUpdate(data.review);
+      }
+
+      console.log("Review liked/unliked successfully:", data);
+    } catch (error) {
+      console.error("Error liking review:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        alert(translateMessage("Failed to fetch"));
+      } else {
+        alert(translateMessage(error.message));
+      }
+    }
+  };
+
+  const handleDislike = async (reviewId) => {
+    if (!isAuthenticated || !user?._id) {
+      showAuthRequiredPopup("dislike");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/v1/pitch-review/dislike/${reviewId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 401) {
+            errorMessage = "Unauthorized";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status === 404) {
+            errorMessage = "Review not found.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      // Update the review in the parent component
+      if (data.review && onReviewUpdate) {
+        onReviewUpdate(data.review);
+      }
+
+      console.log("Review disliked/undisliked successfully:", data);
+    } catch (error) {
+      console.error("Error disliking review:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        alert(translateMessage("Failed to fetch"));
+      } else {
+        alert(translateMessage(error.message));
+      }
+    }
   };
 
   const toggleReplies = (reviewId) => {
@@ -145,15 +313,83 @@ function PitchReviewsSection({
     }));
   };
 
-  const handleReplySubmit = (reviewId) => {
+  const handleReplySubmit = async (reviewId) => {
+    if (!isAuthenticated || !user?._id) {
+      showAuthRequiredPopup("reply");
+      return;
+    }
+
     const replyText = replyTexts[reviewId]?.trim();
-    if (!replyText) return;
+    if (!replyText) {
+      alert("Yorum boş olamaz.");
+      return;
+    }
 
-    // TODO: Implement backend API call for submitting a reply
-    console.log("Submit reply to review:", reviewId, "Text:", replyText);
+    try {
+      const response = await fetch(`/api/v1/pitch-review/reply/${reviewId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          comment: replyText,
+        }),
+      });
 
-    // Hide form and clear text
-    hideReplyForm(reviewId);
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 400) {
+            errorMessage = "Please provide all required data.";
+          } else if (response.status === 401) {
+            errorMessage = "Unauthorized";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status === 404) {
+            errorMessage = "Review not found.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      // Update the review in the parent component
+      if (data.review && onReviewUpdate) {
+        onReviewUpdate(data.review);
+      }
+
+      console.log("Reply submitted successfully:", data);
+
+      // Hide form and clear text
+      hideReplyForm(reviewId);
+
+      // Automatically expand replies to show the new reply
+      setExpandedReplies((prev) => ({
+        ...prev,
+        [reviewId]: true,
+      }));
+    } catch (error) {
+      console.error("Error submitting reply:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        alert(translateMessage("Failed to fetch"));
+      } else {
+        alert(translateMessage(error.message));
+      }
+    }
   };
 
   return (
@@ -230,7 +466,7 @@ function PitchReviewsSection({
                     <img
                       src={review.user.profilePicture}
                       alt={review.user.name}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover bg-gray-100"
                       onError={(e) => {
                         e.target.style.display = "none";
                         e.target.nextSibling.style.display = "flex";
@@ -336,32 +572,34 @@ function PitchReviewsSection({
                           Fotoğraflar ({getArrayLength(review.photos)})
                         </p>
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         {review.photos.map((photo, index) => {
                           if (!photo || !photo.url) return null;
 
                           return (
                             <div
                               key={photo.public_id || `photo-${index}`}
-                              className="relative group cursor-pointer"
+                              className="cursor-pointer"
                               onClick={() => {
-                                // TODO: Implement photo lightbox/modal
                                 window.open(photo.url, "_blank");
                               }}
                             >
                               <img
                                 src={photo.url}
                                 alt={`Yorum fotoğrafı ${index + 1}`}
-                                className="w-full h-16 rounded object-cover border border-gray-200 group-hover:opacity-90 transition-opacity shadow-sm"
-                                loading="lazy"
+                                className="w-full h-16 rounded object-cover border border-gray-300"
                                 onError={(e) => {
-                                  e.target.parentElement.style.display = "none";
+                                  e.target.style.display = "none";
+                                  e.target.nextElementSibling.style.display =
+                                    "flex";
                                 }}
                               />
-                              {/* Hover overlay */}
-                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded transition-all duration-200 flex items-center justify-center">
+                              <div
+                                className="w-full h-16 rounded border border-gray-300 bg-gray-100 flex items-center justify-center"
+                                style={{ display: "none" }}
+                              >
                                 <svg
-                                  className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                  className="w-6 h-6 text-gray-400"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -370,7 +608,7 @@ function PitchReviewsSection({
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={2}
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2z"
                                   />
                                 </svg>
                               </div>
@@ -392,17 +630,31 @@ function PitchReviewsSection({
                       {/* Like Button */}
                       <button
                         onClick={() => handleLike(review._id)}
-                        className="flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm review-interaction like-button hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
-                        title="Beğen"
+                        className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm review-interaction like-button focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 ${
+                          hasUserLikedReview(review)
+                            ? "bg-green-100 text-green-800 border border-green-300"
+                            : "hover:bg-green-50 text-green-600"
+                        }`}
+                        title={
+                          hasUserLikedReview(review)
+                            ? "Beğeniyi geri al"
+                            : "Beğen"
+                        }
                       >
                         <svg
-                          className="w-4 h-4 text-green-600"
-                          fill="currentColor"
+                          className="w-4 h-4"
+                          fill={
+                            hasUserLikedReview(review) ? "currentColor" : "none"
+                          }
+                          stroke={
+                            hasUserLikedReview(review) ? "none" : "currentColor"
+                          }
+                          strokeWidth={hasUserLikedReview(review) ? 0 : 2}
                           viewBox="0 0 20 20"
                         >
                           <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                         </svg>
-                        <span className="font-medium text-green-700">
+                        <span className="font-medium">
                           {getLikesCount(review)}
                         </span>
                       </button>
@@ -410,17 +662,35 @@ function PitchReviewsSection({
                       {/* Dislike Button */}
                       <button
                         onClick={() => handleDislike(review._id)}
-                        className="flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm review-interaction dislike-button hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
-                        title="Beğenme"
+                        className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm review-interaction dislike-button focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 ${
+                          hasUserDislikedReview(review)
+                            ? "bg-red-100 text-red-800 border border-red-300"
+                            : "hover:bg-red-50 text-red-600"
+                        }`}
+                        title={
+                          hasUserDislikedReview(review)
+                            ? "Beğenmemeyi geri al"
+                            : "Beğenme"
+                        }
                       >
                         <svg
-                          className="w-4 h-4 text-red-600 transform rotate-180"
-                          fill="currentColor"
+                          className="w-4 h-4 transform rotate-180"
+                          fill={
+                            hasUserDislikedReview(review)
+                              ? "currentColor"
+                              : "none"
+                          }
+                          stroke={
+                            hasUserDislikedReview(review)
+                              ? "none"
+                              : "currentColor"
+                          }
+                          strokeWidth={hasUserDislikedReview(review) ? 0 : 2}
                           viewBox="0 0 20 20"
                         >
                           <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                         </svg>
-                        <span className="font-medium text-red-700">
+                        <span className="font-medium">
                           {getDislikesCount(review)}
                         </span>
                       </button>
@@ -458,8 +728,14 @@ function PitchReviewsSection({
 
                       {/* Reply Button */}
                       <button
-                        onClick={() => showReplyForm(review._id)}
-                        className="flex items-center space-x-1 text-xs text-gray-600 hover:text-green-600 transition-colors px-2 py-1 rounded hover:bg-green-50"
+                        onClick={() => {
+                          if (!isAuthenticated) {
+                            showAuthRequiredPopup("reply");
+                            return;
+                          }
+                          showReplyForm(review._id);
+                        }}
+                        className="flex items-center space-x-1 text-xs px-2 py-1 rounded transition-colors text-gray-600 hover:text-green-600 hover:bg-green-50"
                         title="Bu yorumu yanıtla"
                       >
                         <svg
@@ -574,10 +850,25 @@ function PitchReviewsSection({
                     <div className="mt-4 animate-slide-down">
                       <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                         <div className="flex items-start space-x-3">
-                          {/* Current User Avatar Placeholder */}
+                          {/* Current User Avatar */}
                           <div className="flex-shrink-0">
-                            <div className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-medium">
-                              S
+                            {user?.profilePicture ? (
+                              <img
+                                src={user.profilePicture}
+                                alt={user?.name || "Kullanıcı"}
+                                className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                  e.target.nextSibling.style.display = "flex";
+                                }}
+                              />
+                            ) : null}
+                            <div
+                              className={`w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-medium border-2 border-white shadow-sm ${
+                                user?.profilePicture ? "hidden" : "flex"
+                              }`}
+                            >
+                              {getInitials(user?.name || "Kullanıcı")}
                             </div>
                           </div>
 
@@ -655,6 +946,13 @@ function PitchReviewsSection({
           )}
         </div>
       )}
+
+      {/* Auth Required Popup */}
+      <AuthRequiredPopup
+        isVisible={showAuthPopup}
+        onClose={hideAuthRequiredPopup}
+        actionType={authPopupActionType}
+      />
     </div>
   );
 }

@@ -1,0 +1,71 @@
+/* Auth Required Popup Styles */
+
+.auth-required-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+.auth-required-popup-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 400px;
+  width: 90%;
+  margin: 16px;
+  padding: 24px;
+  transform: scale(0.95) translateY(20px);
+  animation: slideInPopup 0.3s ease-out forwards;
+}
+
+@keyframes slideInPopup {
+  to {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.auth-required-popup-overlay.closing .auth-required-popup-content {
+  animation: slideOutPopup 0.2s ease-in forwards;
+}
+
+@keyframes slideOutPopup {
+  to {
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+  }
+}
+
+.auth-required-popup-overlay.closing {
+  animation: fadeOutOverlay 0.2s ease-in forwards;
+}
+
+@keyframes fadeOutOverlay {
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/auth-background.css";
 
 // Loading Spinner Component
@@ -49,11 +50,11 @@ const translateMessage = (message, isSuccess = false) => {
     if (message.includes("Please provide email and password")) {
       return "Lütfen e-posta ve şifre bilgilerini girin.";
     }
-    if (message.includes("Invalid credentials")) {
-      return "Geçersiz giriş bilgileri.";
-    }
     if (message.includes("Please provide required data")) {
       return "Lütfen gerekli bilgileri sağlayın.";
+    }
+    if (message.includes("Invalid credentials")) {
+      return "Geçersiz giriş bilgileri.";
     }
     if (message.includes("Network Error") || message.includes("fetch")) {
       return "Bağlantı hatası. Lütfen internet bağlantınızı kontrol edin.";
@@ -87,6 +88,9 @@ function Login() {
   const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Auth context
+  const { login: authLogin, checkAuth } = useAuth();
 
   // UI state
   const [isLoading, setIsLoading] = useState(false);
@@ -138,13 +142,24 @@ function Login() {
         throw new Error(data.msg || "Google authentication failed");
       }
 
-      // Success - redirect to home page
-      setSuccess(translateMessage(data.msg, true));
+      // Success - use AuthContext to set user data and redirect
+      if (data.user) {
+        authLogin(data.user);
+      }
+
+      setSuccess(translateMessage(data.msg || "Login successful", true));
       setTimeout(() => {
         navigate("/");
       }, 1500);
     } catch (err) {
-      setError(translateMessage(err.message, false));
+      console.error("Google authentication error:", err);
+
+      // Handle network errors
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        setError(translateMessage("Network Error", false));
+      } else {
+        setError(translateMessage(err.message, false));
+      }
     } finally {
       setIsLoading(false);
       // Clear URL parameters
@@ -236,31 +251,7 @@ function Login() {
     }
 
     try {
-      // Mock authentication - Replace with real API call later
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Mock successful login
-      const mockUserData = {
-        id: 1,
-        firstName: "Ahmet",
-        lastName: "Yılmaz",
-        email: email,
-        phone: "+90 532 123 45 67",
-        birthDate: "1990-05-15",
-        gender: "male",
-        city: "İstanbul",
-        district: "Beşiktaş",
-      };
-
-      // Success message and redirect
-      setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
-
-      // TODO: Replace with real API call
-      /*
+      // Real API call to backend login endpoint
       const response = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: {
@@ -279,14 +270,29 @@ function Login() {
         throw new Error(data.msg || "Login failed");
       }
 
-      
-      setSuccess(translateMessage(data.msg, true));
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
-      */
+      // Check if user data is returned (user exists and login successful)
+      if (data.user) {
+        // Use AuthContext login function to set user data
+        authLogin(data.user);
+
+        // Success message and redirect
+        setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      } else {
+        // Handle case where user doesn't exist
+        throw new Error("User couldn't found.");
+      }
     } catch (err) {
-      setError(translateMessage(err.message, false));
+      console.error("Login error:", err);
+
+      // Handle network errors
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        setError(translateMessage("Network Error", false));
+      } else {
+        setError(translateMessage(err.message, false));
+      }
     } finally {
       setIsLoading(false);
     }

@@ -273,6 +273,18 @@ function PitchDetailPage() {
     }
   };
 
+  // Update a specific review in the reviews array
+  const handleReviewUpdate = (updatedReview) => {
+    setReviews((prevReviews) => {
+      return prevReviews.map((review) => {
+        if (review._id === updatedReview._id) {
+          return updatedReview;
+        }
+        return review;
+      });
+    });
+  };
+
   // Fetch pitch bookings
   const fetchPitchBookings = async () => {
     if (!pitchId) return;
@@ -461,9 +473,23 @@ function PitchDetailPage() {
     setShowMaintenancePopup(false);
   };
 
-  const handleCommentSubmit = (newComment) => {
-    // TODO: Implement comment submission when reviews are ready
-    console.log("Comment submission not implemented yet:", newComment);
+  const handleCommentSubmit = async (newReview) => {
+    try {
+      console.log("New review created:", newReview);
+
+      // Add the new review to the beginning of the reviews list
+      setReviews((prevReviews) => [newReview, ...prevReviews]);
+
+      // Update the total reviews count
+      setTotalReviews((prevTotal) => prevTotal + 1);
+      setCurrentReviewsCount((prevCount) => prevCount + 1);
+
+      // Show success message (optional)
+      console.log("Review successfully added to the list");
+    } catch (error) {
+      console.error("Error handling new review:", error);
+      throw error; // Re-throw to let the form handle the error
+    }
   };
 
   if (loading) {
@@ -619,6 +645,7 @@ function PitchDetailPage() {
               currentReviewsCount={currentReviewsCount}
               canLoadMoreReviews={canLoadMoreReviews}
               onLoadMoreReviews={loadMoreReviews}
+              onReviewUpdate={handleReviewUpdate}
             />
           </div>
 
@@ -627,6 +654,7 @@ function PitchDetailPage() {
             <PitchCommentForm
               pitch={pitch}
               onCommentSubmit={handleCommentSubmit}
+              reviews={reviews}
             />
           </div>
         </div>
