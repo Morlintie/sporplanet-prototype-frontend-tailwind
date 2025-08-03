@@ -110,18 +110,20 @@ function PitchCard({ pitch, onReservation }) {
 
       {/* Pitch Info */}
       <div className="p-4 flex-grow flex flex-col">
-        {/* Rating Badge */}
-        <div className="flex items-center gap-1 mb-2">
-          {renderStars(pitch.rating)}
-          <span className="text-sm font-medium text-gray-700 ml-1">
-            {pitch.rating}
-          </span>
-          {pitch.totalReviews > 0 && (
-            <span className="text-xs text-gray-500 ml-1">
-              ({pitch.totalReviews})
+        {/* Rating Badge - Only show if real data exists */}
+        {pitch.rating !== null && pitch.totalReviews !== null && (
+          <div className="flex items-center gap-1 mb-2">
+            {renderStars(pitch.rating)}
+            <span className="text-sm font-medium text-gray-700 ml-1">
+              {pitch.rating}
             </span>
-          )}
-        </div>
+            {pitch.totalReviews > 0 && (
+              <span className="text-xs text-gray-500 ml-1">
+                ({pitch.totalReviews})
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Pitch Name */}
         <h3 className="text-lg font-semibold text-gray-900 mb-1">

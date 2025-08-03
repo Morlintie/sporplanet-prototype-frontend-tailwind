@@ -89,7 +89,8 @@ function PitchDetailPage() {
       district: address?.district || "Bilinmeyen İlçe",
       price: Math.round((item.pricing?.hourlyRate || 50000) / 100), // Convert kuruş to TL
       nightPrice: Math.round((item.pricing?.nightHourlyRate || 60000) / 100),
-      rating: item.rating?.averageRating || 0,
+      // Use backend rating data from /api/v1/pitch/:id - if rating is 0, default to 5.0
+      rating: item.rating?.averageRating > 0 ? item.rating.averageRating : 5.0,
       totalReviews: item.rating?.totalReviews || 0,
       capacity: `${
         item.specifications?.recommendedCapacity?.players || 10
@@ -565,7 +566,10 @@ function PitchDetailPage() {
       <Header />
 
       {/* Hero Section */}
-      <PitchHeroSection pitch={pitch} renderStars={renderStars} />
+      <PitchHeroSection
+        pitch={pitch} // Use backend pitch rating data directly (already includes rating and totalReviews)
+        renderStars={renderStars}
+      />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

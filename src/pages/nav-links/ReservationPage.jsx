@@ -107,8 +107,9 @@ function ReservationPage() {
       district: address?.district || "Bilinmeyen İlçe",
       price: Math.round((item.pricing?.hourlyRate || 50000) / 100), // Convert kuruş to TL
       nightPrice: Math.round((item.pricing?.nightHourlyRate || 60000) / 100),
-      rating: item.rating?.averageRating || 0,
-      totalReviews: item.rating?.totalReviews || 0,
+      // Use only real backend rating data - no fallbacks, no dummy data
+      rating: item.rating?.averageRating ?? null,
+      totalReviews: item.rating?.totalReviews ?? null,
       capacity: `${
         item.specifications?.recommendedCapacity?.players || 10
       } oyuncu`,
