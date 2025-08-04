@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { ProfileSidebarProvider } from "./context/ProfileSidebarContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
@@ -9,28 +11,24 @@ import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import GoogleFailure from "./pages/auth/GoogleFailure";
 import ProfilePage from "./pages/ProfilePage";
+import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 
 function App() {
   return (
-    <BrowserRouter>
+    <FavoritesProvider>
+      <ProfileSidebarProvider>
       <div className="min-h-screen bg-gray-50">
         <Routes>
-          {/* Public Routes - No Authentication Required */}
           <Route path="/" element={<HomePage />} />
           <Route path="/matches" element={<MatchesPage />} />
           <Route path="/reservation" element={<ReservationPage />} />
           <Route path="/pitch-detail/:pitchId" element={<PitchDetailPage />} />
           <Route path="/tournaments" element={<TournamentsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          {/* Protected Routes - Require Authentication */}
-
-          {/* Public Auth Routes */}
           <Route path="/auth/google-failure" element={<GoogleFailure />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-
-          {/* 404 Not Found Route */}
           <Route
             path="*"
             element={
@@ -47,8 +45,10 @@ function App() {
             }
           />
         </Routes>
+        <AnimatedProfileSidebar />
       </div>
-    </BrowserRouter>
+      </ProfileSidebarProvider>
+    </FavoritesProvider>
   );
 }
 

@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useProfileSidebar } from "../../context/ProfileSidebarContext";
 
 function Header() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   // Auth context
   const { user, isAuthenticated, loading, logout } = useAuth();
+  const { openSidebar } = useProfileSidebar();
 
   const handleLogoClick = () => {
     navigate("/");
@@ -23,13 +24,13 @@ function Header() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleUserDropdown = () => {
-    setUserDropdownOpen(!userDropdownOpen);
+  const handleProfileClick = () => {
+    console.log("Profile button clicked");
+    openSidebar();
   };
 
   const handleLogout = async () => {
     await logout();
-    setUserDropdownOpen(false);
     navigate("/auth/login");
   };
 
@@ -44,19 +45,7 @@ function Header() {
     return (nameParts[0].charAt(0) + nameParts[1].charAt(0)).toUpperCase();
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setUserDropdownOpen(false);
-      }
-    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const navLinks = [
     { name: "Maç İlanları", path: "/matches" },
@@ -109,12 +98,12 @@ function Header() {
             <div className="hidden md:flex items-center space-x-4">
               {!loading && isAuthenticated && user ? (
                 // Authenticated User Profile
-                <div className="relative" ref={dropdownRef}>
+                <div className="relative">
                   <button
-                    onClick={toggleUserDropdown}
+                    onClick={handleProfileClick}
                     className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
                     tabIndex="0"
-                    aria-label="Kullanıcı menüsü"
+                    aria-label="Profil menüsünü aç"
                   >
                     {/* Profile Picture or Initials */}
                     <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center overflow-hidden">
@@ -143,11 +132,9 @@ function Header() {
                       {user.name || "Kullanıcı"}
                     </span>
 
-                    {/* Dropdown Arrow */}
+                    {/* Profile Icon */}
                     <svg
-                      className={`w-4 h-4 text-gray-500 transition-transform ${
-                        userDropdownOpen ? "rotate-180" : ""
-                      }`}
+                      className="w-4 h-4 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -156,56 +143,10 @@ function Header() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
                   </button>
-
-                  {/* User Dropdown Menu */}
-                  {userDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {user.name || "Kullanıcı"}
-                        </p>
-                        <p className="text-xs text-gray-500 truncate">
-                          {user.email}
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          navigate("/profile");
-                          setUserDropdownOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        tabIndex="0"
-                      >
-                        Profil
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          navigate("/profile?section=settings");
-                          setUserDropdownOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        tabIndex="0"
-                      >
-                        Ayarlar
-                      </button>
-
-                      <div className="border-t border-gray-100"></div>
-
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                        tabIndex="0"
-                      >
-                        Çıkış Yap
-                      </button>
-                    </div>
-                  )}
                 </div>
               ) : !loading ? (
                 // Login Button for Non-Authenticated Users
@@ -327,7 +268,7 @@ function Header() {
                     {/* User Menu Items */}
                     <button
                       onClick={() => {
-                        navigate("/profile");
+                        openSidebar();
                         setIsMobileMenuOpen(false);
                       }}
                       className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors cursor-pointer focus:outline-none"
@@ -351,7 +292,8 @@ function Header() {
 
                     <button
                       onClick={() => {
-                        navigate("/settings");
+                        navigate("/profile?section=settings");
+                        openSidebar();
                         setIsMobileMenuOpen(false);
                       }}
                       className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors cursor-pointer focus:outline-none"

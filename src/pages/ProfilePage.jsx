@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useProfileSidebar } from "../context/ProfileSidebarContext";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
-import ProfileSidebar from "../components/profile/ProfileSidebar";
 import ProfileMain from "../components/profile/ProfileMain";
+import MyFriends from "../components/profile/MyFriends";
+import MyFavoritePitches from "../components/profile/MyFavoritePitches";
 import MyListings from "../components/profile/MyListings";
 import MyReservations from "../components/profile/MyReservations";
 import MyTournaments from "../components/profile/MyTournaments";
@@ -13,18 +13,7 @@ import Invitations from "../components/profile/Invitations";
 import Settings from "../components/profile/Settings";
 
 function ProfilePage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeSection, setActiveSection] = useState("profile");
-
-  // Check URL query parameter for section
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const section = urlParams.get('section');
-    if (section && ['profile', 'listings', 'reservations', 'tournaments', 'messages', 'comments', 'invitations', 'settings'].includes(section)) {
-      setActiveSection(section);
-    }
-  }, [location.search]);
+  const { activeSection } = useProfileSidebar();
 
   // Mock user data - in real app this would come from context/API
   const user = {
@@ -44,14 +33,14 @@ function ProfilePage() {
     totalTournaments: 3
   };
 
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
-  };
-
   const renderMainContent = () => {
     switch (activeSection) {
       case "profile":
         return <ProfileMain user={user} />;
+      case "friends":
+        return <MyFriends user={user} />;
+      case "favorite-pitches":
+        return <MyFavoritePitches user={user} />;
       case "listings":
         return <MyListings user={user} />;
       case "reservations":
@@ -76,15 +65,7 @@ function ProfilePage() {
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
-            <ProfileSidebar 
-              activeSection={activeSection}
-              onSectionChange={handleSectionChange}
-            />
-          </div>
-
+        <div className="flex flex-col">
           {/* Main Content */}
           <div className="flex-1">
             {renderMainContent()}

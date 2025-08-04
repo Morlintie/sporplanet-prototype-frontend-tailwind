@@ -1,0 +1,5425 @@
+[
+  {
+    "_id": "000000000000000000002648",
+    "pitch": {
+      "_id": "0000000000000000000017de",
+      "name": "Maltepe Park",
+      "location": {
+        "address": {
+          "street": "Maltepe Park Cd. No:40",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Maltepe",
+          "postalCode": "34557",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.989
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 554 490 84 51",
+        "email": "info10@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.3,
+        "totalReviews": 3
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f40",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-16T07:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-15T09:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f5",
+        "name": "tuna.10",
+        "email": "tuna.10@example.com",
+        "profilePicture": "https://cdn.example.com/u/tuna.10.jpg",
+        "goalKeeper": true,
+        "description": "Playmaker",
+        "phoneNumber": "+90 564 676 16 78"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 29,
+      "middlemanTax": 4,
+      "total": 1330.0,
+      "paid": true,
+      "method": "card",
+      "pitchTxId": "ptx_d22ed816",
+      "middlemanTxId": "mtx_b5986bf7",
+      "paidAt": "2025-06-06T13:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-06-11T07:00:00Z",
+    "updatedAt": "2025-06-18T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002649",
+    "pitch": {
+      "_id": "0000000000000000000017d6",
+      "name": "Ümraniye Metro",
+      "location": {
+        "address": {
+          "street": "Ümraniye Metro Cd. No:158",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Ümraniye",
+          "postalCode": "34448",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6942,
+          40.9346
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 50,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 251 12 42",
+        "email": "info2@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 46
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f41",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-04-24T09:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-04-24T15:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f1",
+        "name": "gokce.6",
+        "email": "gokce.6@example.com",
+        "profilePicture": "https://cdn.example.com/u/gokce.6.jpg",
+        "goalKeeper": true,
+        "description": "Playmaker",
+        "phoneNumber": "+90 540 763 64 77"
+      },
+      "reason": "Hakem gelmedi"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 9,
+      "middlemanTax": 4,
+      "total": 1110.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_f199fea8",
+      "middlemanTxId": "mtx_d860741d",
+      "paidAt": "2025-07-25T15:00:00Z"
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-04-19T09:00:00Z",
+    "updatedAt": "2025-04-26T09:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000264a",
+    "pitch": {
+      "_id": "0000000000000000000017da",
+      "name": "Sarıyer Orman",
+      "location": {
+        "address": {
+          "street": "Sarıyer Orman Cd. No:13",
+          "neighborhood": "Merkez",
+          "city": "İstanbul",
+          "district": "Sarıyer",
+          "postalCode": "34053",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2171,
+          41.1817
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 25
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 132 85 91",
+        "email": "info6@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 268
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f42",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-05T09:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 50,
+      "tax": 18,
+      "middlemanShare": 29,
+      "middlemanTax": 7,
+      "total": 790.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_5221424b",
+      "middlemanTxId": "mtx_c9ec5d89",
+      "paidAt": "2025-07-23T21:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-06-30T09:00:00Z",
+    "updatedAt": "2025-07-07T09:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000264b",
+    "pitch": {
+      "_id": "0000000000000000000017db",
+      "name": "Pendik Marina",
+      "location": {
+        "address": {
+          "street": "Pendik Marina Cd. No:99",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Pendik",
+          "postalCode": "34379",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0207,
+          40.9271
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 592 865 44 42",
+        "email": "info7@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 254
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f43",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-06T09:00:00Z",
+    "status": "confirmed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 6,
+      "middlemanTax": 5,
+      "total": 735.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_db662cb1",
+      "middlemanTxId": "mtx_de522411",
+      "paidAt": "2025-06-30T01:00:00Z"
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-08-01T09:00:00Z",
+    "updatedAt": "2025-08-08T09:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000264c",
+    "pitch": {
+      "_id": "0000000000000000000017d5",
+      "name": "Kadıköy Moda",
+      "location": {
+        "address": {
+          "street": "Kadıköy Moda Cd. No:187",
+          "neighborhood": "Moda",
+          "city": "İstanbul",
+          "district": "Kadıköy",
+          "postalCode": "34819",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0973,
+          40.9374
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 553 692 21 52",
+        "email": "info1@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 89
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f44",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-10T11:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 25,
+      "middlemanTax": 8,
+      "total": 1430.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_d1269885",
+      "middlemanTxId": "mtx_e2490f61",
+      "paidAt": "2025-07-05T02:00:00Z"
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-07-05T11:00:00Z",
+    "updatedAt": "2025-07-12T11:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000264d",
+    "pitch": {
+      "_id": "0000000000000000000017db",
+      "name": "Pendik Marina",
+      "location": {
+        "address": {
+          "street": "Pendik Marina Cd. No:99",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Pendik",
+          "postalCode": "34379",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0207,
+          40.9271
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 592 865 44 42",
+        "email": "info7@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 254
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f45",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-12T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-11T13:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f6",
+        "name": "hakan.11",
+        "email": "hakan.11@example.com",
+        "profilePicture": "https://cdn.example.com/u/hakan.11.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 533 105 36 58"
+      },
+      "reason": "Oyuncu eksikliği"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 34,
+      "middlemanTax": 5,
+      "total": 890.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_fe5ef1d8",
+      "middlemanTxId": "mtx_f914f771",
+      "paidAt": "2025-06-12T20:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-06-07T11:00:00Z",
+    "updatedAt": "2025-06-14T11:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000264e",
+    "pitch": {
+      "_id": "0000000000000000000017df",
+      "name": "Arnavutköy Çayır",
+      "location": {
+        "address": {
+          "street": "Arnavutköy Çayır Cd. No:19",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Arnavutköy",
+          "postalCode": "34014",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.9176,
+          40.9928
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 151 16 62",
+        "email": "info11@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 269
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f46",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-22T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-08-22T03:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ee",
+        "name": "ayse.3",
+        "email": "ayse.3@example.com",
+        "profilePicture": "https://cdn.example.com/u/ayse.3.jpg",
+        "goalKeeper": true,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 517 792 87 65"
+      },
+      "reason": "Hava muhalefeti"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 47,
+      "middlemanTax": 10,
+      "total": 1430.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_038fd73d",
+      "middlemanTxId": "mtx_ef969ea9",
+      "paidAt": "2025-07-25T04:00:00Z"
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-08-17T11:00:00Z",
+    "updatedAt": "2025-08-24T11:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000264f",
+    "pitch": {
+      "_id": "0000000000000000000017de",
+      "name": "Maltepe Park",
+      "location": {
+        "address": {
+          "street": "Maltepe Park Cd. No:40",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Maltepe",
+          "postalCode": "34557",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.989
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 554 490 84 51",
+        "email": "info10@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.3,
+        "totalReviews": 3
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f47",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-09-02T08:00:00Z",
+    "status": "confirmed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 18,
+      "middlemanTax": 3,
+      "total": 1155.0,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_d4c5ac4e",
+      "middlemanTxId": "mtx_2f150580",
+      "paidAt": "2025-07-30T01:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-08-28T08:00:00Z",
+    "updatedAt": "2025-09-04T08:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002650",
+    "pitch": {
+      "_id": "0000000000000000000017db",
+      "name": "Pendik Marina",
+      "location": {
+        "address": {
+          "street": "Pendik Marina Cd. No:99",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Pendik",
+          "postalCode": "34379",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0207,
+          40.9271
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 592 865 44 42",
+        "email": "info7@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 254
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f48",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-22T12:00:00Z",
+    "status": "pending",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 16,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 28,
+      "middlemanTax": 3,
+      "total": 735.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_a445b6bc",
+      "middlemanTxId": "mtx_187437c3",
+      "paidAt": "2025-06-23T05:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-08-17T12:00:00Z",
+    "updatedAt": "2025-08-24T12:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002651",
+    "pitch": {
+      "_id": "0000000000000000000017d4",
+      "name": "Beşiktaş Barbaros",
+      "location": {
+        "address": {
+          "street": "Beşiktaş Barbaros Cd. No:95",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Beşiktaş",
+          "postalCode": "34316",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2093,
+          41.0992
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 30
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 534 631 44 16",
+        "email": "info0@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 129
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f49",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-04-24T12:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 45,
+      "middlemanTax": 0,
+      "total": 1105.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_13568a3b",
+      "middlemanTxId": "mtx_b32e7020",
+      "paidAt": "2025-07-26T10:00:00Z"
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-04-19T12:00:00Z",
+    "updatedAt": "2025-04-26T12:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002652",
+    "pitch": {
+      "_id": "0000000000000000000017dc",
+      "name": "Kartal City",
+      "location": {
+        "address": {
+          "street": "Kartal City Cd. No:1",
+          "neighborhood": "Yıldız",
+          "city": "İstanbul",
+          "district": "Kartal",
+          "postalCode": "34789",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2099,
+          41.0309
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 55,
+          "width": 40
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 446 56 39",
+        "email": "info8@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 209
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f4a",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-30T10:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-08-30T03:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ee",
+        "name": "ayse.3",
+        "email": "ayse.3@example.com",
+        "profilePicture": "https://cdn.example.com/u/ayse.3.jpg",
+        "goalKeeper": true,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 517 792 87 65"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 10,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 39,
+      "middlemanTax": 10,
+      "total": 1100,
+      "paid": false,
+      "method": "cash",
+      "pitchTxId": "ptx_1d00dd0b",
+      "middlemanTxId": "mtx_3cf919a0",
+      "paidAt": null
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-08-25T10:00:00Z",
+    "updatedAt": "2025-09-01T10:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002653",
+    "pitch": {
+      "_id": "0000000000000000000017de",
+      "name": "Maltepe Park",
+      "location": {
+        "address": {
+          "street": "Maltepe Park Cd. No:40",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Maltepe",
+          "postalCode": "34557",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.989
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 554 490 84 51",
+        "email": "info10@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.3,
+        "totalReviews": 3
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4b",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-10T08:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-08T09:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f9",
+        "name": "ozge.14",
+        "email": "ozge.14@example.com",
+        "profilePicture": "https://cdn.example.com/u/ozge.14.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 512 908 56 58"
+      },
+      "reason": "Hava muhalefeti"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 39,
+      "middlemanTax": 4,
+      "total": 845.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_6deb7e48",
+      "middlemanTxId": "mtx_90c94062",
+      "paidAt": "2025-07-21T11:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-06-05T08:00:00Z",
+    "updatedAt": "2025-06-12T08:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002654",
+    "pitch": {
+      "_id": "0000000000000000000017e0",
+      "name": "Üsküdar Kuzguncuk",
+      "location": {
+        "address": {
+          "street": "Üsküdar Kuzguncuk Cd. No:62",
+          "neighborhood": "Yıldız",
+          "city": "İstanbul",
+          "district": "Üsküdar",
+          "postalCode": "34165",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.9286
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 55,
+          "width": 40
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1200,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 533 426 24 30",
+        "email": "info12@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 94
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f4c",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-04T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-07-02T19:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f9",
+        "name": "ozge.14",
+        "email": "ozge.14@example.com",
+        "profilePicture": "https://cdn.example.com/u/ozge.14.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 512 908 56 58"
+      },
+      "reason": "Oyuncu eksikliği"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 43,
+      "middlemanTax": 0,
+      "total": 945.0,
+      "paid": false,
+      "method": "cash",
+      "pitchTxId": "ptx_8184182f",
+      "middlemanTxId": "mtx_3666d7cd",
+      "paidAt": null
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-06-29T11:00:00Z",
+    "updatedAt": "2025-07-06T11:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002655",
+    "pitch": {
+      "_id": "0000000000000000000017d7",
+      "name": "Şişli Teras",
+      "location": {
+        "address": {
+          "street": "Şişli Teras Cd. No:107",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Şişli",
+          "postalCode": "34886",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2704,
+          40.908
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 777 20 60",
+        "email": "info3@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 25
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4d",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-04-14T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-04-12T17:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f2",
+        "name": "zeynep.7",
+        "email": "zeynep.7@example.com",
+        "profilePicture": "https://cdn.example.com/u/zeynep.7.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 593 430 24 62"
+      },
+      "reason": "Oyuncu eksikliği"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 19,
+      "middlemanTax": 10,
+      "total": 1080.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_a6312742",
+      "middlemanTxId": "mtx_dd0fa9c1",
+      "paidAt": "2025-07-31T22:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-04-09T11:00:00Z",
+    "updatedAt": "2025-04-16T11:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002656",
+    "pitch": {
+      "_id": "0000000000000000000017df",
+      "name": "Arnavutköy Çayır",
+      "location": {
+        "address": {
+          "street": "Arnavutköy Çayır Cd. No:19",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Arnavutköy",
+          "postalCode": "34014",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.9176,
+          40.9928
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 151 16 62",
+        "email": "info11@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 269
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4e",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-04T08:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-03T21:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f4",
+        "name": "ipek.9",
+        "email": "ipek.9@example.com",
+        "profilePicture": "https://cdn.example.com/u/ipek.9.jpg",
+        "goalKeeper": false,
+        "description": null,
+        "phoneNumber": "+90 588 109 81 27"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 30,
+      "middlemanTax": 3,
+      "total": 635.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_a9bc9b40",
+      "middlemanTxId": "mtx_c4943e18",
+      "paidAt": "2025-07-07T06:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-05-30T08:00:00Z",
+    "updatedAt": "2025-06-06T08:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002657",
+    "pitch": {
+      "_id": "0000000000000000000017d6",
+      "name": "Ümraniye Metro",
+      "location": {
+        "address": {
+          "street": "Ümraniye Metro Cd. No:158",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Ümraniye",
+          "postalCode": "34448",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6942,
+          40.9346
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 50,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 251 12 42",
+        "email": "info2@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 46
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4f",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-02T10:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 26,
+      "middlemanTax": 1,
+      "total": 1100,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_38e56b70",
+      "middlemanTxId": "mtx_a53ed8c5",
+      "paidAt": "2025-07-26T04:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-04-27T10:00:00Z",
+    "updatedAt": "2025-05-04T10:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002658",
+    "pitch": {
+      "_id": "0000000000000000000017d5",
+      "name": "Kadıköy Moda",
+      "location": {
+        "address": {
+          "street": "Kadıköy Moda Cd. No:187",
+          "neighborhood": "Moda",
+          "city": "İstanbul",
+          "district": "Kadıköy",
+          "postalCode": "34819",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0973,
+          40.9374
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 553 692 21 52",
+        "email": "info1@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 89
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f50",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-25T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-07-24T08:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fa",
+        "name": "derya.15",
+        "email": "derya.15@example.com",
+        "profilePicture": "https://cdn.example.com/u/derya.15.jpg",
+        "goalKeeper": false,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 521 982 53 84"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 48,
+      "middlemanTax": 6,
+      "total": 1030.0,
+      "paid": true,
+      "method": "card",
+      "pitchTxId": "ptx_641d0c6f",
+      "middlemanTxId": "mtx_fc808121",
+      "paidAt": "2025-06-25T04:00:00Z"
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-07-20T11:00:00Z",
+    "updatedAt": "2025-07-27T11:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002659",
+    "pitch": {
+      "_id": "0000000000000000000017d6",
+      "name": "Ümraniye Metro",
+      "location": {
+        "address": {
+          "street": "Ümraniye Metro Cd. No:158",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Ümraniye",
+          "postalCode": "34448",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6942,
+          40.9346
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 50,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 251 12 42",
+        "email": "info2@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 46
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f51",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-25T12:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-07-27T04:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ed",
+        "name": "mert.2",
+        "email": "mert.2@example.com",
+        "profilePicture": "https://cdn.example.com/u/mert.2.jpg",
+        "goalKeeper": true,
+        "description": null,
+        "phoneNumber": "+90 576 281 52 46"
+      },
+      "reason": "Kısmi iade"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 40,
+      "middlemanTax": 6,
+      "total": 1055.0,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_fd5e0dc9",
+      "middlemanTxId": "mtx_73a4502c",
+      "paidAt": "2025-06-06T11:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-07-20T12:00:00Z",
+    "updatedAt": "2025-07-27T12:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000265a",
+    "pitch": {
+      "_id": "0000000000000000000017df",
+      "name": "Arnavutköy Çayır",
+      "location": {
+        "address": {
+          "street": "Arnavutköy Çayır Cd. No:19",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Arnavutköy",
+          "postalCode": "34014",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.9176,
+          40.9928
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 151 16 62",
+        "email": "info11@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 269
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f52",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-12T08:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-11T20:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ec",
+        "name": "elif.1",
+        "email": "elif.1@example.com",
+        "profilePicture": "https://cdn.example.com/u/elif.1.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 584 994 60 90"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 22,
+      "middlemanTax": 6,
+      "total": 990.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_1ca38466",
+      "middlemanTxId": "mtx_9a0bb1c3",
+      "paidAt": "2025-06-13T08:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-06-07T08:00:00Z",
+    "updatedAt": "2025-06-14T08:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000265b",
+    "pitch": {
+      "_id": "0000000000000000000017da",
+      "name": "Sarıyer Orman",
+      "location": {
+        "address": {
+          "street": "Sarıyer Orman Cd. No:13",
+          "neighborhood": "Merkez",
+          "city": "İstanbul",
+          "district": "Sarıyer",
+          "postalCode": "34053",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2171,
+          41.1817
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 25
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 132 85 91",
+        "email": "info6@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 268
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f53",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-07T10:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 16,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 25,
+      "middlemanTax": 2,
+      "total": 600,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_8b344aed",
+      "middlemanTxId": "mtx_86aeeddd",
+      "paidAt": "2025-07-11T11:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-07-02T10:00:00Z",
+    "updatedAt": "2025-07-09T10:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000265c",
+    "pitch": {
+      "_id": "0000000000000000000017d5",
+      "name": "Kadıköy Moda",
+      "location": {
+        "address": {
+          "street": "Kadıköy Moda Cd. No:187",
+          "neighborhood": "Moda",
+          "city": "İstanbul",
+          "district": "Kadıköy",
+          "postalCode": "34819",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0973,
+          40.9374
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 553 692 21 52",
+        "email": "info1@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 89
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f40",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-24T11:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-05-26T09:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ec",
+        "name": "elif.1",
+        "email": "elif.1@example.com",
+        "profilePicture": "https://cdn.example.com/u/elif.1.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 584 994 60 90"
+      },
+      "reason": "Kısmi iade"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 50,
+      "tax": 18,
+      "middlemanShare": 0,
+      "middlemanTax": 0,
+      "total": 895.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_a237053e",
+      "middlemanTxId": "mtx_197615d9",
+      "paidAt": "2025-06-30T00:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-05-19T11:00:00Z",
+    "updatedAt": "2025-05-26T11:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000265d",
+    "pitch": {
+      "_id": "0000000000000000000017d5",
+      "name": "Kadıköy Moda",
+      "location": {
+        "address": {
+          "street": "Kadıköy Moda Cd. No:187",
+          "neighborhood": "Moda",
+          "city": "İstanbul",
+          "district": "Kadıköy",
+          "postalCode": "34819",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0973,
+          40.9374
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 553 692 21 52",
+        "email": "info1@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 89
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f41",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-23T10:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-08-24T07:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f4",
+        "name": "ipek.9",
+        "email": "ipek.9@example.com",
+        "profilePicture": "https://cdn.example.com/u/ipek.9.jpg",
+        "goalKeeper": false,
+        "description": null,
+        "phoneNumber": "+90 588 109 81 27"
+      },
+      "reason": "Işıklandırma sorunu"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 16,
+    "price": {
+      "hourlyRate": 1500,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 30,
+      "middlemanTax": 8,
+      "total": 1525.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_848b6be8",
+      "middlemanTxId": "mtx_d9fe3102",
+      "paidAt": "2025-06-08T18:00:00Z"
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-08-18T10:00:00Z",
+    "updatedAt": "2025-08-25T10:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000265e",
+    "pitch": {
+      "_id": "0000000000000000000017d5",
+      "name": "Kadıköy Moda",
+      "location": {
+        "address": {
+          "street": "Kadıköy Moda Cd. No:187",
+          "neighborhood": "Moda",
+          "city": "İstanbul",
+          "district": "Kadıköy",
+          "postalCode": "34819",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0973,
+          40.9374
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 553 692 21 52",
+        "email": "info1@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 89
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f42",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-04-16T12:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-04-15T10:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ed",
+        "name": "mert.2",
+        "email": "mert.2@example.com",
+        "profilePicture": "https://cdn.example.com/u/mert.2.jpg",
+        "goalKeeper": true,
+        "description": null,
+        "phoneNumber": "+90 576 281 52 46"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 10,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 17,
+      "middlemanTax": 7,
+      "total": 735.0,
+      "paid": false,
+      "method": "cash",
+      "pitchTxId": "ptx_5442370f",
+      "middlemanTxId": "mtx_ea1cebb3",
+      "paidAt": null
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-04-11T12:00:00Z",
+    "updatedAt": "2025-04-18T12:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000265f",
+    "pitch": {
+      "_id": "0000000000000000000017df",
+      "name": "Arnavutköy Çayır",
+      "location": {
+        "address": {
+          "street": "Arnavutköy Çayır Cd. No:19",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Arnavutköy",
+          "postalCode": "34014",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.9176,
+          40.9928
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 151 16 62",
+        "email": "info11@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 269
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f43",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-27T12:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-05-27T21:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fe",
+        "name": "melis.19",
+        "email": "melis.19@example.com",
+        "profilePicture": "https://cdn.example.com/u/melis.19.jpg",
+        "goalKeeper": true,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 559 874 25 20"
+      },
+      "reason": "Kısmi iade"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 16,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 22,
+      "middlemanTax": 4,
+      "total": 1000,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_42e9e1cd",
+      "middlemanTxId": "mtx_ce6d60e0",
+      "paidAt": "2025-07-13T10:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-05-22T12:00:00Z",
+    "updatedAt": "2025-05-29T12:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002660",
+    "pitch": {
+      "_id": "0000000000000000000017dd",
+      "name": "Ataşehir Arena",
+      "location": {
+        "address": {
+          "street": "Ataşehir Arena Cd. No:179",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Ataşehir",
+          "postalCode": "34717",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6256,
+          41.0939
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 547 339 40 95",
+        "email": "info9@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.2,
+        "totalReviews": 171
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f44",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-17T09:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-06-19T07:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fe",
+        "name": "melis.19",
+        "email": "melis.19@example.com",
+        "profilePicture": "https://cdn.example.com/u/melis.19.jpg",
+        "goalKeeper": true,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 559 874 25 20"
+      },
+      "reason": "Saha problemi"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 14,
+      "middlemanTax": 1,
+      "total": 990.0,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_485b4be4",
+      "middlemanTxId": "mtx_9a70df3d",
+      "paidAt": "2025-06-13T09:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-06-12T09:00:00Z",
+    "updatedAt": "2025-06-19T09:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002661",
+    "pitch": {
+      "_id": "0000000000000000000017d5",
+      "name": "Kadıköy Moda",
+      "location": {
+        "address": {
+          "street": "Kadıköy Moda Cd. No:187",
+          "neighborhood": "Moda",
+          "city": "İstanbul",
+          "district": "Kadıköy",
+          "postalCode": "34819",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0973,
+          40.9374
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 553 692 21 52",
+        "email": "info1@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 89
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f45",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-31T09:00:00Z",
+    "status": "confirmed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 10,
+      "middlemanTax": 3,
+      "total": 900,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_3db0c5c4",
+      "middlemanTxId": "mtx_e5bef68c",
+      "paidAt": "2025-06-11T07:00:00Z"
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-08-26T09:00:00Z",
+    "updatedAt": "2025-09-02T09:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002662",
+    "pitch": {
+      "_id": "0000000000000000000017e2",
+      "name": "Beylikdüzü Yaşam",
+      "location": {
+        "address": {
+          "street": "Beylikdüzü Yaşam Cd. No:140",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Beylikdüzü",
+          "postalCode": "34917",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6451,
+          41.0254
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": [
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 537 736 41 57",
+        "email": "info14@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.9,
+        "totalReviews": 201
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f46",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-26T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-05-25T22:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fe",
+        "name": "melis.19",
+        "email": "melis.19@example.com",
+        "profilePicture": "https://cdn.example.com/u/melis.19.jpg",
+        "goalKeeper": true,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 559 874 25 20"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 42,
+      "middlemanTax": 9,
+      "total": 1080.0,
+      "paid": true,
+      "method": "card",
+      "pitchTxId": "ptx_6120ef2a",
+      "middlemanTxId": "mtx_d84f685f",
+      "paidAt": "2025-06-07T17:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-05-21T11:00:00Z",
+    "updatedAt": "2025-05-28T11:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002663",
+    "pitch": {
+      "_id": "0000000000000000000017db",
+      "name": "Pendik Marina",
+      "location": {
+        "address": {
+          "street": "Pendik Marina Cd. No:99",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Pendik",
+          "postalCode": "34379",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0207,
+          40.9271
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 592 865 44 42",
+        "email": "info7@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 254
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f47",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-12T11:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-07-12T21:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fb",
+        "name": "tamer.16",
+        "email": "tamer.16@example.com",
+        "profilePicture": "https://cdn.example.com/u/tamer.16.jpg",
+        "goalKeeper": false,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 551 363 86 44"
+      },
+      "reason": "Saha problemi"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 23,
+      "middlemanTax": 7,
+      "total": 1100,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_f2a89978",
+      "middlemanTxId": "mtx_54a95d75",
+      "paidAt": "2025-08-03T05:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-07-07T11:00:00Z",
+    "updatedAt": "2025-07-14T11:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002664",
+    "pitch": {
+      "_id": "0000000000000000000017d4",
+      "name": "Beşiktaş Barbaros",
+      "location": {
+        "address": {
+          "street": "Beşiktaş Barbaros Cd. No:95",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Beşiktaş",
+          "postalCode": "34316",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2093,
+          41.0992
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 30
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 534 631 44 16",
+        "email": "info0@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 129
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f48",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-29T07:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 10,
+    "price": {
+      "hourlyRate": 1500,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 1,
+      "middlemanTax": 9,
+      "total": 1450,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_1e86e4ca",
+      "middlemanTxId": "mtx_b2bb5cfd",
+      "paidAt": "2025-06-11T17:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-05-24T07:00:00Z",
+    "updatedAt": "2025-05-31T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002665",
+    "pitch": {
+      "_id": "0000000000000000000017db",
+      "name": "Pendik Marina",
+      "location": {
+        "address": {
+          "street": "Pendik Marina Cd. No:99",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Pendik",
+          "postalCode": "34379",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0207,
+          40.9271
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 592 865 44 42",
+        "email": "info7@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 254
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f49",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-17T07:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-08-16T19:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fa",
+        "name": "derya.15",
+        "email": "derya.15@example.com",
+        "profilePicture": "https://cdn.example.com/u/derya.15.jpg",
+        "goalKeeper": false,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 521 982 53 84"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 23,
+      "middlemanTax": 3,
+      "total": 1315.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_ac4d633d",
+      "middlemanTxId": "mtx_5db1cf8c",
+      "paidAt": "2025-07-27T00:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-08-12T07:00:00Z",
+    "updatedAt": "2025-08-19T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002666",
+    "pitch": {
+      "_id": "0000000000000000000017d7",
+      "name": "Şişli Teras",
+      "location": {
+        "address": {
+          "street": "Şişli Teras Cd. No:107",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Şişli",
+          "postalCode": "34886",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2704,
+          40.908
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 777 20 60",
+        "email": "info3@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 25
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4a",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-18T09:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-07-17T14:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f4",
+        "name": "ipek.9",
+        "email": "ipek.9@example.com",
+        "profilePicture": "https://cdn.example.com/u/ipek.9.jpg",
+        "goalKeeper": false,
+        "description": null,
+        "phoneNumber": "+90 588 109 81 27"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1500,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 35,
+      "middlemanTax": 8,
+      "total": 1800.0,
+      "paid": true,
+      "method": "card",
+      "pitchTxId": "ptx_68d1aa7f",
+      "middlemanTxId": "mtx_a8368f9b",
+      "paidAt": "2025-06-05T09:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-07-13T09:00:00Z",
+    "updatedAt": "2025-07-20T09:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002667",
+    "pitch": {
+      "_id": "0000000000000000000017e2",
+      "name": "Beylikdüzü Yaşam",
+      "location": {
+        "address": {
+          "street": "Beylikdüzü Yaşam Cd. No:140",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Beylikdüzü",
+          "postalCode": "34917",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6451,
+          41.0254
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": [
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 537 736 41 57",
+        "email": "info14@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.9,
+        "totalReviews": 201
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f4b",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-31T09:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-07-31T11:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f8",
+        "name": "baran.13",
+        "email": "baran.13@example.com",
+        "profilePicture": "https://cdn.example.com/u/baran.13.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 540 295 84 36"
+      },
+      "reason": "Işıklandırma sorunu"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 50,
+      "tax": 18,
+      "middlemanShare": 50,
+      "middlemanTax": 6,
+      "total": 1270.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_98d40bfa",
+      "middlemanTxId": "mtx_513b147d",
+      "paidAt": "2025-06-16T12:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-07-26T09:00:00Z",
+    "updatedAt": "2025-08-02T09:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002668",
+    "pitch": {
+      "_id": "0000000000000000000017d4",
+      "name": "Beşiktaş Barbaros",
+      "location": {
+        "address": {
+          "street": "Beşiktaş Barbaros Cd. No:95",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Beşiktaş",
+          "postalCode": "34316",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2093,
+          41.0992
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 30
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 534 631 44 16",
+        "email": "info0@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 129
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4c",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-21T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-20T09:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fb",
+        "name": "tamer.16",
+        "email": "tamer.16@example.com",
+        "profilePicture": "https://cdn.example.com/u/tamer.16.jpg",
+        "goalKeeper": false,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 551 363 86 44"
+      },
+      "reason": "Hava muhalefeti"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 37,
+      "middlemanTax": 2,
+      "total": 700,
+      "paid": true,
+      "method": "card",
+      "pitchTxId": "ptx_f397f13a",
+      "middlemanTxId": "mtx_e8cfd090",
+      "paidAt": "2025-07-12T03:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-06-16T11:00:00Z",
+    "updatedAt": "2025-06-23T11:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002669",
+    "pitch": {
+      "_id": "0000000000000000000017de",
+      "name": "Maltepe Park",
+      "location": {
+        "address": {
+          "street": "Maltepe Park Cd. No:40",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Maltepe",
+          "postalCode": "34557",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.989
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 554 490 84 51",
+        "email": "info10@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.3,
+        "totalReviews": 3
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f4d",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-22T07:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-07-21T14:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ec",
+        "name": "elif.1",
+        "email": "elif.1@example.com",
+        "profilePicture": "https://cdn.example.com/u/elif.1.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 584 994 60 90"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 48,
+      "middlemanTax": 0,
+      "total": 635.0,
+      "paid": false,
+      "method": "cash",
+      "pitchTxId": "ptx_c9289312",
+      "middlemanTxId": "mtx_c3422414",
+      "paidAt": null
+    },
+    "notes": null,
+    "createdAt": "2025-07-17T07:00:00Z",
+    "updatedAt": "2025-07-24T07:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000266a",
+    "pitch": {
+      "_id": "0000000000000000000017e2",
+      "name": "Beylikdüzü Yaşam",
+      "location": {
+        "address": {
+          "street": "Beylikdüzü Yaşam Cd. No:140",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Beylikdüzü",
+          "postalCode": "34917",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6451,
+          41.0254
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": [
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 537 736 41 57",
+        "email": "info14@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.9,
+        "totalReviews": 201
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f4e",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-04-28T07:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-04-27T10:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f8",
+        "name": "baran.13",
+        "email": "baran.13@example.com",
+        "profilePicture": "https://cdn.example.com/u/baran.13.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 540 295 84 36"
+      },
+      "reason": "Hava muhalefeti"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 45,
+      "middlemanTax": 10,
+      "total": 945.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_f18a93b2",
+      "middlemanTxId": "mtx_8d229588",
+      "paidAt": "2025-07-29T05:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-04-23T07:00:00Z",
+    "updatedAt": "2025-04-30T07:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000266b",
+    "pitch": {
+      "_id": "0000000000000000000017d8",
+      "name": "Fatih Kapalı",
+      "location": {
+        "address": {
+          "street": "Fatih Kapalı Cd. No:22",
+          "neighborhood": "Yıldız",
+          "city": "İstanbul",
+          "district": "Fatih",
+          "postalCode": "34522",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6606,
+          41.0477
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 511 103 28 92",
+        "email": "info4@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 120
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f4f",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-13T12:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-08-12T12:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ee",
+        "name": "ayse.3",
+        "email": "ayse.3@example.com",
+        "profilePicture": "https://cdn.example.com/u/ayse.3.jpg",
+        "goalKeeper": true,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 517 792 87 65"
+      },
+      "reason": "Oyuncu eksikliği"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 18,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 33,
+      "middlemanTax": 6,
+      "total": 1430.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_0f08c60a",
+      "middlemanTxId": "mtx_3994f7a3",
+      "paidAt": "2025-06-17T04:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-08-08T12:00:00Z",
+    "updatedAt": "2025-08-15T12:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000266c",
+    "pitch": {
+      "_id": "0000000000000000000017d4",
+      "name": "Beşiktaş Barbaros",
+      "location": {
+        "address": {
+          "street": "Beşiktaş Barbaros Cd. No:95",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Beşiktaş",
+          "postalCode": "34316",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2093,
+          41.0992
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 30
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 534 631 44 16",
+        "email": "info0@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 129
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f50",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-08T11:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-06T14:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f0",
+        "name": "didem.5",
+        "email": "didem.5@example.com",
+        "profilePicture": "https://cdn.example.com/u/didem.5.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 529 455 33 65"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 1500,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 28,
+      "middlemanTax": 8,
+      "total": 1650.0,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_e8dcc711",
+      "middlemanTxId": "mtx_35710b1a",
+      "paidAt": "2025-06-07T11:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-06-03T11:00:00Z",
+    "updatedAt": "2025-06-10T11:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000266d",
+    "pitch": {
+      "_id": "0000000000000000000017e1",
+      "name": "Bağcılar Merkez",
+      "location": {
+        "address": {
+          "street": "Bağcılar Merkez Cd. No:28",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Bağcılar",
+          "postalCode": "34680",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0048,
+          41.0975
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 517 516 53 88",
+        "email": "info13@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 268
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f51",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-07-31T10:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-07-30T14:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f2",
+        "name": "zeynep.7",
+        "email": "zeynep.7@example.com",
+        "profilePicture": "https://cdn.example.com/u/zeynep.7.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 593 430 24 62"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 11,
+      "middlemanTax": 6,
+      "total": 1100,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_b3dba733",
+      "middlemanTxId": "mtx_5d831f6c",
+      "paidAt": "2025-06-08T07:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-07-26T10:00:00Z",
+    "updatedAt": "2025-08-02T10:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000266e",
+    "pitch": {
+      "_id": "0000000000000000000017dd",
+      "name": "Ataşehir Arena",
+      "location": {
+        "address": {
+          "street": "Ataşehir Arena Cd. No:179",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Ataşehir",
+          "postalCode": "34717",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6256,
+          41.0939
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 547 339 40 95",
+        "email": "info9@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.2,
+        "totalReviews": 171
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f52",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-01T08:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-06-03T08:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f4",
+        "name": "ipek.9",
+        "email": "ipek.9@example.com",
+        "profilePicture": "https://cdn.example.com/u/ipek.9.jpg",
+        "goalKeeper": false,
+        "description": null,
+        "phoneNumber": "+90 588 109 81 27"
+      },
+      "reason": "Hakem gelmedi"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 46,
+      "middlemanTax": 1,
+      "total": 740.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_4f7ca577",
+      "middlemanTxId": "mtx_9d968f38",
+      "paidAt": "2025-07-22T14:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-05-27T08:00:00Z",
+    "updatedAt": "2025-06-03T08:00:00Z"
+  },
+  {
+    "_id": "00000000000000000000266f",
+    "pitch": {
+      "_id": "0000000000000000000017db",
+      "name": "Pendik Marina",
+      "location": {
+        "address": {
+          "street": "Pendik Marina Cd. No:99",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Pendik",
+          "postalCode": "34379",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0207,
+          40.9271
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 592 865 44 42",
+        "email": "info7@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.1,
+        "totalReviews": 254
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f53",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-01T07:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 1500,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 3,
+      "middlemanTax": 9,
+      "total": 1550.0,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_90ef5973",
+      "middlemanTxId": "mtx_d33b582f",
+      "paidAt": "2025-06-21T12:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-07-27T07:00:00Z",
+    "updatedAt": "2025-08-03T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002670",
+    "pitch": {
+      "_id": "0000000000000000000017d9",
+      "name": "Bakırköy Sahil",
+      "location": {
+        "address": {
+          "street": "Bakırköy Sahil Cd. No:136",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Bakırköy",
+          "postalCode": "34951",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7045,
+          41.0515
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 50,
+          "width": 20
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 12,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1300,
+        "nightHourlyRate": 1200,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 555 991 70 27",
+        "email": "info5@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.7,
+        "totalReviews": 241
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f40",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-16T07:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-08-16T00:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f8",
+        "name": "baran.13",
+        "email": "baran.13@example.com",
+        "profilePicture": "https://cdn.example.com/u/baran.13.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 540 295 84 36"
+      },
+      "reason": "Hava muhalefeti"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.2,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 23,
+      "middlemanTax": 0,
+      "total": 1560.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_99461ae0",
+      "middlemanTxId": "mtx_e56011b0",
+      "paidAt": "2025-07-03T07:00:00Z"
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-08-11T07:00:00Z",
+    "updatedAt": "2025-08-18T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002671",
+    "pitch": {
+      "_id": "0000000000000000000017dc",
+      "name": "Kartal City",
+      "location": {
+        "address": {
+          "street": "Kartal City Cd. No:1",
+          "neighborhood": "Yıldız",
+          "city": "İstanbul",
+          "district": "Kartal",
+          "postalCode": "34789",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2099,
+          41.0309
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 55,
+          "width": 40
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1500,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.0
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 446 56 39",
+        "email": "info8@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 209
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f41",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-17T08:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-05-16T12:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f9",
+        "name": "ozge.14",
+        "email": "ozge.14@example.com",
+        "profilePicture": "https://cdn.example.com/u/ozge.14.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 512 908 56 58"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 100,
+      "tax": 18,
+      "middlemanShare": 28,
+      "middlemanTax": 4,
+      "total": 1265.0,
+      "paid": true,
+      "method": "transfer",
+      "pitchTxId": "ptx_c0e04f6a",
+      "middlemanTxId": "mtx_5941ec6e",
+      "paidAt": "2025-07-01T01:00:00Z"
+    },
+    "notes": null,
+    "createdAt": "2025-05-12T08:00:00Z",
+    "updatedAt": "2025-05-19T08:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002672",
+    "pitch": {
+      "_id": "0000000000000000000017e1",
+      "name": "Bağcılar Merkez",
+      "location": {
+        "address": {
+          "street": "Bağcılar Merkez Cd. No:28",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Bağcılar",
+          "postalCode": "34680",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.0048,
+          41.0975
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 20
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.1,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 517 516 53 88",
+        "email": "info13@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 268
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f42",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-08-06T10:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 700,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 48,
+      "middlemanTax": 10,
+      "total": 685.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_ee21ad5d",
+      "middlemanTxId": "mtx_eb4c199e",
+      "paidAt": "2025-07-07T05:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-08-01T10:00:00Z",
+    "updatedAt": "2025-08-08T10:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002673",
+    "pitch": {
+      "_id": "0000000000000000000017df",
+      "name": "Arnavutköy Çayır",
+      "location": {
+        "address": {
+          "street": "Arnavutköy Çayır Cd. No:19",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Arnavutköy",
+          "postalCode": "34014",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.9176,
+          40.9928
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": true,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 900,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 549 151 16 62",
+        "email": "info11@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.0,
+        "totalReviews": 269
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f43",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-11T09:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-05-11T17:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ec",
+        "name": "elif.1",
+        "email": "elif.1@example.com",
+        "profilePicture": "https://cdn.example.com/u/elif.1.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 584 994 60 90"
+      },
+      "reason": "Işıklandırma sorunu"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 45,
+      "middlemanTax": 9,
+      "total": 1365.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_7318a3b9",
+      "middlemanTxId": "mtx_c42e147c",
+      "paidAt": "2025-06-26T17:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-05-06T09:00:00Z",
+    "updatedAt": "2025-05-13T09:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002674",
+    "pitch": {
+      "_id": "0000000000000000000017d7",
+      "name": "Şişli Teras",
+      "location": {
+        "address": {
+          "street": "Şişli Teras Cd. No:107",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Şişli",
+          "postalCode": "34886",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2704,
+          40.908
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 777 20 60",
+        "email": "info3@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 25
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f44",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-06-16T07:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-06-15T10:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f5",
+        "name": "tuna.10",
+        "email": "tuna.10@example.com",
+        "profilePicture": "https://cdn.example.com/u/tuna.10.jpg",
+        "goalKeeper": true,
+        "description": "Playmaker",
+        "phoneNumber": "+90 564 676 16 78"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 1100,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 50,
+      "tax": 18,
+      "middlemanShare": 2,
+      "middlemanTax": 10,
+      "total": 1160.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_812ca1ca",
+      "middlemanTxId": "mtx_2be31fc1",
+      "paidAt": "2025-06-23T01:00:00Z"
+    },
+    "notes": "Dostluk maçı",
+    "createdAt": "2025-06-11T07:00:00Z",
+    "updatedAt": "2025-06-18T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002675",
+    "pitch": {
+      "_id": "0000000000000000000017dd",
+      "name": "Ataşehir Arena",
+      "location": {
+        "address": {
+          "street": "Ataşehir Arena Cd. No:179",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Ataşehir",
+          "postalCode": "34717",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.6256,
+          41.0939
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 40
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": true,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 10
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1000,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 547 339 40 95",
+        "email": "info9@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.2,
+        "totalReviews": 171
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f45",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-23T10:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-05-22T08:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f6",
+        "name": "hakan.11",
+        "email": "hakan.11@example.com",
+        "profilePicture": "https://cdn.example.com/u/hakan.11.jpg",
+        "goalKeeper": true,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 533 105 36 58"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 49,
+      "middlemanTax": 0,
+      "total": 1265.0,
+      "paid": false,
+      "method": "wallet",
+      "pitchTxId": "ptx_c81c4ccc",
+      "middlemanTxId": "mtx_5f531586",
+      "paidAt": null
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-05-18T10:00:00Z",
+    "updatedAt": "2025-05-25T10:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002676",
+    "pitch": {
+      "_id": "0000000000000000000017de",
+      "name": "Maltepe Park",
+      "location": {
+        "address": {
+          "street": "Maltepe Park Cd. No:40",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Maltepe",
+          "postalCode": "34557",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.989
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": true,
+        "camera": true,
+        "otherAmenities": [
+          "cafe",
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 40,
+          "width": 20
+        },
+        "surfaceType": "natural_grass",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 10,
+          "spectators": 20
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1600,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 554 490 84 51",
+        "email": "info10@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 4.3,
+        "totalReviews": 3
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f46",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-11T10:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": {
+      "at": "2025-05-13T09:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013f2",
+        "name": "zeynep.7",
+        "email": "zeynep.7@example.com",
+        "profilePicture": "https://cdn.example.com/u/zeynep.7.jpg",
+        "goalKeeper": false,
+        "description": "Defans oyuncusu",
+        "phoneNumber": "+90 593 430 24 62"
+      },
+      "reason": "Işıklandırma sorunu"
+    },
+    "refundedModel": "User",
+    "totalPlayers": 14,
+    "price": {
+      "hourlyRate": 1300,
+      "currency": "TRY",
+      "multiplier": 1.05,
+      "discount": 50,
+      "tax": 0,
+      "middlemanShare": 24,
+      "middlemanTax": 4,
+      "total": 1315.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_8af1f894",
+      "middlemanTxId": "mtx_4525d111",
+      "paidAt": "2025-07-24T13:00:00Z"
+    },
+    "notes": "Turnuva provası",
+    "createdAt": "2025-05-06T10:00:00Z",
+    "updatedAt": "2025-05-13T10:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002677",
+    "pitch": {
+      "_id": "0000000000000000000017e0",
+      "name": "Üsküdar Kuzguncuk",
+      "location": {
+        "address": {
+          "street": "Üsküdar Kuzguncuk Cd. No:62",
+          "neighborhood": "Yıldız",
+          "city": "İstanbul",
+          "district": "Üsküdar",
+          "postalCode": "34165",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          28.7961,
+          40.9286
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": false,
+        "parking": true,
+        "shoeRenting": true,
+        "camera": false,
+        "otherAmenities": [
+          "wifi"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 55,
+          "width": 40
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1800,
+        "nightHourlyRate": 1200,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.2,
+        "weekendMultiplier": 1.2
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 533 426 24 30",
+        "email": "info12@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.4,
+        "totalReviews": 94
+      },
+      "refundAllowed": true
+    },
+    "company": "000000000000000000001f47",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-04-28T12:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-04-27T03:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013ef",
+        "name": "burak.4",
+        "email": "burak.4@example.com",
+        "profilePicture": "https://cdn.example.com/u/burak.4.jpg",
+        "goalKeeper": true,
+        "description": "Hızlı kanat",
+        "phoneNumber": "+90 570 538 53 67"
+      },
+      "reason": "Saha bakımı"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 20,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 100,
+      "tax": 0,
+      "middlemanShare": 6,
+      "middlemanTax": 1,
+      "total": 890.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_d51556f3",
+      "middlemanTxId": "mtx_42cb784c",
+      "paidAt": "2025-07-07T05:00:00Z"
+    },
+    "notes": "Maç sonrası çay",
+    "createdAt": "2025-04-23T12:00:00Z",
+    "updatedAt": "2025-04-30T12:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002678",
+    "pitch": {
+      "_id": "0000000000000000000017d7",
+      "name": "Şişli Teras",
+      "location": {
+        "address": {
+          "street": "Şişli Teras Cd. No:107",
+          "neighborhood": "Sahil",
+          "city": "İstanbul",
+          "district": "Şişli",
+          "postalCode": "34886",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2704,
+          40.908
+        ]
+      },
+      "facilities": {
+        "changingRooms": false,
+        "showers": true,
+        "parking": false,
+        "shoeRenting": false,
+        "camera": true,
+        "otherAmenities": [
+          "otomat"
+        ]
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 60,
+          "width": 30
+        },
+        "surfaceType": "indoor_court",
+        "isIndoor": false,
+        "hasLighting": true,
+        "recommendedCapacity": {
+          "players": 22,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1400,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.05
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 542 777 20 60",
+        "email": "info3@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 25
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f48",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-10T07:00:00Z",
+    "status": "completed",
+    "cancel": null,
+    "cancelModel": null,
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 10,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 0,
+      "middlemanShare": 8,
+      "middlemanTax": 3,
+      "total": 990.0,
+      "paid": true,
+      "method": "cash",
+      "pitchTxId": "ptx_a44a94b7",
+      "middlemanTxId": "mtx_8a87d5cb",
+      "paidAt": "2025-07-04T14:00:00Z"
+    },
+    "notes": "Kaleci bizde",
+    "createdAt": "2025-05-05T07:00:00Z",
+    "updatedAt": "2025-05-12T07:00:00Z"
+  },
+  {
+    "_id": "000000000000000000002679",
+    "pitch": {
+      "_id": "0000000000000000000017d4",
+      "name": "Beşiktaş Barbaros",
+      "location": {
+        "address": {
+          "street": "Beşiktaş Barbaros Cd. No:95",
+          "neighborhood": "Barbaros",
+          "city": "İstanbul",
+          "district": "Beşiktaş",
+          "postalCode": "34316",
+          "country": "Turkey"
+        },
+        "type": "Point",
+        "coordinates": [
+          29.2093,
+          41.0992
+        ]
+      },
+      "facilities": {
+        "changingRooms": true,
+        "showers": true,
+        "parking": true,
+        "shoeRenting": false,
+        "camera": false,
+        "otherAmenities": []
+      },
+      "specifications": {
+        "dimensions": {
+          "length": 45,
+          "width": 30
+        },
+        "surfaceType": "artificial_turf",
+        "isIndoor": false,
+        "hasLighting": false,
+        "recommendedCapacity": {
+          "players": 14,
+          "spectators": 0
+        }
+      },
+      "pricing": {
+        "hourlyRate": 1100,
+        "nightHourlyRate": 1900,
+        "currency": "TRY",
+        "specialDayMultiplier": 1.0,
+        "weekendMultiplier": 1.1
+      },
+      "media": {
+        "images": [],
+        "videos": []
+      },
+      "contact": {
+        "phone": "+90 534 631 44 16",
+        "email": "info0@pitch.example.com"
+      },
+      "rating": {
+        "averageRating": 3.3,
+        "totalReviews": 129
+      },
+      "refundAllowed": false
+    },
+    "company": "000000000000000000001f49",
+    "bookedBy": {
+      "_id": "0000000000000000000d6d80",
+      "name": "ahmet.master",
+      "email": "ahmet.master@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.master.jpg",
+      "goalKeeper": false,
+      "description": "Organizatör, hızlı kanat.",
+      "phoneNumber": "+90 532 555 44 33"
+    },
+    "start": "2025-05-01T09:00:00Z",
+    "status": "cancelled",
+    "cancel": {
+      "at": "2025-04-30T10:00:00Z",
+      "by": {
+        "_id": "0000000000000000000013fa",
+        "name": "derya.15",
+        "email": "derya.15@example.com",
+        "profilePicture": "https://cdn.example.com/u/derya.15.jpg",
+        "goalKeeper": false,
+        "description": "Akşam maç sever",
+        "phoneNumber": "+90 521 982 53 84"
+      },
+      "reason": "Çift rezervasyon"
+    },
+    "cancelModel": "User",
+    "refunded": null,
+    "refundedModel": null,
+    "totalPlayers": 12,
+    "price": {
+      "hourlyRate": 900,
+      "currency": "TRY",
+      "multiplier": 1.1,
+      "discount": 0,
+      "tax": 18,
+      "middlemanShare": 36,
+      "middlemanTax": 9,
+      "total": 990.0,
+      "paid": true,
+      "method": "wallet",
+      "pitchTxId": "ptx_961e9243",
+      "middlemanTxId": "mtx_8b607a31",
+      "paidAt": "2025-06-25T05:00:00Z"
+    },
+    "notes": "Top bizden",
+    "createdAt": "2025-04-26T09:00:00Z",
+    "updatedAt": "2025-05-03T09:00:00Z"
+  }
+]
