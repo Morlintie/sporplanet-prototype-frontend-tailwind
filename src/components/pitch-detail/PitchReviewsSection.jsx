@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import AuthRequiredPopup from "../shared/AuthRequiredPopup";
+import LocationPermissionPopup from "../shared/LocationPermissionPopup";
+import Notification from "../shared/Notification";
 import "../../styles/review-animations.css";
 
 function PitchReviewsSection({
@@ -24,6 +26,24 @@ function PitchReviewsSection({
   // State for reply input values
   const [replyTexts, setReplyTexts] = useState({});
 
+  // State for editing replies
+  const [editingReplies, setEditingReplies] = useState({});
+  const [editReplyTexts, setEditReplyTexts] = useState({});
+  const [editReplyLoading, setEditReplyLoading] = useState({});
+
+  // State for reply submission loading
+  const [replySubmissionLoading, setReplySubmissionLoading] = useState({});
+
+  // State for deleting replies
+  const [deletingReplies, setDeletingReplies] = useState({});
+  const [showDeleteReplyPopup, setShowDeleteReplyPopup] = useState(false);
+  const [replyToDelete, setReplyToDelete] = useState(null);
+
+  // State for notifications
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+
   // State for auth required popup
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [authPopupActionType, setAuthPopupActionType] = useState("default");
@@ -43,8 +63,12 @@ function PitchReviewsSection({
       "Please provide required data.": "Gerekli bilgileri girin.",
       "Please provide all required data.": "Tüm gerekli bilgileri girin.",
       "Review not found.": "Yorum bulunamadı.",
+      "Reply not found.": "Cevap bulunamadı.",
+      "You are not authorized to perform that action.":
+        "Bu işlem için yetkiniz bulunmamaktadır.",
       "You have been banned, please get contact with our customer service.":
         "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+      "Reply deleted successfully.": "Cevap başarıyla silindi.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -139,6 +163,17 @@ function PitchReviewsSection({
     return getArrayLength(review?.replies);
   };
 
+  // Notification helper functions
+  const showNotificationMessage = (message, type = "success") => {
+    setNotificationMessage(message);
+    setNotificationType(type);
+    setShowNotification(true);
+  };
+
+  const hideNotification = () => {
+    setShowNotification(false);
+  };
+
   // Auth popup handlers
   const showAuthRequiredPopup = (actionType) => {
     setAuthPopupActionType(actionType);
@@ -160,6 +195,12 @@ function PitchReviewsSection({
   const hasUserDislikedReview = (review) => {
     if (!isAuthenticated || !user?._id) return false;
     return review?.dislikes?.includes(user._id) || false;
+  };
+
+  // Check if user can edit reply
+  const canUserEditReply = (reply) => {
+    if (!isAuthenticated || !user?._id || !reply?.user?._id) return false;
+    return reply.user._id === user._id;
   };
 
   // Handlers for interactions
@@ -325,6 +366,12 @@ function PitchReviewsSection({
       return;
     }
 
+    // Set loading state
+    setReplySubmissionLoading((prev) => ({
+      ...prev,
+      [reviewId]: true,
+    }));
+
     try {
       const response = await fetch(`/api/v1/pitch-review/reply/${reviewId}`, {
         method: "POST",
@@ -389,7 +436,245 @@ function PitchReviewsSection({
       } else {
         alert(translateMessage(error.message));
       }
+    } finally {
+      // Clear loading state
+      setReplySubmissionLoading((prev) => ({
+        ...prev,
+        [reviewId]: false,
+      }));
     }
+  };
+
+  // Reply editing functions
+  const startEditingReply = (reviewId, replyId, currentText) => {
+    setEditingReplies((prev) => ({
+      ...prev,
+      [`${reviewId}-${replyId}`]: true,
+    }));
+    setEditReplyTexts((prev) => ({
+      ...prev,
+      [`${reviewId}-${replyId}`]: currentText,
+    }));
+  };
+
+  const cancelEditingReply = (reviewId, replyId) => {
+    setEditingReplies((prev) => ({
+      ...prev,
+      [`${reviewId}-${replyId}`]: false,
+    }));
+    setEditReplyTexts((prev) => {
+      const newTexts = { ...prev };
+      delete newTexts[`${reviewId}-${replyId}`];
+      return newTexts;
+    });
+  };
+
+  const handleEditReplyTextChange = (reviewId, replyId, text) => {
+    setEditReplyTexts((prev) => ({
+      ...prev,
+      [`${reviewId}-${replyId}`]: text,
+    }));
+  };
+
+  const handleEditReplySubmit = async (reviewId, replyId) => {
+    const textKey = `${reviewId}-${replyId}`;
+    const newText = editReplyTexts[textKey]?.trim();
+
+    if (!newText) {
+      alert("Yorum boş olamaz.");
+      return;
+    }
+
+    // Set loading state
+    setEditReplyLoading((prev) => ({
+      ...prev,
+      [textKey]: true,
+    }));
+
+    try {
+      const response = await fetch(
+        `/api/v1/pitch-review/editReply/${reviewId}`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            comment: newText,
+            replyId: replyId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 400) {
+            errorMessage = "Please provide all required data.";
+          } else if (response.status === 401) {
+            errorMessage = "You are not authorized to perform that action.";
+          } else if (response.status === 404) {
+            errorMessage = "Reply not found.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      // Update the review in the parent component with the updated reply
+      if (data.review && onReviewUpdate) {
+        onReviewUpdate(data.review);
+      }
+
+      console.log("Reply edited successfully:", data);
+
+      // Cancel editing mode
+      cancelEditingReply(reviewId, replyId);
+    } catch (error) {
+      console.error("Error editing reply:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        alert(translateMessage("Failed to fetch"));
+      } else {
+        alert(translateMessage(error.message));
+      }
+    } finally {
+      // Clear loading state
+      setEditReplyLoading((prev) => ({
+        ...prev,
+        [textKey]: false,
+      }));
+    }
+  };
+
+  const handleDeleteReply = (reviewId, replyId) => {
+    if (!isAuthenticated || !user?._id) {
+      showNotificationMessage("Bu işlem için giriş yapmalısınız.", "warning");
+      return;
+    }
+
+    // Show confirmation popup
+    setReplyToDelete({ reviewId, replyId });
+    setShowDeleteReplyPopup(true);
+  };
+
+  const handleDeleteReplyConfirm = async () => {
+    const { reviewId, replyId } = replyToDelete;
+    setShowDeleteReplyPopup(false);
+    setReplyToDelete(null);
+
+    const deleteKey = `${reviewId}-${replyId}`;
+    setDeletingReplies((prev) => ({
+      ...prev,
+      [deleteKey]: true,
+    }));
+
+    try {
+      const response = await fetch(
+        `/api/v1/pitch-review/deleteReply/${reviewId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            replyId: replyId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 400) {
+            errorMessage = "Please provide all required data.";
+          } else if (response.status === 401) {
+            errorMessage = "You are not authorized to perform that action.";
+          } else if (response.status === 404) {
+            errorMessage = "Review not found.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Backend returns 204 No Content with a JSON message
+      let responseData = null;
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        // If no JSON, assume success
+        responseData = { message: "Reply deleted successfully." };
+      }
+
+      console.log("Reply deleted successfully:", responseData);
+
+      // Remove the reply from the UI by updating the reviews state
+      // Create a new reviews array with the reply removed
+      const updatedReviews = reviews.map((review) => {
+        if (review._id === reviewId) {
+          return {
+            ...review,
+            replies: review.replies.filter((reply) => reply._id !== replyId),
+          };
+        }
+        return review;
+      });
+
+      // Update the parent component's state
+      if (onReviewUpdate) {
+        // Find the updated review and pass it to parent
+        const updatedReview = updatedReviews.find(
+          (review) => review._id === reviewId
+        );
+        if (updatedReview) {
+          onReviewUpdate(updatedReview);
+        }
+      }
+
+      showNotificationMessage(
+        translateMessage("Reply deleted successfully."),
+        "success"
+      );
+    } catch (error) {
+      console.error("Error deleting reply:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        showNotificationMessage(translateMessage("Failed to fetch"), "error");
+      } else {
+        showNotificationMessage(translateMessage(error.message), "error");
+      }
+    } finally {
+      setDeletingReplies((prev) => ({
+        ...prev,
+        [deleteKey]: false,
+      }));
+    }
+  };
+
+  const handleDeleteReplyCancel = () => {
+    setShowDeleteReplyPopup(false);
+    setReplyToDelete(null);
   };
 
   return (
@@ -759,88 +1044,289 @@ function PitchReviewsSection({
                   {/* Collapsible Replies Section */}
                   {getRepliesCount(review) > 0 &&
                     expandedReplies[review._id] && (
-                      <div className="mt-4 space-y-3 animate-fade-in">
+                      <div
+                        className="mt-4 space-y-3 animate-fade-in"
+                        key={`replies-container-${review._id}`}
+                      >
                         <div className="ml-6 space-y-3">
-                          {review.replies.map((reply, index) => {
-                            if (!reply || !reply.user) return null;
+                          {review.replies &&
+                            review.replies
+                              .filter(
+                                (reply) => reply && reply.user && reply._id
+                              )
+                              .reduce((uniqueReplies, reply) => {
+                                // Remove duplicates by checking if _id already exists
+                                if (
+                                  !uniqueReplies.find(
+                                    (ur) => ur._id === reply._id
+                                  )
+                                ) {
+                                  uniqueReplies.push(reply);
+                                }
+                                return uniqueReplies;
+                              }, [])
+                              .map((reply, index) => {
+                                return (
+                                  <div
+                                    key={`reply-${reply._id}-${review._id}`}
+                                    className="bg-green-50 rounded-lg p-3 border-l-4 border-green-200 reply-item"
+                                    style={{
+                                      animationDelay: `${index * 100}ms`,
+                                    }}
+                                  >
+                                    <div className="flex items-start space-x-3">
+                                      {/* Reply User Avatar */}
+                                      <div className="flex-shrink-0">
+                                        {reply.user?.profilePicture ? (
+                                          <img
+                                            src={reply.user.profilePicture}
+                                            alt={reply.user?.name || "Anonim"}
+                                            className="w-7 h-7 rounded-full object-cover border-2 border-white shadow-sm"
+                                            onError={(e) => {
+                                              e.target.style.display = "none";
+                                              e.target.nextSibling.style.display =
+                                                "flex";
+                                            }}
+                                          />
+                                        ) : null}
+                                        <div
+                                          className={`w-7 h-7 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-medium border-2 border-white shadow-sm ${
+                                            reply.user?.profilePicture
+                                              ? "hidden"
+                                              : "flex"
+                                          }`}
+                                        >
+                                          {getInitials(reply.user?.name)}
+                                        </div>
+                                      </div>
 
-                            return (
-                              <div
-                                key={reply._id || index}
-                                className="bg-green-50 rounded-lg p-3 border-l-4 border-green-200 reply-item"
-                                style={{ animationDelay: `${index * 100}ms` }}
-                              >
-                                <div className="flex items-start space-x-3">
-                                  {/* Reply User Avatar */}
-                                  <div className="flex-shrink-0">
-                                    {reply.user?.profilePicture ? (
-                                      <img
-                                        src={reply.user.profilePicture}
-                                        alt={reply.user?.name || "Anonim"}
-                                        className="w-7 h-7 rounded-full object-cover border-2 border-white shadow-sm"
-                                        onError={(e) => {
-                                          e.target.style.display = "none";
-                                          e.target.nextSibling.style.display =
-                                            "flex";
-                                        }}
-                                      />
-                                    ) : null}
-                                    <div
-                                      className={`w-7 h-7 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-medium border-2 border-white shadow-sm ${
-                                        reply.user?.profilePicture
-                                          ? "hidden"
-                                          : "flex"
-                                      }`}
-                                    >
-                                      {getInitials(reply.user?.name)}
-                                    </div>
-                                  </div>
+                                      {/* Reply Content */}
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <div className="flex items-center space-x-2">
+                                            <span className="text-xs font-medium text-gray-900 truncate">
+                                              {reply.user?.name || "Anonim"}
+                                            </span>
+                                            {reply.user?.email?.includes(
+                                              "admin"
+                                            ) ||
+                                            reply.user?.email?.includes(
+                                              "destek"
+                                            ) ? (
+                                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                <svg
+                                                  className="w-2.5 h-2.5 mr-0.5"
+                                                  fill="currentColor"
+                                                  viewBox="0 0 20 20"
+                                                >
+                                                  <path
+                                                    fillRule="evenodd"
+                                                    d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z"
+                                                    clipRule="evenodd"
+                                                  />
+                                                </svg>
+                                                Saha Temsilcisi
+                                              </span>
+                                            ) : null}
+                                          </div>
 
-                                  {/* Reply Content */}
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center space-x-2 mb-1">
-                                      <span className="text-xs font-medium text-gray-900 truncate">
-                                        {reply.user?.name || "Anonim"}
-                                      </span>
-                                      {reply.user?.email?.includes("admin") ||
-                                      reply.user?.email?.includes("destek") ? (
-                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                          <svg
-                                            className="w-2.5 h-2.5 mr-0.5"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path
-                                              fillRule="evenodd"
-                                              d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z"
-                                              clipRule="evenodd"
+                                          {/* Edit and Delete Buttons - Only show for reply owner */}
+                                          {canUserEditReply(reply) && (
+                                            <div className="flex items-center space-x-1">
+                                              {/* Edit Button */}
+                                              <button
+                                                onClick={() =>
+                                                  startEditingReply(
+                                                    review._id,
+                                                    reply._id,
+                                                    reply.comment
+                                                  )
+                                                }
+                                                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded"
+                                                title="Cevabı düzenle"
+                                              >
+                                                <svg
+                                                  className="w-3 h-3"
+                                                  fill="none"
+                                                  stroke="currentColor"
+                                                  viewBox="0 0 24 24"
+                                                >
+                                                  <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                  />
+                                                </svg>
+                                              </button>
+
+                                              {/* Delete Button */}
+                                              <button
+                                                onClick={() =>
+                                                  handleDeleteReply(
+                                                    review._id,
+                                                    reply._id
+                                                  )
+                                                }
+                                                disabled={
+                                                  deletingReplies[
+                                                    `${review._id}-${reply._id}`
+                                                  ]
+                                                }
+                                                className="text-gray-400 hover:text-red-600 transition-colors p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                                title="Cevabı sil"
+                                              >
+                                                {deletingReplies[
+                                                  `${review._id}-${reply._id}`
+                                                ] ? (
+                                                  <svg
+                                                    className="w-3 h-3 animate-spin"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <circle
+                                                      className="opacity-25"
+                                                      cx="12"
+                                                      cy="12"
+                                                      r="10"
+                                                      stroke="currentColor"
+                                                      strokeWidth="4"
+                                                    ></circle>
+                                                    <path
+                                                      className="opacity-75"
+                                                      fill="currentColor"
+                                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                    ></path>
+                                                  </svg>
+                                                ) : (
+                                                  <svg
+                                                    className="w-3 h-3"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <path
+                                                      strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      strokeWidth={2}
+                                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                    />
+                                                  </svg>
+                                                )}
+                                              </button>
+                                            </div>
+                                          )}
+                                        </div>
+
+                                        <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
+                                          <span>
+                                            {formatDate(reply.createdAt)}
+                                          </span>
+                                          {reply.isEdited === true && (
+                                            <span className="italic text-gray-400">
+                                              • düzenlendi{" "}
+                                              {reply.updatedAt &&
+                                              reply.updatedAt !==
+                                                reply.createdAt
+                                                ? formatDate(reply.updatedAt)
+                                                : ""}
+                                            </span>
+                                          )}
+                                        </div>
+
+                                        {/* Reply Text or Edit Form */}
+                                        {editingReplies[
+                                          `${review._id}-${reply._id}`
+                                        ] ? (
+                                          <div className="animate-slide-down">
+                                            <textarea
+                                              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none text-sm"
+                                              rows={3}
+                                              value={
+                                                editReplyTexts[
+                                                  `${review._id}-${reply._id}`
+                                                ] || ""
+                                              }
+                                              onChange={(e) =>
+                                                handleEditReplyTextChange(
+                                                  review._id,
+                                                  reply._id,
+                                                  e.target.value
+                                                )
+                                              }
+                                              placeholder="Cevabınızı düzenleyin..."
                                             />
-                                          </svg>
-                                          Saha Temsilcisi
-                                        </span>
-                                      ) : null}
+                                            <div className="flex items-center justify-end space-x-2 mt-2">
+                                              <button
+                                                onClick={() =>
+                                                  cancelEditingReply(
+                                                    review._id,
+                                                    reply._id
+                                                  )
+                                                }
+                                                className="px-3 py-1 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                              >
+                                                İptal
+                                              </button>
+                                              <button
+                                                onClick={() =>
+                                                  handleEditReplySubmit(
+                                                    review._id,
+                                                    reply._id
+                                                  )
+                                                }
+                                                disabled={
+                                                  !editReplyTexts[
+                                                    `${review._id}-${reply._id}`
+                                                  ]?.trim() ||
+                                                  editReplyLoading[
+                                                    `${review._id}-${reply._id}`
+                                                  ]
+                                                }
+                                                className="px-3 py-1 text-xs font-medium text-white bg-green-600 border border-transparent rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                              >
+                                                {editReplyLoading[
+                                                  `${review._id}-${reply._id}`
+                                                ] ? (
+                                                  <div className="flex items-center">
+                                                    <svg
+                                                      className="animate-spin h-3 w-3 mr-1"
+                                                      fill="none"
+                                                      viewBox="0 0 24 24"
+                                                    >
+                                                      <circle
+                                                        className="opacity-25"
+                                                        cx="12"
+                                                        cy="12"
+                                                        r="10"
+                                                        stroke="currentColor"
+                                                        strokeWidth="4"
+                                                      ></circle>
+                                                      <path
+                                                        className="opacity-75"
+                                                        fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                      ></path>
+                                                    </svg>
+                                                    Kaydediliyor...
+                                                  </div>
+                                                ) : (
+                                                  "Kaydet"
+                                                )}
+                                              </button>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <p className="text-sm text-gray-700 leading-relaxed">
+                                            {reply.comment ||
+                                              "Yorum içeriği bulunmuyor."}
+                                          </p>
+                                        )}
+                                      </div>
                                     </div>
-                                    <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                                      <span>{formatDate(reply.createdAt)}</span>
-                                      {reply.isEdited === true && (
-                                        <span className="italic text-gray-400">
-                                          • düzenlendi{" "}
-                                          {reply.updatedAt &&
-                                          reply.updatedAt !== reply.createdAt
-                                            ? formatDate(reply.updatedAt)
-                                            : ""}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <p className="text-sm text-gray-700 leading-relaxed">
-                                      {reply.comment ||
-                                        "Yorum içeriği bulunmuyor."}
-                                    </p>
                                   </div>
-                                </div>
-                              </div>
-                            );
-                          })}
+                                );
+                              })}
                         </div>
                       </div>
                     )}
@@ -906,10 +1392,38 @@ function PitchReviewsSection({
                               </button>
                               <button
                                 onClick={() => handleReplySubmit(review._id)}
-                                disabled={!replyTexts[review._id]?.trim()}
+                                disabled={
+                                  !replyTexts[review._id]?.trim() ||
+                                  replySubmissionLoading[review._id]
+                                }
                                 className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               >
-                                Gönder
+                                {replySubmissionLoading[review._id] ? (
+                                  <div className="flex items-center">
+                                    <svg
+                                      className="animate-spin h-4 w-4 mr-2"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                      ></circle>
+                                      <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                      ></path>
+                                    </svg>
+                                    Gönderiliyor...
+                                  </div>
+                                ) : (
+                                  "Gönder"
+                                )}
                               </button>
                             </div>
                           </div>
@@ -952,6 +1466,27 @@ function PitchReviewsSection({
         isVisible={showAuthPopup}
         onClose={hideAuthRequiredPopup}
         actionType={authPopupActionType}
+      />
+
+      {/* Delete Reply Confirmation Popup */}
+      <LocationPermissionPopup
+        isVisible={showDeleteReplyPopup}
+        onAccept={handleDeleteReplyConfirm}
+        onDecline={handleDeleteReplyCancel}
+        title="Cevabı Sil"
+        message="Bu cevabı silmek istediğinizden emin misiniz?"
+        acceptText="Evet"
+        declineText="Hayır"
+        icon="delete"
+        showInfo={false}
+      />
+
+      {/* Notification */}
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+        isVisible={showNotification}
+        onClose={hideNotification}
       />
     </div>
   );
