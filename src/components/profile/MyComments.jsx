@@ -8,7 +8,8 @@ function MyComments({ user }) {
       comment: "Harika bir saha, çok temiz ve bakımlı. Kesinlikle tavsiye ederim!",
       rating: 5,
       date: "2025-01-15",
-      isEditing: false
+      isEditing: false,
+      tempRating: 5
     },
     {
       id: 2,
@@ -16,19 +17,32 @@ function MyComments({ user }) {
       comment: "İyi saha ama biraz pahalı. Kalite fiyatına değer.",
       rating: 4,
       date: "2025-01-10",
-      isEditing: false
+      isEditing: false,
+      tempRating: 4
     }
   ]);
 
   const handleEdit = (id) => {
     setComments(comments.map(comment => 
-      comment.id === id ? { ...comment, isEditing: true } : comment
+      comment.id === id ? { ...comment, isEditing: true, tempRating: comment.rating } : comment
     ));
   };
 
-  const handleSave = (id, newComment) => {
+  const handleSave = (id, newComment, newRating) => {
     setComments(comments.map(comment => 
-      comment.id === id ? { ...comment, comment: newComment, isEditing: false } : comment
+      comment.id === id ? { 
+        ...comment, 
+        comment: newComment, 
+        rating: newRating,
+        tempRating: newRating,
+        isEditing: false 
+      } : comment
+    ));
+  };
+
+  const handleRatingChange = (id, rating) => {
+    setComments(comments.map(comment => 
+      comment.id === id ? { ...comment, tempRating: rating } : comment
     ));
   };
 
@@ -49,9 +63,33 @@ function MyComments({ user }) {
     ));
   };
 
+  const renderEditableStars = (rating, commentId) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <svg
+        key={i}
+        className={`w-5 h-5 cursor-pointer transition-colors ${
+          i < rating ? 'text-yellow-400 hover:text-yellow-500' : 'text-gray-300 hover:text-yellow-200'
+        }`}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        onClick={() => handleRatingChange(commentId, i + 1)}
+        tabIndex="0"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleRatingChange(commentId, i + 1);
+          }
+        }}
+        aria-label={`${i + 1} yıldız ver`}
+      >
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+    ));
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Yorumlarım</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">Yorumlarım</h1>
       
       <div className="space-y-6">
         {comments.map((comment) => (
@@ -91,22 +129,40 @@ function MyComments({ user }) {
             
             {comment.isEditing ? (
               <div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Değerlendirme:
+                  </label>
+                  <div className="flex items-center space-x-1">
+                    {renderEditableStars(comment.tempRating, comment.id)}
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({comment.tempRating} / 5)
+                    </span>
+                  </div>
+                </div>
                 <textarea
+                  id={`comment-${comment.id}`}
                   defaultValue={comment.comment}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   rows="3"
+                  placeholder="Yorumunuzu buraya yazın..."
                 />
                 <div className="flex space-x-2 mt-3">
                   <button
-                    onClick={() => handleSave(comment.id, document.querySelector(`textarea[data-id="${comment.id}"]`).value)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors cursor-pointer"
+                    onClick={() => {
+                      const textarea = document.getElementById(`comment-${comment.id}`);
+                      handleSave(comment.id, textarea.value, comment.tempRating);
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors cursor-pointer font-semibold"
                     tabIndex="0"
                   >
                     Kaydet
                   </button>
                   <button
-                    onClick={() => setComments(comments.map(c => c.id === comment.id ? { ...c, isEditing: false } : c))}
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors cursor-pointer"
+                    onClick={() => setComments(comments.map(c => 
+                      c.id === comment.id ? { ...c, isEditing: false, tempRating: c.rating } : c
+                    ))}
+                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors cursor-pointer font-semibold"
                     tabIndex="0"
                   >
                     İptal

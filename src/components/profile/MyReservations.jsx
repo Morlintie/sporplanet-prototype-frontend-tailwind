@@ -1135,11 +1135,12 @@ function MyReservations({ user }) {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 md:p-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-0">
+      <h2 className="text-lg sm:text-xl text-center font-bold text-gray-900 mb-2 sm:mb-0">
           Rezervasyonlarım
         </h2>
-        <div className="text-xs sm:text-sm text-gray-500">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
+        
+        <div className="text-xs sm:text-sm text-gray-500 flex justify-end">
           Toplam {totalReservations} rezervasyon
         </div>
       </div>

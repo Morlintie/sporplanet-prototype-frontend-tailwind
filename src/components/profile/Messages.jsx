@@ -42,7 +42,7 @@ function Messages({ user }) {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Mesajlar</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">Mesajlar</h1>
       
       {/* Tab Navigation */}
       <div className="flex border-b border-gray-200 mb-6">

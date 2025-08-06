@@ -105,7 +105,7 @@ function Settings({ user }) {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Ayarlar</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Ayarlar</h1>
       
       {/* Profile Photo Section */}
       <div className="mb-8">

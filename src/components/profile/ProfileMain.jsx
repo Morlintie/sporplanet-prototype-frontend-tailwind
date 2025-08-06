@@ -223,7 +223,7 @@ function ProfileMain({ user }) {
 
       {/* En Son Ziyaret Ettiğim Sahalar */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">En Son Ziyaret Ettiğim Sahalar</h2>
+        <h2 className="text-xl font-semibold text-center text-gray-900 mb-6">En Son Ziyaret Ettiğim Sahalar</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {pitchesToShow.map((pitch) => (
             <div key={pitch.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">

@@ -160,7 +160,7 @@ function MyFriends({ user }) {
     <div className="bg-white rounded-lg shadow-md">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Arkadaşlarım</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-900 mb-4">Arkadaşlarım</h2>
         
         {/* Search */}
         <div className="relative mb-4">
