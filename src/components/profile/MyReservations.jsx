@@ -213,13 +213,13 @@ function MyReservations({ user }) {
       {/* Reservations List */}
       <div className="space-y-4">
         {filteredReservations.map((reservation) => (
-          <div key={reservation.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+          <div key={reservation.id} className="border bg-gray-100 border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                         <div className="mb-3">
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-semibold text-gray-900 text-lg">{reservation.pitchName}</h3>
                   <hr className="border-gray-300 mt-1 mb-2" />
-                  <div className="flex items-center space-x-4 text-base font-semibold text-gray-700 italic">
+                  <div className="flex items-center gap-4 space-x-4 text-base font-semibold text-gray-700 italic">
                     <div className="flex items-center space-x-1">
                       <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -266,7 +266,7 @@ function MyReservations({ user }) {
 
                                     {/* Para ve oyuncu bilgisi */}
             <div className="mb-3 flex flex-col space-y-2">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4 space-x-4">
                 <div className="flex items-center space-x-2">
                   <img 
                     src="https://upload.wikimedia.org/wikipedia/commons/a/af/Turkish_lira_symbol_black.svg" 
@@ -290,7 +290,7 @@ function MyReservations({ user }) {
 
               {/* Not kısmı tek satırda */}
             {reservation.notes && (
-              <div className="mb-3 mx-4 p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+              <div className="mb-3  p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
                 <p className="text-sm text-blue-700 truncate">
                   <span className="font-medium">Saha Sahibine Not:</span> {reservation.notes}
                 </p>
@@ -342,7 +342,7 @@ function MyReservations({ user }) {
                 {reservation.paid && (
                   <button 
                     onClick={() => window.open(`/invoice/${reservation.id}`, '_blank')}
-                    className="px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                    className="px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded bg-gray-50 hover:bg-gray-100 transition-colors"
                   >
                     📄 Faturam
                   </button>

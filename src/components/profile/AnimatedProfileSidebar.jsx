@@ -104,12 +104,12 @@ function AnimatedProfileSidebar() {
         />
       )}
       <div
-        className={`fixed top-16 right-0 h-[calc(100vh-4rem)] w-80 bg-white shadow-2xl z-40 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-16 right-0 h-[calc(100vh-4rem)] w-80 bg-white shadow-2xl z-40 transform transition-transform duration-300 ease-in-out flex flex-col ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
           <h2 className="text-xl font-bold text-gray-900">Profil Menüsü</h2>
           <button
             onClick={closeSidebar}
@@ -122,7 +122,7 @@ function AnimatedProfileSidebar() {
             </svg>
           </button>
         </div>
-        <nav className="p-6 space-y-2">
+        <nav className="px-4 py-2 space-y-2 overflow-y-auto flex-1">
           {menuItems.map((item) => (
             <button
               key={item.id}
