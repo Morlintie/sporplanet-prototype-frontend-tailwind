@@ -1255,9 +1255,10 @@ function MyReservations({ user }) {
       {/* Reservations List */}
       <div className="space-y-3 sm:space-y-4">
         {filteredReservations.map((reservation) => (
+
           <div
             key={reservation.id}
-            className="border border-gray-200 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 hover:shadow-md transition-shadow"
+            className="border border-gray-100 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 hover:shadow-md transition-shadow"
           >
             <div className="mb-4 sm:mb-3">
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-3 sm:mb-2">
@@ -1266,7 +1267,7 @@ function MyReservations({ user }) {
                     {reservation.pitchName}
                   </h3>
                   <hr className="border-gray-300 mt-1 mb-2" />
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm sm:text-base font-semibold text-gray-700 italic">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm sm:text-base font-semibold text-gray-700 it
                     <div className="flex items-center space-x-1">
                       <svg
                         className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600"
@@ -1338,9 +1339,11 @@ function MyReservations({ user }) {
               </div>
             </div>
 
+
             {/* Para ve oyuncu bilgisi */}
-            <div className="mb-4 sm:mb-3 flex flex-col space-y-3 sm:space-y-2">
+            <div className="mb-3 sm:mb-3 flex flex-col space-y-3 sm:space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+
                 <div className="flex items-center space-x-2">
                   <img
                     src="https://upload.wikimedia.org/wikipedia/commons/a/af/Turkish_lira_symbol_black.svg"
@@ -1376,14 +1379,16 @@ function MyReservations({ user }) {
               </div>
 
               {/* Not kısmı tek satırda */}
+
               {reservation.notes && (
-                <div className="mb-4 sm:mb-3 mx-0 sm:mx-4 p-3 sm:p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                <div className="mb-3 p-2 sm:mb-3 mx-0 sm:mx-4 p-3 sm:p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
                   <p className="text-xs sm:text-sm text-blue-700 truncate">
                     <span className="font-medium">Saha Sahibine Not:</span>{" "}
                     {reservation.notes}
                   </p>
                 </div>
               )}
+
 
               {/* Butonlar sağ tarafta */}
               <div className="flex flex-wrap sm:flex-nowrap gap-2 sm:space-x-2 justify-start sm:justify-end">
@@ -1437,11 +1442,13 @@ function MyReservations({ user }) {
 
                 {/* Fatura butonu - sadece ödenmiş rezervasyonlarda */}
                 {reservation.paid && (
+
                   <button
                     onClick={() =>
                       window.open(`/invoice/${reservation.id}`, "_blank")
                     }
-                    className="px-2 sm:px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50 hover:cursor-pointer transition-colors flex-1 sm:flex-none"
+                    className="px-3 sm:px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50 hover:cursor-pointer transition-colors flex-1 sm:flex-none"
+
                   >
                     📄 Faturam
                   </button>

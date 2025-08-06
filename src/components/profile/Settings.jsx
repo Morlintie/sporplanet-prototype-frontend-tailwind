@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Settings({ user }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  
   // Default user object if user is undefined
   const defaultUser = {
     name: "",
@@ -32,6 +37,7 @@ function Settings({ user }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -82,6 +88,20 @@ function Settings({ user }) {
   const footPreferences = [
     "Sağ Ayak", "Sol Ayak", "İki Ayak"
   ];
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if logout fails, redirect to home
+      navigate('/');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
@@ -346,15 +366,45 @@ function Settings({ user }) {
       {/* Account Actions Section */}
       <div className="border-t border-gray-200 pt-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Hesap İşlemleri</h2>
-        <div className="space-y-4">
-          <button
-            className="text-red-600 hover:text-red-700 font-medium cursor-pointer"
-            tabIndex="0"
-          >
-            Hesabı Sil
-          </button>
-          <div className="text-sm text-gray-500">
-            Bu işlem geri alınamaz ve tüm verileriniz silinir.
+        <div className="space-y-6">
+          {/* Logout Button */}
+          <div>
+            <button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold px-6 py-3 rounded-md transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center space-x-2"
+              tabIndex="0"
+            >
+              {isLoggingOut ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Çıkış Yapılıyor...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Hesaptan Çıkış Yap</span>
+                </>
+              )}
+            </button>
+            <p className="text-sm text-gray-500 mt-2">
+              Hesaptan güvenli bir şekilde çıkış yapın.
+            </p>
+          </div>
+
+          {/* Delete Account */}
+          <div>
+            <button
+              className="text-red-600 hover:text-red-700 font-medium cursor-pointer"
+              tabIndex="0"
+            >
+              Hesabı Sil
+            </button>
+            <p className="text-sm text-gray-500 mt-2">
+              Bu işlem geri alınamaz ve tüm verileriniz silinir.
+            </p>
           </div>
         </div>
       </div>
