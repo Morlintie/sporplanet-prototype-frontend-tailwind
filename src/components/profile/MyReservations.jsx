@@ -1267,7 +1267,7 @@ function MyReservations({ user }) {
                     {reservation.pitchName}
                   </h3>
                   <hr className="border-gray-300 mt-1 mb-2" />
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm sm:text-base font-semibold text-gray-700 it
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm sm:text-base font-semibold text-gray-700 italic">
                     <div className="flex items-center space-x-1">
                       <svg
                         className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600"
