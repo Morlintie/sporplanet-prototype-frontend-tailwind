@@ -4,7 +4,6 @@ import { useAuth } from "../../context/AuthContext";
 function PitchFeaturesSection({ pitch, onNotification }) {
   const { user, isAuthenticated, updateUser } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -55,17 +54,21 @@ function PitchFeaturesSection({ pitch, onNotification }) {
       return;
     }
 
-    setIsLoading(true);
+    // Store original state for potential revert
+    const originalIsFavorite = isFavorite;
+
+    // Immediately update UI to the new state
+    setIsFavorite(!isFavorite);
 
     try {
-      const endpoint = isFavorite
+      const endpoint = originalIsFavorite
         ? `/api/v1/user/removeFavoritePitch/${pitch.id}`
         : `/api/v1/user/addFavoritePitch/${pitch.id}`;
 
-      const method = isFavorite ? "DELETE" : "PATCH";
+      const method = originalIsFavorite ? "DELETE" : "PATCH";
 
       console.log(
-        `${isFavorite ? "Removing" : "Adding"} favorite pitch:`,
+        `${originalIsFavorite ? "Removing" : "Adding"} favorite pitch:`,
         pitch.id
       );
 
@@ -109,20 +112,12 @@ function PitchFeaturesSection({ pitch, onNotification }) {
       // Update user in AuthContext with new user data
       if (data.user) {
         updateUser(data.user);
-
-        // Update local state
-        setIsFavorite(!isFavorite);
-
-        // Show success notification
-        if (onNotification) {
-          const message = isFavorite
-            ? "Saha favorilerden çıkarıldı"
-            : "Saha favorilere eklendi";
-          onNotification(message, "success");
-        }
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
+
+      // Revert to original state on error
+      setIsFavorite(originalIsFavorite);
 
       // Handle network errors
       let translatedError;
@@ -135,8 +130,6 @@ function PitchFeaturesSection({ pitch, onNotification }) {
       if (onNotification) {
         onNotification(translatedError, "error");
       }
-    } finally {
-      setIsLoading(false);
     }
   };
   // Çim tipi belirle
@@ -224,59 +217,28 @@ function PitchFeaturesSection({ pitch, onNotification }) {
       {/* Favorite Button - Top Right */}
       <button
         onClick={handleFavoriteToggle}
-        disabled={isLoading}
         className={`absolute top-4 right-4 p-2 rounded-full transition-colors group ${
           isFavorite ? "bg-red-50 hover:bg-red-100" : "hover:bg-gray-100"
-        } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-        title={
-          isLoading
-            ? "İşleniyor..."
-            : isFavorite
-            ? "Favorilerden Çıkar"
-            : "Favorilere Ekle"
-        }
+        }`}
+        title={isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle"}
       >
-        {isLoading ? (
-          <svg
-            className={`w-6 h-6 animate-spin ${
-              !isFavorite ? "text-red-500" : "text-gray-400"
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        ) : (
-          <svg
-            className={`w-6 h-6 transition-colors ${
-              isFavorite
-                ? "text-red-500 fill-current"
-                : "text-gray-400 group-hover:text-red-500"
-            }`}
-            fill={isFavorite ? "currentColor" : "none"}
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        )}
+        <svg
+          className={`w-6 h-6 transition-colors ${
+            isFavorite
+              ? "text-red-500 fill-current"
+              : "text-gray-400 group-hover:text-red-500"
+          }`}
+          fill={isFavorite ? "currentColor" : "none"}
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+          />
+        </svg>
       </button>
 
       {/* Title */}

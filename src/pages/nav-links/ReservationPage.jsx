@@ -1020,6 +1020,14 @@ function ReservationPage() {
         isVisible={showLocationPopup}
         onAccept={handleLocationAccept}
         onDecline={handleLocationDecline}
+        title="Konum İzni Gerekli"
+        message="Yakınınızdaki sahaları bulabilmemiz için konum bilginizi Sporplanet ile paylaşmanıza izin vermeniz gerekmektedir."
+        acceptText="Evet, İzin Veriyorum"
+        declineText="Hayır, İstemiyorum"
+        icon="location"
+        infoTitle="Konum Bilgisi Kullanımı"
+        infoMessage="Konum bilginiz sadece yakınınızdaki spor sahalarını göstermek için kullanılacak ve hiçbir şekilde saklanmayacaktır."
+        showInfo={true}
       />
     </div>
   );
