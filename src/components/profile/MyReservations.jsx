@@ -1272,7 +1272,7 @@ function MyReservations({ user }) {
         {filteredReservations.map((reservation) => (
           <div
             key={reservation.id}
-            className="border-2 border-gray-200 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
+            className="border-2 border-gray-200 bg-gray-100 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
           >
             <div className="mb-4 sm:mb-3">
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-3 sm:mb-2">
@@ -1281,7 +1281,7 @@ function MyReservations({ user }) {
                     {reservation.pitchName}
                   </h3>
                   <hr className="border-gray-300 mt-1 mb-2" />
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm sm:text-base font-semibold text-gray-700 italic">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm sm:text-base font-semibold text-gray-700 italic">
                     <div className="flex items-center space-x-1">
                       <svg
                         className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600"
@@ -1385,7 +1385,7 @@ function MyReservations({ user }) {
 
             {/* Para ve oyuncu bilgisi */}
             <div className="mb-3 sm:mb-3 flex flex-col space-y-3 sm:space-y-2">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
                 <div className="flex items-center space-x-2">
                   <img
                     src="https://upload.wikimedia.org/wikipedia/commons/a/af/Turkish_lira_symbol_black.svg"
@@ -1423,7 +1423,7 @@ function MyReservations({ user }) {
               {/* Not kısmı tek satırda */}
 
               {reservation.notes && (
-                <div className="mb-3 p-2 sm:mb-3 mx-0 sm:mx-4 p-3 sm:p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                <div className="mb-3 p-2 sm:mb-3 mx-0  p-3 sm:p-2 bg-blue-50 rounded-lg border-l-4 border-blue-400">
                   <p className="text-xs sm:text-sm text-blue-700 truncate">
                     <span className="font-medium">Saha Sahibine Not:</span>{" "}
                     {reservation.notes}
