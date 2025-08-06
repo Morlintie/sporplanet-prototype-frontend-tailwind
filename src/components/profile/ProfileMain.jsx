@@ -198,11 +198,7 @@ function ProfileMain({ user }) {
       {/* İstatistikler Section */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">İstatistikler</h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-rose-50 rounded-lg">
-            <div className="text-2xl font-bold text-rose-600">{user.totalMatches}</div>
-            <div className="text-sm text-gray-600">Toplam Maç</div>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-indigo-50 rounded-lg">
             <div className="text-2xl font-bold text-indigo-600">{user.listedMatches}</div>
             <div className="text-sm text-gray-600">İlan Verdiği Sayı</div>
