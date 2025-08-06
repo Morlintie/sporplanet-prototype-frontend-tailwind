@@ -10,7 +10,7 @@ function Header() {
 
   // Auth context
   const { user, isAuthenticated, loading, logout } = useAuth();
-  const { openSidebar } = useProfileSidebar();
+  const { openSidebar, toggleSidebar } = useProfileSidebar();
 
   const handleLogoClick = () => {
     navigate("/");
@@ -26,7 +26,7 @@ function Header() {
 
   const handleProfileClick = () => {
     console.log("Profile button clicked");
-    openSidebar();
+    toggleSidebar();
   };
 
   const handleLogout = async () => {
@@ -44,8 +44,6 @@ function Header() {
     }
     return (nameParts[0].charAt(0) + nameParts[1].charAt(0)).toUpperCase();
   };
-
-
 
   const navLinks = [
     { name: "Maç İlanları", path: "/matches" },
