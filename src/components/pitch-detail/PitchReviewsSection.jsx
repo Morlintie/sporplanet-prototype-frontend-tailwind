@@ -256,9 +256,9 @@ function PitchReviewsSection({
 
       // Handle network errors
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        alert(translateMessage("Failed to fetch"));
+        showNotificationMessage(translateMessage("Failed to fetch"), "error");
       } else {
-        alert(translateMessage(error.message));
+        showNotificationMessage(translateMessage(error.message), "error");
       }
     }
   };
@@ -315,9 +315,9 @@ function PitchReviewsSection({
 
       // Handle network errors
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        alert(translateMessage("Failed to fetch"));
+        showNotificationMessage(translateMessage("Failed to fetch"), "error");
       } else {
-        alert(translateMessage(error.message));
+        showNotificationMessage(translateMessage(error.message), "error");
       }
     }
   };
@@ -362,7 +362,7 @@ function PitchReviewsSection({
 
     const replyText = replyTexts[reviewId]?.trim();
     if (!replyText) {
-      alert("Yorum boş olamaz.");
+      showNotificationMessage("Yorum boş olamaz.", "warning");
       return;
     }
 
@@ -432,9 +432,9 @@ function PitchReviewsSection({
 
       // Handle network errors
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        alert(translateMessage("Failed to fetch"));
+        showNotificationMessage(translateMessage("Failed to fetch"), "error");
       } else {
-        alert(translateMessage(error.message));
+        showNotificationMessage(translateMessage(error.message), "error");
       }
     } finally {
       // Clear loading state
@@ -481,7 +481,7 @@ function PitchReviewsSection({
     const newText = editReplyTexts[textKey]?.trim();
 
     if (!newText) {
-      alert("Yorum boş olamaz.");
+      showNotificationMessage("Yorum boş olamaz.", "warning");
       return;
     }
 
@@ -546,9 +546,9 @@ function PitchReviewsSection({
 
       // Handle network errors
       if (error.name === "TypeError" && error.message.includes("fetch")) {
-        alert(translateMessage("Failed to fetch"));
+        showNotificationMessage(translateMessage("Failed to fetch"), "error");
       } else {
-        alert(translateMessage(error.message));
+        showNotificationMessage(translateMessage(error.message), "error");
       }
     } finally {
       // Clear loading state
