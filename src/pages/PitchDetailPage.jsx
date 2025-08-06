@@ -11,6 +11,7 @@ import PitchReservationCard from "../components/pitch-detail/PitchReservationCar
 import PitchLocationMapSection from "../components/pitch-detail/PitchLocationMapSection";
 import PitchVideosSection from "../components/pitch-detail/PitchVideosSection";
 import PitchCommentForm from "../components/pitch-detail/PitchCommentForm";
+import Notification from "../components/shared/Notification";
 
 function PitchDetailPage() {
   const { pitchId } = useParams();
@@ -38,6 +39,12 @@ function PitchDetailPage() {
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [bookingsError, setBookingsError] = useState("");
   const [occupiedSlots, setOccupiedSlots] = useState({}); // Format: { "2025-08-09": ["09:00", "19:00"] }
+
+  // Reservation/Booking states
+  const [isBooking, setIsBooking] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
 
   // Transform backend data to pitch format
   const transformBackendDataToPitch = (item) => {
@@ -142,7 +149,14 @@ function PitchDetailPage() {
       "You have been banned, please get contact with our customer service.":
         "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
       "Please provide required data.": "Gerekli bilgileri girin.",
+      "please provide all required data": "Gerekli bilgileri girin.",
       "No pitch found.": "Saha bulunamadı. Aradığınız saha mevcut değil.",
+      "Pitch not found": "Saha bulunamadı. Aradığınız saha mevcut değil.",
+      "This pitch is closed for bookings": "Bu saha rezervasyona kapalıdır.",
+      "This pitch is not available for bookings":
+        "Bu saha rezervasyon için müsait değil.",
+      "You cannot book a pitch in the past":
+        "Geçmiş tarih için rezervasyon yapamazsınız.",
       "No bookings found.": "Bu saha için rezervasyon bulunamadı.",
 
       // Generic errors
@@ -451,22 +465,116 @@ function PitchDetailPage() {
     }
   };
 
-  const handleReservation = () => {
+  const handleReservation = async () => {
     if (!selectedDate || !selectedTime) {
-      alert("Lütfen tarih ve saat seçiniz.");
+      setNotificationMessage("Lütfen tarih ve saat seçiniz.");
+      setNotificationType("warning");
+      setShowNotification(true);
       return;
     }
 
-    const formattedDate = formatDateForDisplay(selectedDate);
-
+    // Check if pitch is under maintenance
     if (pitch?.status === "maintenance") {
-      alert(
-        `İletişim Bilgileri:\n\nTelefon: +90 212 555 0123\nE-posta: info@sporplanet.com\n\nBu saha yakında rezervasyona açılacaktır. Detaylı bilgi için bizimle iletişime geçin.`
+      setNotificationMessage(
+        "Bu saha bakımdadır. İletişim bilgilerimizden rezervasyon yapabilirsiniz."
       );
-    } else {
-      alert(
-        `Rezervasyon Onaylandı!\n\nSaha: ${pitch?.name}\nTarih: ${formattedDate}\nSaat: ${selectedTime}\nFiyat: ₺${pitch?.price}`
-      );
+      setNotificationType("info");
+      setShowNotification(true);
+      return;
+    }
+
+    setIsBooking(true);
+
+    try {
+      // Format date and time according to backend requirements: DD.MM.YYYY-HH:MM
+      // selectedDate is in YYYY-MM-DD format, selectedTime is in "HH-HH" format (e.g., "14-15")
+      const [year, month, day] = selectedDate.split("-");
+
+      // Extract only the start hour from selectedTime (e.g., "14-15" becomes "14")
+      const [startHour] = selectedTime.split("-");
+      const formattedTime = `${startHour}:00`;
+
+      // Ensure zero-padding for day and month (DD.MM.YYYY-HH:MM)
+      const paddedDay = day.padStart(2, "0");
+      const paddedMonth = month.padStart(2, "0");
+      const formattedStart = `${paddedDay}.${paddedMonth}.${year}-${formattedTime}`;
+
+      const requestBody = {
+        pitchId: pitchId,
+        start: formattedStart,
+      };
+
+      console.log("Selected time slot:", selectedTime);
+      console.log("Extracted start hour:", startHour);
+      console.log("Formatted start date:", formattedStart);
+
+      console.log("Sending booking request:", requestBody);
+
+      const response = await fetch("/api/v1/booking", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Something went wrong";
+
+        try {
+          const errorData = await response.json();
+          if (errorData.msg) {
+            errorMessage = errorData.msg;
+          }
+        } catch (parseError) {
+          if (response.status === 400) {
+            errorMessage = "Please provide required data.";
+          } else if (response.status === 401) {
+            errorMessage = "Giriş yapmanız gerekiyor.";
+          } else if (response.status === 403) {
+            errorMessage =
+              "You have been banned, please get contact with our customer service.";
+          } else if (response.status === 404) {
+            errorMessage = "Pitch not found";
+          } else if (response.status >= 500) {
+            errorMessage = "Server Error";
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Booking successful:", data);
+
+      // Show success notification
+      setNotificationMessage("Rezervasyon başarıyla oluşturuldu!");
+      setNotificationType("success");
+      setShowNotification(true);
+
+      // Clear selected date and time
+      setSelectedDate("");
+      setSelectedTime("");
+
+      // Refresh bookings to update occupied slots
+      fetchPitchBookings();
+    } catch (error) {
+      console.error("Error creating booking:", error);
+
+      // Handle network errors
+      let translatedError;
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        translatedError = translateMessage("Failed to fetch");
+      } else {
+        translatedError = translateMessage(error.message);
+      }
+
+      setNotificationMessage(translatedError);
+      setNotificationType("error");
+      setShowNotification(true);
+    } finally {
+      setIsBooking(false);
     }
   };
 
@@ -587,12 +695,20 @@ function PitchDetailPage() {
               occupiedSlots={occupiedSlots}
               bookingsLoading={bookingsLoading}
               bookingsError={bookingsError}
+              isBooking={isBooking}
             />
           </div>
 
           {/* Right Top: Features */}
           <div>
-            <PitchFeaturesSection pitch={pitch} />
+            <PitchFeaturesSection
+              pitch={pitch}
+              onNotification={(message, type) => {
+                setNotificationMessage(message);
+                setNotificationType(type);
+                setShowNotification(true);
+              }}
+            />
           </div>
 
           {/* Right Bottom: Location */}
@@ -672,6 +788,14 @@ function PitchDetailPage() {
         onClose={handleCloseMaintenancePopup}
         pitchName={pitch?.name}
         contactInfo={pitch?.contact}
+      />
+
+      {/* Notification */}
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+        isVisible={showNotification}
+        onClose={() => setShowNotification(false)}
       />
     </div>
   );

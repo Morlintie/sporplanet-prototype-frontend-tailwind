@@ -866,6 +866,21 @@ function MyReservations({ user }) {
     }
   };
 
+  const getStatusTextForEmptyState = (status) => {
+    switch (status) {
+      case "pending":
+        return "Onay Bekleyen";
+      case "confirmed":
+        return "Onaylanmış";
+      case "completed":
+        return "Tamamlanmış";
+      case "cancelled":
+        return "İptal edilmiş";
+      default:
+        return "Bilinmiyor";
+    }
+  };
+
   const getStatusExplanation = (reservation) => {
     // Orijinal durum ile yeni durum farklıysa açıklama göster
     if (reservation.originalStatus !== reservation.status) {
@@ -1255,10 +1270,9 @@ function MyReservations({ user }) {
       {/* Reservations List */}
       <div className="space-y-3 sm:space-y-4">
         {filteredReservations.map((reservation) => (
-
           <div
             key={reservation.id}
-            className="border border-gray-100 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 hover:shadow-md transition-shadow"
+            className="border-2 border-gray-200 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-shadow duration-300"
           >
             <div className="mb-4 sm:mb-3">
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-3 sm:mb-2">
@@ -1333,17 +1347,45 @@ function MyReservations({ user }) {
                         <span className="font-medium">İptal Nedeni:</span>{" "}
                         {reservation.cancelReason}
                       </p>
+                      {/* Display who cancelled the reservation */}
+                      {(reservation.cancel?.by || reservation.refunded?.by) && (
+                        <p className="text-xs sm:text-sm text-red-600 mt-1">
+                          <span className="font-medium">İptal Eden:</span>{" "}
+                          {reservation.cancel?.by?.name ||
+                            reservation.refunded?.by?.name}
+                        </p>
+                      )}
                     </div>
                   )}
+
+                  {/* Refund information display for completed reservations with refunds */}
+                  {reservation.status === "completed" &&
+                    reservation.refunded?.by && (
+                      <div className="mt-2 p-2 sm:p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400 w-full lg:max-w-64">
+                        <p className="text-xs sm:text-sm text-blue-700">
+                          <span className="font-medium">İade Yapıldı</span>
+                          {reservation.refunded.reason && (
+                            <>
+                              <span> - </span>
+                              <span className="font-normal">
+                                {reservation.refunded.reason}
+                              </span>
+                            </>
+                          )}
+                        </p>
+                        <p className="text-xs sm:text-sm text-blue-600 mt-1">
+                          <span className="font-medium">İade Eden:</span>{" "}
+                          {reservation.refunded.by.name}
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
 
-
             {/* Para ve oyuncu bilgisi */}
             <div className="mb-3 sm:mb-3 flex flex-col space-y-3 sm:space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
-
                 <div className="flex items-center space-x-2">
                   <img
                     src="https://upload.wikimedia.org/wikipedia/commons/a/af/Turkish_lira_symbol_black.svg"
@@ -1388,7 +1430,6 @@ function MyReservations({ user }) {
                   </p>
                 </div>
               )}
-
 
               {/* Butonlar sağ tarafta */}
               <div className="flex flex-wrap sm:flex-nowrap gap-2 sm:space-x-2 justify-start sm:justify-end">
@@ -1442,13 +1483,11 @@ function MyReservations({ user }) {
 
                 {/* Fatura butonu - sadece ödenmiş rezervasyonlarda */}
                 {reservation.paid && (
-
                   <button
                     onClick={() =>
                       window.open(`/invoice/${reservation.id}`, "_blank")
                     }
                     className="px-3 sm:px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50 hover:cursor-pointer transition-colors flex-1 sm:flex-none"
-
                   >
                     📄 Faturam
                   </button>
@@ -1633,9 +1672,9 @@ function MyReservations({ user }) {
           <p className="mt-1 text-xs sm:text-sm text-gray-500">
             {activeTab === "all"
               ? ""
-              : `${getStatusText({
-                  status: activeTab,
-                })} rezervasyon bulunamadı.`}
+              : `${getStatusTextForEmptyState(
+                  activeTab
+                )} rezervasyon bulunamadı.`}
           </p>
         </div>
       )}
