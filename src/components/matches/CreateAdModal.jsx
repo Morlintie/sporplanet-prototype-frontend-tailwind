@@ -187,6 +187,25 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Oyuncu sayısı validasyonu
+    if (name === 'currentPlayers' || name === 'maxPlayers') {
+      const currentPlayers = name === 'currentPlayers' ? parseInt(value) || 0 : parseInt(formData.currentPlayers) || 0;
+      const maxPlayers = name === 'maxPlayers' ? parseInt(value) || 0 : parseInt(formData.maxPlayers) || 0;
+      
+      // Mevcut oyuncu sayısı toplam oyuncu sayısından fazla olamaz
+      if (name === 'currentPlayers' && currentPlayers > maxPlayers && maxPlayers > 0) {
+        alert('Mevcut oyuncu sayısı toplam oyuncu sayısından fazla olamaz!');
+        return;
+      }
+      
+      // Toplam oyuncu sayısı mevcut oyuncu sayısından az olamaz
+      if (name === 'maxPlayers' && maxPlayers > 0 && maxPlayers < currentPlayers) {
+        alert('Toplam oyuncu sayısı mevcut oyuncu sayısından az olamaz!');
+        return;
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -199,6 +218,25 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
     // Form validation
     if (!formData.date || !formData.time) {
       alert("Lütfen tarih ve saat seçiniz!");
+      return;
+    }
+    
+    // Oyuncu sayısı validasyonu
+    const currentPlayers = parseInt(formData.currentPlayers) || 0;
+    const maxPlayers = parseInt(formData.maxPlayers) || 0;
+    
+    if (currentPlayers > maxPlayers) {
+      alert("Mevcut oyuncu sayısı toplam oyuncu sayısından fazla olamaz!");
+      return;
+    }
+    
+    if (maxPlayers <= 0) {
+      alert("Toplam oyuncu sayısı en az 1 olmalıdır!");
+      return;
+    }
+    
+    if (currentPlayers < 0) {
+      alert("Mevcut oyuncu sayısı negatif olamaz!");
       return;
     }
     

@@ -1133,6 +1133,27 @@ function MyReservations({ user }) {
     }
   };
 
+  // Handle creating ad from reservation
+  const handleCreateAdFromReservation = (reservation) => {
+    // Prepare data for CreateAdModal
+    const adData = {
+      title: `${reservation.pitchName} Maçı`,
+      date: reservation.startDateTime.toISOString().split('T')[0], // YYYY-MM-DD format
+      time: `${reservation.startDateTime.getHours()}-${reservation.startDateTime.getHours() + 1}`, // Format: "14-15"
+      location: reservation.pitchName,
+      pitchName: reservation.pitchName,
+      capacity: `${reservation.players}v${reservation.players}`,
+      price: Math.round(reservation.price / reservation.players),
+      duration: "1 saat"
+    };
+
+    // Store data in localStorage to pass to matches page
+    localStorage.setItem('createListingData', JSON.stringify(adData));
+    
+    // Navigate to matches page with create action
+    navigate('/matches?action=create');
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 md:p-6">
       <h2 className="text-lg sm:text-xl text-center font-bold text-gray-900 mb-2 sm:mb-0">
@@ -1473,12 +1494,7 @@ function MyReservations({ user }) {
                 {(reservation.status === "pending" ||
                   reservation.status === "confirmed") && (
                   <button
-                    onClick={() =>
-                      window.open(
-                        `/matches?create=true&pitchId=${reservation.pitchId}&date=${reservation.date}&time=${reservation.time}`,
-                        "_blank"
-                      )
-                    }
+                    onClick={() => handleCreateAdFromReservation(reservation)}
                     className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-green-600 border border-green-600 rounded-lg hover:bg-green-50 hover:cursor-pointer transition-colors flex-1 sm:flex-none"
                   >
                     İlan Koy

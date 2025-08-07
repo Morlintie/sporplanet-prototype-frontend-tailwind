@@ -5,6 +5,7 @@ import Footer from "../../components/shared/Footer";
 import MatchesHero from "../../components/matches/MatchesHero";
 import MatchesList from "../../components/matches/MatchesList";
 import CreateAdModal from "../../components/matches/CreateAdModal";
+import advertsData from "../../../adverts.v4.mock.json";
 
 function MatchesPage() {
   const location = useLocation();
@@ -12,6 +13,49 @@ function MatchesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prefilledData, setPrefilledData] = useState(null);
+  const [matches, setMatches] = useState([]);
+
+  // Process adverts data on component mount
+  useEffect(() => {
+    const processedMatches = advertsData.map(advert => {
+      const startDate = new Date(advert.startsAt);
+      const now = new Date();
+      const isExpired = startDate < now;
+      
+      // Calculate participants and needed players
+      const currentParticipants = advert.participants?.length || 0;
+      const totalNeeded = advert.playersNeeded + advert.goalKeepersNeeded;
+      const completion = totalNeeded > 0 ? Math.round((currentParticipants / totalNeeded) * 100) : 100;
+      
+      // Determine match type based on participants vs needed
+      const matchType = currentParticipants === 0 ? "team-ads" : "player-ads";
+      
+      return {
+        id: advert._id,
+        title: advert.name,
+        date: startDate.toLocaleDateString('tr-TR', { 
+          weekday: 'long', 
+          day: 'numeric', 
+          month: 'long',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        location: advert.pitch?.name || advert.customPitch?.name || "Saha Belirtilmemiş",
+        players: `${currentParticipants}/${totalNeeded} oyuncu`,
+        completion: completion,
+        status: isExpired ? "expired" : (completion >= 100 ? "full" : "available"),
+        type: matchType,
+        pricePerPerson: Math.round((advert.pitch?.pricing?.hourlyRate || 0) / totalNeeded) || 25,
+        difficulty: "Orta Seviye", // Default difficulty
+        description: `${advert.createdBy.name} tarafından oluşturuldu. ${advert.playersNeeded > 0 ? `${advert.playersNeeded} oyuncu` : ''} ${advert.goalKeepersNeeded > 0 ? `${advert.goalKeepersNeeded} kaleci` : ''} aranıyor.`,
+        createdBy: advert.createdBy,
+        pitch: advert.pitch,
+        originalData: advert
+      };
+    }).filter(match => match.status !== "expired"); // Filter out expired matches
+    
+    setMatches(processedMatches);
+  }, []);
 
   // Check if we should open modal from reservation
   useEffect(() => {
@@ -34,116 +78,7 @@ function MatchesPage() {
     }
   }, [location.search]);
 
-  // Dummy match data
-  const matches = [
-    // Rakip Takım İlanları - Takım tamamlanmış, rakip arıyor
-    {
-      id: 1,
-      title: "İleri Seviye 5v5 Maçı",
-      date: "Bugün, 19:00",
-      location: "Özdemir Halı Saha",
-      players: "5/5 oyuncu",
-      completion: 100,
-      status: "available",
-      type: "team-ads",
-      pricePerPerson: 25,
-      difficulty: "İleri Seviye",
-      description: "Takımımız tam kadro. Zorlu bir maç için rakip takım arıyoruz."
-    },
-    {
-      id: 2,
-      title: "Profesyonel 11v11 Maçı",
-      date: "Cumartesi, 14:00",
-      location: "Cennet Park Saha",
-      players: "11/11 oyuncu",
-      completion: 100,
-      status: "available",
-      type: "team-ads",
-      pricePerPerson: 40,
-      difficulty: "Profesyonel",
-      description: "Deneyimli takımımız kaliteli rakip arıyor."
-    },
-    {
-      id: 3,
-      title: "Orta Seviye 7v7 Maçı",
-      date: "Pazar, 16:00",
-      location: "Spor Plus Saha",
-      players: "7/7 oyuncu",
-      completion: 100,
-      status: "available",
-      type: "team-ads",
-      pricePerPerson: 30,
-      difficulty: "Orta Seviye",
-      description: "Keyifli bir maç için orta seviye takım aranıyor."
-    },
-    
-    // Oyuncu İlanları - Takıma oyuncu arayan ilanlar
-    {
-      id: 4,
-      title: "5v5 Takımına Oyuncu",
-      date: "Bugün, 20:00",
-      location: "Özdemir Halı Saha",
-      players: "3/5 oyuncu",
-      completion: 60,
-      status: "available",
-      type: "player-ads",
-      pricePerPerson: 25,
-      difficulty: "Başlangıç",
-      description: "Arkadaş canlısı takımımıza 2 oyuncu arıyoruz."
-    },
-    {
-      id: 5,
-      title: "11v11 Oyuncu Aranıyor",
-      date: "Cumartesi, 10:00",
-      location: "Futbol Akademi",
-      players: "10/11 oyuncu",
-      completion: 91,
-      status: "available",
-      type: "player-ads",
-      pricePerPerson: 35,
-      difficulty: "Orta Seviye",
-      description: "Sadece 1 oyuncu arıyoruz. Diğer pozisyonlar dolu."
-    },
-    {
-      id: 6,
-      title: "7v7 Hücum Oyuncusu",
-      date: "Pazar, 18:00",
-      location: "Dream Saha",
-      players: "5/7 oyuncu",
-      completion: 71,
-      status: "available",
-      type: "player-ads",
-      pricePerPerson: 28,
-      difficulty: "İleri Seviye",
-      description: "Hücum hattına 2 teknik oyuncu arıyoruz."
-    },
-    {
-      id: 7,
-      title: "Antrenman Grubu",
-      date: "Pazartesi, 19:30",
-      location: "Spor Center",
-      players: "8/12 oyuncu",
-      completion: 67,
-      status: "available",
-      type: "player-ads",
-      pricePerPerson: 20,
-      difficulty: "Her Seviye",
-      description: "Haftalık antrenman grubuna katılmak isteyenler."
-    },
-    {
-      id: 8,
-      title: "8v8 Dostluk Maçı",
-      date: "Cumartesi, 15:00",
-      location: "Yeşil Alan Saha",
-      players: "8/8 oyuncu",
-      completion: 100,
-      status: "full",
-      type: "player-ads",
-      pricePerPerson: 22,
-      difficulty: "Orta Seviye",
-      description: "DOLU - Dostluk maçımız için liste tamamlandı."
-    }
-  ];
+
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -172,10 +107,15 @@ function MatchesPage() {
     // Geçici olarak console'a yazdırıyoruz
   };
 
-  // Filter matches based on active filter
+  // Filter matches based on active filter and search query
   const filteredMatches = matches.filter(match => {
-    if (activeFilter === "all") return true;
-    return match.type === activeFilter;
+    const matchesFilter = activeFilter === "all" || match.type === activeFilter;
+    const matchesSearch = searchQuery === "" || 
+      match.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      match.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      match.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesFilter && matchesSearch;
   });
 
   return (

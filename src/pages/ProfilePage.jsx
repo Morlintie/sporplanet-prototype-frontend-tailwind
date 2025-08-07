@@ -1,9 +1,11 @@
 import { useProfileSidebar } from "../context/ProfileSidebarContext";
+import { useAuth } from "../context/AuthContext";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
 import ProfileMain from "../components/profile/ProfileMain";
 import MyFriends from "../components/profile/MyFriends";
 import MyFavoritePitches from "../components/profile/MyFavoritePitches";
+
 import MyListings from "../components/profile/MyListings";
 import MyReservations from "../components/profile/MyReservations";
 import MyTournaments from "../components/profile/MyTournaments";
@@ -14,24 +16,37 @@ import Settings from "../components/profile/Settings";
 
 function ProfilePage() {
   const { activeSection } = useProfileSidebar();
+  const { user, loading, isAuthenticated } = useAuth();
 
-  // Mock user data - in real app this would come from context/API
-  const user = {
-    name: "Ahmet Yılmaz",
-    email: "ahmet.yilmaz@example.com",
-    profilePicture: "https://cdn.example.com/u/ahmet.yilmaz.jpg",
-    position: "Sağ Kanat",
-    jerseyNumber: "7",
-    age: "19",
-    footPreference: "Sağ Ayak",
-    followers: 45,
-    following: 32,
-    totalMatches: 28,
-    listedMatches: 12,
-    participatedMatches: 16,
-    totalReservations: 8,
-    totalTournaments: 3
-  };
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Profil yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Not authenticated state
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Giriş Yapmanız Gerekiyor</h2>
+          <p className="text-gray-600 mb-8">Profilinizi görüntülemek için lütfen giriş yapın.</p>
+          <button
+            onClick={() => window.location.href = '/login'}
+            className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors"
+          >
+            Giriş Yap
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const renderMainContent = () => {
     switch (activeSection) {
@@ -41,6 +56,7 @@ function ProfilePage() {
         return <MyFriends user={user} />;
       case "favorite-pitches":
         return <MyFavoritePitches user={user} />;
+
       case "listings":
         return <MyListings user={user} />;
       case "reservations":

@@ -1,38 +1,52 @@
 import { useState } from "react";
-import { useFavorites } from "../../context/FavoritesContext";
+import { useAuth } from "../../context/AuthContext";
 
 function MyFavoritePitches({ user }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const { favorites, removeFromFavorites, loading } = useFavorites();
+  const { getFavoritePitches } = useAuth();
 
-  // Favori sahalar artık context'ten geliyor - mock veri kaldırıldı
-  const favoritePitches = favorites.map(fav => ({
-    id: fav.id,
+  // Get favorite pitches from user data
+  const favoritePitches = getFavoritePitches().map(fav => ({
+    id: fav._id,
     name: fav.name,
-    image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-    location: `${fav.location.address.district}, ${fav.location.address.city}`,
-    rating: fav.rating.averageRating,
-    price: `${fav.pricing.hourlyRate}₺/saat`,
+    image: fav.media?.images[0]?.url,
+    location: `${fav.location.address.neighborhood}, ${fav.location.address.city}`,
+    rating: fav.rating?.averageRating || 0,
+    price: `${fav.pricing?.hourlyRate || 'N/A'}₺/saat`,
     lastVisited: "Henüz ziyaret edilmedi",
-    addedDate: fav.addedAt.toLocaleDateString('tr-TR'),
-    category: fav.category,
+    category: fav.category || "Futbol",
     features: [
-      ...(fav.facilities.changingRooms ? ["Soyunma Odası"] : []),
-      ...(fav.facilities.showers ? ["Duş"] : []),
-      ...(fav.facilities.parking ? ["Otopark"] : []),
-      ...(fav.specifications.hasLighting ? ["Işıklandırma"] : []),
-      ...(fav.specifications.isIndoor ? ["Kapalı"] : ["Açık"]),
-      ...(fav.facilities.otherAmenities || [])
+      ...(fav.facilities?.changingRooms ? ["Soyunma Odası"] : []),
+      ...(fav.facilities?.showers ? ["Duş"] : []),
+      ...(fav.facilities?.parking ? ["Otopark"] : []),
+      ...(fav.specifications?.hasLighting ? ["Işıklandırma"] : []),
+      ...(fav.specifications?.isIndoor ? ["Kapalı"] : ["Açık"]),
+      ...(fav.facilities?.otherAmenities || [])
     ]
   }));
 
   const handleRemoveFromFavorites = async (pitchId) => {
     if (window.confirm('Bu sahayı favorilerden kaldırmak istediğinizden emin misiniz?')) {
-      const success = await removeFromFavorites(pitchId);
-      if (success) {
-        // Başarılı mesajı gösterebiliriz
-      } else {
-        alert('Saha favorilerden kaldırılırken bir hata oluştu.');
+      try {
+        const response = await fetch('/api/v1/user/favorite-pitch', {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ pitchId })
+        });
+
+        if (response.ok) {
+          // Başarılı - sayfayı yenile veya state'i güncelle
+          window.location.reload();
+        } else {
+          const errorData = await response.json();
+          alert(errorData.msg || 'Saha favorilerden kaldırılırken bir hata oluştu.');
+        }
+      } catch (error) {
+        console.error('Remove from favorites error:', error);
+        alert('Bağlantı hatası oluştu. Lütfen tekrar deneyin.');
       }
     }
   };
@@ -103,8 +117,7 @@ function MyFavoritePitches({ user }) {
                   </div>
                   <button
                     onClick={() => handleRemoveFromFavorites(pitch.id)}
-                    disabled={loading}
-                    className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
                     title="Favorilerden kaldır"
                   >
                     <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">

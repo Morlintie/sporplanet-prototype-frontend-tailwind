@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useFavorites } from "../../context/FavoritesContext";
+import { useAuth } from "../../context/AuthContext";
 
 function ProfileMain({ user }) {
   const [showAllPitches, setShowAllPitches] = useState(false);
   const navigate = useNavigate();
-  const { favorites } = useFavorites();
+  const { getFavoritePitches, getRecentlySearchedPitches } = useAuth();
 
   const handleFollowClick = (type) => {
     console.log(`Clicked on ${type}`);
@@ -16,51 +16,17 @@ function ProfileMain({ user }) {
     navigate("/profile?section=settings");
   };
 
-  // Mock favori sahalar verisi
-  const favoritePitches = [
-    {
-      id: 1,
-      name: "Beşiktaş Halısaha",
-      image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      location: "Beşiktaş, İstanbul",
-      rating: 4.8,
-      lastVisited: "2 gün önce"
-    },
-    {
-      id: 2,
-      name: "Kadıköy Spor Kompleksi",
-      image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      location: "Kadıköy, İstanbul",
-      rating: 4.6,
-      lastVisited: "1 hafta önce"
-    },
-    {
-      id: 3,
-      name: "Şişli Futbol Sahası",
-      image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      location: "Şişli, İstanbul",
-      rating: 4.7,
-      lastVisited: "2 hafta önce"
-    },
-    {
-      id: 4,
-      name: "Ataşehir Arena",
-      image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      location: "Ataşehir, İstanbul",
-      rating: 4.9,
-      lastVisited: "3 hafta önce"
-    },
-    {
-      id: 5,
-      name: "Maltepe Spor Merkezi",
-      image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      location: "Maltepe, İstanbul",
-      rating: 4.5,
-      lastVisited: "1 ay önce"
-    }
-  ];
+  // Get user's recently searched pitches from auth context
+  const recentlySearchedPitches = getRecentlySearchedPitches().map(pitch => ({
+    id: pitch._id,
+    name: pitch.name,
+    image: "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
+    location: `${pitch.location.address.neighborhood}, ${pitch.location.address.city}`,
+    rating: pitch.rating?.averageRating || 0,
+    lastVisited: "Son görüntülenen"
+  }));
 
-  const pitchesToShow = showAllPitches ? favoritePitches : favoritePitches.slice(0, 3);
+  const pitchesToShow = showAllPitches ? recentlySearchedPitches : recentlySearchedPitches.slice(0, 3);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
@@ -120,7 +86,7 @@ function ProfileMain({ user }) {
                 <svg className="w-7 h-7 lg:w-8 lg:h-8 text-red-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                {favorites.length}
+                {getFavoritePitches().length}
               </div>
               <div className="text-base lg:text-lg text-gray-600 font-medium">
                 <button 
@@ -150,7 +116,7 @@ function ProfileMain({ user }) {
             </div>
             <div>
               <div className="text-sm text-gray-500">Mevki</div>
-              <div className="font-medium text-gray-900">{user.position}</div>
+              <div className="font-medium text-gray-900">{user.preferredPosition || "Belirtilmemiş"}</div>
             </div>
           </div>
 
@@ -162,7 +128,7 @@ function ProfileMain({ user }) {
             </div>
             <div>
               <div className="text-sm text-gray-500">Forma Numarası</div>
-              <div className="font-medium text-gray-900">{user.jerseyNumber}</div>
+              <div className="font-medium text-gray-900">{user.jerseyNumber || "Belirtilmemiş"}</div>
             </div>
           </div>
 
@@ -174,7 +140,7 @@ function ProfileMain({ user }) {
             </div>
             <div>
               <div className="text-sm text-gray-500">Yaş</div>
-              <div className="font-medium text-gray-900">{user.age}</div>
+              <div className="font-medium text-gray-900">{user.age || "Belirtilmemiş"}</div>
             </div>
           </div>
 
@@ -186,7 +152,7 @@ function ProfileMain({ user }) {
             </div>
             <div>
               <div className="text-sm text-gray-500">Ayak Tercihi</div>
-              <div className="font-medium text-gray-900">{user.footPreference}</div>
+              <div className="font-medium text-gray-900">{user.preferredFoot === 'both' ? 'Her İki Ayak' : user.preferredFoot === 'left' ? 'Sol Ayak' : user.preferredFoot === 'right' ? 'Sağ Ayak' : 'Belirtilmemiş'}</div>
             </div>
           </div>
         </div>
@@ -200,16 +166,16 @@ function ProfileMain({ user }) {
         <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">İstatistikler</h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-indigo-50 rounded-lg">
-            <div className="text-2xl font-bold text-indigo-600">{user.listedMatches}</div>
-            <div className="text-sm text-gray-600">İlan Verdiği Sayı</div>
+            <div className="text-2xl font-bold text-indigo-600">{user.friends?.length || 0}</div>
+            <div className="text-sm text-gray-600">Arkadaş</div>
           </div>
           <div className="text-center p-4 bg-teal-50 rounded-lg">
-            <div className="text-2xl font-bold text-teal-600">{user.participatedMatches}</div>
-            <div className="text-sm text-gray-600">Başka İlanlara Katılım</div>
+            <div className="text-2xl font-bold text-teal-600">{user.followers?.length || 0}</div>
+            <div className="text-sm text-gray-600">Takip Eden</div>
           </div>
           <div className="text-center p-4 bg-pink-50 rounded-lg">
-            <div className="text-2xl font-bold text-pink-600">{user.totalReservations}</div>
-            <div className="text-sm text-gray-600">Rezervasyon</div>
+            <div className="text-2xl font-bold text-pink-600">{user.following?.length || 0}</div>
+            <div className="text-sm text-gray-600">Takip Ettiği</div>
           </div>
         </div>
       </div>
@@ -247,7 +213,7 @@ function ProfileMain({ user }) {
           ))}
         </div>
         
-        {favoritePitches.length > 3 && (
+        {recentlySearchedPitches.length > 3 && (
           <div className="text-center mt-6">
             <button
               onClick={() => setShowAllPitches(!showAllPitches)}
@@ -255,6 +221,16 @@ function ProfileMain({ user }) {
             >
               {showAllPitches ? "Daha Az Göster" : "Daha Fazla Gör"}
             </button>
+          </div>
+        )}
+        
+        {recentlySearchedPitches.length === 0 && (
+          <div className="text-center py-8">
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">Henüz saha aramadınız</h3>
+            <p className="mt-1 text-sm text-gray-500">Aradığınız sahalar burada görünecek.</p>
           </div>
         )}
       </div>
