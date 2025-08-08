@@ -17,7 +17,8 @@ function Settings({ user }) {
     age: "",
     position: "",
     footPreference: "",
-    description: ""
+    description: "",
+    phoneNumber: ""
   };
 
   const safeUser = user || defaultUser;
@@ -32,16 +33,72 @@ function Settings({ user }) {
     age: safeUser.age || "",
     position: safeUser.position || "",
     footPreference: safeUser.footPreference || "",
-    description: safeUser.description || ""
+    description: safeUser.description || "",
+    phoneNumber: safeUser.phoneNumber || ""
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  // Email validation function
+  const validateEmail = (email) => {
+    if (!email) return ""; // Empty email is allowed
+    
+    // Basic email regex pattern
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailRegex.test(email)) {
+      return "Geçerli bir e-posta adresi giriniz";
+    }
+    
+    return "";
+  };
+
+  // Phone number validation function
+  const validatePhoneNumber = (phone) => {
+    if (!phone) return ""; // Empty phone is allowed
+    
+    // Remove all spaces, dashes, parentheses, and plus signs
+    const cleanPhone = phone.replace(/[\s\-\(\)\+]/g, '');
+    
+    // Check if it contains only digits
+    if (!/^\d+$/.test(cleanPhone)) {
+      return "Telefon numarası sadece rakam içermelidir";
+    }
+    
+    // Check Turkish phone number format
+    // Turkish mobile: starts with 5 and has 10 digits (05XXXXXXXXX)
+    // Or international format: starts with 90 and has 12 digits (905XXXXXXXXX)
+    if (cleanPhone.length === 11 && cleanPhone.startsWith('05')) {
+      return ""; // Valid Turkish mobile
+    } else if (cleanPhone.length === 12 && cleanPhone.startsWith('905')) {
+      return ""; // Valid international Turkish mobile
+    } else if (cleanPhone.length === 10 && cleanPhone.startsWith('5')) {
+      return ""; // Valid Turkish mobile without 0
+    } else {
+      return "Geçerli bir Türk telefon numarası giriniz (örn: 05XXXXXXXXX)";
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Special handling for phone number
+    if (name === 'phoneNumber') {
+      const error = validatePhoneNumber(value);
+      setPhoneError(error);
+    }
+    
+    // Special handling for email
+    if (name === 'email') {
+      const error = validateEmail(value);
+      setEmailError(error);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -49,6 +106,18 @@ function Settings({ user }) {
   };
 
   const handleSaveProfile = async () => {
+    // Validate email before saving
+    if (formData.email && emailError) {
+      alert('Lütfen geçerli bir e-posta adresi giriniz.');
+      return;
+    }
+    
+    // Validate phone number before saving
+    if (formData.phoneNumber && phoneError) {
+      alert('Lütfen geçerli bir telefon numarası giriniz.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/v1/user/update', {
         method: 'PATCH',
@@ -58,11 +127,13 @@ function Settings({ user }) {
         },
         body: JSON.stringify({
           name: formData.username,
+          email: formData.email,
           jerseyNumber: formData.jerseyNumber,
           age: formData.age,
           preferredPosition: formData.position,
           preferredFoot: formData.footPreference,
-          description: formData.description
+          description: formData.description,
+          phoneNumber: formData.phoneNumber
         })
       });
 
@@ -328,6 +399,7 @@ function Settings({ user }) {
                   ))}
                 </select>
               </div>
+
             </div>
 
             {isEditing && (
@@ -388,7 +460,7 @@ function Settings({ user }) {
               </button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -415,12 +487,42 @@ function Settings({ user }) {
                   value={formData.email}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100"
+                  placeholder="ornek@email.com"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 ${
+                    emailError ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {emailError && (
+                  <p className="mt-1 text-sm text-red-600">{emailError}</p>
+                )}
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Telefon Numarası
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  placeholder="05XXXXXXXXX"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 ${
+                    phoneError ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+                {phoneError && (
+                  <p className="mt-1 text-sm text-red-600">{phoneError}</p>
+                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  Türk telefon numarası formatında giriniz (örn: 05XXXXXXXXX)
+                </p>
               </div>
 
               {/* Description */}
-              <div className="md:col-span-2">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Açıklama
                 </label>
@@ -469,7 +571,7 @@ function Settings({ user }) {
 
             
             {isChangingPassword && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Mevcut Şifre
