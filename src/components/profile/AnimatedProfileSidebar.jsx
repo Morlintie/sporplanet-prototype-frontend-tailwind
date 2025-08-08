@@ -12,15 +12,17 @@ function AnimatedProfileSidebar() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [communityDropdownOpen, setCommunityDropdownOpen] = useState(false);
 
   const menuItems = [
     { id: "profile", label: "Profilim", icon: "user", path: "/profile" },
     {
-      id: "friends",
-      label: "Arkadaşlarım",
+      id: "community",
+      label: "Topluluk",
       icon: "friends",
-      path: "/profile?section=friends",
+      path: "/profile?section=community",
       badge: "12",
+      hasDropdown: true,
     },
     {
       id: "favorite-pitches",
@@ -267,6 +269,17 @@ function AnimatedProfileSidebar() {
       return;
     }
 
+    // Handle community dropdown toggle
+    if (item.id === "community" && item.hasDropdown) {
+      setCommunityDropdownOpen(!communityDropdownOpen);
+      return;
+    }
+
+    // Close community dropdown when selecting other items
+    if (item.id !== "community" && communityDropdownOpen) {
+      setCommunityDropdownOpen(false);
+    }
+
     setSection(item.id);
     navigate(item.path);
   };
@@ -315,34 +328,107 @@ function AnimatedProfileSidebar() {
         <div className="flex-1 overflow-y-auto scroll-smooth">
           <nav className="px-4 py-2 space-y-2">
             {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleMenuItemClick(item)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
-                  activeSection === item.id
-                    ? "bg-green-50 text-green-700 border-l-4 border-green-600"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                }`}
-                tabIndex="0"
-              >
-                <div className="flex items-center space-x-3">
-                  <span
-                    className={`${
-                      activeSection === item.id
-                        ? "text-green-600"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {getIcon(item.icon)}
-                  </span>
-                  <span className="font-medium">{item.label}</span>
-                </div>
-                {item.badge && item.id !== "favorite-pitches" && (
-                  <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
-                    {item.badge}
-                  </span>
+              <div key={item.id}>
+                <button
+                  onClick={() => handleMenuItemClick(item)}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
+                    activeSection === item.id || (item.id === "community" && communityDropdownOpen)
+                      ? "bg-green-50 text-green-700 border-l-4 border-green-600"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                  }`}
+                  tabIndex="0"
+                >
+                  <div className="flex items-center space-x-3">
+                    <span
+                      className={`${
+                        activeSection === item.id || (item.id === "community" && communityDropdownOpen)
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {getIcon(item.icon)}
+                    </span>
+                    <span className="font-medium">{item.label}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {item.badge && item.id !== "favorite-pitches" && (
+                      <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                        {item.badge}
+                      </span>
+                    )}
+                    {item.hasDropdown && (
+                      <svg 
+                        className={`w-4 h-4 transition-transform ${communityDropdownOpen ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+                
+                {/* Dropdown Menu for Community */}
+                {item.id === "community" && communityDropdownOpen && (
+                  <div className="ml-4 mt-2 space-y-1">
+                    <button
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          setShowAuthPopup(true);
+                          return;
+                        }
+                        setSection("friends");
+                        navigate("/profile?section=friends");
+                        setCommunityDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-green-600 rounded-lg transition-colors cursor-pointer"
+                      tabIndex="0"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                      </svg>
+                      <span>Arkadaşlarım</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          setShowAuthPopup(true);
+                          return;
+                        }
+                        setSection("add-friends");
+                        navigate("/profile?section=add-friends");
+                        setCommunityDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-green-600 rounded-lg transition-colors cursor-pointer"
+                      tabIndex="0"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      </svg>
+                      <span>Arkadaş Ekle</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          setShowAuthPopup(true);
+                          return;
+                        }
+                        setSection("blocked-users");
+                        navigate("/profile?section=blocked-users");
+                        setCommunityDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-green-600 rounded-lg transition-colors cursor-pointer"
+                      tabIndex="0"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                      </svg>
+                      <span>Engellenenler</span>
+                    </button>
+                  </div>
                 )}
-              </button>
+              </div>
             ))}
 
             {/* Ayarlar - Ayrı bölüm */}

@@ -137,8 +137,7 @@ function MyFriends({ user }) {
   const tabs = [
     { id: "online", label: "Çevrimiçi", count: onlineFriends.length },
     { id: "all", label: "Tümü", count: filteredFriends.length },
-    { id: "pending", label: "Bekleyen", count: 0 },
-    { id: "blocked", label: "Engellenen", count: 0 }
+    { id: "pending", label: "Bekleyen", count: 0 }
   ];
 
   const getFriendsToShow = () => {
@@ -149,8 +148,6 @@ function MyFriends({ user }) {
         return [...onlineFriends, ...offlineFriends];
       case "pending":
         return [];
-      case "blocked":
-        return [];
       default:
         return filteredFriends;
     }
@@ -158,10 +155,42 @@ function MyFriends({ user }) {
 
   return (
     <div className="bg-white rounded-lg shadow-md">
-      {/* Header */}
+      {/* Header - Profile Info */}
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-4">Arkadaşlarım</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">Arkadaşlarım</h2>
         
+        {/* User Profile Info */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center space-x-6">
+            {/* Profile Photo */}
+            <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+              {user.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-gray-500">
+                  {user.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
+                </div>
+              )}
+            </div>
+            
+            {/* Stats */}
+            <div className="flex space-x-8">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">{user.followers?.length || 0}</div>
+                <div className="text-sm text-gray-600">Takipçilerim</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">{user.following?.length || 0}</div>
+                <div className="text-sm text-gray-600">Takip Ettiklerim</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Search */}
         <div className="relative mb-4">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -375,19 +404,14 @@ function MyFriends({ user }) {
           </div>
         )}
 
-        {(activeTab === "pending" || activeTab === "blocked") && (
+        {activeTab === "pending" && (
           <div className="text-center py-12">
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              {activeTab === "pending" ? "Bekleyen istek yok" : "Engellenen kullanıcı yok"}
-            </h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">Bekleyen istek yok</h3>
             <p className="mt-1 text-sm text-gray-500">
-              {activeTab === "pending" 
-                ? "Bekleyen arkadaşlık isteğiniz bulunmuyor." 
-                : "Engellediğiniz kullanıcı bulunmuyor."
-              }
+              Bekleyen arkadaşlık isteğiniz bulunmuyor.
             </p>
           </div>
         )}

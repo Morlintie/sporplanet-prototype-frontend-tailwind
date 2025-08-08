@@ -13,6 +13,8 @@ import Messages from "../components/profile/Messages";
 import MyComments from "../components/profile/MyComments";
 import Invitations from "../components/profile/Invitations";
 import Settings from "../components/profile/Settings";
+import AddFriends from "../components/profile/AddFriends";
+import BlockedUsers from "../components/profile/BlockedUsers";
 
 function ProfilePage() {
   const { activeSection } = useProfileSidebar();
@@ -54,6 +56,10 @@ function ProfilePage() {
         return <ProfileMain user={user} />;
       case "friends":
         return <MyFriends user={user} />;
+      case "add-friends":
+        return <AddFriends user={user} />;
+      case "blocked-users":
+        return <BlockedUsers user={user} />;
       case "favorite-pitches":
         return <MyFavoritePitches user={user} />;
 
@@ -77,13 +83,13 @@ function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 max-w-none lg:max-w-7xl lg:mx-auto">
+        <div className="flex flex-col w-full">
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             {renderMainContent()}
           </div>
         </div>

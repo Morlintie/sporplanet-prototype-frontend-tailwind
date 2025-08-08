@@ -6,18 +6,18 @@ import TournamentFeature from "../components/home/TournamentFeature";
 
 function HomePage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       {/* Header */}
       <Header />
 
       {/* Hero Section */}
       <section 
-        className="relative text-white py-20 bg-cover bg-center bg-no-repeat"
+        className="relative text-white py-20 bg-cover bg-center bg-no-repeat w-full"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-none lg:max-w-7xl lg:mx-auto">
           <div className="text-center">
                          <h1 className="text-4xl md:text-6xl font-bold mb-6">
                Futbol Tutkun
@@ -40,8 +40,8 @@ function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 w-full">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-none lg:max-w-7xl lg:mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Futbol Dünyanda Her Şey
@@ -62,8 +62,8 @@ function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-green-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-green-600 py-16 w-full">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-none lg:max-w-7xl lg:mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="text-4xl md:text-5xl font-bold text-white mb-2">25K+</div>
@@ -86,8 +86,8 @@ function HomePage() {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-20 w-full">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-none lg:max-w-4xl lg:mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Hazır mısın?
           </h2>

@@ -5,6 +5,7 @@ import Footer from "../../components/shared/Footer";
 import MatchesHero from "../../components/matches/MatchesHero";
 import MatchesList from "../../components/matches/MatchesList";
 import CreateAdModal from "../../components/matches/CreateAdModal";
+import LocationPermissionPopup from "../../components/shared/LocationPermissionPopup";
 import advertsData from "../../../adverts.v4.mock.json";
 
 function MatchesPage() {
@@ -14,6 +15,8 @@ function MatchesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prefilledData, setPrefilledData] = useState(null);
   const [matches, setMatches] = useState([]);
+  const [showLocationPopup, setShowLocationPopup] = useState(false);
+  const [isLoadingNearby, setIsLoadingNearby] = useState(false);
 
   // Process adverts data on component mount
   useEffect(() => {
@@ -107,6 +110,70 @@ function MatchesPage() {
     // Geçici olarak console'a yazdırıyoruz
   };
 
+  // Get user's current location (same as reservation page)
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve([position.coords.longitude, position.coords.latitude]);
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              reject(new Error("Location access denied"));
+              break;
+            case error.POSITION_UNAVAILABLE:
+              reject(new Error("Location not available"));
+              break;
+            case error.TIMEOUT:
+              reject(new Error("Location timeout"));
+              break;
+            default:
+              reject(new Error("Location not available"));
+              break;
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000, // 5 minutes
+        }
+      );
+    });
+  };
+
+  // Handle nearby matches search (same pattern as reservation page)
+  const handleNearbySearch = () => {
+    setShowLocationPopup(true);
+  };
+
+  // Handle location permission acceptance
+  const handleLocationAccept = async () => {
+    setShowLocationPopup(false);
+    setIsLoadingNearby(true);
+
+    try {
+      const coordinates = await getCurrentLocation();
+      console.log("Kullanıcı konumu alındı:", coordinates);
+      // TODO: Backend'e yakın maçları sorgula
+      // await fetchNearbyMatches(coordinates);
+      setIsLoadingNearby(false);
+    } catch (error) {
+      console.error("Konum alma hatası:", error);
+      setIsLoadingNearby(false);
+    }
+  };
+
+  // Handle location permission decline
+  const handleLocationDecline = () => {
+    setShowLocationPopup(false);
+  };
+
   // Filter matches based on active filter and search query
   const filteredMatches = matches.filter(match => {
     const matchesFilter = activeFilter === "all" || match.type === activeFilter;
@@ -119,7 +186,7 @@ function MatchesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       <Header />
       
       <MatchesHero />
@@ -132,14 +199,25 @@ function MatchesPage() {
         onFilterChange={handleFilterChange}
         onSearchChange={handleSearchChange}
         onCreateAdClick={handleCreateAdClick}
+        onNearbySearch={handleNearbySearch}
+        isLoadingNearby={isLoadingNearby}
       />
 
-              <CreateAdModal 
-          isOpen={isModalOpen} 
-          onClose={handleCloseModal} 
-          onSubmit={handleSubmitAd}
-          prefilledData={prefilledData}
+      <CreateAdModal 
+        isOpen={isModalOpen} 
+        onClose={handleCloseModal} 
+        onSubmit={handleSubmitAd}
+        prefilledData={prefilledData}
+      />
+
+      {/* Location Permission Popup */}
+      {showLocationPopup && (
+        <LocationPermissionPopup 
+          onClose={handleLocationDecline}
+          onAccept={handleLocationAccept}
+          message="Yakınınızdaki maçları bulabilmemiz için konum bilginizi Sporplanet ile paylaşmanıza izin vermeniz gerekmektedir."
         />
+      )}
       
       <Footer />
     </div>

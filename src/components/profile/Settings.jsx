@@ -131,12 +131,25 @@ function Settings({ user }) {
     }
   };
 
+  // Backend mevki kodlarını Türkçe etiketlerle eşle
   const positions = [
-    "Kaleci", "Defans", "Orta Saha", "Forvet", "Serbest"
+    { value: "cb", label: "Stoper" },
+    { value: "rb", label: "Sağ Bek" },
+    { value: "lb", label: "Sol Bek" },
+    { value: "rwb", label: "Sağ Kanat Bek" },
+    { value: "lwb", label: "Sol Kanat Bek" },
+    { value: "dm", label: "Ön Libero" },
+    { value: "cm", label: "Merkez Orta Saha" },
+    { value: "rw", label: "Sağ Kanat" },
+    { value: "lw", label: "Sol Kanat" },
+    { value: "st", label: "Forvet" },
+    { value: "gk", label: "Kaleci" }
   ];
 
   const footPreferences = [
-    "Sağ Ayak", "Sol Ayak", "İki Ayak"
+    { value: "right", label: "Sağ Ayak" },
+    { value: "left", label: "Sol Ayak" },
+    { value: "both", label: "Her İki Ayak" }
   ];
 
   const handleLogout = async () => {
@@ -292,7 +305,7 @@ function Settings({ user }) {
                 >
                   <option value="">Pozisyon Seçin</option>
                   {positions.map(pos => (
-                    <option key={pos} value={pos}>{pos}</option>
+                    <option key={pos.value} value={pos.value}>{pos.label}</option>
                   ))}
                 </select>
               </div>
@@ -311,7 +324,7 @@ function Settings({ user }) {
                 >
                   <option value="">Ayak Tercihi Seçin</option>
                   {footPreferences.map(foot => (
-                    <option key={foot} value={foot}>{foot}</option>
+                    <option key={foot.value} value={foot.value}>{foot.label}</option>
                   ))}
                 </select>
               </div>
@@ -330,69 +343,7 @@ function Settings({ user }) {
             )}
           </div>
 
-          {/* Password Change Section */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Şifre Değiştir</h2>
-              <button
-                onClick={() => setIsChangingPassword(!isChangingPassword)}
-                className="text-green-600 hover:text-green-700 font-medium cursor-pointer"
-                tabIndex="0"
-              >
-                {isChangingPassword ? "İptal" : "Şifre Değiştir"}
-              </button>
-            </div>
-            
-            {isChangingPassword && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mevcut Şifre
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Yeni Şifre
-                  </label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={formData.newPassword}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Yeni Şifre (Tekrar)
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-                <div className="flex items-end">
-                  <button
-                    onClick={handleChangePassword}
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md transition-colors cursor-pointer"
-                    tabIndex="0"
-                  >
-                    Şifreyi Değiştir
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+
 
           {/* Account Actions Section - Logout Button */}
           <div className="border-t border-gray-200 pt-8">
@@ -498,19 +449,91 @@ function Settings({ user }) {
             )}
           </div>
 
+          {/* Password Change Section */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">Şifre Değiştir</h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Hesap güvenliğiniz için şifrenizi düzenli olarak değiştirin. Güçlü bir şifre kullanmayı unutmayın.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsChangingPassword(!isChangingPassword)}
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md transition-colors cursor-pointer"
+                tabIndex="0"
+              >
+                {isChangingPassword ? "İptal" : "Şifre Değiştir"}
+              </button>
+            </div>
+
+            
+            {isChangingPassword && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Mevcut Şifre
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Yeni Şifre
+                  </label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={formData.newPassword}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Yeni Şifre (Tekrar)
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    onClick={handleChangePassword}
+                    className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md transition-colors cursor-pointer"
+                    tabIndex="0"
+                  >
+                    Şifreyi Değiştir
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Delete Account Section */}
           <div className="border-t border-gray-200 pt-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Tehlikeli Bölge</h2>
-            <div>
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Tehlikeli Bölge</h2>
+                <p className="text-sm text-gray-500">
+                  Bu işlem geri alınamaz ve tüm verileriniz silinir.
+                </p>
+              </div>
               <button
-                className="text-red-600 hover:text-red-700 font-medium cursor-pointer"
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-md transition-colors cursor-pointer"
                 tabIndex="0"
               >
                 Hesabı Sil
               </button>
-              <p className="text-sm text-gray-500 mt-2">
-                Bu işlem geri alınamaz ve tüm verileriniz silinir.
-              </p>
             </div>
           </div>
         </>

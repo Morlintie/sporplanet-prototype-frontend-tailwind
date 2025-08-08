@@ -43,13 +43,24 @@ function MatchCard({ match, onJoinMatch }) {
       </div>
 
       <div className="mb-4">
-        <div className="text-sm text-gray-600 mb-1">{match.completion}%</div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-green-500 h-2 rounded-full" 
-            style={{ width: `${match.completion}%` }}
-          ></div>
-        </div>
+        {/* Rakip takım ilanları için sayı göster, oyuncu ilanları için progress bar */}
+        {match.type === "team-ads" ? (
+          <div className="text-center">
+            <div className="text-lg font-semibold text-gray-900 mb-1">
+              {match.players.split('/')[1].split(' ')[0]} kişilik takım aranıyor
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="text-sm text-gray-600 mb-1">{match.completion}%</div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-green-500 h-2 rounded-full" 
+                style={{ width: `${match.completion}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between items-center">
@@ -69,7 +80,7 @@ function MatchCard({ match, onJoinMatch }) {
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition-colors cursor-pointer"
             tabIndex="0"
           >
-            Maça Katıl
+            {match.type === "team-ads" ? "Maç Yap" : "Maça Katıl"}
           </button>
         )}
       </div>

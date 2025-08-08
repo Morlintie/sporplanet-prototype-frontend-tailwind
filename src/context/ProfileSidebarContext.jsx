@@ -35,7 +35,7 @@ export const ProfileSidebarProvider = ({ children }) => {
     const urlParams = new URLSearchParams(location.search);
     const section = urlParams.get('section');
     if (section && [
-      'profile', 'friends', 'favorite-pitches', 'listings', 'reservations', 'tournaments',
+      'profile', 'friends', 'add-friends', 'blocked-users', 'favorite-pitches', 'listings', 'reservations', 'tournaments',
       'messages', 'comments', 'invitations', 'settings'
     ].includes(section)) {
       setActiveSection(section);
