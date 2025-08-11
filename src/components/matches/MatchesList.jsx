@@ -5,8 +5,10 @@ function MatchesList({
   matches,
   onJoinMatch,
   activeFilter,
+  activeDifficulty,
   searchQuery,
   onFilterChange,
+  onDifficultyChange,
   onSearchChange,
   onCreateAdClick,
   onNearbySearch,
@@ -49,8 +51,10 @@ function MatchesList({
           {/* Filters moved here */}
           <MatchesFilters
             activeFilter={activeFilter}
+            activeDifficulty={activeDifficulty}
             searchQuery={searchQuery}
             onFilterChange={onFilterChange}
+            onDifficultyChange={onDifficultyChange}
             onSearchChange={onSearchChange}
             onCreateAdClick={onCreateAdClick}
             onNearbySearch={onNearbySearch}
@@ -63,6 +67,62 @@ function MatchesList({
           <LoadingSpinner />
         ) : showErrorDisplay ? (
           <ErrorDisplay />
+        ) : matches.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 max-w-md w-full text-center">
+              <div className="text-gray-400 mb-4">
+                <svg
+                  className="w-16 h-16 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                Maç Bulunamadı
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                {activeFilter === "all"
+                  ? "Henüz hiç maç ilanı yok. İlk maç ilanını sen oluştur!"
+                  : activeFilter === "team-ads"
+                  ? "Rakip takım ilanı bulunamadı. Farklı filtreler deneyebilirsin."
+                  : activeFilter === "player-ads"
+                  ? "Oyuncu ilanı bulunamadı. Farklı filtreler deneyebilirsin."
+                  : "Arama kriterlerine uygun maç bulunamadı. Farklı filtreler deneyebilirsin."}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={onCreateAdClick}
+                  className="bg-[rgb(0,128,0)] hover:bg-[rgb(0,100,0)] text-white font-semibold py-2 px-4 rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  tabIndex="0"
+                >
+                  + İlan Ver
+                </button>
+                {(activeFilter !== "all" ||
+                  activeDifficulty !== "all" ||
+                  searchQuery) && (
+                  <button
+                    onClick={() => {
+                      onFilterChange("all");
+                      onDifficultyChange("all");
+                      onSearchChange({ target: { value: "" } });
+                    }}
+                    className="border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded-md hover:bg-gray-50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    tabIndex="0"
+                  >
+                    Tüm Maçları Göster
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         ) : (
           <>
             {/* Match Cards Grid */}
