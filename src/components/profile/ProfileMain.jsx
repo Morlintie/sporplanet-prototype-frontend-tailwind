@@ -28,8 +28,7 @@ function ProfileMain({ user }) {
     gk: "Kaleci",
   };
 
-  const handleFollowClick = (type) => {
-    console.log(`Clicked on ${type}`);
+  const handleFollowClick = () => {
     navigate("/profile?section=friends");
   };
 
@@ -170,6 +169,25 @@ function ProfileMain({ user }) {
                     ? "Sağ Ayak"
                     : "Belirtilmemiş"}
                 </span>
+                <button
+                  onClick={handleFollowClick}
+                  className="inline-flex items-center bg-white/20 backdrop-blur px-3 py-1 gap-2 rounded-full cursor-pointer"
+                  tabIndex="0">
+                  <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+                  <span>Topluluğum</span>
+                </button>
               </div>
               {user.description && (
                 <p className="mt-3 text-white/90 text-sm lg:text-base max-w-2xl">
@@ -277,19 +295,12 @@ function ProfileMain({ user }) {
           <div className="bg-gray-50 rounded-lg p-6">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Hakkımda</h2>
-              <button
-                onClick={() => navigate("/profile?section=settings")}
-                className="text-sm text-green-600 hover:text-green-700 transition-colors cursor-pointer"
-                tabIndex="0"
-              >
-                Düzenle
-              </button>
+              
             </div>
             {user.description ? (
               <p className="text-gray-700 leading-relaxed">
                 {user.description}
-              </p>
-            ) : (
+              </p>            ) : (
               <p className="text-gray-500 italic">
                 Henüz bir açıklama eklemediniz. Kendinizi tanıtmak için bir
                 açıklama ekleyin.
@@ -298,46 +309,7 @@ function ProfileMain({ user }) {
           </div>
         </div>
 
-        {/* Hesap Durumu Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-            Hesap Durumu
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-lg font-semibold text-gray-900 mb-2">
-                {user.role === "admin"
-                  ? "Yönetici"
-                  : user.role === "companyOwner"
-                  ? "Şirket Sahibi"
-                  : user.role === "user"
-                  ? "Kullanıcı"
-                  : "Bilinmeyen"}
-              </div>
-              <div className="text-sm text-gray-600">Hesap Türü</div>
-            </div>
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-lg font-semibold text-gray-900 mb-2">
-                {user.goalKeeper ? "Evet" : "Hayır"}
-              </div>
-              <div className="text-sm text-gray-600">Kaleci mi?</div>
-            </div>
-            {user.student && (
-              <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-                <div className="text-lg font-semibold text-gray-900 mb-2">
-                  {user.student.status === "confirmed"
-                    ? "Onaylandı"
-                    : user.student.status === "pending"
-                    ? "Beklemede"
-                    : user.student.status === "declined"
-                    ? "Reddedildi"
-                    : "Bilinmiyor"}
-                </div>
-                <div className="text-sm text-gray-600">Öğrenci Durumu</div>
-              </div>
-            )}
-          </div>
-        </div>
+        
 
         {/* İstatistikler Section */}
         <div className="mb-8">
@@ -347,21 +319,29 @@ function ProfileMain({ user }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-gray-900">
-                {user.advertParticipation?.length || 0}
+                {user.bookings?.filter(booking => 
+                  booking.bookedBy === user._id && booking.status === "completed"
+                ).length || 0}
               </div>
-              <div className="text-sm text-gray-600">İlana Katıldı</div>
+              <div className="text-sm text-gray-600">Tamamlanan Rezervasyon</div>
             </div>
             <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-gray-900">
-                {user.advertWaitingList?.length || 0}
+                {user.createdAdverts?.filter(advert => 
+                  advert.createdBy === user._id && advert.status === "completed"
+                ).length || 0}
               </div>
-              <div className="text-sm text-gray-600">Bekleme Listesi</div>
+              <div className="text-sm text-gray-600">Oluşturulan İlan</div>
             </div>
             <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-gray-900">
-                {user.bookings?.length || 0}
+                {user.advertParticipation?.filter(advert => 
+                  advert.participants?.some(participant => 
+                    participant.user._id === user._id
+                  ) && advert.status === "completed"
+                ).length || 0}
               </div>
-              <div className="text-sm text-gray-600">Rezervasyon Yaptı</div>
+              <div className="text-sm text-gray-600">Katıldığı İlan</div>
             </div>
           </div>
         </div>
@@ -369,93 +349,6 @@ function ProfileMain({ user }) {
         {/* Divider */}
         <hr className="border-gray-200 mb-8" />
 
-        {/* Sosyal Bağlantılar Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-            Sosyal Bağlantılar
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-gray-900">
-                {user.friends?.length || 0}
-              </div>
-              <div className="text-sm text-gray-600">Arkadaş</div>
-            </div>
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-gray-900">
-                {user.friendRequests?.length || 0}
-              </div>
-              <div className="text-sm text-gray-600">Gelen İstek</div>
-            </div>
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-gray-900">
-                {user.selfFriendRequests?.length || 0}
-              </div>
-              <div className="text-sm text-gray-600">Gönderilen İstek</div>
-            </div>
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-gray-900">
-                {user.bannedProfiles?.length || 0}
-              </div>
-              <div className="text-sm text-gray-600">Engellenen</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <hr className="border-gray-200 mb-8" />
-
-        {/* Saha Bilgileri Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-            Saha Bilgileri
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-gray-900">
-                {user.favoritePitches?.length || 0}
-              </div>
-              <div className="text-sm text-gray-600">Favori Saha</div>
-            </div>
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-gray-900">
-                {user.recentlySearchedPitch?.length || 0}
-              </div>
-              <div className="text-sm text-gray-600">Son Aranan Saha</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <hr className="border-gray-200 mb-8" />
-
-        {/* Hesap Bilgileri Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-            Hesap Bilgileri
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-lg font-semibold text-gray-900 mb-2">
-                {user.createdAt
-                  ? new Date(user.createdAt).toLocaleDateString("tr-TR")
-                  : "Bilinmiyor"}
-              </div>
-              <div className="text-sm text-gray-600">Hesap Oluşturulma</div>
-            </div>
-            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
-              <div className="text-lg font-semibold text-gray-900 mb-2">
-                {user.updatedAt
-                  ? new Date(user.updatedAt).toLocaleDateString("tr-TR")
-                  : "Bilinmiyor"}
-              </div>
-              <div className="text-sm text-gray-600">Son Güncelleme</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <hr className="border-gray-200 mb-8" />
 
         {/* Son Aranan Sahalar */}
         <div>

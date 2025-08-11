@@ -19,7 +19,6 @@ function AnimatedProfileSidebar() {
       label: "Topluluk",
       icon: "friends",
       path: "/profile?section=community",
-      badge: "12",
       hasDropdown: true,
     },
     {
@@ -364,11 +363,7 @@ function AnimatedProfileSidebar() {
                     <span className="font-medium">{item.label}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    {item.badge && item.id !== "favorite-pitches" && (
-                      <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
-                        {item.badge}
-                      </span>
-                    )}
+                    
                     {item.hasDropdown && (
                       <svg
                         className={`w-4 h-4 transition-transform ${
