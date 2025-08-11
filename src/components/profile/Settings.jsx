@@ -550,6 +550,35 @@ function Settings({ user }) {
               </div>
             )}
           </div>
+           {/* Divider */}
+        <hr className="border-gray-200 mb-8" />
+
+          {/* Hesap Bilgileri Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+            Hesap Bilgileri
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
+              <div className="text-lg font-semibold text-gray-900 mb-2">
+                {user.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString("tr-TR")
+                  : "Bilinmiyor"}
+              </div>
+              <div className="text-sm text-gray-600">Hesap Oluşturulma</div>
+            </div>
+            <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
+              <div className="text-lg font-semibold text-gray-900 mb-2">
+                {user.updatedAt
+                  ? new Date(user.updatedAt).toLocaleDateString("tr-TR")
+                  : "Bilinmiyor"}
+              </div>
+              <div className="text-sm text-gray-600">Son Güncelleme</div>
+            </div>
+          </div>
+        </div>
+         {/* Divider */}
+         <hr className="border-gray-200 mb-8" />
 
           {/* Password Change Section */}
           <div className="mb-8">
