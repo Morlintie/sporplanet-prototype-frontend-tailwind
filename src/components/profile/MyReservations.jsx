@@ -1138,29 +1138,30 @@ function MyReservations({ user }) {
     // Prepare data for CreateAdModal
     const adData = {
       title: `${reservation.pitchName} Maçı`,
-      date: reservation.startDateTime.toISOString().split('T')[0], // YYYY-MM-DD format
-      time: `${reservation.startDateTime.getHours()}-${reservation.startDateTime.getHours() + 1}`, // Format: "14-15"
+      date: reservation.startDateTime.toISOString().split("T")[0], // YYYY-MM-DD format
+      time: `${reservation.startDateTime.getHours()}-${
+        reservation.startDateTime.getHours() + 1
+      }`, // Format: "14-15"
       location: reservation.pitchName,
       pitchName: reservation.pitchName,
       capacity: `${reservation.players}v${reservation.players}`,
       price: Math.round(reservation.price / reservation.players),
-      duration: "1 saat"
+      duration: "1 saat",
     };
 
     // Store data in localStorage to pass to matches page
-    localStorage.setItem('createListingData', JSON.stringify(adData));
-    
+    localStorage.setItem("createListingData", JSON.stringify(adData));
+
     // Navigate to matches page with create action
-    navigate('/matches?action=create');
+    navigate("/matches?action=create");
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 md:p-6">
       <h2 className="text-lg sm:text-xl text-center font-bold text-gray-900 mb-2 sm:mb-0">
-          Rezervasyonlarım
-        </h2>
+        Rezervasyonlarım
+      </h2>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
-        
         <div className="text-xs sm:text-sm text-gray-500 flex justify-end">
           Toplam {totalReservations} rezervasyon
         </div>
@@ -1208,8 +1209,6 @@ function MyReservations({ user }) {
           </button>
         </div>
       )}
-
-      
 
       {/* Search */}
       <div className="mb-4 sm:mb-6">
@@ -1262,7 +1261,6 @@ function MyReservations({ user }) {
           </button>
         ))}
       </div>
-
 
       {/* Loading Display */}
       {loading && reservations.length === 0 && (
