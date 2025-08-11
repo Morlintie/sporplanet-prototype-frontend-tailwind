@@ -1,5 +1,4 @@
 import { useProfileSidebar } from "../../context/ProfileSidebarContext";
-import { useFavorites } from "../../context/FavoritesContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
@@ -8,7 +7,6 @@ import AuthRequiredPopup from "../shared/AuthRequiredPopup";
 function AnimatedProfileSidebar() {
   const { isSidebarOpen, closeSidebar, activeSection, setSection } =
     useProfileSidebar();
-  const { favorites } = useFavorites();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [showAuthPopup, setShowAuthPopup] = useState(false);
@@ -117,9 +115,24 @@ function AnimatedProfileSidebar() {
         );
       case "eye":
         return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
           </svg>
         );
       case "list":
@@ -293,7 +306,6 @@ function AnimatedProfileSidebar() {
         />
       )}
       <div
-
         className={`fixed top-16 right-0 h-[calc(100vh-4rem)] w-full sm:w-80 md:w-80 lg:w-80 max-w-sm bg-white shadow-2xl z-40 transform transition-transform duration-300 ease-in-out flex flex-col ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
@@ -323,7 +335,6 @@ function AnimatedProfileSidebar() {
           </button>
         </div>
 
-
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto scroll-smooth">
           <nav className="px-4 py-2 space-y-2">
@@ -332,7 +343,8 @@ function AnimatedProfileSidebar() {
                 <button
                   onClick={() => handleMenuItemClick(item)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
-                    activeSection === item.id || (item.id === "community" && communityDropdownOpen)
+                    activeSection === item.id ||
+                    (item.id === "community" && communityDropdownOpen)
                       ? "bg-green-50 text-green-700 border-l-4 border-green-600"
                       : "text-gray-700 hover:bg-gray-50 hover:text-green-600"
                   }`}
@@ -341,7 +353,8 @@ function AnimatedProfileSidebar() {
                   <div className="flex items-center space-x-3">
                     <span
                       className={`${
-                        activeSection === item.id || (item.id === "community" && communityDropdownOpen)
+                        activeSection === item.id ||
+                        (item.id === "community" && communityDropdownOpen)
                           ? "text-green-600"
                           : "text-gray-400"
                       }`}
@@ -357,18 +370,25 @@ function AnimatedProfileSidebar() {
                       </span>
                     )}
                     {item.hasDropdown && (
-                      <svg 
-                        className={`w-4 h-4 transition-transform ${communityDropdownOpen ? 'rotate-180' : ''}`} 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className={`w-4 h-4 transition-transform ${
+                          communityDropdownOpen ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
                       </svg>
                     )}
                   </div>
                 </button>
-                
+
                 {/* Dropdown Menu for Community */}
                 {item.id === "community" && communityDropdownOpen && (
                   <div className="ml-4 mt-2 space-y-1">
@@ -385,8 +405,18 @@ function AnimatedProfileSidebar() {
                       className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-green-600 rounded-lg transition-colors cursor-pointer"
                       tabIndex="0"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                        />
                       </svg>
                       <span>Arkadaşlarım</span>
                     </button>
@@ -403,8 +433,18 @@ function AnimatedProfileSidebar() {
                       className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-green-600 rounded-lg transition-colors cursor-pointer"
                       tabIndex="0"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                        />
                       </svg>
                       <span>Arkadaş Ekle</span>
                     </button>
@@ -421,8 +461,18 @@ function AnimatedProfileSidebar() {
                       className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-green-600 rounded-lg transition-colors cursor-pointer"
                       tabIndex="0"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"
+                        />
                       </svg>
                       <span>Engellenenler</span>
                     </button>
@@ -450,7 +500,6 @@ function AnimatedProfileSidebar() {
                   }`}
                 >
                   {getIcon(settingsItem.icon)}
-
                 </span>
                 <span className="font-medium">{settingsItem.label}</span>
               </button>

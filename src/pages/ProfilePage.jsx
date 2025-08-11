@@ -37,10 +37,14 @@ function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Giriş Yapmanız Gerekiyor</h2>
-          <p className="text-gray-600 mb-8">Profilinizi görüntülemek için lütfen giriş yapın.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Giriş Yapmanız Gerekiyor
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Profilinizi görüntülemek için lütfen giriş yapın.
+          </p>
           <button
-            onClick={() => window.location.href = '/login'}
+            onClick={() => (window.location.href = "/login")}
             className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors"
           >
             Giriş Yap
@@ -61,7 +65,7 @@ function ProfilePage() {
       case "blocked-users":
         return <BlockedUsers user={user} />;
       case "favorite-pitches":
-        return <MyFavoritePitches user={user} />;
+        return <MyFavoritePitches />;
 
       case "listings":
         return <MyListings user={user} />;
@@ -85,13 +89,11 @@ function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       <Header />
-      
+
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 max-w-none lg:max-w-7xl lg:mx-auto">
         <div className="flex flex-col w-full">
           {/* Main Content */}
-          <div className="flex-1 w-full">
-            {renderMainContent()}
-          </div>
+          <div className="flex-1 w-full">{renderMainContent()}</div>
         </div>
       </div>
 
@@ -100,4 +102,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage; 
+export default ProfilePage;

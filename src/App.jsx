@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { ProfileSidebarProvider } from "./context/ProfileSidebarContext";
-import { FavoritesProvider } from "./context/FavoritesContext";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
@@ -15,8 +14,7 @@ import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar"
 
 function App() {
   return (
-    <FavoritesProvider>
-      <ProfileSidebarProvider>
+    <ProfileSidebarProvider>
       <div className="min-h-screen bg-gray-50">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -47,8 +45,7 @@ function App() {
         </Routes>
         <AnimatedProfileSidebar />
       </div>
-      </ProfileSidebarProvider>
-    </FavoritesProvider>
+    </ProfileSidebarProvider>
   );
 }
 
