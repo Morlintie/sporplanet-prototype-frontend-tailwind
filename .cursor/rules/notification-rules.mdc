@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+- Do not display the question for user via alerts. Use our custom components to achieve that purpose.

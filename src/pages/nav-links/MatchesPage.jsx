@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "../../components/shared/Header";
 import Footer from "../../components/shared/Footer";
@@ -10,6 +10,7 @@ import LocationPermissionPopup from "../../components/shared/LocationPermissionP
 function MatchesPage() {
   const location = useLocation();
   const [activeFilter, setActiveFilter] = useState("all");
+  const [activeDifficulty, setActiveDifficulty] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prefilledData, setPrefilledData] = useState(null);
@@ -25,10 +26,16 @@ function MatchesPage() {
   const [limit, setLimit] = useState(18);
   const [hasMore, setHasMore] = useState(true);
 
+  // Ref for search debouncing
+  const searchTimeoutRef = useRef(null);
+
   // Turkish error message translation
   const translateErrorMessage = (message) => {
     const errorMessages = {
       "No adverts found": "İlan bulunamadı",
+      "No adverts found in vicinity": "Yakınınızda maç bulunamadı",
+      "Please provide valid coordinates": "Geçerli konum bilgileri sağlayın",
+      "Failed to fetch vicinity adverts": "Yakınımdaki maçlar alınamadı",
       "Network Error": "Ağ hatası oluştu",
       "Failed to fetch": "Veri alınamadı",
       "Internal Server Error": "Sunucu hatası",
@@ -38,6 +45,7 @@ function MatchesPage() {
       "Not Found": "Bulunamadı",
       "Too Many Requests": "Çok fazla istek",
       "Service Unavailable": "Servis kullanılamıyor",
+      "Location not available": "Konum bilgisi alınamadı",
     };
 
     return errorMessages[message] || message || "Bir hata oluştu";
@@ -57,6 +65,18 @@ function MatchesPage() {
         ? filterOverrides.activeFilter
         : activeFilter;
 
+      // Get the current search query (from overrides or state)
+      const currentSearchQuery = filterOverrides.hasOwnProperty("searchQuery")
+        ? filterOverrides.searchQuery
+        : searchQuery;
+
+      // Get the current difficulty level (from overrides or state)
+      const currentDifficulty = filterOverrides.hasOwnProperty(
+        "activeDifficulty"
+      )
+        ? filterOverrides.activeDifficulty
+        : activeDifficulty;
+
       // Set isRivalry field based on filter
       if (currentFilter === "team-ads") {
         requestBody.isRivalry = { status: true };
@@ -64,6 +84,16 @@ function MatchesPage() {
         requestBody.isRivalry = { status: false };
       }
       // For "all" filter, don't include isRivalry field at all
+
+      // Add search field if there's a search query
+      if (currentSearchQuery && currentSearchQuery.trim() !== "") {
+        requestBody.search = currentSearchQuery.trim();
+      }
+
+      // Add level field if a specific difficulty is selected
+      if (currentDifficulty && currentDifficulty !== "all") {
+        requestBody.level = currentDifficulty;
+      }
 
       const response = await fetch(`/api/v1/advert/getAll?page=${page}`, {
         method: "POST",
@@ -76,6 +106,17 @@ function MatchesPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+
+        // Handle 404 specifically - clear matches and show no results
+        if (response.status === 404) {
+          setMatches([]);
+          setTotalMatches(0);
+          setCurrentPage(1);
+          setHasMore(false);
+          setIsLoading(false);
+          return; // Exit early, don't throw error for 404
+        }
+
         throw new Error(errorData.msg || "Failed to fetch adverts");
       }
 
@@ -136,7 +177,7 @@ function MatchesPage() {
           intermediate: "Orta",
           advanced: "İleri",
           pro: "Profesyonel",
-          professional: "Profesyonel",
+          professional: "Lig (oyuncu)",
         };
         const difficulty = levelLabels[advert.level] || "Orta Seviye";
 
@@ -239,6 +280,15 @@ function MatchesPage() {
     fetchAdverts(1);
   }, []);
 
+  // Cleanup search timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Handle pagination - load more matches (for "Load More" button - if needed)
   const handleLoadMore = () => {
     if (!isLoading && hasMore) {
@@ -249,7 +299,7 @@ function MatchesPage() {
   // Handle page change for pagination buttons
   const handlePageChange = (pageNumber) => {
     if (pageNumber !== currentPage && !isLoading) {
-      fetchAdverts(pageNumber, { activeFilter });
+      fetchAdverts(pageNumber, { activeFilter, activeDifficulty, searchQuery });
       // Scroll to top when page changes
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -326,12 +376,45 @@ function MatchesPage() {
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
+    // Reset pagination state when filter changes
+    setCurrentPage(1);
+    setTotalMatches(0);
+    setHasMore(true);
     // Fetch data with new filter starting from page 1
     fetchAdverts(1, { activeFilter: filter });
   };
 
+  const handleDifficultyChange = (difficulty) => {
+    setActiveDifficulty(difficulty);
+    // Reset pagination state when difficulty filter changes
+    setCurrentPage(1);
+    setTotalMatches(0);
+    setHasMore(true);
+    // Fetch data with new difficulty filter starting from page 1
+    fetchAdverts(1, { activeDifficulty: difficulty });
+  };
+
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    const newSearchQuery = e.target.value;
+    setSearchQuery(newSearchQuery);
+
+    // Debounce search - wait 500ms after user stops typing
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      // Reset pagination state when search changes
+      setCurrentPage(1);
+      setTotalMatches(0);
+      setHasMore(true);
+      // Fetch data with new search query starting from page 1
+      fetchAdverts(1, {
+        activeFilter,
+        activeDifficulty,
+        searchQuery: newSearchQuery,
+      });
+    }, 500);
   };
 
   const handleJoinMatch = (matchId) => {
@@ -347,10 +430,10 @@ function MatchesPage() {
     setIsModalOpen(false);
   };
 
-  const handleSubmitAd = (formData) => {
-    // TODO: Backend'e gönderme işlemi burada yapılacak
-    console.log("New ad data:", formData);
-    // Geçici olarak console'a yazdırıyoruz
+  const handleSubmitAd = (data) => {
+    console.log("Advert created successfully:", data);
+    // Refresh the matches data to show the new advert
+    fetchAdverts(1, { activeFilter, activeDifficulty, searchQuery });
   };
 
   // Get user's current location (same as reservation page)
@@ -414,51 +497,194 @@ function MatchesPage() {
   const handleLocationAccept = async () => {
     setShowLocationPopup(false);
     setIsLoadingNearby(true);
+    setError("");
+
+    // Reset pagination state for vicinity search
+    setCurrentPage(1);
+    setTotalMatches(0);
+    setHasMore(false);
 
     try {
       const coordinates = await getCurrentLocation();
       console.log("Kullanıcı konumu alındı:", coordinates);
 
-      // Find nearby matches based on coordinates from current matches
-      const nearbyMatches = matches.filter((match) => {
-        if (!match.pitch?.location?.coordinates) return false;
-
-        const [pitchLon, pitchLat] = match.pitch.location.coordinates;
-        const [userLon, userLat] = coordinates;
-
-        const distance = calculateDistance(
-          userLat,
-          userLon,
-          pitchLat,
-          pitchLon
-        );
-        return distance <= 10; // Within 10km
+      // Call backend API for vicinity adverts
+      const response = await fetch("/api/v1/advert/vicinity", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          coordinates: coordinates, // [longitude, latitude]
+        }),
       });
 
-      // Sort by distance
-      nearbyMatches.sort((a, b) => {
-        if (!a.pitch?.location?.coordinates || !b.pitch?.location?.coordinates)
-          return 0;
+      if (!response.ok) {
+        const errorData = await response.json();
 
-        const [aLon, aLat] = a.pitch.location.coordinates;
-        const [bLon, bLat] = b.pitch.location.coordinates;
-        const [userLon, userLat] = coordinates;
+        // Handle 404 specifically - clear matches and show no results
+        if (response.status === 404) {
+          setMatches([]);
+          setTotalMatches(0);
+          setCurrentPage(1);
+          setHasMore(false);
+          setIsLoadingNearby(false);
+          return; // Exit early, don't throw error for 404
+        }
 
-        const distanceA = calculateDistance(userLat, userLon, aLat, aLon);
-        const distanceB = calculateDistance(userLat, userLon, bLat, bLon);
+        throw new Error(errorData.msg || "Failed to fetch vicinity adverts");
+      }
 
-        return distanceA - distanceB;
+      const data = await response.json();
+      const { adverts, count } = data;
+
+      // Process the vicinity adverts data using the same format as fetchAdverts
+      const processedMatches = adverts.map((advert) => {
+        const startDate = new Date(advert.startsAt);
+        const now = new Date();
+        const isExpired = startDate < now;
+
+        // Calculate participants and needed players
+        const currentParticipants = advert.participants?.length || 0;
+        const totalNeeded = advert.playersNeeded + advert.goalKeepersNeeded;
+        const completion =
+          totalNeeded > 0
+            ? Math.round((currentParticipants / totalNeeded) * 100)
+            : 100;
+
+        // Determine match type based on participants vs needed
+        const matchType = currentParticipants === 0 ? "team-ads" : "player-ads";
+
+        // Get pitch image from backend structure
+        const pitchImages = advert.pitch?.media?.images || [];
+        const primaryImage = pitchImages.find((img) => img.isPrimary);
+        const firstImage = pitchImages[0];
+        const pitchImage = primaryImage?.url || firstImage?.url || null;
+
+        // Get pitch location information from backend structure
+        const pitchLocation = advert.pitch?.location?.address
+          ? `${advert.pitch.location.address.district}, ${advert.pitch.location.address.city}`
+          : "Konum Belirtilmemiş";
+
+        // Get pitch rating from backend structure
+        const pitchRating = advert.pitch?.rating?.averageRating || null;
+        const totalReviews = advert.pitch?.rating?.totalReviews || 0;
+
+        // Get pitch specifications from backend structure
+        const pitchSpecs = advert.pitch?.specifications || {};
+        const isIndoor = pitchSpecs.isIndoor || false;
+        const hasLighting = pitchSpecs.hasLighting || false;
+
+        // Get pitch facilities from backend structure
+        const pitchFacilities = advert.pitch?.facilities || {};
+        const hasChangingRooms = pitchFacilities.changingRooms || false;
+        const hasShowers = pitchFacilities.showers || false;
+        const hasParking = pitchFacilities.parking || false;
+
+        // Calculate price per person from backend structure
+        const hourlyRate = advert.pitch?.pricing?.hourlyRate || 0;
+        const pricePerPerson =
+          totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+
+        // Get level information and translate to Turkish
+        const levelLabels = {
+          beginner: "Başlangıç",
+          intermediate: "Orta",
+          advanced: "İleri",
+          pro: "Profesyonel",
+          professional: "Lig (oyuncu)",
+        };
+        const difficulty = levelLabels[advert.level] || "Orta Seviye";
+
+        // Get status information and translate to Turkish
+        const statusLabels = {
+          open: "Açık",
+          full: "Dolu",
+          cancelled: "İptal Edildi",
+          expired: "Süresi Doldu",
+          completed: "Tamamlandı",
+        };
+        const statusText = statusLabels[advert.status] || "Bilinmiyor";
+
+        // Get rivalry information from backend structure
+        const isRivalry = advert.isRivalry?.status || false;
+        const rivalryAgreed = advert.isRivalry?.agreed || false;
+
+        // Get admin advert information from backend structure
+        const isAdminAdvert =
+          advert.adminAdvert && advert.adminAdvert.length > 0;
+
+        // Get pitch coordinates for location-based features
+        const pitchCoordinates = advert.pitch?.location?.coordinates || null;
+
+        return {
+          id: advert._id,
+          title: advert.name,
+          date: startDate.toLocaleDateString("tr-TR", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          location: advert.pitch?.name || "Saha Belirtilmemiş",
+          locationDetails: pitchLocation,
+          players: `${currentParticipants}/${totalNeeded} oyuncu`,
+          completion: completion,
+          status: isExpired
+            ? "expired"
+            : completion >= 100
+            ? "full"
+            : "available",
+          statusText: statusText,
+          type: matchType,
+          pricePerPerson: pricePerPerson,
+          difficulty: difficulty,
+          description:
+            advert.notes ||
+            `${
+              advert.createdBy?.name || "Bilinmeyen kullanıcı"
+            } tarafından oluşturuldu. ${
+              advert.playersNeeded > 0 ? `${advert.playersNeeded} oyuncu` : ""
+            } ${
+              advert.goalKeepersNeeded > 0
+                ? `${advert.goalKeepersNeeded} kaleci`
+                : ""
+            } aranıyor.`,
+          createdBy: advert.createdBy,
+          pitch: {
+            ...advert.pitch,
+            location: {
+              ...advert.pitch?.location,
+              coordinates: pitchCoordinates,
+            },
+          },
+          pitchImage: pitchImage,
+          pitchRating: pitchRating,
+          totalReviews: totalReviews,
+          isIndoor: isIndoor,
+          hasLighting: hasLighting,
+          hasChangingRooms: hasChangingRooms,
+          hasShowers: hasShowers,
+          hasParking: hasParking,
+          isRivalry: isRivalry,
+          rivalryAgreed: rivalryAgreed,
+          isAdminAdvert: isAdminAdvert,
+          waitingList: advert.waitingList || [],
+          originalData: advert,
+        };
       });
 
-      // Update matches to show only nearby ones
-      setMatches(nearbyMatches);
-      setTotalMatches(nearbyMatches.length);
+      // Update matches to show only nearby ones from backend
+      setMatches(processedMatches);
+      setTotalMatches(count);
       setCurrentPage(1);
       setHasMore(false); // Nearby search doesn't support pagination
       setIsLoadingNearby(false);
     } catch (error) {
-      console.error("Konum alma hatası:", error);
-      setError(translateErrorMessage("Location not available"));
+      console.error("Yakınımdaki maçlar alma hatası:", error);
+      setError(translateErrorMessage(error.message));
       setIsLoadingNearby(false);
     }
   };
@@ -552,26 +778,11 @@ function MatchesPage() {
   const resetToAllMatches = () => {
     setCurrentPage(1);
     setError("");
-    fetchAdverts(1, { activeFilter });
+    fetchAdverts(1, { activeFilter, activeDifficulty, searchQuery });
   };
 
-  // Since filtering is now done server-side, we only need client-side search filtering
-  const filteredMatches = matches.filter((match) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      match.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      match.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      match.locationDetails.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      match.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      match.difficulty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      match.createdBy.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (match.createdBy.school &&
-        match.createdBy.school
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()));
-
-    return matchesSearch;
-  });
+  // Since both filtering and search are now done server-side, use matches directly
+  const filteredMatches = matches;
 
   // Get filtered matches by various criteria
   const getFilteredMatchesByCriteria = (criteria) => {
@@ -934,8 +1145,10 @@ function MatchesPage() {
         matches={filteredMatches}
         onJoinMatch={handleJoinMatch}
         activeFilter={activeFilter}
+        activeDifficulty={activeDifficulty}
         searchQuery={searchQuery}
         onFilterChange={handleFilterChange}
+        onDifficultyChange={handleDifficultyChange}
         onSearchChange={handleSearchChange}
         onCreateAdClick={handleCreateAdClick}
         onNearbySearch={handleNearbySearch}
@@ -956,10 +1169,8 @@ function MatchesPage() {
         limit={limit}
         hasMore={hasMore}
         onLoadMore={handleLoadMore}
-        // Show loading spinner inside MatchesList when initial loading
-        showLoadingSpinner={
-          isLoading && currentPage === 1 && matches.length === 0
-        }
+        // Show loading spinner during any loading operation
+        showLoadingSpinner={isLoading}
         showErrorDisplay={error && matches.length === 0}
         LoadingSpinner={LoadingSpinner}
         ErrorDisplay={ErrorDisplay}
@@ -979,13 +1190,19 @@ function MatchesPage() {
       />
 
       {/* Location Permission Popup */}
-      {showLocationPopup && (
-        <LocationPermissionPopup
-          onClose={handleLocationDecline}
-          onAccept={handleLocationAccept}
-          message="Yakınınızdaki maçları bulabilmemiz için konum bilginizi Sporplanet ile paylaşmanıza izin vermeniz gerekmektedir."
-        />
-      )}
+      <LocationPermissionPopup
+        isVisible={showLocationPopup}
+        onDecline={handleLocationDecline}
+        onAccept={handleLocationAccept}
+        title="Konum İzni Gerekli"
+        message="Yakınınızdaki maçları bulabilmemiz için konum bilginizi Sporplanet ile paylaşmanıza izin vermeniz gerekmektedir."
+        acceptText="Evet, İzin Veriyorum"
+        declineText="Hayır, İstemiyorum"
+        icon="location"
+        infoTitle="Konum Bilgisi Kullanımı"
+        infoMessage="Konum bilginiz sadece yakınınızdaki maçları göstermek için kullanılacak ve hiçbir şekilde saklanmayacaktır."
+        showInfo={true}
+      />
 
       <Footer />
     </div>
