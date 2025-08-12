@@ -43,11 +43,11 @@ function MatchCard({ match, onJoinMatch }) {
       </div>
 
       <div className="mb-4">
-        {/* Rakip takım ilanları için sayı göster, oyuncu ilanları için progress bar */}
+        {/* Rakip takım ilanları için takım büyüklüğü göster, oyuncu ilanları için progress bar */}
         {match.type === "team-ads" ? (
           <div className="text-center">
-            <div className="text-lg font-semibold text-gray-900 mb-1">
-              {match.players.split('/')[1].split(' ')[0]} kişilik takım aranıyor
+            <div className="text-lg font-semibold text-green-600 mb-1">
+              {match.teamSize || match.players.split('/')[1].split(' ')[0]} kişilik takım aranıyor
             </div>
           </div>
         ) : (

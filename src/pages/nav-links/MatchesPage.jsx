@@ -138,7 +138,9 @@ function MatchesPage() {
             : 100;
 
         // Determine match type based on participants vs needed
-        const matchType = currentParticipants === 0 ? "team-ads" : "player-ads";
+        // Determine match type based on rivalry status from backend
+        const isRivalryStatus = advert.isRivalry?.status || false;
+        const matchType = isRivalryStatus ? "team-ads" : "player-ads";
 
         // Get pitch image from backend structure
         const pitchImages = advert.pitch?.media?.images || [];
@@ -254,6 +256,7 @@ function MatchesPage() {
           hasParking: hasParking,
           isRivalry: isRivalry,
           rivalryAgreed: rivalryAgreed,
+          teamSize: advert.rivalryTeamSize || 11,
           isAdminAdvert: isAdminAdvert,
           waitingList: advert.waitingList || [],
           originalData: advert,
@@ -554,7 +557,9 @@ function MatchesPage() {
             : 100;
 
         // Determine match type based on participants vs needed
-        const matchType = currentParticipants === 0 ? "team-ads" : "player-ads";
+        // Determine match type based on rivalry status from backend
+        const isRivalryStatus = advert.isRivalry?.status || false;
+        const matchType = isRivalryStatus ? "team-ads" : "player-ads";
 
         // Get pitch image from backend structure
         const pitchImages = advert.pitch?.media?.images || [];
@@ -670,6 +675,7 @@ function MatchesPage() {
           hasParking: hasParking,
           isRivalry: isRivalry,
           rivalryAgreed: rivalryAgreed,
+          teamSize: advert.rivalryTeamSize || 11,
           isAdminAdvert: isAdminAdvert,
           waitingList: advert.waitingList || [],
           originalData: advert,

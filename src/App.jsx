@@ -15,7 +15,7 @@ import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar"
 function App() {
   return (
     <ProfileSidebarProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/matches" element={<MatchesPage />} />

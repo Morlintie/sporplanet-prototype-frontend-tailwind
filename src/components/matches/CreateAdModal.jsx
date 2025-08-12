@@ -35,11 +35,6 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
       address: "",
       district: "",
       city: "",
-      location: {
-        type: "Point",
-        coordinates: [28.9784, 41.0082], // Default to Istanbul
-      },
-      photo: null, // Base64 encoded photo
     },
     startsAt: "",
   });
@@ -47,7 +42,6 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
   // Modal states
   const [showFriendsModal, setShowFriendsModal] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
-  const [showLocationModal, setShowLocationModal] = useState(false);
 
   // Date and time state for custom pitch
   const [selectedDate, setSelectedDate] = useState("");
@@ -74,6 +68,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
       "Booking not found": "Rezervasyon bulunamadı.",
       "Advert creation failed": "İlan oluşturulamadı.",
+      "This pitch is already booked for the selected time.": "Bu saha seçilen saat için zaten rezerve edilmiş.",
       "Network Error": "Ağ hatası oluştu",
       "Failed to fetch": "Veri alınamadı",
       "Internal Server Error": "Sunucu hatası",
@@ -137,51 +132,19 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
       notes: "",
       adminAdvert: [],
       isRivalry: { status: false },
+      rivalryTeamSize: 11,
       level: "intermediate",
       customPitch: {
         name: "",
         address: "",
         district: "",
         city: "",
-        location: {
-          type: "Point",
-          coordinates: [28.9784, 41.0082],
-        },
-        photo: null,
       },
       startsAt: "",
     });
   };
 
-  // Handle photo upload
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
 
-    // Check file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Fotoğraf boyutu 5MB'dan küçük olmalıdır.");
-      return;
-    }
-
-    // Check file type
-    if (!file.type.startsWith("image/")) {
-      setError("Sadece resim dosyaları yüklenebilir.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFormData((prev) => ({
-        ...prev,
-        customPitch: {
-          ...prev.customPitch,
-          photo: e.target.result,
-        },
-      }));
-    };
-    reader.readAsDataURL(file);
-  };
 
   // Handle friend selection for participants
   const handleFriendSelection = (friendId) => {
@@ -203,55 +166,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
     }));
   };
 
-  // Get current location
-  const getCurrentLocation = () => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation not supported"));
-        return;
-      }
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve([position.coords.longitude, position.coords.latitude]);
-        },
-        (error) => {
-          reject(new Error("Location not available"));
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000,
-        }
-      );
-    });
-  };
-
-  // Handle location selection
-  const handleLocationSelect = async () => {
-    try {
-      const coordinates = await getCurrentLocation();
-      setFormData((prev) => ({
-        ...prev,
-        customPitch: {
-          ...prev.customPitch,
-          location: {
-            type: "Point",
-            coordinates: coordinates,
-          },
-        },
-      }));
-      setShowLocationModal(false);
-      setNotification({
-        show: true,
-        message: "Konum başarıyla alındı!",
-        type: "success",
-      });
-    } catch (error) {
-      setError("Konum alınamadı. Manuel olarak girebilirsiniz.");
-      setShowLocationModal(false);
-    }
-  };
 
   // Handle custom pitch form update
   const handleCustomPitchChange = (field, value) => {
@@ -274,10 +189,23 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
 
       if (step === "booking-form" && selectedBooking) {
         // Booking-based advert
+        let playersNeeded, goalKeepersNeeded;
+        
+        if (formData.isRivalry.status) {
+          // Rakip Takım İlanı - Takım büyüklüğüne göre otomatik hesapla
+          const teamSize = formData.rivalryTeamSize || 11;
+          playersNeeded = teamSize - 1; // Biri kaleci, diğerleri oyuncu
+          goalKeepersNeeded = 1; // Her zaman 1 kaleci
+        } else {
+          // Oyuncu İlanı - Kullanıcının girdiği değerleri kullan
+          playersNeeded = parseInt(formData.playersNeeded);
+          goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
+        }
+        
         requestBody = {
           booking: selectedBooking._id,
-          playersNeeded: parseInt(formData.playersNeeded),
-          goalKeepersNeeded: parseInt(formData.goalKeepersNeeded),
+          playersNeeded: playersNeeded,
+          goalKeepersNeeded: goalKeepersNeeded,
           participants: formData.participants,
           notes: formData.notes,
           adminAdvert: formData.adminAdvert,
@@ -295,6 +223,19 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
           return;
         }
 
+        let playersNeeded, goalKeepersNeeded;
+        
+        if (formData.isRivalry.status) {
+          // Rakip Takım İlanı - Takım büyüklüğüne göre otomatik hesapla
+          const teamSize = formData.rivalryTeamSize || 11;
+          playersNeeded = teamSize - 1; // Biri kaleci, diğerleri oyuncu
+          goalKeepersNeeded = 1; // Her zaman 1 kaleci
+        } else {
+          // Oyuncu İlanı - Kullanıcının girdiği değerleri kullan
+          playersNeeded = parseInt(formData.playersNeeded);
+          goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
+        }
+
         requestBody = {
           customPitch: {
             name: formData.customPitch.name,
@@ -305,16 +246,10 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
             ...(formData.customPitch.city && {
               city: formData.customPitch.city,
             }),
-            ...(formData.customPitch.location && {
-              location: formData.customPitch.location,
-            }),
-            ...(formData.customPitch.photo && {
-              photo: formData.customPitch.photo,
-            }),
           },
           startsAt: formData.startsAt,
-          playersNeeded: parseInt(formData.playersNeeded),
-          goalKeepersNeeded: parseInt(formData.goalKeepersNeeded),
+          playersNeeded: playersNeeded,
+          goalKeepersNeeded: goalKeepersNeeded,
           participants: formData.participants,
           notes: formData.notes,
           adminAdvert: formData.adminAdvert,
@@ -555,7 +490,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                         <h4 className="font-medium text-gray-900">
                           {booking.pitch
                             ? typeof booking.pitch === "string"
-                              ? `Saha ID: ${booking.pitch}`
+                              ? `Saha İsmi: ${booking.pitch}`
                               : booking.pitch.name || "Saha Adı Bilinmiyor"
                             : "Saha Adı Bilinmiyor"}
                         </h4>
@@ -568,11 +503,21 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                             minute: "2-digit",
                           })}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          Durum:{" "}
-                          {booking.status === "pending"
-                            ? "Beklemede"
-                            : "Onaylandı"}
+                        <p className="text-xs">
+                          <span className="text-gray-500">Durum: </span>
+                          <span className={
+                            booking.status === "pending"
+                              ? "text-yellow-600 font-medium"
+                              : booking.status === "confirmed"
+                              ? "text-green-600 font-medium"
+                              : "text-gray-500"
+                          }>
+                            {booking.status === "pending"
+                              ? "Beklemede"
+                              : booking.status === "confirmed"
+                              ? "Onaylandı"
+                              : booking.status}
+                          </span>
                         </p>
                       </div>
                       <div className="text-right">
@@ -618,7 +563,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                     <strong>Saha:</strong>{" "}
                     {selectedBooking.pitch
                       ? typeof selectedBooking.pitch === "string"
-                        ? `Saha ID: ${selectedBooking.pitch}`
+                        ? selectedBooking.pitch
                         : selectedBooking.pitch.name || "Saha Adı Bilinmiyor"
                       : "Saha Adı Bilinmiyor"}
                   </p>
@@ -637,9 +582,19 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                   </p>
                   <p>
                     <strong>Durum:</strong>{" "}
-                    {selectedBooking.status === "pending"
-                      ? "Beklemede"
-                      : "Onaylandı"}
+                    <span className={
+                      selectedBooking.status === "pending"
+                        ? "text-yellow-600 font-medium"
+                        : selectedBooking.status === "confirmed"
+                        ? "text-green-600 font-medium"
+                        : "text-gray-500"
+                    }>
+                      {selectedBooking.status === "pending"
+                        ? "Beklemede"
+                        : selectedBooking.status === "confirmed"
+                        ? "Onaylandı"
+                        : selectedBooking.status}
+                    </span>
                   </p>
                   <p>
                     <strong>Fiyat:</strong> ₺
@@ -678,25 +633,23 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                 </button>
               </div>
 
-              <CustomPitchAdvertForm
-                formData={formData}
-                setFormData={setFormData}
-                friends={friends}
-                levelOptions={levelOptions}
-                onSubmit={submitAdvert}
-                isSubmitting={isSubmitting}
-                onShowFriends={() => setShowFriendsModal(true)}
-                onShowAdmins={() => setShowAdminModal(true)}
-                onShowLocation={() => setShowLocationModal(true)}
-                onCustomPitchChange={handleCustomPitchChange}
-                onPhotoUpload={handlePhotoUpload}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                selectedTime={selectedTime}
-                setSelectedTime={setSelectedTime}
-                generateTimeSlots={generateTimeSlots}
-                getTodayISO={getTodayISO}
-              />
+                             <CustomPitchAdvertForm
+                 formData={formData}
+                 setFormData={setFormData}
+                 friends={friends}
+                 levelOptions={levelOptions}
+                 onSubmit={submitAdvert}
+                 isSubmitting={isSubmitting}
+                 onShowFriends={() => setShowFriendsModal(true)}
+                 onShowAdmins={() => setShowAdminModal(true)}
+                 onCustomPitchChange={handleCustomPitchChange}
+                 selectedDate={selectedDate}
+                 setSelectedDate={setSelectedDate}
+                 selectedTime={selectedTime}
+                 setSelectedTime={setSelectedTime}
+                 generateTimeSlots={generateTimeSlots}
+                 getTodayISO={getTodayISO}
+               />
             </div>
           )}
         </div>
@@ -727,13 +680,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         />
       )}
 
-      {/* Location Permission Modal */}
-      {showLocationModal && (
-        <LocationSelectionModal
-          onAccept={handleLocationSelect}
-          onDecline={() => setShowLocationModal(false)}
-        />
-      )}
+      
     </div>
   );
 }
@@ -751,47 +698,6 @@ function BookingAdvertForm({
 }) {
   return (
     <div className="space-y-4">
-      {/* Players Needed */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Aranan Oyuncu Sayısı *
-          </label>
-          <input
-            type="number"
-            min="0"
-            max="20"
-            value={formData.playersNeeded}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                playersNeeded: parseInt(e.target.value) || 0,
-              }))
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Aranan Kaleci Sayısı *
-          </label>
-          <input
-            type="number"
-            min="0"
-            max="5"
-            value={formData.goalKeepersNeeded}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                goalKeepersNeeded: parseInt(e.target.value) || 0,
-              }))
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-      </div>
 
       {/* Participants */}
       <div>
@@ -827,31 +733,16 @@ function BookingAdvertForm({
         </div>
       )}
 
-      {/* Rivalry Selection */}
+      {/* Advertisement Type Selection */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           İlan Türü *
         </label>
-        <div className="space-y-2">
-          <label className="flex items-center">
+        <div className="space-y-3">
+          <label className="flex items-start">
             <input
               type="radio"
-              name="rivalry"
-              checked={!formData.isRivalry.status}
-              onChange={() =>
-                setFormData((prev) => ({
-                  ...prev,
-                  isRivalry: { status: false },
-                }))
-              }
-              className="mr-2"
-            />
-            <span>Karma takım - Oyuncular karışık takımlarda oynayacak</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="rivalry"
+              name="advertType"
               checked={formData.isRivalry.status}
               onChange={() =>
                 setFormData((prev) => ({
@@ -859,12 +750,119 @@ function BookingAdvertForm({
                   isRivalry: { status: true },
                 }))
               }
-              className="mr-2"
+              className="mr-3 mt-1"
             />
-            <span>Rakip takım - Takım olarak karşı takım arıyoruz</span>
+            <div>
+              <span className="font-medium">Rakip Takım İlanı</span>
+              <p className="text-sm text-gray-600">Rakip takım arayın</p>
+            </div>
+          </label>
+          <label className="flex items-start">
+            <input
+              type="radio"
+              name="advertType"
+              checked={!formData.isRivalry.status}
+              onChange={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  isRivalry: { status: false },
+                }))
+              }
+              className="mr-3 mt-1"
+            />
+            <div>
+              <span className="font-medium">Oyuncu İlanı</span>
+              <p className="text-sm text-gray-600">Takımınıza oyuncu bulun</p>
+            </div>
           </label>
         </div>
       </div>
+
+      {/* Dynamic Fields Based on Advertisement Type */}
+      {formData.isRivalry.status ? (
+        // Rakip Takım İlanı - Team Size Selection
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Kaç Kişilik Rakip Arıyorsunuz? *
+          </label>
+          <select
+            value={formData.rivalryTeamSize || 11}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                rivalryTeamSize: parseInt(e.target.value),
+              }))
+            }
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          >
+            <option value={5}>5 vs 5</option>
+            <option value={6}>6 vs 6</option>
+            <option value={7}>7 vs 7</option>
+            <option value={8}>8 vs 8</option>
+            <option value={9}>9 vs 9</option>
+            <option value={10}>10 vs 10</option>
+            <option value={11}>11 vs 11</option>
+          </select>
+        </div>
+      ) : (
+        // Oyuncu İlanı - Missing Players
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Kaç Oyuncunuz Eksik? *
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Saha Oyuncusu
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.playersNeeded}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  const numValue = value === '' ? 0 : parseInt(value);
+                  if (numValue <= 20) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      playersNeeded: numValue,
+                    }));
+                  }
+                }}
+                placeholder="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Kaleci
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.goalKeepersNeeded}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  const numValue = value === '' ? 0 : parseInt(value);
+                  if (numValue <= 5) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      goalKeepersNeeded: numValue,
+                    }));
+                  }
+                }}
+                placeholder="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Level Selection */}
       <div>
@@ -928,9 +926,7 @@ function CustomPitchAdvertForm({
   isSubmitting,
   onShowFriends,
   onShowAdmins,
-  onShowLocation,
   onCustomPitchChange,
-  onPhotoUpload,
   selectedDate,
   setSelectedDate,
   selectedTime,
@@ -938,6 +934,8 @@ function CustomPitchAdvertForm({
   generateTimeSlots,
   getTodayISO,
 }) {
+
+
   return (
     <div className="space-y-4">
       {/* Pitch Name (Required) */}
@@ -998,62 +996,20 @@ function CustomPitchAdvertForm({
         </div>
       </div>
 
-      {/* Location */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Konum
-        </label>
-        <button
-          type="button"
-          onClick={onShowLocation}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          {formData.customPitch.location.coordinates[0] !== 28.9784 ||
-          formData.customPitch.location.coordinates[1] !== 41.0082
-            ? `Konum seçildi: ${formData.customPitch.location.coordinates[1].toFixed(
-                4
-              )}, ${formData.customPitch.location.coordinates[0].toFixed(4)}`
-            : "Konumu seç (opsiyonel)"}
-        </button>
-      </div>
+      
 
-      {/* Photo Upload */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Saha Fotoğrafı (max 5MB)
-        </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={onPhotoUpload}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
-        {formData.customPitch.photo && (
-          <div className="mt-2">
-            <img
-              src={formData.customPitch.photo}
-              alt="Saha fotoğrafı"
-              className="w-32 h-32 object-cover rounded-md"
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Date and Time Selection */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tarih *
-          </label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            min={getTodayISO()}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
+             {/* Date and Time Selection */}
+       <div className="grid grid-cols-2 gap-4">
+         <div>
+           <label className="block text-sm font-medium text-gray-700 mb-2">
+             Tarih *
+           </label>
+           <TurkishDatePicker
+             selectedDate={selectedDate}
+             setSelectedDate={setSelectedDate}
+             setSelectedTime={setSelectedTime}
+           />
+         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Saat *
@@ -1074,47 +1030,7 @@ function CustomPitchAdvertForm({
         </div>
       </div>
 
-      {/* Players Needed */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Aranan Oyuncu Sayısı *
-          </label>
-          <input
-            type="number"
-            min="0"
-            max="20"
-            value={formData.playersNeeded}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                playersNeeded: parseInt(e.target.value) || 0,
-              }))
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Aranan Kaleci Sayısı *
-          </label>
-          <input
-            type="number"
-            min="0"
-            max="5"
-            value={formData.goalKeepersNeeded}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                goalKeepersNeeded: parseInt(e.target.value) || 0,
-              }))
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-      </div>
+
 
       {/* Participants */}
       <div>
@@ -1150,31 +1066,16 @@ function CustomPitchAdvertForm({
         </div>
       )}
 
-      {/* Rivalry Selection */}
+      {/* Advertisement Type Selection */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           İlan Türü *
         </label>
-        <div className="space-y-2">
-          <label className="flex items-center">
+        <div className="space-y-3">
+          <label className="flex items-start">
             <input
               type="radio"
-              name="rivalry"
-              checked={!formData.isRivalry.status}
-              onChange={() =>
-                setFormData((prev) => ({
-                  ...prev,
-                  isRivalry: { status: false },
-                }))
-              }
-              className="mr-2"
-            />
-            <span>Karma takım - Oyuncular karışık takımlarda oynayacak</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="rivalry"
+              name="advertType"
               checked={formData.isRivalry.status}
               onChange={() =>
                 setFormData((prev) => ({
@@ -1182,12 +1083,119 @@ function CustomPitchAdvertForm({
                   isRivalry: { status: true },
                 }))
               }
-              className="mr-2"
+              className="mr-3 mt-1"
             />
-            <span>Rakip takım - Takım olarak karşı takım arıyoruz</span>
+            <div>
+              <span className="font-medium">Rakip Takım İlanı</span>
+              <p className="text-sm text-gray-600">Rakip takım arayın</p>
+            </div>
+          </label>
+          <label className="flex items-start">
+            <input
+              type="radio"
+              name="advertType"
+              checked={!formData.isRivalry.status}
+              onChange={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  isRivalry: { status: false },
+                }))
+              }
+              className="mr-3 mt-1"
+            />
+            <div>
+              <span className="font-medium">Oyuncu İlanı</span>
+              <p className="text-sm text-gray-600">Takımınıza oyuncu bulun</p>
+            </div>
           </label>
         </div>
       </div>
+
+      {/* Dynamic Fields Based on Advertisement Type */}
+      {formData.isRivalry.status ? (
+        // Rakip Takım İlanı - Team Size Selection
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Kaç Kişilik Rakip Arıyorsunuz? *
+          </label>
+          <select
+            value={formData.rivalryTeamSize || 11}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                rivalryTeamSize: parseInt(e.target.value),
+              }))
+            }
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          >
+            <option value={5}>5 vs 5</option>
+            <option value={6}>6 vs 6</option>
+            <option value={7}>7 vs 7</option>
+            <option value={8}>8 vs 8</option>
+            <option value={9}>9 vs 9</option>
+            <option value={10}>10 vs 10</option>
+            <option value={11}>11 vs 11</option>
+          </select>
+        </div>
+      ) : (
+        // Oyuncu İlanı - Missing Players
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Kaç Oyuncunuz Eksik? *
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Saha Oyuncusu
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.playersNeeded}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  const numValue = value === '' ? 0 : parseInt(value);
+                  if (numValue <= 20) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      playersNeeded: numValue,
+                    }));
+                  }
+                }}
+                placeholder="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Kaleci
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.goalKeepersNeeded}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  const numValue = value === '' ? 0 : parseInt(value);
+                  if (numValue <= 5) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      goalKeepersNeeded: numValue,
+                    }));
+                  }
+                }}
+                placeholder="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Level Selection */}
       <div>
@@ -1243,6 +1251,218 @@ function CustomPitchAdvertForm({
           {isSubmitting ? "İlan Oluşturuluyor..." : "İlan Ver"}
         </button>
       </div>
+    </div>
+  );
+}
+
+// Turkish Date Picker Component
+function TurkishDatePicker({ selectedDate, setSelectedDate, setSelectedTime }) {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date();
+    return new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      12,
+      0,
+      0
+    );
+  });
+
+  // Tarihi görüntüleme formatına çevir (YYYY-MM-DD -> DD.MM.YYYY)
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "";
+    try {
+      const [year, month, day] = dateString.split("-");
+      return `${day}.${month}.${year}`;
+    } catch {
+      return "";
+    }
+  };
+
+  // Türkçe ay isimleri
+  const getTurkishMonth = (date) => {
+    return date.toLocaleDateString("tr-TR", { month: "long", year: "numeric" });
+  };
+
+  // Türkçe gün isimleri (kısaltılmış)
+  const getTurkishDayNames = () => {
+    return ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pz"];
+  };
+
+  // Local date formatını kullan (timezone sorunlarını önler)
+  const formatDateToISO = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Bugünün tarihini güvenli şekilde al
+  const getTodayISO = () => {
+    const today = new Date();
+    return formatDateToISO(
+      new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0)
+    );
+  };
+
+  // Ayın günlerini oluştur
+  const generateCalendarDays = () => {
+    const year = calendarMonth.getFullYear();
+    const month = calendarMonth.getMonth();
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    const startDay = firstDay.getDay();
+    const adjustedStartDay = startDay === 0 ? 6 : startDay - 1;
+
+    const days = [];
+
+    // Önceki ayın son günleri (gri)
+    const prevMonth = new Date(year, month - 1, 0);
+    for (let i = adjustedStartDay - 1; i >= 0; i--) {
+      const day = prevMonth.getDate() - i;
+      const date = new Date(year, month - 1, day);
+      days.push({
+        day,
+        isCurrentMonth: false,
+        date,
+        dateString: formatDateToISO(date),
+      });
+    }
+
+    // Bu ayın günleri
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const date = new Date(year, month, day);
+      days.push({
+        day,
+        isCurrentMonth: true,
+        date,
+        dateString: formatDateToISO(date),
+      });
+    }
+
+    // Sonraki ayın ilk günleri (gri)
+    const remainingDays = 42 - days.length;
+    for (let day = 1; day <= remainingDays; day++) {
+      const date = new Date(year, month + 1, day);
+      days.push({
+        day,
+        isCurrentMonth: false,
+        date,
+        dateString: formatDateToISO(date),
+      });
+    }
+
+    return days;
+  };
+
+  // Tarih seçildiğinde
+  const handleDateSelect = (dateString) => {
+    setSelectedDate(dateString);
+    setSelectedTime("");
+    setShowCalendar(false);
+  };
+
+  // Ay değiştir
+  const changeMonth = (direction) => {
+    setCalendarMonth((prev) => {
+      const newMonth = new Date(prev);
+      newMonth.setMonth(prev.getMonth() + direction);
+      return newMonth;
+    });
+  };
+
+  const todayISO = getTodayISO();
+  const calendarDays = generateCalendarDays();
+
+  return (
+    <div className="relative">
+      {/* Date Input */}
+      <button
+        type="button"
+        onClick={() => setShowCalendar(!showCalendar)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
+      >
+        {selectedDate ? formatDateForDisplay(selectedDate) : "Tarih seçin"}
+      </button>
+
+      {/* Calendar Dropdown */}
+      {showCalendar && (
+        <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-50 w-80">
+          {/* Calendar Header */}
+          <div className="flex items-center justify-between p-3 border-b border-gray-200">
+            <button
+              type="button"
+              onClick={() => changeMonth(-1)}
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <h3 className="text-lg font-semibold">
+              {getTurkishMonth(calendarMonth)}
+            </h3>
+            <button
+              type="button"
+              onClick={() => changeMonth(1)}
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Day Names */}
+          <div className="grid grid-cols-7 gap-1 p-2 bg-gray-50">
+            {getTurkishDayNames().map((dayName) => (
+              <div key={dayName} className="text-center text-xs font-medium text-gray-600 py-2">
+                {dayName}
+              </div>
+            ))}
+          </div>
+
+          {/* Calendar Days */}
+          <div className="grid grid-cols-7 gap-1 p-2">
+            {calendarDays.map((dayObj, index) => {
+              const isToday = dayObj.dateString === todayISO;
+              const isSelected = dayObj.dateString === selectedDate;
+              const isPast = dayObj.dateString < todayISO;
+              const isCurrentMonth = dayObj.isCurrentMonth;
+
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => !isPast && handleDateSelect(dayObj.dateString)}
+                  disabled={isPast}
+                  className={`
+                    p-2 text-sm rounded transition-colors
+                    ${!isCurrentMonth ? 'text-gray-400' : ''}
+                    ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-blue-50'}
+                    ${isToday ? 'bg-blue-100 font-semibold' : ''}
+                    ${isSelected ? 'bg-green-600 text-white' : ''}
+                  `}
+                >
+                  {dayObj.day}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Click outside to close */}
+      {showCalendar && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowCalendar(false)}
+        />
+      )}
     </div>
   );
 }
@@ -1359,55 +1579,8 @@ function FriendsSelectionModal({
   );
 }
 
-// Location selection modal component
-function LocationSelectionModal({ onAccept, onDecline }) {
-  return (
-    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-60 p-4">
-      <div className="bg-white rounded-lg max-w-md w-full">
-        <div className="p-6">
-          <div className="text-center">
-            <div className="text-green-600 mb-4">
-              <svg
-                className="w-12 h-12 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Konum İzni Gerekli
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Sahanızın konumunu ekleyebilmemiz için konum bilginizi almamıza
-              izin vermeniz gerekmektedir.
-            </p>
-          </div>
 
-          <div className="flex gap-4">
-            <button
-              onClick={onDecline}
-              className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md font-medium transition-colors"
-            >
-              İptal
-            </button>
-            <button
-              onClick={onAccept}
-              className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition-colors"
-            >
-              İzin Ver
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+
+
 
 export default CreateAdModal;
