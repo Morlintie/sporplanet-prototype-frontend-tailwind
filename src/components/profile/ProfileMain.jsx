@@ -36,21 +36,56 @@ function ProfileMain({ user }) {
     navigate("/profile?section=settings");
   };
 
-  // Get user's recently searched pitches from auth context
-  const recentlySearchedPitches = getRecentlySearchedPitches().map((pitch) => ({
-    id: pitch._id,
-    name: pitch.name,
-    image:
-      pitch.media?.images?.[0]?.url ||
-      "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-    location: `${pitch.location.address.district}, ${pitch.location.address.city}`,
-    rating: pitch.rating?.averageRating || 0,
-    lastVisited: "Son görüntülenen",
-  }));
+  // Get user's recently searched pitches from auth context - using the same structure as favorite pitches
+  const rawRecentlySearchedPitches = getRecentlySearchedPitches();
+  console.log(
+    "Raw recently searched pitches from AuthContext:",
+    rawRecentlySearchedPitches
+  );
+
+  const recentlySearchedPitches = rawRecentlySearchedPitches.map((pitch) => {
+    // Primary image selection logic - prioritize isPrimary, then first image
+    const primaryImage = pitch.media?.images?.find((img) => img.isPrimary);
+    const firstImage = pitch.media?.images?.[0];
+    const imageUrl = primaryImage?.url || firstImage?.url;
+
+    return {
+      id: pitch._id,
+      name: pitch.name,
+      image: imageUrl,
+      location: `${pitch.location?.address?.neighborhood || ""}, ${
+        pitch.location?.address?.city || ""
+      }`,
+      rating: pitch.rating?.averageRating || 0,
+      totalReviews: pitch.rating?.totalReviews || 0,
+      price: `${pitch.pricing?.hourlyRate || "N/A"}₺/saat`,
+      category: pitch.category || "Futbol",
+      features: [
+        ...(pitch.facilities?.changingRooms ? ["Soyunma Odası"] : []),
+        ...(pitch.facilities?.showers ? ["Duş"] : []),
+        ...(pitch.facilities?.parking ? ["Otopark"] : []),
+        ...(pitch.specifications?.hasLighting ? ["Işıklandırma"] : []),
+        ...(pitch.specifications?.isIndoor ? ["Kapalı"] : ["Açık"]),
+        ...(pitch.facilities?.camera ? ["Kamera"] : []),
+        ...(pitch.facilities?.shoeRenting ? ["Ayakkabı Kiralama"] : []),
+      ],
+    };
+  });
+
+  console.log("Processed recently searched pitches:", recentlySearchedPitches);
+  console.log(
+    "Total recently searched pitches count:",
+    recentlySearchedPitches.length
+  );
 
   const pitchesToShow = showAllPitches
     ? recentlySearchedPitches
     : recentlySearchedPitches.slice(0, 3);
+
+  // Handle viewing pitch details
+  const handleViewPitch = (pitchId) => {
+    navigate(`/pitch-detail/${pitchId}`);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md w-full overflow-hidden">
@@ -172,20 +207,21 @@ function ProfileMain({ user }) {
                 <button
                   onClick={handleFollowClick}
                   className="inline-flex items-center bg-white/20 backdrop-blur px-3 py-1 gap-2 rounded-full cursor-pointer"
-                  tabIndex="0">
+                  tabIndex="0"
+                >
                   <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
                   <span>Topluluğum</span>
                 </button>
               </div>
@@ -295,12 +331,12 @@ function ProfileMain({ user }) {
           <div className="bg-gray-50 rounded-lg p-6">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-lg font-semibold text-gray-900">Hakkımda</h2>
-              
             </div>
             {user.description ? (
               <p className="text-gray-700 leading-relaxed">
                 {user.description}
-              </p>            ) : (
+              </p>
+            ) : (
               <p className="text-gray-500 italic">
                 Henüz bir açıklama eklemediniz. Kendinizi tanıtmak için bir
                 açıklama ekleyin.
@@ -308,8 +344,6 @@ function ProfileMain({ user }) {
             )}
           </div>
         </div>
-
-        
 
         {/* İstatistikler Section */}
         <div className="mb-8">
@@ -319,26 +353,28 @@ function ProfileMain({ user }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-gray-900">
-                {user.bookings?.filter(booking => 
-                  booking.bookedBy === user._id && booking.status === "completed"
+                {user.bookings?.filter(
+                  (booking) =>
+                    booking.bookedBy === user._id &&
+                    booking.status === "completed"
                 ).length || 0}
               </div>
-              <div className="text-sm text-gray-600">Tamamlanan Rezervasyon</div>
+              <div className="text-sm text-gray-600">
+                Tamamlanan Rezervasyon
+              </div>
             </div>
             <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-gray-900">
-                {user.createdAdverts?.filter(advert => 
-                  advert.createdBy === user._id && advert.status === "completed"
+                {user.advertParticipation?.filter(
+                  (advert) => advert.createdBy === user._id
                 ).length || 0}
               </div>
               <div className="text-sm text-gray-600">Oluşturulan İlan</div>
             </div>
             <div className="text-center p-4 bg-gray-100 border border-gray-200 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-gray-900">
-                {user.advertParticipation?.filter(advert => 
-                  advert.participants?.some(participant => 
-                    participant.user._id === user._id
-                  ) && advert.status === "completed"
+                {user.advertParticipation?.filter(
+                  (advert) => advert.createdBy !== user._id
                 ).length || 0}
               </div>
               <div className="text-sm text-gray-600">Katıldığı İlan</div>
@@ -349,7 +385,6 @@ function ProfileMain({ user }) {
         {/* Divider */}
         <hr className="border-gray-200 mb-8" />
 
-
         {/* Son Aranan Sahalar */}
         <div>
           <h2 className="text-xl font-bold text-center text-gray-900 mb-6">
@@ -359,25 +394,75 @@ function ProfileMain({ user }) {
             {pitchesToShow.map((pitch) => (
               <div
                 key={pitch.id}
-                className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
-                  <img
-                    src={pitch.image}
-                    alt={pitch.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png";
-                    }}
-                  />
+                <div className="relative">
+                  <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
+                    {pitch.image ? (
+                      <img
+                        src={pitch.image}
+                        alt={pitch.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex";
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={`w-full h-full flex items-center justify-center bg-gray-100 ${
+                        pitch.image ? "hidden" : "flex"
+                      }`}
+                      style={{ display: pitch.image ? "none" : "flex" }}
+                    >
+                      <div className="text-center">
+                        <svg
+                          className="w-12 h-12 text-gray-400 mx-auto mb-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <p className="text-xs text-gray-500">Fotoğraf Yok</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900 mb-2">
                     {pitch.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">{pitch.location}</p>
-                  <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600 mb-2 flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    {pitch.location}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
                       <svg
                         className="w-4 h-4 text-yellow-400 mr-1"
@@ -387,12 +472,44 @@ function ProfileMain({ user }) {
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                       </svg>
                       <span className="text-sm text-gray-600">
-                        {pitch.rating}
+                        {pitch.rating > 0 ? pitch.rating : "N/A"}
+                        {pitch.totalReviews > 0 && (
+                          <span className="text-xs text-gray-500 ml-1">
+                            ({pitch.totalReviews})
+                          </span>
+                        )}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500">
-                      {pitch.lastVisited}
+                    <span className="text-sm font-semibold text-green-600">
+                      {pitch.price}
                     </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {pitch.features.slice(0, 3).map((feature, index) => (
+                      <span
+                        key={index}
+                        className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                    {pitch.features.length > 3 && (
+                      <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">
+                        +{pitch.features.length - 3}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex justify-center mb-3">
+                    <button
+                      onClick={() => handleViewPitch(pitch.id)}
+                      className="w-4/5 bg-[rgb(0,128,0)] hover:bg-[rgb(0,100,0)] text-white font-semibold py-2 px-4 rounded-md transition-colors cursor-pointer focus:outline-none"
+                      tabIndex="0"
+                      aria-label="Sahayı görüntüle"
+                    >
+                      Sahayı Görüntüle
+                    </button>
                   </div>
                 </div>
               </div>
