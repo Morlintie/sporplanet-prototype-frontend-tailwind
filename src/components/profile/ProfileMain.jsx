@@ -11,6 +11,7 @@ function ProfileMain({ user }) {
     getUserFriends,
     getFriendRequests,
     getSelfFriendRequests,
+    getProfilePictureUrl,
   } = useAuth();
 
   // Backend mevki kodlarını Türkçe'ye çevir
@@ -104,9 +105,9 @@ function ProfileMain({ user }) {
             {/* Avatar */}
             <div className="relative">
               <div className="w-28 h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center ring-4 ring-white">
-                {user.profilePicture ? (
+                {getProfilePictureUrl(user.profilePicture) ? (
                   <img
-                    src={user.profilePicture}
+                    src={getProfilePictureUrl(user.profilePicture)}
                     alt={user.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -117,7 +118,9 @@ function ProfileMain({ user }) {
                 ) : null}
                 <div
                   className={`w-full h-full flex items-center justify-center text-4xl font-bold text-gray-500 ${
-                    user.profilePicture ? "hidden" : "flex"
+                    getProfilePictureUrl(user.profilePicture)
+                      ? "hidden"
+                      : "flex"
                   }`}
                 >
                   {user.name

@@ -100,7 +100,8 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
       "Booking not found": "Rezervasyon bulunamadı.",
       "Advert creation failed": "İlan oluşturulamadı.",
-      "This pitch is already booked for the selected time.": "Bu saha seçilen saat için zaten rezerve edilmiş.",
+      "This pitch is already booked for the selected time.":
+        "Bu saha seçilen saat için zaten rezerve edilmiş.",
       "Network Error": "Ağ hatası oluştu",
       "Failed to fetch": "Veri alınamadı",
       "Internal Server Error": "Sunucu hatası",
@@ -189,8 +190,6 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
     });
   };
 
-
-
   // Handle friend selection for participants
   const handleFriendSelection = (friendId) => {
     setFormData((prev) => ({
@@ -210,8 +209,6 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         : [...prev.adminAdvert, friendId],
     }));
   };
-
-
 
   // Handle custom pitch form update
   const handleCustomPitchChange = (field, value) => {
@@ -235,11 +232,13 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
       if (step === "booking-form" && selectedBooking) {
         // Booking-based advert
         let playersNeeded, goalKeepersNeeded;
+
         
         // Her iki ilan türü için de kullanıcının girdiği değerleri kullan
         playersNeeded = parseInt(formData.playersNeeded);
         goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
         
+
         requestBody = {
           booking: selectedBooking._id,
           playersNeeded: playersNeeded,
@@ -263,10 +262,12 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         }
 
         let playersNeeded, goalKeepersNeeded;
+
         
         // Her iki ilan türü için de kullanıcının girdiği değerleri kullan
         playersNeeded = parseInt(formData.playersNeeded);
         goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
+
 
         requestBody = {
           customPitch: {
@@ -546,13 +547,15 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                         </p>
                         <p className="text-xs">
                           <span className="text-gray-500">Durum: </span>
-                          <span className={
-                            booking.status === "pending"
-                              ? "text-yellow-600 font-medium"
-                              : booking.status === "confirmed"
-                              ? "text-green-600 font-medium"
-                              : "text-gray-500"
-                          }>
+                          <span
+                            className={
+                              booking.status === "pending"
+                                ? "text-yellow-600 font-medium"
+                                : booking.status === "confirmed"
+                                ? "text-green-600 font-medium"
+                                : "text-gray-500"
+                            }
+                          >
                             {booking.status === "pending"
                               ? "Beklemede"
                               : booking.status === "confirmed"
@@ -623,13 +626,15 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                   </p>
                   <p>
                     <strong>Durum:</strong>{" "}
-                    <span className={
-                      selectedBooking.status === "pending"
-                        ? "text-yellow-600 font-medium"
-                        : selectedBooking.status === "confirmed"
-                        ? "text-green-600 font-medium"
-                        : "text-gray-500"
-                    }>
+                    <span
+                      className={
+                        selectedBooking.status === "pending"
+                          ? "text-yellow-600 font-medium"
+                          : selectedBooking.status === "confirmed"
+                          ? "text-green-600 font-medium"
+                          : "text-gray-500"
+                      }
+                    >
                       {selectedBooking.status === "pending"
                         ? "Beklemede"
                         : selectedBooking.status === "confirmed"
@@ -674,23 +679,23 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                 </button>
               </div>
 
-                             <CustomPitchAdvertForm
-                 formData={formData}
-                 setFormData={setFormData}
-                 friends={friends}
-                 levelOptions={levelOptions}
-                 onSubmit={submitAdvert}
-                 isSubmitting={isSubmitting}
-                 onShowFriends={() => setShowFriendsModal(true)}
-                 onShowAdmins={() => setShowAdminModal(true)}
-                 onCustomPitchChange={handleCustomPitchChange}
-                 selectedDate={selectedDate}
-                 setSelectedDate={setSelectedDate}
-                 selectedTime={selectedTime}
-                 setSelectedTime={setSelectedTime}
-                 generateTimeSlots={generateTimeSlots}
-                 getTodayISO={getTodayISO}
-               />
+              <CustomPitchAdvertForm
+                formData={formData}
+                setFormData={setFormData}
+                friends={friends}
+                levelOptions={levelOptions}
+                onSubmit={submitAdvert}
+                isSubmitting={isSubmitting}
+                onShowFriends={() => setShowFriendsModal(true)}
+                onShowAdmins={() => setShowAdminModal(true)}
+                onCustomPitchChange={handleCustomPitchChange}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+                generateTimeSlots={generateTimeSlots}
+                getTodayISO={getTodayISO}
+              />
             </div>
           )}
         </div>
@@ -720,8 +725,6 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
           subtitle="Sadece katılımcılar admin olarak seçilebilir"
         />
       )}
-
-      
     </div>
   );
 }
@@ -739,7 +742,6 @@ function BookingAdvertForm({
 }) {
   return (
     <div className="space-y-4">
-
       {/* Participants */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -866,8 +868,8 @@ function BookingAdvertForm({
                 pattern="[0-9]*"
                 value={formData.playersNeeded}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, '');
-                  const numValue = value === '' ? 0 : parseInt(value);
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  const numValue = value === "" ? 0 : parseInt(value);
                   if (numValue <= 20) {
                     setFormData((prev) => ({
                       ...prev,
@@ -890,8 +892,8 @@ function BookingAdvertForm({
                 pattern="[0-9]*"
                 value={formData.goalKeepersNeeded}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, '');
-                  const numValue = value === '' ? 0 : parseInt(value);
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  const numValue = value === "" ? 0 : parseInt(value);
                   if (numValue <= 5) {
                     setFormData((prev) => ({
                       ...prev,
@@ -978,8 +980,6 @@ function CustomPitchAdvertForm({
   generateTimeSlots,
   getTodayISO,
 }) {
-
-
   return (
     <div className="space-y-4">
       {/* Pitch Name (Required) */}
@@ -1040,6 +1040,7 @@ function CustomPitchAdvertForm({
         </div>
       </div>
 
+
       {/* Price per Person */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1078,6 +1079,7 @@ function CustomPitchAdvertForm({
              setSelectedTime={setSelectedTime}
            />
          </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Saat *
@@ -1097,8 +1099,6 @@ function CustomPitchAdvertForm({
           </select>
         </div>
       </div>
-
-
 
       {/* Participants */}
       <div>
@@ -1226,8 +1226,8 @@ function CustomPitchAdvertForm({
                 pattern="[0-9]*"
                 value={formData.playersNeeded}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, '');
-                  const numValue = value === '' ? 0 : parseInt(value);
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  const numValue = value === "" ? 0 : parseInt(value);
                   if (numValue <= 20) {
                     setFormData((prev) => ({
                       ...prev,
@@ -1250,8 +1250,8 @@ function CustomPitchAdvertForm({
                 pattern="[0-9]*"
                 value={formData.goalKeepersNeeded}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9]/g, '');
-                  const numValue = value === '' ? 0 : parseInt(value);
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  const numValue = value === "" ? 0 : parseInt(value);
                   if (numValue <= 5) {
                     setFormData((prev) => ({
                       ...prev,
@@ -1476,8 +1476,18 @@ function TurkishDatePicker({ selectedDate, setSelectedDate, setSelectedTime }) {
               onClick={() => changeMonth(-1)}
               className="p-1 hover:bg-gray-100 rounded"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
             </button>
             <h3 className="text-lg font-semibold">
@@ -1488,8 +1498,18 @@ function TurkishDatePicker({ selectedDate, setSelectedDate, setSelectedTime }) {
               onClick={() => changeMonth(1)}
               className="p-1 hover:bg-gray-100 rounded"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           </div>
@@ -1497,7 +1517,10 @@ function TurkishDatePicker({ selectedDate, setSelectedDate, setSelectedTime }) {
           {/* Day Names */}
           <div className="grid grid-cols-7 gap-1 p-2 bg-gray-50">
             {getTurkishDayNames().map((dayName) => (
-              <div key={dayName} className="text-center text-xs font-medium text-gray-600 py-2">
+              <div
+                key={dayName}
+                className="text-center text-xs font-medium text-gray-600 py-2"
+              >
                 {dayName}
               </div>
             ))}
@@ -1519,10 +1542,14 @@ function TurkishDatePicker({ selectedDate, setSelectedDate, setSelectedTime }) {
                   disabled={isPast}
                   className={`
                     p-2 text-sm rounded transition-colors
-                    ${!isCurrentMonth ? 'text-gray-400' : ''}
-                    ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-blue-50'}
-                    ${isToday ? 'bg-blue-100 font-semibold' : ''}
-                    ${isSelected ? 'bg-green-600 text-white' : ''}
+                    ${!isCurrentMonth ? "text-gray-400" : ""}
+                    ${
+                      isPast
+                        ? "text-gray-300 cursor-not-allowed"
+                        : "hover:bg-blue-50"
+                    }
+                    ${isToday ? "bg-blue-100 font-semibold" : ""}
+                    ${isSelected ? "bg-green-600 text-white" : ""}
                   `}
                 >
                   {dayObj.day}
@@ -1655,9 +1682,5 @@ function FriendsSelectionModal({
     </div>
   );
 }
-
-
-
-
 
 export default CreateAdModal;
