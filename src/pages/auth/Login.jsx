@@ -36,7 +36,7 @@ const translateMessage = (message, isSuccess = false) => {
       message.includes("Your account haven't been verified yet") ||
       message.includes("haven't been verified")
     ) {
-      return "Hesabınız henüz doğrulanmamış. Lütfen e-posta adresinizi kontrol edin.";
+      return "Hesabınız henüz doğrulanmamış. Lütfen müşteri hizmetleri ile iletişime geçin.";
     }
     if (
       message.includes("The password is not correct") ||
@@ -108,8 +108,17 @@ function Login() {
     const userId = searchParams.get("userId");
 
     if (statusCode && message) {
-      // Handle Google OAuth error
-      setError(translateMessage(message, false));
+      // Handle different status codes
+      if (statusCode === "403") {
+        // Banned user
+        setError(translateMessage(message, false));
+      } else if (statusCode === "401") {
+        // Unverified user
+        setError(translateMessage(message, false));
+      } else {
+        // Other Google OAuth errors
+        setError(translateMessage(message, false));
+      }
       // Clear URL parameters
       navigate("/auth/login", { replace: true });
     } else if (userId) {
@@ -145,11 +154,28 @@ function Login() {
       // Success - use AuthContext to set user data and redirect
       if (data.user) {
         authLogin(data.user);
+
+        // Check if user is archived and show success message appropriately
+        if (data.user.isDeleted === true && data.user.archived === true) {
+          setSuccess(
+            "Google ile giriş başarılı! Hesap geri yükleme seçeneği görüntüleniyor..."
+          );
+        } else {
+          setSuccess(translateMessage(data.msg || "Login successful", true));
+        }
       }
 
-      setSuccess(translateMessage(data.msg || "Login successful", true));
       setTimeout(() => {
-        navigate("/");
+        // Only redirect if user is not archived (popup will handle archived users)
+        if (
+          !(
+            data.user &&
+            data.user.isDeleted === true &&
+            data.user.archived === true
+          )
+        ) {
+          navigate("/");
+        }
         // Refresh auth state after navigation to ensure consistency
         setTimeout(() => {
           checkAuth();
@@ -279,12 +305,21 @@ function Login() {
         // Use AuthContext login function to set user data
         authLogin(data.user);
 
-        // Success message and redirect
-        setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
+        // Check if user is archived and show success message appropriately
+        if (data.user.isDeleted === true && data.user.archived === true) {
+          setSuccess(
+            "Giriş başarılı! Hesap geri yükleme seçeneği görüntüleniyor..."
+          );
+        } else {
+          setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
+        }
 
         // Allow time for the auth state to propagate to all components
         setTimeout(() => {
-          navigate("/");
+          // Only redirect if user is not archived (popup will handle archived users)
+          if (!(data.user.isDeleted === true && data.user.archived === true)) {
+            navigate("/");
+          }
           // Refresh auth state after navigation to ensure consistency
           setTimeout(() => {
             checkAuth();

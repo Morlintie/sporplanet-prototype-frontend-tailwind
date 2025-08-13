@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showArchivedUserPopup, setShowArchivedUserPopup] = useState(false);
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -28,7 +29,14 @@ export const AuthProvider = ({ children }) => {
       "You have been banned, please get contact with our customer service.":
         "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
       "User couldn't found.": "Kullanıcı bulunamadı.",
+      "User not found.": "Kullanıcı bulunamadı.",
       "Please provide required data.": "Gerekli bilgileri girin.",
+
+      // Account recovery messages
+      "User is no longer deleted or archived.":
+        "Hesabınız başarıyla geri yüklendi.",
+      "Account recovery failed": "Hesap geri yükleme başarısız",
+      "Logout successful.": "Başarıyla çıkış yapıldı.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -63,6 +71,11 @@ export const AuthProvider = ({ children }) => {
         if (data.user) {
           setUser(data.user);
           setIsAuthenticated(true);
+
+          // Check if user is archived (isDeleted: true and archived: true)
+          if (data.user.isDeleted === true && data.user.archived === true) {
+            setShowArchivedUserPopup(true);
+          }
         } else {
           setUser(null);
           setIsAuthenticated(false);
@@ -163,6 +176,82 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
+  // Account recovery functions
+  const handleAccountRecovery = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/v1/auth/deletionMind", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update user state to reflect recovery
+        setUser((prev) => ({ ...prev, isDeleted: false, archived: false }));
+        setShowArchivedUserPopup(false);
+
+        // Show success notification
+        setError(null);
+        return { success: true, message: translateMessage(data.message) };
+      } else {
+        const errorData = await response.json();
+        const errorMessage = translateMessage(
+          errorData.msg || errorData.message || "Account recovery failed"
+        );
+        setError(errorMessage);
+        return { success: false, message: errorMessage };
+      }
+    } catch (error) {
+      console.error("Account recovery error:", error);
+      const errorMessage = translateMessage("Network Error");
+      setError(errorMessage);
+      return { success: false, message: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAccountRecoveryDecline = async () => {
+    try {
+      setLoading(true);
+      // Call logout endpoint
+      const response = await fetch("/api/v1/auth/logout", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Logout successful:", data.msg || "User logged out");
+      } else {
+        console.warn(
+          "Logout endpoint returned error, clearing local state anyway"
+        );
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Always clear local authentication state
+      setUser(null);
+      setIsAuthenticated(false);
+      setError(null);
+      setLoading(false);
+      setShowArchivedUserPopup(false);
+      console.log("User authentication state cleared");
+    }
+  };
+
+  const closeArchivedUserPopup = () => {
+    setShowArchivedUserPopup(false);
+  };
+
   // Clear error
   const clearError = () => {
     setError(null);
@@ -255,6 +344,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     loading,
     error,
+    showArchivedUserPopup,
 
     // Actions
     checkAuth,
@@ -262,6 +352,9 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     clearError,
+    handleAccountRecovery,
+    handleAccountRecoveryDecline,
+    closeArchivedUserPopup,
 
     // Permission helpers
     isAdmin,

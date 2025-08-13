@@ -53,6 +53,9 @@ const translateMessage = (message, isSuccess = false) => {
     if (message.includes("Bad Request") || message.includes("400")) {
       return "Geçersiz istek. Lütfen bilgilerinizi kontrol edin.";
     }
+    if (message.includes("User found in archived state")) {
+      return "Hesabınızı daha önce silmiştiniz ancak henüz 15 gün geçmediği için verileriniz sistemimizde korunuyor. Yeni hesap oluşturmak yerine giriş yapmayı deneyin.";
+    }
     if (message.includes("Registration failed")) {
       return "Kayıt işlemi başarısız. Lütfen tekrar deneyin.";
     }
@@ -300,6 +303,14 @@ function Signup() {
 
       if (!response.ok) {
         throw new Error(data.msg || "Registration failed");
+      }
+
+      // Check for archived user state (isDeleted: true)
+      if (
+        data.message &&
+        data.message.includes("User found in archived state")
+      ) {
+        throw new Error(data.message);
       }
 
       // Success - show verification card
