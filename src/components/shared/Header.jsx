@@ -9,7 +9,8 @@ function Header() {
   const dropdownRef = useRef(null);
 
   // Auth context
-  const { user, isAuthenticated, loading, logout } = useAuth();
+  const { user, isAuthenticated, loading, logout, getProfilePictureUrl } =
+    useAuth();
   const { openSidebar, toggleSidebar } = useProfileSidebar();
 
   const handleLogoClick = () => {
@@ -105,9 +106,9 @@ function Header() {
                   >
                     {/* Profile Picture or Initials */}
                     <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center overflow-hidden">
-                      {user.profilePicture ? (
+                      {getProfilePictureUrl(user.profilePicture) ? (
                         <img
-                          src={user.profilePicture}
+                          src={getProfilePictureUrl(user.profilePicture)}
                           alt={user.name || "Profil"}
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -118,7 +119,9 @@ function Header() {
                       ) : null}
                       <div
                         className={`w-full h-full flex items-center justify-center text-white font-semibold text-sm ${
-                          user.profilePicture ? "hidden" : "flex"
+                          getProfilePictureUrl(user.profilePicture)
+                            ? "hidden"
+                            : "flex"
                         }`}
                       >
                         {getInitials(user.name)}
@@ -233,9 +236,9 @@ function Header() {
                     <div className="flex items-center px-3 py-2 bg-gray-50 rounded-md">
                       {/* Profile Picture or Initials */}
                       <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center overflow-hidden mr-3">
-                        {user.profilePicture ? (
+                        {getProfilePictureUrl(user.profilePicture) ? (
                           <img
-                            src={user.profilePicture}
+                            src={getProfilePictureUrl(user.profilePicture)}
                             alt={user.name || "Profil"}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -246,7 +249,9 @@ function Header() {
                         ) : null}
                         <div
                           className={`w-full h-full flex items-center justify-center text-white font-semibold text-sm ${
-                            user.profilePicture ? "hidden" : "flex"
+                            getProfilePictureUrl(user.profilePicture)
+                              ? "hidden"
+                              : "flex"
                           }`}
                         >
                           {getInitials(user.name)}

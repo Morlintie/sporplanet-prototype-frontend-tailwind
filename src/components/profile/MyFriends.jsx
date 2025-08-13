@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 function MyFriends({ user }) {
+  const { getProfilePictureUrl } = useAuth();
   const [activeTab, setActiveTab] = useState("online");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -172,9 +174,9 @@ function MyFriends({ user }) {
           <div className="flex items-center space-x-6">
             {/* Profile Photo */}
             <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-              {user.profilePicture ? (
+              {getProfilePictureUrl(user.profilePicture) ? (
                 <img
-                  src={user.profilePicture}
+                  src={getProfilePictureUrl(user.profilePicture)}
                   alt={user.name}
                   className="w-full h-full object-cover"
                 />

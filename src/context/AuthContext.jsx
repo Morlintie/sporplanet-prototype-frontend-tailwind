@@ -235,6 +235,20 @@ export const AuthProvider = ({ children }) => {
     return user?.recentlySearchedPitch || [];
   };
 
+  // Helper function to get profile picture URL (handles both string and object formats)
+  const getProfilePictureUrl = (profilePicture) => {
+    if (!profilePicture) return null;
+    if (typeof profilePicture === "string") return profilePicture;
+    if (typeof profilePicture === "object" && profilePicture.url)
+      return profilePicture.url;
+    return null;
+  };
+
+  // Helper function to get user's profile picture URL
+  const getUserProfilePictureUrl = () => {
+    return getProfilePictureUrl(user?.profilePicture);
+  };
+
   const value = {
     // Core state
     user,
@@ -267,6 +281,8 @@ export const AuthProvider = ({ children }) => {
     getAdvertWaitingList,
     getRecentlySearchedUsers,
     getRecentlySearchedPitches,
+    getProfilePictureUrl,
+    getUserProfilePictureUrl,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -49,7 +49,7 @@ function PitchReviewsSection({
   const [authPopupActionType, setAuthPopupActionType] = useState("default");
 
   // Auth context
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, getProfilePictureUrl } = useAuth();
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -747,9 +747,9 @@ function PitchReviewsSection({
               <div className="flex items-start space-x-3">
                 {/* User Avatar */}
                 <div className="flex-shrink-0">
-                  {review.user?.profilePicture ? (
+                  {getProfilePictureUrl(review.user?.profilePicture) ? (
                     <img
-                      src={review.user.profilePicture}
+                      src={getProfilePictureUrl(review.user?.profilePicture)}
                       alt={review.user.name}
                       className="w-10 h-10 rounded-full object-cover bg-gray-100"
                       onError={(e) => {
@@ -760,7 +760,9 @@ function PitchReviewsSection({
                   ) : null}
                   <div
                     className={`w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-medium ${
-                      review.user?.profilePicture ? "hidden" : "flex"
+                      getProfilePictureUrl(review.user?.profilePicture)
+                        ? "hidden"
+                        : "flex"
                     }`}
                   >
                     {getInitials(review.user?.name)}
@@ -1077,9 +1079,13 @@ function PitchReviewsSection({
                                     <div className="flex items-start space-x-3">
                                       {/* Reply User Avatar */}
                                       <div className="flex-shrink-0">
-                                        {reply.user?.profilePicture ? (
+                                        {getProfilePictureUrl(
+                                          reply.user?.profilePicture
+                                        ) ? (
                                           <img
-                                            src={reply.user.profilePicture}
+                                            src={getProfilePictureUrl(
+                                              reply.user?.profilePicture
+                                            )}
                                             alt={reply.user?.name || "Anonim"}
                                             className="w-7 h-7 rounded-full object-cover border-2 border-white shadow-sm"
                                             onError={(e) => {
@@ -1091,7 +1097,9 @@ function PitchReviewsSection({
                                         ) : null}
                                         <div
                                           className={`w-7 h-7 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-medium border-2 border-white shadow-sm ${
-                                            reply.user?.profilePicture
+                                            getProfilePictureUrl(
+                                              reply.user?.profilePicture
+                                            )
                                               ? "hidden"
                                               : "flex"
                                           }`}
@@ -1338,9 +1346,9 @@ function PitchReviewsSection({
                         <div className="flex items-start space-x-3">
                           {/* Current User Avatar */}
                           <div className="flex-shrink-0">
-                            {user?.profilePicture ? (
+                            {getProfilePictureUrl(user?.profilePicture) ? (
                               <img
-                                src={user.profilePicture}
+                                src={getProfilePictureUrl(user?.profilePicture)}
                                 alt={user?.name || "Kullanıcı"}
                                 className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
                                 onError={(e) => {
@@ -1351,7 +1359,9 @@ function PitchReviewsSection({
                             ) : null}
                             <div
                               className={`w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-medium border-2 border-white shadow-sm ${
-                                user?.profilePicture ? "hidden" : "flex"
+                                getProfilePictureUrl(user?.profilePicture)
+                                  ? "hidden"
+                                  : "flex"
                               }`}
                             >
                               {getInitials(user?.name || "Kullanıcı")}
