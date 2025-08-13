@@ -169,9 +169,28 @@ function MatchesPage() {
         const hasParking = pitchFacilities.parking || false;
 
         // Calculate price per person from backend structure
-        const hourlyRate = advert.pitch?.pricing?.hourlyRate || 0;
-        const pricePerPerson =
-          totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+        let pricePerPerson = 0;
+        if (advert.customPitch && advert.customPitch.price) {
+          // Özel saha - direkt kişi başı fiyat
+          pricePerPerson = advert.customPitch.price;
+        } else if (advert.booking && advert.booking.price && advert.booking.totalPlayers) {
+          // Rezervasyon - toplam fiyatı kişi sayısına böl ve kuruştan TL'ye çevir
+          const hourlyRate = advert.booking.price.hourlyRate || 0;
+          const totalPlayers = advert.booking.totalPlayers || 1;
+          pricePerPerson = Math.round(hourlyRate / totalPlayers / 100); // Kuruş -> TL
+        } else if (advert.booking && advert.booking.price) {
+          // Booking var ama totalPlayers yok - playersNeeded + goalKeepersNeeded kullan
+          const hourlyRate = advert.booking.price.hourlyRate || 0;
+          const estimatedPlayers = totalNeeded || 1;
+          pricePerPerson = Math.round(hourlyRate / estimatedPlayers / 100); // Kuruş -> TL
+        } else if (advert.pitch?.pricing?.hourlyRate) {
+          // Eski sistem - pitch pricing
+          const hourlyRate = advert.pitch.pricing.hourlyRate || 0;
+          pricePerPerson = totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+        } else {
+          // Fallback - default değer
+          pricePerPerson = 50;
+        }
 
         // Get level information and translate to Turkish
         const levelLabels = {
@@ -214,7 +233,7 @@ function MatchesPage() {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          location: advert.pitch?.name || "Saha Belirtilmemiş",
+          location: advert.customPitch?.name || advert.pitch?.name || "Saha Belirtilmemiş",
           locationDetails: pitchLocation,
           players: `${currentParticipants}/${totalNeeded} oyuncu`,
           completion: completion,
@@ -588,9 +607,28 @@ function MatchesPage() {
         const hasParking = pitchFacilities.parking || false;
 
         // Calculate price per person from backend structure
-        const hourlyRate = advert.pitch?.pricing?.hourlyRate || 0;
-        const pricePerPerson =
-          totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+        let pricePerPerson = 0;
+        if (advert.customPitch && advert.customPitch.price) {
+          // Özel saha - direkt kişi başı fiyat
+          pricePerPerson = advert.customPitch.price;
+        } else if (advert.booking && advert.booking.price && advert.booking.totalPlayers) {
+          // Rezervasyon - toplam fiyatı kişi sayısına böl ve kuruştan TL'ye çevir
+          const hourlyRate = advert.booking.price.hourlyRate || 0;
+          const totalPlayers = advert.booking.totalPlayers || 1;
+          pricePerPerson = Math.round(hourlyRate / totalPlayers / 100); // Kuruş -> TL
+        } else if (advert.booking && advert.booking.price) {
+          // Booking var ama totalPlayers yok - playersNeeded + goalKeepersNeeded kullan
+          const hourlyRate = advert.booking.price.hourlyRate || 0;
+          const estimatedPlayers = totalNeeded || 1;
+          pricePerPerson = Math.round(hourlyRate / estimatedPlayers / 100); // Kuruş -> TL
+        } else if (advert.pitch?.pricing?.hourlyRate) {
+          // Eski sistem - pitch pricing
+          const hourlyRate = advert.pitch.pricing.hourlyRate || 0;
+          pricePerPerson = totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+        } else {
+          // Fallback - default değer
+          pricePerPerson = 50;
+        }
 
         // Get level information and translate to Turkish
         const levelLabels = {
@@ -633,7 +671,7 @@ function MatchesPage() {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          location: advert.pitch?.name || "Saha Belirtilmemiş",
+          location: advert.customPitch?.name || advert.pitch?.name || "Saha Belirtilmemiş",
           locationDetails: pitchLocation,
           players: `${currentParticipants}/${totalNeeded} oyuncu`,
           completion: completion,

@@ -17,6 +17,8 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
   // Available bookings (pending/confirmed only)
   const [availableBookings, setAvailableBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [userBookings, setUserBookings] = useState([]);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
 
   // Form data for both booking and custom pitch adverts
   const [formData, setFormData] = useState({
@@ -47,9 +49,39 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
 
-  // Get user's friends and bookings
+  // Get user's friends
   const friends = getUserFriends() || [];
-  const userBookings = getBookings() || [];
+
+  // Fetch user bookings from API
+  const fetchUserBookings = async () => {
+    setBookingsLoading(true);
+    try {
+      const response = await fetch("/api/v1/booking/user/all?page=1", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched bookings:", data); // Debug log
+        setUserBookings(data.bookings || []);
+      } else {
+        console.error("API response not ok:", response.status);
+        // Fallback to context data
+        const fallbackBookings = getBookings() || [];
+        setUserBookings(fallbackBookings);
+      }
+    } catch (error) {
+      console.error("Error fetching user bookings:", error);
+      // Fallback to context data
+      const fallbackBookings = getBookings() || [];
+      setUserBookings(fallbackBookings);
+    } finally {
+      setBookingsLoading(false);
+    }
+  };
 
   // Level options
   const levelOptions = [
@@ -86,14 +118,25 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
 
   // Initialize available bookings when modal opens
   useEffect(() => {
-    if (isOpen && userBookings) {
+    if (isOpen) {
+      // İlk context'ten yükle
+      const contextBookings = getBookings() || [];
+      setUserBookings(contextBookings);
+      
+      // Sonra API'den güncel veriyi çek
+      fetchUserBookings();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (userBookings.length >= 0) { // >= 0 çünkü boş array da geçerli
       const availableBookings = userBookings.filter(
         (booking) =>
           booking.status === "pending" || booking.status === "confirmed"
       );
       setAvailableBookings(availableBookings);
     }
-  }, [isOpen, userBookings]);
+  }, [userBookings]);
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -126,20 +169,22 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
     setNotification({ show: false, message: "", type: "" });
     setSelectedDate("");
     setSelectedTime("");
+    setBookingsLoading(false);
     setFormData({
-      playersNeeded: 5,
+      playersNeeded: 10,
       goalKeepersNeeded: 1,
       participants: [],
       notes: "",
       adminAdvert: [],
       isRivalry: { status: false },
-      rivalryTeamSize: 11,
+
       level: "intermediate",
       customPitch: {
         name: "",
         address: "",
         district: "",
         city: "",
+        price: "",
       },
       startsAt: "",
     });
@@ -188,16 +233,11 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         // Booking-based advert
         let playersNeeded, goalKeepersNeeded;
 
-        if (formData.isRivalry.status) {
-          // Rakip Takım İlanı - Takım büyüklüğüne göre otomatik hesapla
-          const teamSize = formData.rivalryTeamSize || 11;
-          playersNeeded = teamSize - 1; // Biri kaleci, diğerleri oyuncu
-          goalKeepersNeeded = 1; // Her zaman 1 kaleci
-        } else {
-          // Oyuncu İlanı - Kullanıcının girdiği değerleri kullan
-          playersNeeded = parseInt(formData.playersNeeded);
-          goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
-        }
+        
+        // Her iki ilan türü için de kullanıcının girdiği değerleri kullan
+        playersNeeded = parseInt(formData.playersNeeded);
+        goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
+        
 
         requestBody = {
           booking: selectedBooking._id,
@@ -214,29 +254,26 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         if (
           !formData.customPitch.name ||
           !formData.customPitch.address ||
+          !formData.customPitch.price ||
           !formData.startsAt
         ) {
-          setError("Saha adı, adres ve tarih zorunlu alanlarıdır.");
+          setError("Saha adı, adres, fiyat ve tarih zorunlu alanlarıdır.");
           return;
         }
 
         let playersNeeded, goalKeepersNeeded;
 
-        if (formData.isRivalry.status) {
-          // Rakip Takım İlanı - Takım büyüklüğüne göre otomatik hesapla
-          const teamSize = formData.rivalryTeamSize || 11;
-          playersNeeded = teamSize - 1; // Biri kaleci, diğerleri oyuncu
-          goalKeepersNeeded = 1; // Her zaman 1 kaleci
-        } else {
-          // Oyuncu İlanı - Kullanıcının girdiği değerleri kullan
-          playersNeeded = parseInt(formData.playersNeeded);
-          goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
-        }
+        
+        // Her iki ilan türü için de kullanıcının girdiği değerleri kullan
+        playersNeeded = parseInt(formData.playersNeeded);
+        goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
+
 
         requestBody = {
           customPitch: {
             name: formData.customPitch.name,
             address: formData.customPitch.address,
+            price: parseInt(formData.customPitch.price),
             ...(formData.customPitch.district && {
               district: formData.customPitch.district,
             }),
@@ -279,6 +316,11 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         message: "İlan başarıyla oluşturuldu!",
         type: "success",
       });
+
+      // Refresh bookings after creating an advert from booking
+      if (selectedBooking) {
+        fetchUserBookings();
+      }
 
       // Close modal after success
       setTimeout(() => {
@@ -388,6 +430,9 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                 {/* Existing Booking Option */}
                 <button
                   onClick={() => {
+                    if (bookingsLoading) {
+                      return; // Loading sırasında tıklanabilir olmasın
+                    }
                     if (availableBookings.length > 0) {
                       setStep("booking-select");
                     } else {
@@ -420,7 +465,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                     Sahada rezervasyonunuz var ve oyuncu arıyorsunuz
                   </p>
                   <p className="text-xs text-gray-500 mt-2">
-                    {availableBookings.length} aktif rezervasyon
+                    {bookingsLoading ? "Yükleniyor..." : `${availableBookings.length} aktif rezervasyon`}
                   </p>
                 </button>
 
@@ -492,7 +537,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                             : "Saha Adı Bilinmiyor"}
                         </h4>
                         <p className="text-sm text-gray-600">
-                          {new Date(booking.start).toLocaleDateString("tr-TR", {
+                          {new Date(booking.start).toLocaleString("tr-TR", {
                             weekday: "long",
                             day: "numeric",
                             month: "long",
@@ -568,7 +613,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                   </p>
                   <p>
                     <strong>Tarih:</strong>{" "}
-                    {new Date(selectedBooking.start).toLocaleDateString(
+                    {new Date(selectedBooking.start).toLocaleString(
                       "tr-TR",
                       {
                         weekday: "long",
@@ -778,33 +823,36 @@ function BookingAdvertForm({
 
       {/* Dynamic Fields Based on Advertisement Type */}
       {formData.isRivalry.status ? (
-        // Rakip Takım İlanı - Team Size Selection
+        // Rakip Takım İlanı - Dropdown Seçimi
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Kaç Kişilik Rakip Arıyorsunuz? *
+            Kaç Kişilik Takım Arıyorsunuz? *
           </label>
           <select
-            value={formData.rivalryTeamSize || 11}
-            onChange={(e) =>
+            value={`${(parseInt(formData.playersNeeded) || 0) + (parseInt(formData.goalKeepersNeeded) || 0)}`}
+            onChange={(e) => {
+              const teamSize = parseInt(e.target.value);
               setFormData((prev) => ({
                 ...prev,
-                rivalryTeamSize: parseInt(e.target.value),
-              }))
-            }
+                playersNeeded: teamSize - 1, // Bir tanesi kaleci
+                goalKeepersNeeded: 1, // Her zaman 1 kaleci
+              }));
+            }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option value={5}>5 vs 5</option>
-            <option value={6}>6 vs 6</option>
-            <option value={7}>7 vs 7</option>
-            <option value={8}>8 vs 8</option>
-            <option value={9}>9 vs 9</option>
-            <option value={10}>10 vs 10</option>
-            <option value={11}>11 vs 11</option>
+            <option value="5">5 vs 5</option>
+            <option value="6">6 vs 6</option>
+            <option value="7">7 vs 7</option>
+            <option value="8">8 vs 8</option>
+            <option value="9">9 vs 9</option>
+            <option value="10">10 vs 10</option>
+            <option value="11">11 vs 11</option>
           </select>
+          
         </div>
       ) : (
-        // Oyuncu İlanı - Missing Players
+        // Oyuncu İlanı - Manuel Input
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Kaç Oyuncunuz Eksik? *
@@ -992,18 +1040,46 @@ function CustomPitchAdvertForm({
         </div>
       </div>
 
-      {/* Date and Time Selection */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tarih *
-          </label>
-          <TurkishDatePicker
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            setSelectedTime={setSelectedTime}
-          />
-        </div>
+
+      {/* Price per Person */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Kişi Başı Saha Ücreti (₺) *
+        </label>
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={formData.customPitch.price}
+          onChange={(e) => {
+            const value = e.target.value.replace(/[^0-9]/g, '');
+            const numValue = value === '' ? '' : parseInt(value);
+            if (numValue === '' || numValue <= 1000) {
+              onCustomPitchChange("price", numValue);
+            }
+          }}
+          placeholder="Örn: 50"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          required
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Kişi başına düşen saha ücreti (TL cinsinden)
+        </p>
+      </div>
+
+             {/* Date and Time Selection */}
+       <div className="grid grid-cols-2 gap-4">
+         <div>
+           <label className="block text-sm font-medium text-gray-700 mb-2">
+             Tarih *
+           </label>
+           <TurkishDatePicker
+             selectedDate={selectedDate}
+             setSelectedDate={setSelectedDate}
+             setSelectedTime={setSelectedTime}
+           />
+         </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Saat *
@@ -1105,33 +1181,36 @@ function CustomPitchAdvertForm({
 
       {/* Dynamic Fields Based on Advertisement Type */}
       {formData.isRivalry.status ? (
-        // Rakip Takım İlanı - Team Size Selection
+        // Rakip Takım İlanı - Dropdown Seçimi
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Kaç Kişilik Rakip Arıyorsunuz? *
+            Kaç Kişilik Takım Arıyorsunuz? *
           </label>
           <select
-            value={formData.rivalryTeamSize || 11}
-            onChange={(e) =>
+            value={`${(parseInt(formData.playersNeeded) || 0) + (parseInt(formData.goalKeepersNeeded) || 0)}`}
+            onChange={(e) => {
+              const teamSize = parseInt(e.target.value);
               setFormData((prev) => ({
                 ...prev,
-                rivalryTeamSize: parseInt(e.target.value),
-              }))
-            }
+                playersNeeded: teamSize - 1, // Bir tanesi kaleci
+                goalKeepersNeeded: 1, // Her zaman 1 kaleci
+              }));
+            }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option value={5}>5 vs 5</option>
-            <option value={6}>6 vs 6</option>
-            <option value={7}>7 vs 7</option>
-            <option value={8}>8 vs 8</option>
-            <option value={9}>9 vs 9</option>
-            <option value={10}>10 vs 10</option>
-            <option value={11}>11 vs 11</option>
+            <option value="5">5 vs 5</option>
+            <option value="6">6 vs 6</option>
+            <option value="7">7 vs 7</option>
+            <option value="8">8 vs 8</option>
+            <option value="9">9 vs 9</option>
+            <option value="10">10 vs 10</option>
+            <option value="11">11 vs 11</option>
           </select>
+          
         </div>
       ) : (
-        // Oyuncu İlanı - Missing Players
+        // Oyuncu İlanı - Manuel Input
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Kaç Oyuncunuz Eksik? *
@@ -1186,6 +1265,11 @@ function CustomPitchAdvertForm({
               />
             </div>
           </div>
+          <div className="mt-2 text-sm text-gray-600">
+            <span>
+              Toplam Eksik Oyuncu: {(parseInt(formData.playersNeeded) || 0) + (parseInt(formData.goalKeepersNeeded) || 0)} kişi
+            </span>
+          </div>
         </div>
       )}
 
@@ -1236,7 +1320,8 @@ function CustomPitchAdvertForm({
             !selectedDate ||
             !selectedTime ||
             !formData.customPitch.name ||
-            !formData.customPitch.address
+            !formData.customPitch.address ||
+            !formData.customPitch.price
           }
           className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-md font-medium transition-colors cursor-pointer"
         >

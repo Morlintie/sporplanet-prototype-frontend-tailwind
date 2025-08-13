@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ProfileSidebarProvider } from "./context/ProfileSidebarContext";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
@@ -12,10 +12,12 @@ import GoogleFailure from "./pages/auth/GoogleFailure";
 import ProfilePage from "./pages/ProfilePage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isAuthPage = location.pathname.startsWith('/auth');
+
   return (
-    <ProfileSidebarProvider>
-      <div className="min-h-screen bg-gray-50 pt-16">
+    <div className={`min-h-screen bg-gray-50 ${isAuthPage ? '' : 'pt-16'}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/matches" element={<MatchesPage />} />
@@ -43,8 +45,15 @@ function App() {
             }
           />
         </Routes>
-        <AnimatedProfileSidebar />
-      </div>
+      <AnimatedProfileSidebar />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ProfileSidebarProvider>
+      <AppContent />
     </ProfileSidebarProvider>
   );
 }
