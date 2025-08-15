@@ -1,7 +1,21 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function MatchCard({ match, onJoinMatch }) {
   const [showUserInfo, setShowUserInfo] = useState(false);
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    // Navigate to advert detail page with dynamic data
+    const advertId = match.id || match._id;
+    if (!advertId) {
+      console.error('No advertId found in match data:', match);
+      return;
+    }
+    // Scroll to top before navigation
+    window.scrollTo(0, 0);
+    navigate(`/advert-detail/${advertId}`);
+  };
   
   // Check if description already contains creator info
   const hasCreatorInDescription = (description, creatorName) => {
@@ -113,7 +127,7 @@ function MatchCard({ match, onJoinMatch }) {
             </button>
           ) : (
             <button 
-              onClick={() => onJoinMatch(match.id)}
+              onClick={handleViewDetails}
               className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition-colors cursor-pointer"
               tabIndex="0"
             >
@@ -221,7 +235,7 @@ function MatchCard({ match, onJoinMatch }) {
           </button>
         ) : (
           <button 
-            onClick={() => onJoinMatch(match.id)}
+            onClick={handleViewDetails}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition-colors cursor-pointer"
             tabIndex="0"
           >

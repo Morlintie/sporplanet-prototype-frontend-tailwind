@@ -14,10 +14,12 @@ function Header() {
   const { openSidebar, toggleSidebar } = useProfileSidebar();
 
   const handleLogoClick = () => {
+    window.scrollTo(0, 0);
     navigate("/");
   };
 
   const handleLogin = () => {
+    window.scrollTo(0, 0);
     navigate("/auth/login");
   };
 
@@ -32,6 +34,7 @@ function Header() {
 
   const handleLogout = async () => {
     await logout();
+    window.scrollTo(0, 0);
     navigate("/auth/login");
   };
 
@@ -53,6 +56,7 @@ function Header() {
   ];
 
   const handleNavClick = (path) => {
+    window.scrollTo(0, 0);
     navigate(path);
     setIsMobileMenuOpen(false); // Close mobile menu when navigating
   };
@@ -295,6 +299,7 @@ function Header() {
 
                     <button
                       onClick={() => {
+                        window.scrollTo(0, 0);
                         navigate("/profile?section=settings");
                         openSidebar();
                         setIsMobileMenuOpen(false);

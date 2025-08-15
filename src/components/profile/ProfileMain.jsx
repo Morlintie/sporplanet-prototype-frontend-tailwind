@@ -85,6 +85,7 @@ function ProfileMain({ user }) {
 
   // Handle viewing pitch details
   const handleViewPitch = (pitchId) => {
+    window.scrollTo(0, 0);
     navigate(`/pitch-detail/${pitchId}`);
   };
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useProfileSidebar } from "../context/ProfileSidebarContext";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/shared/Header";
@@ -19,6 +20,11 @@ import BlockedUsers from "../components/profile/BlockedUsers";
 function ProfilePage() {
   const { activeSection } = useProfileSidebar();
   const { user, loading, isAuthenticated } = useAuth();
+
+  // Scroll to top when component mounts or activeSection changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeSection]);
 
   // Loading state
   if (loading) {

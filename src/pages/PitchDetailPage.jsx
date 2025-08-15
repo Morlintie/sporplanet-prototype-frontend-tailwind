@@ -24,6 +24,11 @@ function PitchDetailPage() {
   const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
   const [error, setError] = useState("");
 
+  // Scroll to top when component mounts or pitchId changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pitchId]);
+
   // Reviews states
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);

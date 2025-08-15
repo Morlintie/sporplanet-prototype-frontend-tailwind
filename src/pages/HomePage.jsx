@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
 import MatchesFeature from "../components/home/MatchesFeature";
@@ -5,6 +6,10 @@ import ReservationFeature from "../components/home/ReservationFeature";
 import TournamentFeature from "../components/home/TournamentFeature";
 
 function HomePage() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       {/* Header */}

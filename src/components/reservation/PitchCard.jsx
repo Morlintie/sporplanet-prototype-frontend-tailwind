@@ -6,6 +6,8 @@ function PitchCard({ pitch, onReservation }) {
   const handleReservation = () => {
     // Navigate to pitch detail page
     // For maintenance pitches, this will show the contact popup automatically
+    // Scroll to top before navigation
+    window.scrollTo(0, 0);
     navigate(`/pitch-detail/${pitch.id}`);
   };
 

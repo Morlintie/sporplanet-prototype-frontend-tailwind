@@ -18,6 +18,11 @@ function ReservationPage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedCapacity, setSelectedCapacity] = useState("");
   const [selectedPitchTypes, setSelectedPitchTypes] = useState([]);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [selectedCameraSystems, setSelectedCameraSystems] = useState([]);
   const [selectedShoeRental, setSelectedShoeRental] = useState([]);
   const [selectedRating, setSelectedRating] = useState("");

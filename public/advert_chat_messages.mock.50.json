@@ -1,0 +1,886 @@
+[
+  {
+    "advert": "689400000000000000000001",
+    "sender": "68347987b024a2d8571443b2",
+    "type": "text",
+    "content": "Kartla ödeyelim mi?",
+    "notSeenBy": [
+      "6841e844222bba20673cc339",
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": true,
+    "createdAt": "2025-08-15T10:00:00Z",
+    "updatedAt": "2025-08-15T10:01:02Z"
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "6841e708222bba20673cc337",
+    "type": "image",
+    "content": "Forma görseli",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:04:00Z",
+    "updatedAt": "2025-08-15T10:04:26Z",
+    "attachments": {
+      "caption": "Saha durumu",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/02.jpg",
+          "name": "img-02.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "6841e844222bba20673cc339",
+    "type": "video",
+    "content": "Isınma videosu",
+    "notSeenBy": [
+      "6846f236f95a3b7499dfd98b",
+      "68347987b024a2d8571443b2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:08:00Z",
+    "updatedAt": "2025-08-15T10:08:23Z",
+    "attachments": {
+      "caption": "Kısa klip",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/03.mp4",
+          "name": "clip-03.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "688890cba69689a3ca2dd938",
+    "type": "system",
+    "content": "sohbet arşivlendi",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:12:00Z",
+    "updatedAt": "2025-08-15T10:14:34Z"
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "688892f9a69689a3ca2dd943",
+    "type": "text",
+    "content": "Forma rengi beyaz olsun.",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:16:00Z",
+    "updatedAt": "2025-08-15T10:16:50Z"
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "68889962a69689a3ca2dd951",
+    "type": "image",
+    "content": "Takım kadrosu",
+    "notSeenBy": [
+      "6888be8982a459125acd4d42",
+      "687243c690c09520e98cafd2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:15:00Z",
+    "updatedAt": "2025-08-15T10:15:56Z",
+    "attachments": {
+      "caption": "Giriş kapısı",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/06.jpg",
+          "name": "img-06.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "6846df07e810518fb9e60c72",
+    "type": "video",
+    "content": "Geçen maçtan anlar",
+    "notSeenBy": [
+      "688892f9a69689a3ca2dd943",
+      "68347987b024a2d8571443b2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:19:00Z",
+    "updatedAt": "2025-08-15T10:21:58Z",
+    "attachments": {
+      "caption": "Isınma hareketleri",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/07.mp4",
+          "name": "clip-07.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "6846f236f95a3b7499dfd98b",
+    "type": "system",
+    "content": "katılımcı eklendi",
+    "notSeenBy": [
+      "688892f9a69689a3ca2dd943"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:23:00Z",
+    "updatedAt": "2025-08-15T10:23:55Z"
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "686e61f70d43f60e09a66ebe",
+    "type": "text",
+    "content": "Kaleci lazım, var mı aday?",
+    "notSeenBy": [
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:27:00Z",
+    "updatedAt": "2025-08-15T10:28:37Z"
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "687243c690c09520e98cafd2",
+    "type": "image",
+    "content": "Kale ağları takıldı",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:31:00Z",
+    "updatedAt": "2025-08-15T10:32:28Z",
+    "attachments": {
+      "caption": "Forma örneği",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/10.jpg",
+          "name": "img-10.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "68888d16a69689a3ca2dd931",
+    "type": "video",
+    "content": "Kısa özet",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:30:00Z",
+    "updatedAt": "2025-08-15T10:32:17Z",
+    "attachments": {
+      "caption": "Kısa klip",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/11.mp4",
+          "name": "clip-11.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "6888be8982a459125acd4d42",
+    "type": "system",
+    "content": "sohbet arşivlendi",
+    "notSeenBy": [
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": true,
+    "createdAt": "2025-08-15T10:34:00Z",
+    "updatedAt": "2025-08-15T10:35:15Z"
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "6888bf1f82a459125acd4d47",
+    "type": "text",
+    "content": "Top bende.",
+    "notSeenBy": [
+      "687243c690c09520e98cafd2",
+      "68889962a69689a3ca2dd951"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:38:00Z",
+    "updatedAt": "2025-08-15T10:38:49Z"
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "68347987b024a2d8571443b2",
+    "type": "image",
+    "content": "Forma görseli",
+    "notSeenBy": [
+      "6841e844222bba20673cc339",
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:42:00Z",
+    "updatedAt": "2025-08-15T10:43:14Z",
+    "attachments": {
+      "caption": "Saha durumu",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/14.jpg",
+          "name": "img-14.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "6841e708222bba20673cc337",
+    "type": "video",
+    "content": "Isınma videosu",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:46:00Z",
+    "updatedAt": "2025-08-15T10:47:37Z",
+    "attachments": {
+      "caption": "Isınma hareketleri",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/15.mp4",
+          "name": "clip-15.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "6841e844222bba20673cc339",
+    "type": "system",
+    "content": "katılımcı ayrıldı",
+    "notSeenBy": [
+      "6888be8982a459125acd4d42"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:45:00Z",
+    "updatedAt": "2025-08-15T10:45:41Z"
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "688890cba69689a3ca2dd938",
+    "type": "text",
+    "content": "Park yeri var mı?",
+    "notSeenBy": [
+      "6846df07e810518fb9e60c72"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:49:00Z",
+    "updatedAt": "2025-08-15T10:51:51Z"
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "688892f9a69689a3ca2dd943",
+    "type": "image",
+    "content": "Sahanın son hali",
+    "notSeenBy": [
+      "6888bf1f82a459125acd4d47"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:53:00Z",
+    "updatedAt": "2025-08-15T10:55:35Z",
+    "attachments": {
+      "caption": "Takım foto",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/18.jpg",
+          "name": "img-18.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "68889962a69689a3ca2dd951",
+    "type": "video",
+    "content": "Geçen maçtan anlar",
+    "notSeenBy": [
+      "6888bf1f82a459125acd4d47",
+      "688890cba69689a3ca2dd938"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T10:57:00Z",
+    "updatedAt": "2025-08-15T10:58:58Z",
+    "attachments": {
+      "caption": "Isınma hareketleri",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/19.mp4",
+          "name": "clip-19.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "6846df07e810518fb9e60c72",
+    "type": "system",
+    "content": "sohbet arşivlendi",
+    "notSeenBy": [
+      "6888be8982a459125acd4d42"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:01:00Z",
+    "updatedAt": "2025-08-15T11:01:56Z"
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "6846f236f95a3b7499dfd98b",
+    "type": "text",
+    "content": "Park yeri var mı?",
+    "notSeenBy": [
+      "68889962a69689a3ca2dd951",
+      "68347987b024a2d8571443b2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:00:00Z",
+    "updatedAt": "2025-08-15T11:00:08Z"
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "686e61f70d43f60e09a66ebe",
+    "type": "image",
+    "content": "Kale ağları takıldı",
+    "notSeenBy": [
+      "6846df07e810518fb9e60c72"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:04:00Z",
+    "updatedAt": "2025-08-15T11:04:16Z",
+    "attachments": {
+      "caption": "Takım foto",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/22.jpg",
+          "name": "img-22.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "687243c690c09520e98cafd2",
+    "type": "video",
+    "content": "Geçen maçtan anlar",
+    "notSeenBy": [
+      "6888bf1f82a459125acd4d47",
+      "68889962a69689a3ca2dd951"
+    ],
+    "isDeleted": false,
+    "archived": true,
+    "createdAt": "2025-08-15T11:08:00Z",
+    "updatedAt": "2025-08-15T11:10:47Z",
+    "attachments": {
+      "caption": "Isınma hareketleri",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/23.mp4",
+          "name": "clip-23.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "68888d16a69689a3ca2dd931",
+    "type": "system",
+    "content": "adrese konum eklendi",
+    "notSeenBy": [
+      "6888be8982a459125acd4d42"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:12:00Z",
+    "updatedAt": "2025-08-15T11:12:36Z"
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "6888be8982a459125acd4d42",
+    "type": "text",
+    "content": "Park yeri var mı?",
+    "notSeenBy": [
+      "6841e844222bba20673cc339"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:16:00Z",
+    "updatedAt": "2025-08-15T11:18:23Z"
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "6888bf1f82a459125acd4d47",
+    "type": "image",
+    "content": "Takım kadrosu",
+    "notSeenBy": [
+      "688892f9a69689a3ca2dd943",
+      "687243c690c09520e98cafd2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:15:00Z",
+    "updatedAt": "2025-08-15T11:17:29Z",
+    "attachments": {
+      "caption": "Giriş kapısı",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/26.jpg",
+          "name": "img-26.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "68347987b024a2d8571443b2",
+    "type": "video",
+    "content": "Geçen maçtan anlar",
+    "notSeenBy": [
+      "688892f9a69689a3ca2dd943"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:19:00Z",
+    "updatedAt": "2025-08-15T11:21:10Z",
+    "attachments": {
+      "caption": "Isınma hareketleri",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/27.mp4",
+          "name": "clip-27.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "6841e708222bba20673cc337",
+    "type": "system",
+    "content": "sohbet adı güncellendi",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:23:00Z",
+    "updatedAt": "2025-08-15T11:23:28Z"
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "6841e844222bba20673cc339",
+    "type": "text",
+    "content": "Yelekleri ben getiriyorum.",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:27:00Z",
+    "updatedAt": "2025-08-15T11:29:54Z"
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "688890cba69689a3ca2dd938",
+    "type": "image",
+    "content": "Sahanın son hali",
+    "notSeenBy": [
+      "68888d16a69689a3ca2dd931"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:31:00Z",
+    "updatedAt": "2025-08-15T11:32:38Z",
+    "attachments": {
+      "caption": "Giriş kapısı",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/30.jpg",
+          "name": "img-30.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "688892f9a69689a3ca2dd943",
+    "type": "video",
+    "content": "Duran top denemeleri",
+    "notSeenBy": [
+      "686e61f70d43f60e09a66ebe",
+      "687243c690c09520e98cafd2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:30:00Z",
+    "updatedAt": "2025-08-15T11:32:21Z",
+    "attachments": {
+      "caption": "Kısa klip",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/31.mp4",
+          "name": "clip-31.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "68889962a69689a3ca2dd951",
+    "type": "system",
+    "content": "sohbet arşivlendi",
+    "notSeenBy": [
+      "6888bf1f82a459125acd4d47",
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:34:00Z",
+    "updatedAt": "2025-08-15T11:35:08Z"
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "6846df07e810518fb9e60c72",
+    "type": "text",
+    "content": "Kartla ödeyelim mi?",
+    "notSeenBy": [
+      "68889962a69689a3ca2dd951",
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:38:00Z",
+    "updatedAt": "2025-08-15T11:39:51Z"
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "6846f236f95a3b7499dfd98b",
+    "type": "image",
+    "content": "Takım kadrosu",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": true,
+    "createdAt": "2025-08-15T11:42:00Z",
+    "updatedAt": "2025-08-15T11:42:00Z",
+    "attachments": {
+      "caption": "Forma örneği",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/34.jpg",
+          "name": "img-34.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "686e61f70d43f60e09a66ebe",
+    "type": "video",
+    "content": "Isınma videosu",
+    "notSeenBy": [
+      "6841e844222bba20673cc339",
+      "687243c690c09520e98cafd2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:46:00Z",
+    "updatedAt": "2025-08-15T11:48:40Z",
+    "attachments": {
+      "caption": "Isınma hareketleri",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/35.mp4",
+          "name": "clip-35.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "687243c690c09520e98cafd2",
+    "type": "system",
+    "content": "katılımcı eklendi",
+    "notSeenBy": [
+      "686e61f70d43f60e09a66ebe",
+      "68888d16a69689a3ca2dd931"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:45:00Z",
+    "updatedAt": "2025-08-15T11:45:39Z"
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "68888d16a69689a3ca2dd931",
+    "type": "text",
+    "content": "Forma rengi beyaz olsun.",
+    "notSeenBy": [
+      "6841e844222bba20673cc339"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:49:00Z",
+    "updatedAt": "2025-08-15T11:51:15Z"
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "6888be8982a459125acd4d42",
+    "type": "image",
+    "content": "Kale ağları takıldı",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:53:00Z",
+    "updatedAt": "2025-08-15T11:55:05Z",
+    "attachments": {
+      "caption": "Saha durumu",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/38.jpg",
+          "name": "img-38.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "6888bf1f82a459125acd4d47",
+    "type": "video",
+    "content": "Duran top denemeleri",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T11:57:00Z",
+    "updatedAt": "2025-08-15T11:58:18Z",
+    "attachments": {
+      "caption": "Kısa klip",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/39.mp4",
+          "name": "clip-39.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "68347987b024a2d8571443b2",
+    "type": "system",
+    "content": "katılımcı eklendi",
+    "notSeenBy": [],
+    "isDeleted": true,
+    "archived": false,
+    "createdAt": "2025-08-15T12:01:00Z",
+    "updatedAt": "2025-08-15T12:03:25Z"
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "6841e708222bba20673cc337",
+    "type": "text",
+    "content": "Kaleci lazım, var mı aday?",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:00:00Z",
+    "updatedAt": "2025-08-15T12:02:04Z"
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "6841e844222bba20673cc339",
+    "type": "image",
+    "content": "Forma görseli",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:04:00Z",
+    "updatedAt": "2025-08-15T12:04:32Z",
+    "attachments": {
+      "caption": "Giriş kapısı",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/42.jpg",
+          "name": "img-42.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "688890cba69689a3ca2dd938",
+    "type": "video",
+    "content": "Kısa özet",
+    "notSeenBy": [
+      "6841e844222bba20673cc339",
+      "68889962a69689a3ca2dd951"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:08:00Z",
+    "updatedAt": "2025-08-15T12:08:54Z",
+    "attachments": {
+      "caption": "Duran top çalışması",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/43.mp4",
+          "name": "clip-43.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "688892f9a69689a3ca2dd943",
+    "type": "system",
+    "content": "katılımcı ayrıldı",
+    "notSeenBy": [
+      "6888bf1f82a459125acd4d47",
+      "688890cba69689a3ca2dd938"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:12:00Z",
+    "updatedAt": "2025-08-15T12:13:42Z"
+  },
+  {
+    "advert": "689400000000000000000003",
+    "sender": "68889962a69689a3ca2dd951",
+    "type": "text",
+    "content": "Hakem bulabilirsek haber verin.",
+    "notSeenBy": [
+      "6888be8982a459125acd4d42",
+      "6846df07e810518fb9e60c72"
+    ],
+    "isDeleted": false,
+    "archived": true,
+    "createdAt": "2025-08-15T12:16:00Z",
+    "updatedAt": "2025-08-15T12:18:12Z"
+  },
+  {
+    "advert": "689400000000000000000004",
+    "sender": "6846df07e810518fb9e60c72",
+    "type": "image",
+    "content": "Forma görseli",
+    "notSeenBy": [
+      "6841e708222bba20673cc337"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:15:00Z",
+    "updatedAt": "2025-08-15T12:15:57Z",
+    "attachments": {
+      "caption": "Saha durumu",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/46.jpg",
+          "name": "img-46.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000005",
+    "sender": "6846f236f95a3b7499dfd98b",
+    "type": "video",
+    "content": "Geçen maçtan anlar",
+    "notSeenBy": [
+      "68347987b024a2d8571443b2"
+    ],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:19:00Z",
+    "updatedAt": "2025-08-15T12:21:30Z",
+    "attachments": {
+      "caption": "Kısa klip",
+      "items": [
+        {
+          "url": "https://cdn.example.com/vid/47.mp4",
+          "name": "clip-47.mp4",
+          "mimeType": "video/mp4"
+        }
+      ]
+    }
+  },
+  {
+    "advert": "689400000000000000000006",
+    "sender": "686e61f70d43f60e09a66ebe",
+    "type": "system",
+    "content": "sohbet adı güncellendi",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:23:00Z",
+    "updatedAt": "2025-08-15T12:25:41Z"
+  },
+  {
+    "advert": "689400000000000000000001",
+    "sender": "687243c690c09520e98cafd2",
+    "type": "text",
+    "content": "Park yeri var mı?",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:27:00Z",
+    "updatedAt": "2025-08-15T12:27:17Z"
+  },
+  {
+    "advert": "689400000000000000000002",
+    "sender": "68888d16a69689a3ca2dd931",
+    "type": "image",
+    "content": "Kale ağları takıldı",
+    "notSeenBy": [],
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-15T12:31:00Z",
+    "updatedAt": "2025-08-15T12:31:18Z",
+    "attachments": {
+      "caption": "Takım foto",
+      "items": [
+        {
+          "url": "https://cdn.example.com/img/50.jpg",
+          "name": "img-50.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    }
+  }
+]

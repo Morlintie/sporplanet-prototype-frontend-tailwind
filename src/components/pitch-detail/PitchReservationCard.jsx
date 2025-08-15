@@ -569,7 +569,10 @@ function PitchReservationCard({
 
         {/* Back to Pitches */}
         <button
-          onClick={() => navigate("/reservation")}
+          onClick={() => {
+            window.scrollTo(0, 0);
+            navigate("/reservation");
+          }}
           className="w-full mt-3 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
         >
           Sahalara Dön

@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { ProfileSidebarProvider } from "./context/ProfileSidebarContext";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
@@ -10,12 +11,18 @@ import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import GoogleFailure from "./pages/auth/GoogleFailure";
 import ProfilePage from "./pages/ProfilePage";
+import AdvertDetailPage from "./pages/AdvertDetailPage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 import ArchivedUserPopup from "./components/shared/ArchivedUserPopup";
 
 function AppContent() {
   const location = useLocation();
   const isAuthPage = location.pathname.startsWith("/auth");
+
+  // Scroll to top whenever location changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <div className={`min-h-screen bg-gray-50 ${isAuthPage ? "" : "pt-16"}`}>
@@ -24,6 +31,7 @@ function AppContent() {
         <Route path="/matches" element={<MatchesPage />} />
         <Route path="/reservation" element={<ReservationPage />} />
         <Route path="/pitch-detail/:pitchId" element={<PitchDetailPage />} />
+        <Route path="/advert-detail/:advertId" element={<AdvertDetailPage />} />
         <Route path="/tournaments" element={<TournamentsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/auth/google-failure" element={<GoogleFailure />} />

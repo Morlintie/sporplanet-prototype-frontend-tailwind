@@ -18,6 +18,11 @@ function MatchesPage() {
   const [showLocationPopup, setShowLocationPopup] = useState(false);
   const [isLoadingNearby, setIsLoadingNearby] = useState(false);
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Backend integration states
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");

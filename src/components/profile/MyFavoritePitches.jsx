@@ -156,6 +156,7 @@ function MyFavoritePitches() {
   });
 
   const handleViewPitch = (pitchId) => {
+    window.scrollTo(0, 0);
     navigate(`/pitch-detail/${pitchId}`);
   };
 
