@@ -1,0 +1,416 @@
+[
+    {
+      "pitch": "60f7e93fc25e243f78fc8f07",
+      "company": "60f7e804c25e243f78fc8f06",
+      "bookedBy": "6834844b99d801bea2941af4",
+      "start": "2025-08-10T15:30:00.000Z",
+      "status": "completed",
+      "totalPlayers": 14,
+      "price": {
+        "hourlyRate": 800,
+        "currency": "TRY",
+        "multiplier": 1.5,
+        "discount": 50,
+        "tax": 80,
+        "middlemanShare": 40,
+        "middlemanTax": 8,
+        "total": 1228,
+        "paid": true,
+        "method": "card",
+        "pitchTxId": "b6fd54dc-4e10-4d35-8d2f-c8f3b5c3de7f",
+        "middlemanTxId": "cb3ffea3-e9ec-41f0-ae97-14b7224121e1",
+        "paidAt": "2025-08-18T18:00:00.000Z"
+      },
+      "notes": "Completed game under sunny weather."
+    },
+    {
+      "pitch": "60f7e953c25e243f78fc8f08",
+      "company": "60f7e804c25e243f78fc8f06",
+      "bookedBy": "6834855899d801bea2941b03",
+      "start": "2025-08-17T12:00:00.000Z",
+      "status": "confirmed",
+      "totalPlayers": 10,
+      "price": {
+        "hourlyRate": 600,
+        "currency": "TRY",
+        "multiplier": 1.0,
+        "discount": 0,
+        "tax": 60,
+        "middlemanShare": 30,
+        "middlemanTax": 6,
+        "total": 696,
+        "paid": true,
+        "method": "wallet",
+        "pitchTxId": "8e21a183-48c9-4415-bb8e-0c39f222ea82",
+        "middlemanTxId": "d6bc6cf1-6a60-4d4b-84f2-ec2f90f27da0",
+        "paidAt": "2025-08-18T17:45:00.000Z"
+      },
+      "notes": "Confirmed by host, payment received."
+    },
+    {
+      "pitch": "60f7e96ac25e243f78fc8f09",
+      "company": "60f7e7f3c25e243f78fc8f05",
+      "bookedBy": "683484fe99d801bea2941afe",
+      "start": "2025-08-15T18:00:00.000Z",
+      "status": "cancelled",
+      "cancel": {
+        "at": "2025-08-14T18:00:00.000Z",
+        "by": "683484fe99d801bea2941afe",
+        "reason": "Injury before game"
+      },
+      "cancelModel": "User",
+      "refunded": {
+        "at": "2025-08-16T10:00:00.000Z",
+        "by": "683484fe99d801bea2941afe",
+        "reason": "Full refund issued"
+      },
+      "refundedModel": "User",
+      "totalPlayers": 12,
+      "price": {
+        "hourlyRate": 750,
+        "currency": "TRY",
+        "multiplier": 1,
+        "discount": 0,
+        "tax": 75,
+        "middlemanShare": 37,
+        "middlemanTax": 7,
+        "total": 857,
+        "paid": true,
+        "method": "cash",
+        "pitchTxId": "d945db23-2e6b-40e1-a1e6-f1342c963373",
+        "middlemanTxId": "b3a1369c-6c59-4a1d-9f7f-2e0e3896d10c",
+        "paidAt": "2025-08-16T10:05:00.000Z"
+      },
+      "notes": "Canceled 1 day prior to start."
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f07",
+      "company": "60f7e7f3c25e243f78fc8f05",
+      "bookedBy": "68348a184b03bb982551fcd9",
+      "start": "2025-08-20T20:00:00.000Z",
+      "status": "pending",
+      "totalPlayers": 14,
+      "price": {
+        "hourlyRate": 1000,
+        "currency": "TRY",
+        "multiplier": 1,
+        "discount": 0,
+        "tax": 100,
+        "middlemanShare": 50,
+        "middlemanTax": 10,
+        "total": 1160,
+        "paid": true,
+        "method": "card",
+        "pitchTxId": "7b2aee87-3289-48d1-88f6-d620d5a37bd3",
+        "middlemanTxId": "943d25e1-2298-4f3e-89a6-0320d3259601",
+        "paidAt": "2025-08-18T17:30:00.000Z"
+      },
+      "notes": "Awaiting confirmation from other team."
+    },
+    {
+      "pitch": "60f7e976c25e243f78fc8f0a",
+      "company": "60f7e804c25e243f78fc8f06",
+      "bookedBy": "6834856899d801bea2941b04",
+      "start": "2025-07-30T17:00:00.000Z",
+      "status": "completed",
+      "totalPlayers": 11,
+      "price": {
+        "hourlyRate": 900,
+        "currency": "TRY",
+        "multiplier": 1.2,
+        "discount": 90,
+        "tax": 108,
+        "middlemanShare": 45,
+        "middlemanTax": 9,
+        "total": 1098,
+        "paid": true,
+        "method": "transfer",
+        "pitchTxId": "985f0e2d-03b1-4d95-8452-5f5c865c771e",
+        "middlemanTxId": "f9051cb4-df1e-4c1d-9ae1-508961af49ef",
+        "paidAt": "2025-08-01T12:00:00.000Z"
+      },
+      "notes": "Nice friendly match, all players showed up."
+    },
+    {
+      "pitch": "60f7e984c25e243f78fc8f0b",
+      "company": "60f7e804c25e243f78fc8f06",
+      "bookedBy": "6834866099d801bea2941b05",
+      "start": "2025-08-18T17:30:00.000Z",
+      "status": "confirmed",
+      "totalPlayers": 16,
+      "price": {
+        "hourlyRate": 650,
+        "currency": "TRY",
+        "multiplier": 1.1,
+        "discount": 0,
+        "tax": 71.5,
+        "middlemanShare": 32.5,
+        "middlemanTax": 6.5,
+        "total": 760.5,
+        "paid": true,
+        "method": "card",
+        "pitchTxId": "1c2b1d30-c97a-4697-bb41-1f3f40602aa7",
+        "middlemanTxId": "d0b9b404-9863-45c6-aace-0f356983c154",
+        "paidAt": "2025-08-18T17:00:00.000Z"
+      },
+      "notes": "Evening game with league players"
+    },
+    {
+      "pitch": "60f7e990c25e243f78fc8f0c",
+      "company": "60f7e7f3c25e243f78fc8f05",
+      "bookedBy": "683487c799d801bea2941b07",
+      "start": "2025-08-01T14:00:00.000Z",
+      "status": "cancelled",
+      "cancel": {
+        "at": "2025-07-30T20:00:00.000Z",
+        "by": "683487c799d801bea2941b07",
+        "reason": "Pitch flooded"
+      },
+      "cancelModel": "User",
+      "totalPlayers": 8,
+      "price": {
+        "hourlyRate": 550,
+        "currency": "TRY",
+        "multiplier": 1,
+        "discount": 0,
+        "tax": 55,
+        "middlemanShare": 27.5,
+        "middlemanTax": 5.5,
+        "total": 638,
+        "paid": true,
+        "method": "wallet",
+        "pitchTxId": "22cb1fcf-0c32-4d4f-8966-13aa6fce2736",
+        "middlemanTxId": "c1c12800-8131-43f3-b989-601246c217a6",
+        "paidAt": "2025-07-31T14:00:00.000Z"
+      },
+      "notes": "Refund initiated same day"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f08",
+      "company": "60f7e804c25e243f78fc8f07",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-25T18:00:00.000Z",
+      "status": "pending",
+      "totalPlayers": 10,
+      "price": {
+        "hourlyRate": 600,
+        "total": 600,
+        "currency": "TL",
+        "paid": false,
+        "method": "credit_card"
+      },
+      "notes": "Arkadaş grubuyla oynamak istiyoruz"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f09",
+      "company": "60f7e804c25e243f78fc8f08",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-26T20:30:00.000Z",
+      "status": "confirmed",
+      "totalPlayers": 8,
+      "price": {
+        "hourlyRate": 500,
+        "total": 500,
+        "currency": "TL",
+        "paid": true,
+        "method": "wallet",
+        "paidAt": "2025-01-20T10:00:00.000Z"
+      },
+      "notes": "Kaleci eksik, katılmak istiyorum"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f10",
+      "company": "60f7e804c25e243f78fc8f09",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-27T16:00:00.000Z",
+      "status": "cancelled",
+      "totalPlayers": 12,
+      "price": {
+        "hourlyRate": 750,
+        "total": 750,
+        "currency": "TL",
+        "paid": false,
+        "method": "credit_card"
+      },
+      "notes": "Turnuva için antrenman yapmak istiyoruz"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f11",
+      "company": "60f7e804c25e243f78fc8f10",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-28T19:15:00.000Z",
+      "status": "pending",
+      "totalPlayers": 6,
+      "price": {
+        "hourlyRate": 400,
+        "total": 400,
+        "currency": "TL",
+        "paid": false,
+        "method": "cash"
+      },
+      "notes": "Küçük saha maçı için katılımcı arıyoruz"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f12",
+      "company": "60f7e804c25e243f78fc8f11",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-29T21:00:00.000Z",
+      "status": "confirmed",
+      "totalPlayers": 14,
+      "price": {
+        "hourlyRate": 900,
+        "total": 900,
+        "currency": "TL",
+        "paid": true,
+        "method": "wallet",
+        "paidAt": "2025-01-22T15:30:00.000Z"
+      },
+      "notes": ""
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f13",
+      "company": "60f7e804c25e243f78fc8f12",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-30T17:45:00.000Z",
+      "status": "pending",
+      "totalPlayers": 10,
+      "price": {
+        "hourlyRate": 650,
+        "total": 650,
+        "currency": "TL",
+        "paid": false,
+        "method": "credit_card"
+      },
+      "notes": "Hafta sonu maçı için oyuncu arayışı"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f14",
+      "company": "60f7e804c25e243f78fc8f13",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-01-31T14:30:00.000Z",
+      "status": "cancelled",
+      "totalPlayers": 8,
+      "price": {
+        "hourlyRate": 550,
+        "total": 550,
+        "currency": "TL",
+        "paid": false,
+        "method": "wallet"
+      },
+      "notes": "Dostluk maçı organizasyonu"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f15",
+      "company": "60f7e804c25e243f78fc8f14",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-01T18:30:00.000Z",
+      "status": "pending",
+      "totalPlayers": 12,
+      "price": {
+        "hourlyRate": 700,
+        "total": 700,
+        "currency": "TL",
+        "paid": false,
+        "method": "credit_card"
+      },
+      "notes": "Yeni başlayanlar için eğlenceli maç"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f16",
+      "company": "60f7e804c25e243f78fc8f15",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-02T20:00:00.000Z",
+      "status": "confirmed",
+      "totalPlayers": 10,
+      "price": {
+        "hourlyRate": 600,
+        "total": 600,
+        "currency": "TL",
+        "paid": true,
+        "method": "wallet",
+        "paidAt": "2025-01-25T12:00:00.000Z"
+      },
+      "notes": "Teknik gelişim odaklı antrenman maçı"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f17",
+      "company": "60f7e804c25e243f78fc8f16",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-03T16:15:00.000Z",
+      "status": "pending",
+      "totalPlayers": 6,
+      "price": {
+        "hourlyRate": 350,
+        "total": 350,
+        "currency": "TL",
+        "paid": false,
+        "method": "cash"
+      },
+      "notes": "Mahalle maçı için katılımcı eksik"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f18",
+      "company": "60f7e804c25e243f78fc8f17",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-04T19:30:00.000Z",
+      "status": "cancelled",
+      "totalPlayers": 14,
+      "price": {
+        "hourlyRate": 850,
+        "total": 850,
+        "currency": "TL",
+        "paid": false,
+        "method": "credit_card"
+      },
+      "notes": "Şampiyona hazırlık maçı"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f19",
+      "company": "60f7e804c25e243f78fc8f18",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-05T21:15:00.000Z",
+      "status": "pending",
+      "totalPlayers": 8,
+      "price": {
+        "hourlyRate": 500,
+        "total": 500,
+        "currency": "TL",
+        "paid": false,
+        "method": "wallet"
+      },
+      "notes": "Akşam maçı için oyuncu eksik"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f20",
+      "company": "60f7e804c25e243f78fc8f19",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-06T15:00:00.000Z",
+      "status": "confirmed",
+      "totalPlayers": 12,
+      "price": {
+        "hourlyRate": 750,
+        "total": 750,
+        "currency": "TL",
+        "paid": true,
+        "method": "credit_card",
+        "paidAt": "2025-01-28T09:30:00.000Z"
+      },
+      "notes": "Spor kulübü antrenman maçı"
+    },
+    {
+      "pitch": "60f7e93fc25e243f78fc8f21",
+      "company": "60f7e804c25e243f78fc8f20",
+      "bookedBy": "DEV_USER_12345",
+      "start": "2025-02-07T17:30:00.000Z",
+      "status": "pending",
+      "totalPlayers": 10,
+      "price": {
+        "hourlyRate": 600,
+        "total": 600,
+        "currency": "TL",
+        "paid": false,
+        "method": "cash"
+      },
+      "notes": "Hafta içi aktif maç grubu"
+    }
+]

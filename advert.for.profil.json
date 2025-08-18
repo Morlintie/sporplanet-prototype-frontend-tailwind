@@ -1,0 +1,295 @@
+{
+    "user": {
+      "_id": "68889962a69689a3ca2dd951",
+      "name": "Kaan Demir",
+      "email": "kaan.demir@example.com",
+      "role": "user",
+      "phoneNumber": "+90 532 555 0199",
+      "description": "Right-footed winger, loves 7v7.",
+      "archived": false,
+      "isDeleted": false,
+      "school": "Istanbul Technical University",
+      "age": 24,
+      "profilePicture": "/img/users/kaan.jpg",
+      "location": { "city": "İstanbul", "district": "Beşiktaş" },
+      "goalKeeper": false,
+      "preferredPosition": "rw",
+      "jerseyNumber": 17,
+      "preferredFoot": "right"
+    },
+    "adverts": [
+      {
+        "name": "Levent Futbol Park",
+        "startsAt": "2025-09-12T19:00:00.000Z",
+        "pitch": "689272de0de1ef1ef377e53d",
+        "address": {
+          "address": "Levent mahallesi / Büyükdere caddesi / Şişli / İstanbul",
+          "district": "Şişli",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [28.987, 41.079] }
+        },
+        "playersNeeded": 8,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          { "user": "68889962a69689a3ca2dd951" },
+          { "user": "68347987b024a2d8571443b2" },
+          { "user": "6834844b99d801bea2941af4" },
+          { "user": "683484fe99d801bea2941afe" },
+          { "user": "6834855899d801bea2941b03" }
+        ],
+        "waitingList": [],
+        "notes": "After-work kickabout, need more mids.",
+        "status": "open",
+        "adminAdvert": ["68889962a69689a3ca2dd951"],
+        "isRivalry": { "status": false, "agreed": false },
+        "level": "intermediate",
+        "isDeleted": false,
+        "archived": false,
+        "dragon": { "theme": "emerald", "power": 7 },
+        "createdBy": "68889962a69689a3ca2dd951"
+      },
+      {
+        "name": "Beşiktaş Arena Court",
+        "startsAt": "2025-10-01T18:00:00.000Z",
+        "customPitch": {
+          "name": "Beşiktaş Arena Mini",
+          "address": "Vişnezade mahallesi / Dolmabahçe sokak / Beşiktaş / İstanbul",
+          "district": "Beşiktaş",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.002, 41.041] },
+          "photo": {
+            "url": "https://cdn.example.com/pitches/besiktas-mini.jpg",
+            "public_id": "pitches/besiktas-mini"
+          }
+        },
+        "address": {
+          "address": "Vişnezade mahallesi / Dolmabahçe sokak / Beşiktaş / İstanbul",
+          "district": "Beşiktaş",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.002, 41.041] }
+        },
+        "playersNeeded": 6,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          { "user": "68889962a69689a3ca2dd951" },
+          { "user": "68348a184b03bb982551fcd9" },
+          { "user": "6841e3c7222bba20673cc335" },
+          { "user": "6841e708222bba20673cc337" },
+          { "user": "6841e844222bba20673cc339" },
+          { "user": "6841eb43222bba20673cc33b" },
+          { "user": "6841ec99222bba20673cc33f" }
+        ],
+        "waitingList": [{ "user": "68430876038f4a6a09967d67", "seen": false }],
+        "notes": "High-tempo 7v7, bring bibs.",
+        "status": "full",
+        "adminAdvert": ["68889962a69689a3ca2dd951", "68348a184b03bb982551fcd9"],
+        "isRivalry": { "status": true, "agreed": true },
+        "level": "pro",
+        "isDeleted": false,
+        "archived": false,
+        "createdBy": "68889962a69689a3ca2dd951"
+      },
+  
+      {
+        "name": "Kadıköy Sahası",
+        "startsAt": "2025-09-05T20:30:00.000Z",
+        "pitch": "689272de0de1ef1ef377e549",
+        "address": {
+          "address": "Osmanağa mahallesi / Bahariye caddesi / Kadıköy / İstanbul",
+          "district": "Kadıköy",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.028, 40.990] }
+        },
+        "playersNeeded": 10,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          { "user": "68347987b024a2d8571443b2" },
+          { "user": "68889962a69689a3ca2dd951" },
+          { "user": "6841e3c7222bba20673cc335" },
+          { "user": "6841e708222bba20673cc337" },
+          { "user": "6841e844222bba20673cc339" },
+          { "user": "6841eb43222bba20673cc33b" }
+        ],
+        "waitingList": [],
+        "notes": "Mixed-ability game.",
+        "status": "open",
+        "adminAdvert": ["68347987b024a2d8571443b2"],
+        "isRivalry": { "status": false, "agreed": false },
+        "level": "beginner",
+        "isDeleted": false,
+        "archived": false,
+        "dragon": { "active": true },
+        "createdBy": "68347987b024a2d8571443b2"
+      },
+      {
+        "name": "Ümraniye Indoor Court",
+        "startsAt": "2025-09-22T19:30:00.000Z",
+        "customPitch": {
+          "name": "Ümraniye Kapalı Halı",
+          "address": "Atakent mahallesi / 12. sokak / Ümraniye / İstanbul",
+          "district": "Ümraniye",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.134, 41.033] }
+        },
+        "address": {
+          "address": "Atakent mahallesi / 12. sokak / Ümraniye / İstanbul",
+          "district": "Ümraniye",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.134, 41.033] }
+        },
+        "playersNeeded": 8,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          { "user": "6834844b99d801bea2941af4" },
+          { "user": "6841ec99222bba20673cc33f" },
+          { "user": "68430876038f4a6a09967d67" },
+          { "user": "68889962a69689a3ca2dd951" },
+          { "user": "683484fe99d801bea2941afe" },
+          { "user": "6834855899d801bea2941b03" },
+          { "user": "68348a184b03bb982551fcd9" },
+          { "user": "6841e3c7222bba20673cc335" },
+          { "user": "6841e708222bba20673cc337" }
+        ],
+        "waitingList": [{ "user": "6841e844222bba20673cc339", "seen": true }],
+        "notes": "Indoor shoes only.",
+        "status": "full",
+        "adminAdvert": ["6834844b99d801bea2941af4"],
+        "isRivalry": { "status": true, "agreed": false },
+        "level": "advanced",
+        "isDeleted": false,
+        "archived": false,
+        "createdBy": "6834844b99d801bea2941af4"
+      },
+      {
+        "name": "Maltepe Sahil Pitch",
+        "startsAt": "2025-09-28T17:00:00.000Z",
+        "pitch": "689272de0de1ef1ef377e542",
+        "address": {
+          "address": "Altayçeşme mahallesi / Sahil yolu / Maltepe / İstanbul",
+          "district": "Maltepe",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.140, 40.943] }
+        },
+        "playersNeeded": 12,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          { "user": "6841eb43222bba20673cc33b" },
+          { "user": "6841ec99222bba20673cc33f" },
+          { "user": "68889962a69689a3ca2dd951" },
+          { "user": "68430876038f4a6a09967d67" },
+          { "user": "6846df07e810518fb9e60c72" },
+          { "user": "6846f236f95a3b7499dfd98b" },
+          { "user": "686e61f70d43f60e09a66ebe" }
+        ],
+        "waitingList": [],
+        "notes": "Sea breeze game.",
+        "status": "open",
+        "adminAdvert": ["6841eb43222bba20673cc33b"],
+        "isRivalry": { "status": false, "agreed": false },
+        "level": "intermediate",
+        "isDeleted": false,
+        "archived": false,
+        "createdBy": "6841eb43222bba20673cc33b"
+      },
+  
+      {
+        "name": "Bakırköy Evening Match",
+        "startsAt": "2025-09-07T19:00:00.000Z",
+        "pitch": "689272de0de1ef1ef377e54f",
+        "address": {
+          "address": "Osmaniye mahallesi / İncirli caddesi / Bakırköy / İstanbul",
+          "district": "Bakırköy",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [28.871, 40.983] }
+        },
+        "playersNeeded": 10,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          { "user": "683484fe99d801bea2941afe" },
+          { "user": "6834855899d801bea2941b03" },
+          { "user": "68348a184b03bb982551fcd9" },
+          { "user": "6841e3c7222bba20673cc335" },
+          { "user": "6841e708222bba20673cc337" },
+          { "user": "6841e844222bba20673cc339" }
+        ],
+        "waitingList": [
+          { "user": "68889962a69689a3ca2dd951", "seen": false, "requestedAt": "2025-08-10T10:00:00.000Z" }
+        ],
+        "notes": "Target user on waitlist only.",
+        "status": "open",
+        "adminAdvert": ["683484fe99d801bea2941afe"],
+        "isRivalry": { "status": false, "agreed": false },
+        "level": "professional",
+        "isDeleted": false,
+        "archived": false,
+        "dragon": "sleeping",
+        "createdBy": "683484fe99d801bea2941afe"
+      },
+      {
+        "name": "Pendik Rival Game",
+        "startsAt": "2025-09-18T21:00:00.000Z",
+        "customPitch": {
+          "name": "Pendik Açık Saha",
+          "address": "Bahçelievler mahallesi / Kordonboyu / Pendik / İstanbul",
+          "district": "Pendik",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.232, 40.874] }
+        },
+        "address": {
+          "address": "Bahçelievler mahallesi / Kordonboyu / Pendik / İstanbul",
+          "district": "Pendik",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.232, 40.874] }
+        },
+        "playersNeeded": 8,
+        "goalKeepersNeeded": 1,
+        "participants": [
+          { "user": "6841ec99222bba20673cc33f" },
+          { "user": "68430876038f4a6a09967d67" },
+          { "user": "6846df07e810518fb9e60c72" }
+        ],
+        "waitingList": [
+          { "user": "68889962a69689a3ca2dd951", "seen": true }
+        ],
+        "notes": "Rivalry match pending agreement.",
+        "status": "open",
+        "adminAdvert": ["6841ec99222bba20673cc33f"],
+        "isRivalry": { "status": true, "agreed": false },
+        "level": "advanced",
+        "isDeleted": false,
+        "archived": false,
+        "createdBy": "6841ec99222bba20673cc33f"
+      },
+      {
+        "name": "Sarıyer Morning Run",
+        "startsAt": "2025-08-30T08:30:00.000Z",
+        "pitch": "689272de0de1ef1ef377e527",
+        "address": {
+          "address": "Merkez mahallesi / Mektep sokak / Sarıyer / İstanbul",
+          "district": "Sarıyer",
+          "city": "İstanbul",
+          "location": { "type": "Point", "coordinates": [29.049, 41.166] }
+        },
+        "playersNeeded": 12,
+        "goalKeepersNeeded": 0,
+        "participants": [
+          { "user": "68347987b024a2d8571443b2" },
+          { "user": "6834844b99d801bea2941af4" },
+          { "user": "683484fe99d801bea2941afe" },
+          { "user": "6834855899d801bea2941b03" }
+        ],
+        "waitingList": [
+          { "user": "68889962a69689a3ca2dd951", "seen": false }
+        ],
+        "notes": "Early kick-off, coffee after.",
+        "status": "cancelled",
+        "adminAdvert": ["68347987b024a2d8571443b2"],
+        "isRivalry": { "status": false, "agreed": false },
+        "level": "intermediate",
+        "isDeleted": false,
+        "archived": false,
+        "dragon": { "note": "cancelled due to rain" },
+        "createdBy": "68347987b024a2d8571443b2"
+      }
+    ]
+  }
