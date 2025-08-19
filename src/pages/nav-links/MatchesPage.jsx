@@ -178,7 +178,11 @@ function MatchesPage() {
         if (advert.customPitch && advert.customPitch.price) {
           // Özel saha - direkt kişi başı fiyat
           pricePerPerson = advert.customPitch.price;
-        } else if (advert.booking && advert.booking.price && advert.booking.totalPlayers) {
+        } else if (
+          advert.booking &&
+          advert.booking.price &&
+          advert.booking.totalPlayers
+        ) {
           // Rezervasyon - toplam fiyatı kişi sayısına böl ve kuruştan TL'ye çevir
           const hourlyRate = advert.booking.price.hourlyRate || 0;
           const totalPlayers = advert.booking.totalPlayers || 1;
@@ -191,7 +195,8 @@ function MatchesPage() {
         } else if (advert.pitch?.pricing?.hourlyRate) {
           // Eski sistem - pitch pricing
           const hourlyRate = advert.pitch.pricing.hourlyRate || 0;
-          pricePerPerson = totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+          pricePerPerson =
+            totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
         } else {
           // Fallback - default değer
           pricePerPerson = 50;
@@ -238,7 +243,10 @@ function MatchesPage() {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          location: advert.customPitch?.name || advert.pitch?.name || "Saha Belirtilmemiş",
+          location:
+            advert.customPitch?.name ||
+            advert.pitch?.name ||
+            "Saha Belirtilmemiş",
           locationDetails: pitchLocation,
           players: `${currentParticipants}/${totalNeeded} oyuncu`,
           completion: completion,
@@ -616,7 +624,11 @@ function MatchesPage() {
         if (advert.customPitch && advert.customPitch.price) {
           // Özel saha - direkt kişi başı fiyat
           pricePerPerson = advert.customPitch.price;
-        } else if (advert.booking && advert.booking.price && advert.booking.totalPlayers) {
+        } else if (
+          advert.booking &&
+          advert.booking.price &&
+          advert.booking.totalPlayers
+        ) {
           // Rezervasyon - toplam fiyatı kişi sayısına böl ve kuruştan TL'ye çevir
           const hourlyRate = advert.booking.price.hourlyRate || 0;
           const totalPlayers = advert.booking.totalPlayers || 1;
@@ -629,7 +641,8 @@ function MatchesPage() {
         } else if (advert.pitch?.pricing?.hourlyRate) {
           // Eski sistem - pitch pricing
           const hourlyRate = advert.pitch.pricing.hourlyRate || 0;
-          pricePerPerson = totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
+          pricePerPerson =
+            totalNeeded > 0 ? Math.round(hourlyRate / totalNeeded) : 0;
         } else {
           // Fallback - default değer
           pricePerPerson = 50;
@@ -676,7 +689,10 @@ function MatchesPage() {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          location: advert.customPitch?.name || advert.pitch?.name || "Saha Belirtilmemiş",
+          location:
+            advert.customPitch?.name ||
+            advert.pitch?.name ||
+            "Saha Belirtilmemiş",
           locationDetails: pitchLocation,
           players: `${currentParticipants}/${totalNeeded} oyuncu`,
           completion: completion,

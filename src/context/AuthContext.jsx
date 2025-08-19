@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showArchivedUserPopup, setShowArchivedUserPopup] = useState(false);
+  const [unseenMessages, setUnseenMessages] = useState({});
+  const [participantAdverts, setParticipantAdverts] = useState([]);
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -37,6 +39,11 @@ export const AuthProvider = ({ children }) => {
         "Hesabınız başarıyla geri yüklendi.",
       "Account recovery failed": "Hesap geri yükleme başarısız",
       "Logout successful.": "Başarıyla çıkış yapıldı.",
+
+      // Unseen messages errors
+      "Please provide required data": "Gerekli bilgileri sağlayın.",
+      "No unseen messages found": "Okunmamış mesaj bulunamadı.",
+      "Failed to fetch unseen messages": "Okunmamış mesajlar alınamadı.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -257,6 +264,75 @@ export const AuthProvider = ({ children }) => {
     setError(null);
   };
 
+  // Fetch unseen messages for authenticated user
+  const fetchUnseenMessages = async () => {
+    if (!isAuthenticated || !user || !user._id) {
+      console.log("User not authenticated, skipping unseen messages fetch");
+      return;
+    }
+
+    try {
+      console.log("Fetching unseen messages for user:", user._id);
+
+      const response = await fetch("/api/v1/advert-chat/unseen", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Unseen messages fetched successfully:", data);
+
+        // Update unseen messages state
+        setUnseenMessages(data.messages || {});
+        setParticipantAdverts(data.adverts || []);
+
+        console.log("Unseen messages by advert:", data.messages);
+        console.log("Participant adverts:", data.adverts);
+      } else {
+        // Handle different error cases
+        if (response.status === 404) {
+          // No unseen messages found - not an error, just empty
+          console.log("No unseen messages found");
+          setUnseenMessages({});
+          setParticipantAdverts([]);
+        } else if (response.status === 401) {
+          // User unauthorized - don't show error, just clear data
+          console.log("User unauthorized for unseen messages");
+          setUnseenMessages({});
+          setParticipantAdverts([]);
+        } else if (response.status === 400) {
+          // Bad request - log but don't show error to user
+          console.error("Bad request for unseen messages");
+          setUnseenMessages({});
+          setParticipantAdverts([]);
+        } else {
+          // Other server errors - log but don't show to user
+          console.error(
+            "Failed to fetch unseen messages, status:",
+            response.status
+          );
+          setUnseenMessages({});
+          setParticipantAdverts([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching unseen messages:", error);
+
+      // Only show error for network issues, not for authentication failures
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        console.error("Network error fetching unseen messages");
+      }
+
+      // Clear states on error
+      setUnseenMessages({});
+      setParticipantAdverts([]);
+    }
+  };
+
   // Check authentication on mount
   useEffect(() => {
     checkAuth();
@@ -338,6 +414,37 @@ export const AuthProvider = ({ children }) => {
     return getProfilePictureUrl(user?.profilePicture);
   };
 
+  // Helper functions for unseen messages
+  const getUnseenMessagesCount = () => {
+    return Object.values(unseenMessages).reduce(
+      (total, count) => total + count,
+      0
+    );
+  };
+
+  const getUnseenMessagesForAdvert = (advertId) => {
+    return unseenMessages[advertId] || 0;
+  };
+
+  const updateUnseenMessages = (newUnseenMessages) => {
+    setUnseenMessages(newUnseenMessages || {});
+  };
+
+  const markAdvertMessagesAsSeen = (advertId) => {
+    setUnseenMessages((prev) => {
+      const updated = { ...prev };
+      delete updated[advertId];
+      return updated;
+    });
+  };
+
+  const addUnseenMessage = (advertId) => {
+    setUnseenMessages((prev) => ({
+      ...prev,
+      [advertId]: (prev[advertId] || 0) + 1,
+    }));
+  };
+
   const value = {
     // Core state
     user,
@@ -345,6 +452,8 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     showArchivedUserPopup,
+    unseenMessages,
+    participantAdverts,
 
     // Actions
     checkAuth,
@@ -355,6 +464,7 @@ export const AuthProvider = ({ children }) => {
     handleAccountRecovery,
     handleAccountRecoveryDecline,
     closeArchivedUserPopup,
+    fetchUnseenMessages,
 
     // Permission helpers
     isAdmin,
@@ -376,6 +486,13 @@ export const AuthProvider = ({ children }) => {
     getRecentlySearchedPitches,
     getProfilePictureUrl,
     getUserProfilePictureUrl,
+
+    // Unseen messages helpers
+    getUnseenMessagesCount,
+    getUnseenMessagesForAdvert,
+    updateUnseenMessages,
+    markAdvertMessagesAsSeen,
+    addUnseenMessage,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
