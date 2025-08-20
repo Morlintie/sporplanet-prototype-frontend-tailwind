@@ -1,0 +1,15 @@
+---
+alwaysApply: true
+---
+
+- While implementing websocket features you should follow the rues below to make the websocket connections consistent and well worked. Otherwise websocket connections will interchange each other and will make the websocket connections unpredictable and unmaintainable.
+
+- Do not declare cleanups for websocket integrations, just cleanup the connections when I say to you do so otherwise keep the websocket connection with the server.
+
+- Do not declare websocket connections on your own, just make the websocket connections when I say you to do. Otherwise do not take the initiative to do so.
+
+- Join websocket namespace rooms when I tell you to do otherwise do not join any of websocket namespace rooms on your own and if you were to do that ask me first.
+
+-Leave websocket namespace rooms when I tell you to do otherwise do bot leave any of websocket namespace rooms your own and if you were to do that ask me first.
+
+-We got multiple namespaces for websocket connections to provide better isolation between connections so while making the connections do not forget which namespace we are doing that connection to do.

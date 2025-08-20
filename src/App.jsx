@@ -1,7 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { ProfileSidebarProvider } from "./context/ProfileSidebarContext";
-import { WebSocketProvider } from "./context/WebSocketContext";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/nav-links/ReservationPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
@@ -13,7 +12,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import GoogleFailure from "./pages/auth/GoogleFailure";
 import ProfilePage from "./pages/ProfilePage";
 import AdvertDetailPage from "./pages/AdvertDetailPage";
-import AdvertWaitingPage from "./pages/AdvertWaitingPage";
+import PrivateInvitePage from "./pages/PrivateInvitePage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 import ArchivedUserPopup from "./components/shared/ArchivedUserPopup";
 
@@ -34,7 +33,7 @@ function AppContent() {
         <Route path="/reservation" element={<ReservationPage />} />
         <Route path="/pitch-detail/:pitchId" element={<PitchDetailPage />} />
         <Route path="/advert-detail/:advertId" element={<AdvertDetailPage />} />
-        <Route path="/wait/advert" element={<AdvertWaitingPage />} />
+        <Route path="/private-invite" element={<PrivateInvitePage />} />
         <Route path="/tournaments" element={<TournamentsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/auth/google-failure" element={<GoogleFailure />} />
@@ -66,9 +65,7 @@ function AppContent() {
 function App() {
   return (
     <ProfileSidebarProvider>
-      <WebSocketProvider>
-        <AppContent />
-      </WebSocketProvider>
+      <AppContent />
     </ProfileSidebarProvider>
   );
 }
