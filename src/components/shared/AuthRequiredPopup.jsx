@@ -20,6 +20,11 @@ function AuthRequiredPopup({
       like: "Yorumu beğenmek için giriş yapmalısınız",
       dislike: "Yorumu beğenmemek için giriş yapmalısınız",
       reply: "Yoruma cevap verebilmek için giriş yapmalısınız",
+      join: "İlana katılmak için giriş yapmalısınız",
+      leave: "İlandan ayrılmak için giriş yapmalısınız",
+      admin: "Bu işlemi yapabilmek için giriş yapmalısınız",
+      message: "Mesaj göndermek için giriş yapmalısınız",
+      revoke: "İsteği geri almak için giriş yapmalısınız",
       default: "Bu işlemi yapabilmek için giriş yapmalısınız",
     };
 
