@@ -34,6 +34,12 @@ export const WebSocketProvider = ({ children }) => {
     useState(null);
   const notificationSocketRef = useRef(null);
 
+  // Chat namespace socket state
+  const [chatSocket, setChatSocket] = useState(null);
+  const [isChatConnected, setIsChatConnected] = useState(false);
+  const [chatConnectionError, setChatConnectionError] = useState(null);
+  const chatSocketRef = useRef(null);
+
   // Initialize WebSocket connection to default namespace
   useEffect(() => {
     if (isAuthenticated && user && user._id) {
@@ -70,6 +76,20 @@ export const WebSocketProvider = ({ children }) => {
 
         notificationSocketRef.current = notificationSocketInstance;
         setNotificationSocket(notificationSocketInstance);
+
+        // Connect to chat namespace with userId in handshake query
+        const chatSocketInstance = io("http://localhost:5000/chat", {
+          query: {
+            userId: user._id,
+          },
+          autoConnect: true,
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000,
+        });
+
+        chatSocketRef.current = chatSocketInstance;
+        setChatSocket(chatSocketInstance);
 
         // Connection event listeners
         socketInstance.on("connect", () => {
@@ -194,6 +214,64 @@ export const WebSocketProvider = ({ children }) => {
             "Bildirim WebSocket bağlantısı tamamen başarısız"
           );
         });
+
+        // Chat namespace event listeners
+        chatSocketInstance.on("connect", () => {
+          console.log(
+            "WebSocket connected to chat namespace with socket ID:",
+            chatSocketInstance.id
+          );
+          setIsChatConnected(true);
+          setChatConnectionError(null);
+        });
+
+        chatSocketInstance.on("connect_error", (error) => {
+          console.error("Chat WebSocket connection error:", error);
+          setChatConnectionError(
+            `Chat WebSocket bağlantı hatası: ${error.message}`
+          );
+          setIsChatConnected(false);
+        });
+
+        chatSocketInstance.on("disconnect", (reason) => {
+          console.log("Chat WebSocket disconnected:", reason);
+          setIsChatConnected(false);
+
+          // Don't show error for intentional disconnects
+          if (
+            reason !== "io client disconnect" &&
+            reason !== "io server disconnect"
+          ) {
+            setChatConnectionError("Chat WebSocket bağlantısı kesildi");
+          }
+        });
+
+        // Error handling for chat namespace
+        chatSocketInstance.on("error", (error) => {
+          console.error("Chat WebSocket error:", error);
+          setChatConnectionError(`Chat WebSocket hatası: ${error}`);
+        });
+
+        // Handle reconnection for chat namespace
+        chatSocketInstance.on("reconnect", (attemptNumber) => {
+          console.log(
+            "Chat WebSocket reconnected after",
+            attemptNumber,
+            "attempts"
+          );
+          setIsChatConnected(true);
+          setChatConnectionError(null);
+        });
+
+        chatSocketInstance.on("reconnect_error", (error) => {
+          console.error("Chat WebSocket reconnection failed:", error);
+          setChatConnectionError("Chat WebSocket yeniden bağlantı başarısız");
+        });
+
+        chatSocketInstance.on("reconnect_failed", () => {
+          console.error("Chat WebSocket reconnection completely failed");
+          setChatConnectionError("Chat WebSocket bağlantısı tamamen başarısız");
+        });
       } catch (error) {
         console.error("Error creating WebSocket connection:", error);
         setConnectionError(`WebSocket oluşturma hatası: ${error.message}`);
@@ -242,8 +320,46 @@ export const WebSocketProvider = ({ children }) => {
         setIsNotificationConnected(false);
         setNotificationConnectionError(null);
       }
+
+      if (chatSocketRef.current) {
+        console.log("Cleaning up chat WebSocket connection");
+        chatSocketRef.current.disconnect();
+        chatSocketRef.current = null;
+        setChatSocket(null);
+        setIsChatConnected(false);
+        setChatConnectionError(null);
+      }
     };
   }, [isAuthenticated, user?._id]);
+
+  // Auto-join advert chat rooms when chat connection is established and user is authenticated
+  useEffect(() => {
+    if (isChatConnected && user && user._id && chatSocket) {
+      const advertParticipation = user.advertParticipation || [];
+
+      console.log(
+        "Chat connected and user authenticated, joining advert chat rooms"
+      );
+      console.log(
+        `Joining chat rooms for ${advertParticipation.length} participated adverts`
+      );
+
+      advertParticipation.forEach((participation) => {
+        if (participation && participation._id) {
+          const roomId = participation._id;
+          const userId = user._id;
+
+          console.log(`Joining chat room: ${roomId} for user: ${userId}`);
+
+          // Directly emit to chat socket instead of using emitChatEvent
+          chatSocket.emit("joinRoom", {
+            roomId: roomId,
+            userId: userId,
+          });
+        }
+      });
+    }
+  }, [isChatConnected, user?._id, user?.advertParticipation, chatSocket]);
 
   // Helper functions
   const isUserOnline = (userId) => {
@@ -321,6 +437,86 @@ export const WebSocketProvider = ({ children }) => {
     [notificationSocket]
   );
 
+  // Emit events to chat namespace
+  const emitChatEvent = useCallback(
+    (eventName, data) => {
+      console.log(`[CHAT EMIT] Attempting to emit event: ${eventName}`, data);
+      console.log(`[CHAT EMIT] Chat connection state:`, {
+        chatSocket: !!chatSocket,
+        isChatConnected,
+        socketId: chatSocket?.id,
+      });
+
+      if (chatSocket && isChatConnected) {
+        console.log(`[CHAT EMIT] Emitting chat event: ${eventName}`, data);
+        chatSocket.emit(eventName, data);
+        console.log(`[CHAT EMIT] Event ${eventName} emitted successfully`);
+      } else {
+        console.warn(
+          `[CHAT EMIT] Cannot emit chat event ${eventName}: Chat WebSocket not connected`
+        );
+        console.warn(`[CHAT EMIT] Connection details:`, {
+          chatSocket: !!chatSocket,
+          isChatConnected,
+          socketId: chatSocket?.id,
+        });
+      }
+    },
+    [chatSocket, isChatConnected]
+  );
+
+  // Listen for chat events
+  const listenForChatEvent = useCallback(
+    (eventName, callback) => {
+      if (chatSocket) {
+        console.log(`Listening for chat event: ${eventName}`);
+        chatSocket.on(eventName, callback);
+
+        // Return cleanup function
+        return () => {
+          chatSocket.off(eventName, callback);
+        };
+      } else {
+        console.warn(
+          `Cannot listen for chat event ${eventName}: Chat WebSocket not available`
+        );
+        return () => {}; // Return empty cleanup function
+      }
+    },
+    [chatSocket]
+  );
+
+  // Manual function to join advert chat rooms (for external calls)
+  const joinAdvertChatRooms = useCallback(() => {
+    if (chatSocket && isChatConnected && user && user._id) {
+      const advertParticipation = user.advertParticipation || [];
+
+      console.log(
+        `Manually joining chat rooms for ${advertParticipation.length} participated adverts`
+      );
+
+      advertParticipation.forEach((participation) => {
+        if (participation && participation._id) {
+          const roomId = participation._id;
+          const userId = user._id;
+
+          console.log(
+            `Manually joining chat room: ${roomId} for user: ${userId}`
+          );
+
+          emitChatEvent("joinRoom", {
+            roomId: roomId,
+            userId: userId,
+          });
+        }
+      });
+    } else {
+      console.warn(
+        "Cannot join advert chat rooms: Chat WebSocket not connected or user not available"
+      );
+    }
+  }, [chatSocket, isChatConnected, user, emitChatEvent]);
+
   // Remove event listener
   const removeEventListener = (eventName, callback) => {
     if (socket) {
@@ -362,6 +558,11 @@ export const WebSocketProvider = ({ children }) => {
     isNotificationConnected,
     notificationConnectionError,
 
+    // Chat namespace connection state
+    chatSocket,
+    isChatConnected,
+    chatConnectionError,
+
     // Online users management
     onlineUsers,
     isUserOnline,
@@ -376,6 +577,11 @@ export const WebSocketProvider = ({ children }) => {
     emitNotificationEvent,
     listenForNotificationEvent,
     removeNotificationEventListener,
+
+    // Chat namespace event management
+    emitChatEvent,
+    listenForChatEvent,
+    joinAdvertChatRooms,
 
     // Connection management
     disconnect,

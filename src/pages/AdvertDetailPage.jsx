@@ -17,8 +17,11 @@ function AdvertDetailPage() {
     emitNotificationEvent,
     isNotificationConnected,
     listenForNotificationEvent,
+    emitChatEvent,
+    isChatConnected,
+    listenForChatEvent,
   } = useWebSocket();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, loading: authLoading } = useAuth();
   const [advert, setAdvert] = useState(null);
 
   // Track if we've joined a room to avoid duplicate joins
@@ -75,6 +78,17 @@ function AdvertDetailPage() {
         "Bu ilanın sahibini atamazsınız, lütfen ilanı silin",
       "You are not a participant in this advert":
         "Bu ilana katılmış değilsiniz",
+      "You are not a participant of this advert":
+        "Bu ilanın katılımcısı değilsiniz",
+      "Messages not found": "Mesajlar bulunamadı",
+      "Please provide content or attachments":
+        "Lütfen içerik veya dosya ekleyin",
+      "You can not send both content and attachments at the same time":
+        "Aynı anda hem metin hem de dosya gönderemezsiniz",
+      "Please provide content": "Lütfen mesaj içeriği girin",
+      "Attachments must be an array with at least one item":
+        "En az bir dosya eklemelisiniz",
+      "File size exceeds 100MB limit": "Dosya boyutu 100MB sınırını aşıyor",
       "You have left the advert successfully": "İlandan başarıyla ayrıldınız",
       "You have left the advert successfully, and a new creator has been assigned":
         "İlandan ayrıldınız ve yeni bir lider atandı",
@@ -231,124 +245,21 @@ function AdvertDetailPage() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
-  // Helper function to map sender IDs to user information
-  const enrichMessagesWithUserInfo = (messages, advert) => {
-    if (!messages) return messages;
-
-    // Create a map of user IDs to user information
-    const userMap = new Map();
-
-    // Add creator to user map (with null check)
-    // Structure: createdBy: { profilePicture: { url: "the url" } }
-    if (advert && advert.createdBy && advert.createdBy._id) {
-      // Ensure we extract the URL string, not the object
-      const profilePictureUrl = advert.createdBy.profilePicture?.url;
-      const createdByProfilePictureUrl =
-        typeof profilePictureUrl === "string" ? profilePictureUrl : null;
-
-      console.log("CreatedBy profile picture URL:", createdByProfilePictureUrl);
-      console.log(
-        "CreatedBy profile picture type:",
-        typeof createdByProfilePictureUrl
-      );
-      console.log(
-        "CreatedBy full profile picture object:",
-        advert.createdBy.profilePicture
-      );
-
-      userMap.set(advert.createdBy._id, {
-        _id: advert.createdBy._id,
-        name: advert.createdBy.name,
-        profilePicture: createdByProfilePictureUrl,
-        school: advert.createdBy.school,
-        age: advert.createdBy.age,
-        goalKeeper: advert.createdBy.goalKeeper,
-      });
-    }
-
-    // Add all participants to user map (with null checks)
-    // Structure: participants: [..., { user: { profilePicture: { url: "the url" } } }]
-    if (advert && advert.participants && Array.isArray(advert.participants)) {
-      advert.participants.forEach((participant, index) => {
-        if (participant.user && participant.user._id) {
-          // Ensure we extract the URL string, not the object
-          const profilePictureUrl = participant.user.profilePicture?.url;
-          const participantProfilePictureUrl =
-            typeof profilePictureUrl === "string" ? profilePictureUrl : null;
-
-          console.log(
-            `Participant ${index} profile picture URL:`,
-            participantProfilePictureUrl
-          );
-          console.log(
-            `Participant ${index} profile picture type:`,
-            typeof participantProfilePictureUrl
-          );
-          console.log(
-            `Participant ${index} full profile picture object:`,
-            participant.user.profilePicture
-          );
-
-          userMap.set(participant.user._id, {
-            _id: participant.user._id,
-            name: participant.user.name,
-            profilePicture: participantProfilePictureUrl,
-            school: participant.user.school,
-            age: participant.user.age,
-            goalKeeper: participant.user.goalKeeper,
-          });
-        }
-      });
-    }
-
-    // Add waiting list users to user map (with null checks)
-    // Structure: waitingList: [..., { user: { profilePicture: { url: "the url" } } }]
-    if (advert && advert.waitingList && Array.isArray(advert.waitingList)) {
-      advert.waitingList.forEach((waitingUser, index) => {
-        if (waitingUser.user && waitingUser.user._id) {
-          // Ensure we extract the URL string, not the object
-          const profilePictureUrl = waitingUser.user.profilePicture?.url;
-          const waitingUserProfilePictureUrl =
-            typeof profilePictureUrl === "string" ? profilePictureUrl : null;
-
-          console.log(
-            `WaitingList ${index} profile picture URL:`,
-            waitingUserProfilePictureUrl
-          );
-          console.log(
-            `WaitingList ${index} profile picture type:`,
-            typeof waitingUserProfilePictureUrl
-          );
-          console.log(
-            `WaitingList ${index} full profile picture object:`,
-            waitingUser.user.profilePicture
-          );
-
-          userMap.set(waitingUser.user._id, {
-            _id: waitingUser.user._id,
-            name: waitingUser.user.name,
-            profilePicture: waitingUserProfilePictureUrl,
-            school: waitingUser.user.school,
-            age: waitingUser.user.age,
-            goalKeeper: waitingUser.user.goalKeeper,
-          });
-        }
-      });
-    }
-
-    // Enrich messages with user information
-    return messages.map((message) => ({
-      ...message,
-      senderInfo: userMap.get(message.sender) || {
-        _id: message.sender,
-        name: "Bilinmeyen Kullanıcı",
-        profilePicture: null,
-      },
-    }));
-  };
-
   useEffect(() => {
     const fetchData = async () => {
+      console.log("AdvertDetailPage: fetchData called", {
+        advertId,
+        isAuthenticated,
+        user: user ? `User ID: ${user._id}` : "No user",
+        authLoading,
+      });
+
+      // Don't fetch if auth is still loading
+      if (authLoading) {
+        console.log("AdvertDetailPage: Skipping fetch - auth still loading");
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
@@ -407,42 +318,61 @@ function AdvertDetailPage() {
           throw new Error("Advert not found");
         }
 
-        // Fetch messages data from mock file (will be replaced later with real API)
-        const messagesResponse = await fetch(
-          "/advert_chat_messages.mock.50.json"
-        );
-        if (!messagesResponse.ok) {
-          throw new Error("Failed to fetch messages data");
-        }
-        const messagesData = await messagesResponse.json();
-
-        // Filter messages for this specific advert
-        const advertMessages = messagesData.filter(
-          (message) => message.advert === advertId
-        );
-
-        // TEMPORARY: If no messages found, show first few messages for debugging
-        if (advertMessages.length === 0) {
-          // For debugging, use first 5 messages
-          const debugMessages = messagesData.slice(0, 5);
-          const enrichedDebugMessages = enrichMessagesWithUserInfo(
-            debugMessages,
-            foundAdvert
-          );
-          setAdvert(foundAdvert);
-          setMessages(enrichedDebugMessages);
-          setLoading(false);
-          return;
-        }
-
-        // Enrich messages with user information
-        const enrichedMessages = enrichMessagesWithUserInfo(
-          advertMessages,
-          foundAdvert
-        );
-
         setAdvert(foundAdvert);
-        setMessages(enrichedMessages);
+
+        // Fetch messages data from backend API (only for authenticated participants)
+        console.log("AdvertDetailPage: Message fetch check", {
+          isAuthenticated,
+          user: user ? `User ID: ${user._id}` : "No user",
+          advertId,
+        });
+
+        if (isAuthenticated && user) {
+          console.log(
+            "AdvertDetailPage: Attempting to fetch messages for authenticated user"
+          );
+          try {
+            const messagesResponse = await fetch(
+              `/api/v1/advert-chat/messages/${advertId}`,
+              {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (messagesResponse.ok) {
+              const messagesData = await messagesResponse.json();
+              console.log("Messages fetched successfully:", messagesData);
+
+              // Set messages directly (no need to enrich since backend provides full user data)
+              setMessages(messagesData.messages || []);
+            } else {
+              // Handle message fetch errors (but don't fail the whole page)
+              console.warn(
+                "Failed to fetch messages:",
+                messagesResponse.status
+              );
+              if (messagesResponse.status === 400) {
+                console.log("User is not a participant, cannot fetch messages");
+              }
+              // Set empty messages array for non-participants
+              setMessages([]);
+            }
+          } catch (messagesError) {
+            console.error("Error fetching messages:", messagesError);
+            // Don't fail the whole page for message errors
+            setMessages([]);
+          }
+        } else {
+          // For unauthenticated users, set empty messages
+          console.log(
+            "AdvertDetailPage: Not fetching messages - user not authenticated or user object missing"
+          );
+          setMessages([]);
+        }
       } catch (err) {
         console.error("Error fetching advert data:", err);
 
@@ -462,7 +392,7 @@ function AdvertDetailPage() {
     if (advertId) {
       fetchData();
     }
-  }, [advertId]);
+  }, [advertId, isAuthenticated, user, authLoading]);
 
   // Handle notification room join/leave for advert-specific notifications
   useEffect(() => {
@@ -1097,6 +1027,56 @@ function AdvertDetailPage() {
     }
   }, [isNotificationConnected, advertId, listenForNotificationEvent]);
 
+  // Listen for messageSeen WebSocket events (user has seen all messages)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up messageSeen listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("messageSeen", (data) => {
+        console.log("Received messageSeen event:", data);
+
+        if (data && data.userId) {
+          // Update all messages to remove the user from notSeenBy array
+          setMessages((prevMessages) => {
+            return prevMessages.map((message) => ({
+              ...message,
+              notSeenBy: message.notSeenBy
+                ? message.notSeenBy.filter((userId) => userId !== data.userId)
+                : [],
+            }));
+          });
+
+          console.log(
+            `User ${data.userId} has seen all messages in advert ${advertId}`
+          );
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
+  // Listen for newMessage WebSocket events (new message received)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up newMessage listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("newMessage", (data) => {
+        console.log("Received newMessage event:", data);
+
+        if (data && data.message) {
+          // Add the new message to the messages array
+          setMessages((prevMessages) => [...prevMessages, data.message]);
+          console.log("New message added to chat:", data.message);
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
   const handleSendMessage = async (messageData) => {
     // Check authentication first
     if (!isAuthenticated) {
@@ -1108,44 +1088,117 @@ function AdvertDetailPage() {
     }
 
     try {
-      // Simulate message sending with mock data
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
+      // Prepare the request payload based on message type
+      let requestBody = {};
 
-      const newMessage = {
-        advert: advertId,
-        sender: "current-user-id", // This would be the current user's ID
-        type: messageData.type,
-        content: messageData.content,
-        notSeenBy: [],
-        isDeleted: false,
-        archived: false,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        attachments: messageData.attachments,
-        senderInfo: {
-          _id: "current-user-id",
-          name: "Sen",
-          profilePicture: "https://via.placeholder.com/32/00C851/white?text=S",
+      // Check if user provided file attachments
+      if (
+        messageData.attachments &&
+        Array.isArray(messageData.attachments) &&
+        messageData.attachments.length > 0
+      ) {
+        // User provided files
+        console.log("Processing file attachments:", messageData.attachments);
+
+        const attachmentsPayload = {
+          caption: messageData.content || null, // Text content goes into caption when files are present
+          items: messageData.attachments.map((file) => {
+            console.log("Processing file:", file);
+            return {
+              content: file.content || file.data || file.base64, // Handle different possible property names
+            };
+          }),
+        };
+
+        requestBody.attachments = attachmentsPayload;
+        console.log("Final attachments payload:", requestBody.attachments);
+      } else {
+        // User provided only text content
+        if (!messageData.content || messageData.content.trim() === "") {
+          // Silently do nothing for empty messages (as requested)
+          console.log("Empty message, not sending to backend");
+          return;
+        }
+        requestBody.content = messageData.content;
+        console.log("Text-only message payload:", requestBody);
+      }
+
+      console.log("Sending message with payload:", requestBody);
+
+      const response = await fetch(`/api/v1/advert-chat/send/${advertId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
         },
-      };
+        body: JSON.stringify(requestBody),
+      });
 
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      if (!response.ok) {
+        let errorMessage = "Failed to send message";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Bad Request";
+              break;
+            case 401:
+              errorMessage = "Unauthorized";
+              break;
+            case 403:
+              errorMessage = "Forbidden";
+              break;
+            case 404:
+              errorMessage = "Advert not found";
+              break;
+            case 413:
+              errorMessage = "File size exceeds 100MB limit";
+              break;
+            case 429:
+              errorMessage = "Too Many Requests";
+              break;
+            case 500:
+              errorMessage = "Internal Server Error";
+              break;
+            case 503:
+              errorMessage = "Service Unavailable";
+              break;
+            default:
+              errorMessage = `Server error: ${response.status}`;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Message sent successfully:", data);
+
+      // Note: The message will be added to the UI via WebSocket listener (newMessage event)
+      // No need to manually add it here since backend will emit it to all connected users
     } catch (err) {
       console.error("Error sending message:", err);
-      showNotification("Mesaj gönderilirken hata oluştu", "error");
+
+      // Enhanced error handling with Turkish messages
+      let errorMessage = "Mesaj gönderilirken hata oluştu";
+
+      if (err.message.includes("Network Error") || !navigator.onLine) {
+        errorMessage = "Bağlantı hatası. İnternet bağlantınızı kontrol edin";
+      } else if (err.message) {
+        errorMessage = translateErrorMessage(err.message);
+      }
+
+      showNotification(errorMessage, "error");
       throw err; // Re-throw to let MessagingSection handle the error
     }
   };
 
   const handleAdvertUpdate = (updatedAdvert) => {
     setAdvert(updatedAdvert);
-
-    // Re-enrich messages with updated user information
-    const enrichedMessages = enrichMessagesWithUserInfo(
-      messages,
-      updatedAdvert
-    );
-    setMessages(enrichedMessages);
 
     // Force a complete data refresh to ensure everything is up to date
     setTimeout(() => {
@@ -1294,6 +1347,17 @@ function AdvertDetailPage() {
       }
 
       const data = await response.json();
+
+      // Make accepted user join chat room
+      if (isChatConnected && data.user && data.user._id) {
+        console.log(
+          `Accepted user ${data.user._id} joining chat room ${advertId}`
+        );
+        emitChatEvent("joinRoom", {
+          roomId: advertId,
+          userId: data.user._id,
+        });
+      }
 
       // Show success notification
       showNotification("Katılım talebi başarıyla kabul edildi", "success");
@@ -1556,6 +1620,15 @@ function AdvertDetailPage() {
       const data = await response.json();
       console.log("User expelled from advert successfully:", data.user);
 
+      // Make expelled user leave chat room
+      if (isChatConnected && userId) {
+        console.log(`Expelled user ${userId} leaving chat room ${advertId}`);
+        emitChatEvent("leaveRoom", {
+          roomId: advertId,
+          userId: userId, // Use the userId parameter (expelled user's ID)
+        });
+      }
+
       // Update local advert state - remove user from participants and adminAdvert arrays
       setAdvert((prevAdvert) => {
         if (!prevAdvert) return prevAdvert;
@@ -1656,6 +1729,15 @@ function AdvertDetailPage() {
       const data = await response.json();
       console.log("Leave advert successful:", data.message);
 
+      // Leave chat room when user successfully leaves the advert
+      if (isChatConnected && user && user._id) {
+        console.log(`User ${user._id} leaving chat room ${advertId}`);
+        emitChatEvent("leaveRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+      }
+
       // Show success notification based on the response message
       let successMessage = "İlandan başarıyla ayrıldınız";
       if (data.message.includes("new creator has been assigned")) {
@@ -1748,6 +1830,29 @@ function AdvertDetailPage() {
 
       const data = await response.json();
       console.log("Delete advert successful:", data.message);
+
+      // Make all participants leave chat room when advert is deleted
+      if (isChatConnected && advert && advert.participants) {
+        console.log(
+          `Making all participants leave chat room ${advertId} due to advert deletion`
+        );
+
+        // Make each participant leave the chat room (this includes the creator)
+        advert.participants.forEach((participant) => {
+          if (participant.user && participant.user._id) {
+            console.log(
+              `Participant ${participant.user._id} leaving chat room ${advertId}`
+            );
+            emitChatEvent("leaveRoom", {
+              roomId: advertId,
+              userId: participant.user._id,
+            });
+          }
+        });
+
+        // Note: Creator is already handled in the participants loop above
+        // No need to handle createdBy separately since they're also a participant
+      }
 
       // Show success notification
       showNotification("İlan başarıyla silindi", "success");
@@ -1856,22 +1961,35 @@ function AdvertDetailPage() {
     }
   };
 
-  // Function to refresh messages from mock data
+  // Function to refresh messages from backend API
   const refreshMessages = async () => {
+    if (!isAuthenticated || !user) {
+      console.log("Cannot refresh messages: User not authenticated");
+      return;
+    }
+
     try {
       const messagesResponse = await fetch(
-        "/advert_chat_messages.mock.50.json"
+        `/api/v1/advert-chat/messages/${advertId}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
+
       if (messagesResponse.ok) {
         const messagesData = await messagesResponse.json();
-        const advertMessages = messagesData.filter(
-          (message) => message.advert === advertId
-        );
-        const enrichedMessages = enrichMessagesWithUserInfo(
-          advertMessages,
-          advert
-        );
-        setMessages(enrichedMessages);
+        console.log("Messages refreshed successfully:", messagesData);
+        setMessages(messagesData.messages || []);
+      } else {
+        console.warn("Failed to refresh messages:", messagesResponse.status);
+        if (messagesResponse.status === 400) {
+          console.log("User is not a participant, cannot refresh messages");
+          setMessages([]);
+        }
       }
     } catch (err) {
       console.error("Error refreshing messages:", err);

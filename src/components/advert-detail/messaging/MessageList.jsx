@@ -14,6 +14,37 @@ const getInitials = (name) => {
   return cleanName[0]?.toUpperCase() || "?";
 };
 
+// Helper function to get file type label
+const getFileTypeLabel = (mimeType) => {
+  const typeLabels = {
+    "application/pdf": "PDF Dosyası",
+    "application/msword": "Word Dosyası",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+      "Word Dosyası",
+  };
+  return typeLabels[mimeType] || "Dosya";
+};
+
+// Helper function to truncate URL
+const truncateUrl = (url) => {
+  if (!url) return "";
+  const maxLength = 50;
+  if (url.length <= maxLength) return url;
+
+  // Extract filename from URL if possible
+  try {
+    const urlParts = url.split("/");
+    const filename = urlParts[urlParts.length - 1];
+    if (filename && filename.length < maxLength) {
+      return `.../${filename}`;
+    }
+  } catch (e) {
+    // Fallback to simple truncation
+  }
+
+  return `${url.substring(0, 15)}...${url.substring(url.length - 15)}`;
+};
+
 function MessageList({ messages, isUserOnline }) {
   const messagesEndRef = useRef(null);
   const { user } = useAuth();
@@ -102,8 +133,13 @@ function MessageList({ messages, isUserOnline }) {
     return groups;
   }, {});
 
-  const isCurrentUser = (senderId) => {
-    return user && user._id === senderId;
+  const isCurrentUser = (sender) => {
+    // Handle both old format (senderId) and new format (sender object)
+    if (typeof sender === "string") {
+      return user && user._id === sender;
+    }
+    // New format: sender is an object with _id
+    return user && sender && user._id === sender._id;
   };
 
   return (
@@ -157,18 +193,10 @@ function MessageList({ messages, isUserOnline }) {
                 >
                   {/* Profile picture */}
                   <div className="flex-shrink-0 relative">
-                    {message.senderInfo?.profilePicture ||
-                    message.user?.profilePicture?.url ? (
+                    {message.sender?.profilePicture?.url ? (
                       <img
-                        src={
-                          message.senderInfo?.profilePicture ||
-                          message.user?.profilePicture?.url
-                        }
-                        alt={
-                          message.senderInfo?.name ||
-                          message.user?.name ||
-                          "User"
-                        }
+                        src={message.sender.profilePicture.url}
+                        alt={message.sender?.name || "User"}
                         className="w-8 h-8 rounded-full object-cover"
                         onError={(e) => {
                           e.target.style.display = "none";
@@ -178,21 +206,18 @@ function MessageList({ messages, isUserOnline }) {
                     ) : null}
                     <div
                       className={`w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-medium ${
-                        message.senderInfo?.profilePicture ||
-                        message.user?.profilePicture?.url
-                          ? "hidden"
-                          : "flex"
+                        message.sender?.profilePicture?.url ? "hidden" : "flex"
                       }`}
                     >
-                      {getInitials(
-                        message.senderInfo?.name || message.user?.name
-                      )}
+                      {getInitials(message.sender?.name)}
                     </div>
 
                     {/* Online indicator for message sender */}
-                    {isUserOnline && isUserOnline(message.sender) && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
-                    )}
+                    {isUserOnline &&
+                      message.sender?._id &&
+                      isUserOnline(message.sender._id) && (
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
+                      )}
                   </div>
 
                   <div
@@ -205,9 +230,7 @@ function MessageList({ messages, isUserOnline }) {
                     {/* Sender name (only for non-current user messages) */}
                     {!isCurrentUser(message.sender) && (
                       <p className="text-xs text-gray-600 mb-1 font-medium">
-                        {message.senderInfo?.name ||
-                          message.user?.name ||
-                          "Kullanıcı"}
+                        {message.sender?.name || "Kullanıcı"}
                       </p>
                     )}
 
@@ -223,9 +246,9 @@ function MessageList({ messages, isUserOnline }) {
 
                         {/* Attachments */}
                         {message.attachments && message.attachments.items && (
-                          <div className="mt-2">
+                          <div className="mt-2 space-y-2">
                             {message.attachments.items.map((item, idx) => (
-                              <div key={idx} className="mb-2">
+                              <div key={idx}>
                                 {item.mimeType.startsWith("image/") ? (
                                   <img
                                     src={item.url}
@@ -238,14 +261,58 @@ function MessageList({ messages, isUserOnline }) {
                                     controls
                                     className="max-w-full h-auto rounded-lg"
                                   />
-                                ) : null}
-                                {message.attachments.caption && (
-                                  <p className="text-xs mt-1 opacity-75">
-                                    {message.attachments.caption}
-                                  </p>
+                                ) : (
+                                  // File attachment (PDF, DOC, etc.) - Card layout like your image
+                                  <div className="flex items-center justify-between p-3 bg-gray-800 text-white rounded-lg border">
+                                    <div className="flex items-center space-x-3">
+                                      {/* File icon */}
+                                      <svg
+                                        className="w-5 h-5 text-white flex-shrink-0"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+
+                                      {/* File info */}
+                                      <div>
+                                        <div className="text-sm font-medium text-white">
+                                          {getFileTypeLabel(item.mimeType)}
+                                        </div>
+                                        <div className="text-xs text-gray-300">
+                                          {truncateUrl(item.url)}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {/* Open button */}
+                                    <div className="flex-shrink-0">
+                                      <a
+                                        href={item.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-white text-sm px-2 py-1 border border-white rounded hover:bg-white hover:text-gray-800 transition-colors"
+                                      >
+                                        [Aç]
+                                      </a>
+                                    </div>
+                                  </div>
                                 )}
                               </div>
                             ))}
+
+                            {/* Caption - moved outside the loop and improved styling */}
+                            {message.attachments.caption && (
+                              <div className="mt-2 pt-2 border-t border-gray-200">
+                                <p className="text-sm text-gray-700">
+                                  {message.attachments.caption}
+                                </p>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -277,4 +344,3 @@ function MessageList({ messages, isUserOnline }) {
 }
 
 export default MessageList;
-

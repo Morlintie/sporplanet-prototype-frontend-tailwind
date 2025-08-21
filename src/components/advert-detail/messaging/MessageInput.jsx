@@ -24,18 +24,16 @@ function MessageInput({
         content: newMessage.trim(),
         type:
           attachments.length > 0
-            ? attachments[0].type.startsWith("image/")
+            ? attachments[0].mimeType.startsWith("image/")
               ? "image"
-              : "video"
+              : attachments[0].mimeType.startsWith("video/")
+              ? "video"
+              : "file"
             : "text",
-        attachments:
-          attachments.length > 0
-            ? {
-                caption: newMessage.trim() || "",
-                items: attachments,
-              }
-            : undefined,
+        attachments: attachments.length > 0 ? attachments : undefined,
       };
+
+      console.log("MessageInput sending data:", messageData);
 
       await onSendMessage(messageData);
       setNewMessage("");
@@ -46,18 +44,35 @@ function MessageInput({
     }
   };
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
-    const file = files[0];
-    const fileData = {
-      url: URL.createObjectURL(file),
-      name: file.name,
-      mimeType: file.type,
-    };
+    try {
+      const filePromises = files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const fileData = {
+              url: URL.createObjectURL(file), // For preview
+              name: file.name,
+              mimeType: file.type,
+              content: reader.result, // Base64 data including data:mime/type;base64, prefix
+            };
+            resolve(fileData);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
 
-    setAttachments([fileData]);
+      const processedFiles = await Promise.all(filePromises);
+      setAttachments(processedFiles);
+      console.log("Files processed for upload:", processedFiles);
+    } catch (error) {
+      console.error("Error processing files:", error);
+      alert("Dosya işlenirken hata oluştu.");
+    }
   };
 
   const removeAttachment = () => {
@@ -72,15 +87,14 @@ function MessageInput({
       {/* Attachment preview */}
       {attachments.length > 0 && (
         <div className="mb-3 p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">
-                Ek: {attachments[0].name}
-              </span>
-            </div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-600 font-medium">
+              {attachments.length} dosya seçildi
+            </span>
             <button
               onClick={removeAttachment}
               className="text-red-500 hover:text-red-700"
+              title="Tüm dosyaları kaldır"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -90,6 +104,17 @@ function MessageInput({
                 />
               </svg>
             </button>
+          </div>
+          <div className="space-y-1">
+            {attachments.map((file, index) => (
+              <div
+                key={index}
+                className="flex items-center space-x-2 text-xs text-gray-600"
+              >
+                <span className="truncate">{file.name}</span>
+                <span className="text-gray-400">({file.mimeType})</span>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -132,9 +157,10 @@ function MessageInput({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*,video/*"
+          accept="image/*,video/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={handleFileSelect}
           className="hidden"
+          multiple
         />
 
         {/* Private Link Dropdown */}

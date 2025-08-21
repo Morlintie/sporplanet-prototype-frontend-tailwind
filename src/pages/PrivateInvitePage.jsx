@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useWebSocket } from "../context/WebSocketContext";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
 import Notification from "../components/shared/Notification";
@@ -9,6 +10,7 @@ function PrivateInvitePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { isAuthenticated, user, loading: authLoading } = useAuth();
+  const { emitChatEvent, isChatConnected } = useWebSocket();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasProcessed, setHasProcessed] = useState(false); // Prevent multiple API calls
@@ -123,6 +125,17 @@ function PrivateInvitePage() {
       console.log("Invite processed successfully:", data);
 
       if (data.success && data.id) {
+        // Make user join chat room after successful private link participation
+        if (user && user._id) {
+          console.log(
+            `Private link successful: User ${user._id} joining chat room ${data.id}`
+          );
+          emitChatEvent("joinRoom", {
+            roomId: data.id,
+            userId: user._id,
+          });
+        }
+
         // Show success notification
         showNotification(
           "İlana başarıyla katıldınız! Yönlendiriliyorsunuz...",
@@ -158,7 +171,7 @@ function PrivateInvitePage() {
     } finally {
       setLoading(false);
     }
-  }, [date, id]);
+  }, [date, id, user, emitChatEvent]);
 
   // Check authentication and parameters on mount
   useEffect(() => {
