@@ -44,6 +44,7 @@ function AdvertDetailPage() {
     actionType: "default",
     customMessage: null,
   });
+  const [typingUsers, setTypingUsers] = useState([]); // Array of user IDs who are currently typing
 
   // Turkish error message translation
   const translateErrorMessage = (message) => {
@@ -1077,6 +1078,131 @@ function AdvertDetailPage() {
     }
   }, [isChatConnected, advertId, listenForChatEvent]);
 
+  // Listen for typingInRoom WebSocket events (user started typing)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up typingInRoom listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("typingInRoom", (data) => {
+        console.log("Received typingInRoom event:", data);
+
+        if (data && data.userId) {
+          // Add user to typing list if not already there and not the current user
+          setTypingUsers((prevTypingUsers) => {
+            // Don't show typing indicator for current user
+            if (user && user._id === data.userId) {
+              return prevTypingUsers;
+            }
+
+            // Check if user is already in typing list
+            const isAlreadyTyping = prevTypingUsers.includes(data.userId);
+            if (!isAlreadyTyping) {
+              const updatedTypingUsers = [...prevTypingUsers, data.userId];
+              console.log(
+                "User started typing:",
+                data.userId,
+                "Current typing users:",
+                updatedTypingUsers
+              );
+              return updatedTypingUsers;
+            }
+            return prevTypingUsers;
+          });
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent, user]);
+
+  // Listen for stopTypingInRoom WebSocket events (user stopped typing)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up stopTypingInRoom listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("stopTypingInRoom", (data) => {
+        console.log("Received stopTypingInRoom event:", data);
+
+        if (data && data.userId) {
+          // Remove user from typing list
+          setTypingUsers((prevTypingUsers) => {
+            const updatedTypingUsers = prevTypingUsers.filter(
+              (userId) => userId !== data.userId
+            );
+            console.log(
+              "User stopped typing:",
+              data.userId,
+              "Current typing users:",
+              updatedTypingUsers
+            );
+            return updatedTypingUsers;
+          });
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
+  // Handle typing events
+  const handleStartTyping = () => {
+    console.log("AdvertDetailPage: handleStartTyping called", {
+      isChatConnected,
+      advertId,
+      userId: user?._id,
+      hasEmitChatEvent: !!emitChatEvent,
+    });
+
+    if (isChatConnected && advertId && user && user._id) {
+      console.log(
+        `AdvertDetailPage: Emitting typingRoom event for user ${user._id} in advert ${advertId}`
+      );
+      emitChatEvent("typingRoom", {
+        roomId: advertId,
+        userId: user._id,
+      });
+    } else {
+      console.log(
+        "AdvertDetailPage: Cannot emit typingRoom - missing requirements",
+        {
+          isChatConnected,
+          advertId,
+          userId: user?._id,
+        }
+      );
+    }
+  };
+
+  const handleStopTyping = () => {
+    console.log("AdvertDetailPage: handleStopTyping called", {
+      isChatConnected,
+      advertId,
+      userId: user?._id,
+      hasEmitChatEvent: !!emitChatEvent,
+    });
+
+    if (isChatConnected && advertId && user && user._id) {
+      console.log(
+        `AdvertDetailPage: Emitting stopTypingRoom event for user ${user._id} in advert ${advertId}`
+      );
+      emitChatEvent("stopTypingRoom", {
+        roomId: advertId,
+        userId: user._id,
+      });
+    } else {
+      console.log(
+        "AdvertDetailPage: Cannot emit stopTypingRoom - missing requirements",
+        {
+          isChatConnected,
+          advertId,
+          userId: user?._id,
+        }
+      );
+    }
+  };
+
   const handleSendMessage = async (messageData) => {
     // Check authentication first
     if (!isAuthenticated) {
@@ -1094,23 +1220,12 @@ function AdvertDetailPage() {
       // Check if user provided file attachments
       if (
         messageData.attachments &&
-        Array.isArray(messageData.attachments) &&
-        messageData.attachments.length > 0
+        messageData.attachments.items &&
+        messageData.attachments.items.length > 0
       ) {
-        // User provided files
+        // User provided files - attachments already in correct format from MessageInput
         console.log("Processing file attachments:", messageData.attachments);
-
-        const attachmentsPayload = {
-          caption: messageData.content || null, // Text content goes into caption when files are present
-          items: messageData.attachments.map((file) => {
-            console.log("Processing file:", file);
-            return {
-              content: file.content || file.data || file.base64, // Handle different possible property names
-            };
-          }),
-        };
-
-        requestBody.attachments = attachmentsPayload;
+        requestBody.attachments = messageData.attachments;
         console.log("Final attachments payload:", requestBody.attachments);
       } else {
         // User provided only text content
@@ -2199,6 +2314,9 @@ function AdvertDetailPage() {
                   isUserOnline={isUserOnline}
                   onCreatePrivateLink={handleCreatePrivateLink}
                   onSendInvitation={handleSendInvitation}
+                  typingUsers={typingUsers}
+                  onStartTyping={handleStartTyping}
+                  onStopTyping={handleStopTyping}
                 />
               </div>
             </div>
@@ -2237,6 +2355,9 @@ function AdvertDetailPage() {
                 isUserOnline={isUserOnline}
                 onCreatePrivateLink={handleCreatePrivateLink}
                 onSendInvitation={handleSendInvitation}
+                typingUsers={typingUsers}
+                onStartTyping={handleStartTyping}
+                onStopTyping={handleStopTyping}
               />
             </div>
           </div>

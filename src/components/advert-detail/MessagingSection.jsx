@@ -14,9 +14,19 @@ function MessagingSection({
   isUserOnline,
   onCreatePrivateLink,
   onSendInvitation,
+  typingUsers,
+  onStartTyping,
+  onStopTyping,
 }) {
   const [sending, setSending] = useState(false);
   const { user } = useAuth();
+
+  // Debug log to check if typing props are received
+  console.log("MessagingSection: Received typing props", {
+    hasOnStartTyping: !!onStartTyping,
+    hasOnStopTyping: !!onStopTyping,
+    typingUsersCount: typingUsers?.length || 0,
+  });
 
   // Determine user's access state to the advert messaging
   const getUserAccessState = () => {
@@ -82,7 +92,12 @@ function MessagingSection({
       return (
         <div className="h-full flex flex-col">
           <MessageHeader advert={advert} />
-          <MessageList messages={messages} isUserOnline={isUserOnline} />
+          <MessageList
+            messages={messages}
+            isUserOnline={isUserOnline}
+            typingUsers={typingUsers}
+            advert={advert}
+          />
           <MessageInput
             onSendMessage={handleSendMessageWithState}
             sending={sending}
@@ -90,6 +105,8 @@ function MessagingSection({
             onCreatePrivateLink={onCreatePrivateLink}
             onSendInvitation={onSendInvitation}
             advert={advert}
+            onStartTyping={onStartTyping}
+            onStopTyping={onStopTyping}
           />
         </div>
       );
