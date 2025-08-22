@@ -148,6 +148,162 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
     return user && sender && user._id === sender._id;
   };
 
+  // Helper function to render attachment
+  const renderAttachment = (item, index) => {
+    console.log(`Rendering attachment ${index}:`, item);
+
+    // Ensure we have a URL for display
+    if (!item.url && item.content) {
+      const mimeType = item.mimeType || 'application/octet-stream';
+      item.url = item.content.startsWith('data:') 
+        ? item.content 
+        : `data:${mimeType};base64,${item.content}`;
+    }
+
+    if (!item.url) {
+      console.warn('Attachment has no URL:', item);
+      return (
+        <div key={index} className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">Ek dosya yüklenemedi</p>
+        </div>
+      );
+    }
+
+    // Image attachments
+    if (item.mimeType && item.mimeType.startsWith("image/")) {
+      return (
+        <div key={index} className="mt-2">
+          <img
+            src={item.url}
+            alt={item.name || "Image"}
+            className="max-w-xs rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+            onClick={() => window.open(item.url, "_blank")}
+            onError={(e) => {
+              console.error('Image failed to load:', item.url);
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'block';
+            }}
+          />
+          {/* Fallback for broken images */}
+          <div 
+            className="hidden p-4 bg-gray-100 border border-gray-300 rounded-lg text-center max-w-xs"
+            style={{display: 'none'}}
+          >
+            <div className="text-gray-500 mb-2">
+              <svg className="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <p className="text-sm text-gray-600">Resim yüklenemedi</p>
+            <p className="text-xs text-gray-500 mt-1">{item.name || "Bilinmeyen dosya"}</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Video attachments
+    if (item.mimeType && item.mimeType.startsWith("video/")) {
+      return (
+        <div key={index} className="mt-2">
+          <video
+            src={item.url}
+            controls
+            className="max-w-xs rounded-lg"
+            onError={(e) => {
+              console.error('Video failed to load:', item.url);
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'block';
+            }}
+          />
+          {/* Fallback for broken videos */}
+          <div 
+            className="hidden p-4 bg-gray-100 border border-gray-300 rounded-lg text-center max-w-xs"
+            style={{display: 'none'}}
+          >
+            <div className="text-gray-500 mb-2">
+              <svg className="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <p className="text-sm text-gray-600">Video yüklenemedi</p>
+            <p className="text-xs text-gray-500 mt-1">{item.name || "Bilinmeyen dosya"}</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Document attachments (PDF, DOC, etc.)
+    return (
+      <div key={index} className="mt-2">
+        <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm max-w-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center space-x-3">
+            {/* File icon */}
+            <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+              <svg
+                className="w-4 h-4 text-green-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            {/* File info */}
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-gray-900">
+                {item.mimeType === "application/pdf" ? "PDF Dosyası" :
+                 item.mimeType?.includes("word") ? "Word Dosyası" :
+                 item.mimeType?.includes("document") ? "Word Dosyası" :
+                 "Dosya"}
+              </div>
+              {/* Clickable short URL for download */}
+              {item.url && (
+                <a
+                  href={item.url}
+                  download
+                  className="text-xs text-blue-600 mt-1 hover:text-blue-800 cursor-pointer underline block truncate max-w-[200px]"
+                  title="İndirmek için tıklayın"
+                >
+                  {item.url.split('?')[0].split('/').pop().substring(0, 30)}...
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex-shrink-0 flex space-x-1">
+            {/* Copy URL button */}
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(item.url);
+                // Optional: Show a toast notification
+                console.log('URL kopyalandı:', item.url);
+              }}
+              className="text-blue-600 text-xs px-2 py-1 border border-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors"
+              title="URL'yi kopyala"
+            >
+              Kopyala
+            </button>
+            
+            {/* Open/Download button */}
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-600 text-xs px-2 py-1 border border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors"
+            >
+              Aç
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div
       className="flex-1 overflow-y-auto p-4 space-y-4"
@@ -170,6 +326,7 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
           </div>
         </div>
       )}
+
       {Object.entries(groupedMessages).map(([date, dateMessages]) => (
         <div key={date}>
           {/* Date separator */}
@@ -182,7 +339,7 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
           {/* Messages for this date */}
           {dateMessages.map((message, index) => (
             <div key={index} className="mb-4">
-              {message.type === "system" ? (
+              {message.type === "system" && !message.sender ? (
                 <div className="flex items-center justify-center mb-2">
                   <div className="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">
                     <span>{message.content}</span>
@@ -240,123 +397,20 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
                     )}
 
                     {/* Message content */}
-                    <div className="flex items-start space-x-2">
-                      <div className="flex-1">
-                        <p className="text-sm">{message.content}</p>
+                    {message.content && (
+                      <p className="text-sm">{message.content}</p>
+                    )}
 
-                        {/* Single File Display */}
-                        {message.attachments &&
-                          message.attachments.items &&
-                          message.attachments.items.length > 0 && (
-                            <div className="mt-2">
-                              {message.attachments.items.map((item, index) => {
-                                // Case 1: Image or Video files
-                                if (
-                                  item.mimeType &&
-                                  (item.mimeType.startsWith("image/") ||
-                                    item.mimeType.startsWith("video/"))
-                                ) {
-                                  return (
-                                    <div key={index} className="mt-2">
-                                      {item.mimeType.startsWith("image/") ? (
-                                        <img
-                                          src={item.url}
-                                          alt="Shared image"
-                                          className="max-w-xs rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                                          onClick={() =>
-                                            window.open(item.url, "_blank")
-                                          }
-                                        />
-                                      ) : (
-                                        <div className="relative max-w-xs">
-                                          <video
-                                            src={item.url}
-                                            controls
-                                            className="w-full rounded-lg"
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                }
-
-                                // Case 2: Document files - File card with folder icon and download button
-                                else {
-                                  // Function to clip URL with ellipsis
-                                  const clipUrl = (url, maxLength = 40) => {
-                                    if (url.length <= maxLength) return url;
-                                    const start = url.substring(0, 15);
-                                    const end = url.substring(url.length - 20);
-                                    return `${start}...${end}`;
-                                  };
-
-                                  return (
-                                    <div key={index} className="mt-2">
-                                      <div className="relative p-3 bg-white rounded-lg border border-gray-300 shadow-sm max-w-sm">
-                                        {/* Download button - top right corner */}
-                                        <a
-                                          href={item.url}
-                                          download
-                                          className="absolute top-2 right-2 p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                                          title="Download file"
-                                        >
-                                          <svg
-                                            className="w-4 h-4"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path
-                                              fillRule="evenodd"
-                                              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                                              clipRule="evenodd"
-                                            />
-                                          </svg>
-                                        </a>
-
-                                        {/* Main content area */}
-                                        <div className="flex items-center space-x-3 pr-8">
-                                          {/* Folder icon - left side */}
-                                          <div className="flex-shrink-0">
-                                            <svg
-                                              className="w-8 h-8 text-blue-500"
-                                              fill="currentColor"
-                                              viewBox="0 0 20 20"
-                                            >
-                                              <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                                            </svg>
-                                          </div>
-
-                                          {/* Clipped URL - right side */}
-                                          <div className="flex-1 min-w-0">
-                                            <a
-                                              href={item.url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="text-sm text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
-                                              title={item.url}
-                                            >
-                                              {clipUrl(item.url)}
-                                            </a>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                }
-                              })}
-
-                              {/* Caption display below all files */}
-                              {message.attachments.caption && (
-                                <div className="mt-2 pt-2 border-t border-gray-200">
-                                  <p className="text-sm text-gray-700">
-                                    {message.attachments.caption}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                    {/* Attachments */}
+                    {message.attachments &&
+                      message.attachments.items &&
+                      message.attachments.items.length > 0 && (
+                        <div className="mt-2">
+                          {message.attachments.items.map((item, idx) => 
+                            renderAttachment(item, idx)
                           )}
-                      </div>
-                    </div>
+                        </div>
+                      )}
 
                     {/* Time */}
                     <div

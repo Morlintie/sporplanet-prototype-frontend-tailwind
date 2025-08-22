@@ -46,6 +46,37 @@ function AdvertDetailPage() {
   });
   const [typingUsers, setTypingUsers] = useState([]); // Array of user IDs who are currently typing
 
+  // Helper function to process messages and convert base64 attachments to displayable URLs
+  const processMessageAttachments = (message) => {
+    if (!message.attachments || !message.attachments.items) {
+      return message;
+    }
+
+    const processedMessage = { ...message };
+    processedMessage.attachments.items = processedMessage.attachments.items.map(item => {
+      if (item.content && item.content.startsWith('data:')) {
+        // Already a data URL, use as-is
+        item.url = item.content;
+      } else if (item.content && !item.url) {
+        // If content is base64 without data URL prefix, create proper data URL
+        const mimeType = item.mimeType || 'application/octet-stream';
+        item.url = `data:${mimeType};base64,${item.content}`;
+      }
+      
+      // Ensure we have required properties for display
+      if (!item.name) {
+        item.name = 'Attachment';
+      }
+      if (!item.mimeType) {
+        item.mimeType = 'application/octet-stream';
+      }
+      
+      return item;
+    });
+
+    return processedMessage;
+  };
+
   // Turkish error message translation
   const translateErrorMessage = (message) => {
     const errorMessages = {
@@ -348,8 +379,9 @@ function AdvertDetailPage() {
               const messagesData = await messagesResponse.json();
               console.log("Messages fetched successfully:", messagesData);
 
-              // Set messages directly (no need to enrich since backend provides full user data)
-              setMessages(messagesData.messages || []);
+              // Process messages to convert base64 attachments to displayable URLs
+              const processedMessages = (messagesData.messages || []).map(processMessageAttachments);
+              setMessages(processedMessages);
             } else {
               // Handle message fetch errors (but don't fail the whole page)
               console.warn(
@@ -1067,9 +1099,12 @@ function AdvertDetailPage() {
         console.log("Received newMessage event:", data);
 
         if (data && data.message) {
-          // Add the new message to the messages array
-          setMessages((prevMessages) => [...prevMessages, data.message]);
-          console.log("New message added to chat:", data.message);
+          // Process message to convert base64 attachments to displayable URLs
+          const processedMessage = processMessageAttachments(data.message);
+          
+          // Add the processed message to the messages array
+          setMessages((prevMessages) => [...prevMessages, processedMessage]);
+          console.log("New message added to chat:", processedMessage);
         }
       });
 
@@ -1223,9 +1258,20 @@ function AdvertDetailPage() {
         messageData.attachments.items &&
         messageData.attachments.items.length > 0
       ) {
-        // User provided files - attachments already in correct format from MessageInput
+        // User provided files - need to format for backend
         console.log("Processing file attachments:", messageData.attachments);
-        requestBody.attachments = messageData.attachments;
+        
+        const attachmentsPayload = {
+          caption: messageData.attachments.caption || null,
+          items: messageData.attachments.items.map((file) => {
+            console.log("Processing file:", file);
+            return {
+              content: file.content || file.data || file.base64, // Handle different possible property names
+            };
+          }),
+        };
+
+        requestBody.attachments = attachmentsPayload;
         console.log("Final attachments payload:", requestBody.attachments);
       } else {
         // User provided only text content
@@ -2098,7 +2144,10 @@ function AdvertDetailPage() {
       if (messagesResponse.ok) {
         const messagesData = await messagesResponse.json();
         console.log("Messages refreshed successfully:", messagesData);
-        setMessages(messagesData.messages || []);
+        
+        // Process messages to convert base64 attachments to displayable URLs
+        const processedMessages = (messagesData.messages || []).map(processMessageAttachments);
+        setMessages(processedMessages);
       } else {
         console.warn("Failed to refresh messages:", messagesResponse.status);
         if (messagesResponse.status === 400) {
