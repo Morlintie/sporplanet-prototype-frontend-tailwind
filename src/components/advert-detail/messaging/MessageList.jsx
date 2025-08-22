@@ -14,38 +14,81 @@ const getInitials = (name) => {
   return cleanName[0]?.toUpperCase() || "?";
 };
 
-// Helper function to get file type label
-const getFileTypeLabel = (mimeType) => {
-  const typeLabels = {
-    "application/pdf": "PDF Dosyası",
-    "application/msword": "Word Dosyası",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-      "Word Dosyası",
+// Typing indicator component
+function TypingIndicator({ typingUsers, advert }) {
+  // Get user names from participant list based on typing user IDs
+  const getTypingUserNames = () => {
+    if (!advert || !advert.participants || !typingUsers) return [];
+
+    const typingUserNames = [];
+
+    typingUsers.forEach((userId) => {
+      const participant = advert.participants.find(
+        (p) => p.user && p.user._id === userId
+      );
+      if (participant) {
+        typingUserNames.push(participant.user.name);
+      }
+    });
+
+    return typingUserNames;
   };
-  return typeLabels[mimeType] || "Dosya";
-};
 
-// Helper function to truncate URL
-const truncateUrl = (url) => {
-  if (!url) return "";
-  const maxLength = 50;
-  if (url.length <= maxLength) return url;
+  const typingUserNames = getTypingUserNames();
 
-  // Extract filename from URL if possible
-  try {
-    const urlParts = url.split("/");
-    const filename = urlParts[urlParts.length - 1];
-    if (filename && filename.length < maxLength) {
-      return `.../${filename}`;
+  if (typingUserNames.length === 0) return null;
+
+  // Format typing text based on number of users
+  const getTypingText = () => {
+    if (typingUserNames.length === 1) {
+      const name = typingUserNames[0];
+      // Clip long names
+      const clippedName =
+        name.length > 15 ? `${name.substring(0, 15)}...` : name;
+      return `${clippedName} yazıyor`;
+    } else if (typingUserNames.length === 2) {
+      const name1 = typingUserNames[0];
+      const name2 = typingUserNames[1];
+      // Clip long names
+      const clippedName1 =
+        name1.length > 10 ? `${name1.substring(0, 10)}...` : name1;
+      const clippedName2 =
+        name2.length > 10 ? `${name2.substring(0, 10)}...` : name2;
+      return `${clippedName1} ve ${clippedName2} yazıyor`;
+    } else {
+      const name1 = typingUserNames[0];
+      const clippedName1 =
+        name1.length > 10 ? `${name1.substring(0, 10)}...` : name1;
+      return `${clippedName1} ve ${
+        typingUserNames.length - 1
+      } kişi daha yazıyor`;
     }
-  } catch (e) {
-    // Fallback to simple truncation
-  }
+  };
 
-  return `${url.substring(0, 15)}...${url.substring(url.length - 15)}`;
-};
+  return (
+    <div className="px-4 py-2">
+      <div className="flex items-center space-x-2">
+        {/* Typing animation dots */}
+        <div className="flex space-x-1">
+          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+          <div
+            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
+        </div>
 
-function MessageList({ messages, isUserOnline }) {
+        {/* Typing text */}
+        <span className="text-sm text-gray-500 italic">{getTypingText()}</span>
+      </div>
+    </div>
+  );
+}
+
+function MessageList({ messages, isUserOnline, typingUsers, advert }) {
   const messagesEndRef = useRef(null);
   const { user } = useAuth();
 
@@ -83,43 +126,6 @@ function MessageList({ messages, isUserOnline }) {
       return "Dün";
     } else {
       return date.toLocaleDateString("tr-TR");
-    }
-  };
-
-  const getMessageTypeIcon = (type) => {
-    switch (type) {
-      case "image":
-        return (
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
-      case "video":
-        return (
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
-      case "system":
-        return (
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
-      default:
-        return null;
     }
   };
 
@@ -178,8 +184,7 @@ function MessageList({ messages, isUserOnline }) {
             <div key={index} className="mb-4">
               {message.type === "system" ? (
                 <div className="flex items-center justify-center mb-2">
-                  <div className="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full flex items-center space-x-1">
-                    {getMessageTypeIcon(message.type)}
+                  <div className="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">
                     <span>{message.content}</span>
                   </div>
                 </div>
@@ -236,85 +241,120 @@ function MessageList({ messages, isUserOnline }) {
 
                     {/* Message content */}
                     <div className="flex items-start space-x-2">
-                      {message.type !== "text" && (
-                        <div className="mt-1">
-                          {getMessageTypeIcon(message.type)}
-                        </div>
-                      )}
                       <div className="flex-1">
                         <p className="text-sm">{message.content}</p>
 
-                        {/* Attachments */}
-                        {message.attachments && message.attachments.items && (
-                          <div className="mt-2 space-y-2">
-                            {message.attachments.items.map((item, idx) => (
-                              <div key={idx}>
-                                {item.mimeType.startsWith("image/") ? (
-                                  <img
-                                    src={item.url}
-                                    alt={item.name}
-                                    className="max-w-full h-auto rounded-lg"
-                                  />
-                                ) : item.mimeType.startsWith("video/") ? (
-                                  <video
-                                    src={item.url}
-                                    controls
-                                    className="max-w-full h-auto rounded-lg"
-                                  />
-                                ) : (
-                                  // File attachment (PDF, DOC, etc.) - Card layout like your image
-                                  <div className="flex items-center justify-between p-3 bg-gray-800 text-white rounded-lg border">
-                                    <div className="flex items-center space-x-3">
-                                      {/* File icon */}
-                                      <svg
-                                        className="w-5 h-5 text-white flex-shrink-0"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                          clipRule="evenodd"
+                        {/* Single File Display */}
+                        {message.attachments &&
+                          message.attachments.items &&
+                          message.attachments.items.length > 0 && (
+                            <div className="mt-2">
+                              {message.attachments.items.map((item, index) => {
+                                // Case 1: Image or Video files
+                                if (
+                                  item.mimeType &&
+                                  (item.mimeType.startsWith("image/") ||
+                                    item.mimeType.startsWith("video/"))
+                                ) {
+                                  return (
+                                    <div key={index} className="mt-2">
+                                      {item.mimeType.startsWith("image/") ? (
+                                        <img
+                                          src={item.url}
+                                          alt="Shared image"
+                                          className="max-w-xs rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                                          onClick={() =>
+                                            window.open(item.url, "_blank")
+                                          }
                                         />
-                                      </svg>
-
-                                      {/* File info */}
-                                      <div>
-                                        <div className="text-sm font-medium text-white">
-                                          {getFileTypeLabel(item.mimeType)}
+                                      ) : (
+                                        <div className="relative max-w-xs">
+                                          <video
+                                            src={item.url}
+                                            controls
+                                            className="w-full rounded-lg"
+                                          />
                                         </div>
-                                        <div className="text-xs text-gray-300">
-                                          {truncateUrl(item.url)}
+                                      )}
+                                    </div>
+                                  );
+                                }
+
+                                // Case 2: Document files - File card with folder icon and download button
+                                else {
+                                  // Function to clip URL with ellipsis
+                                  const clipUrl = (url, maxLength = 40) => {
+                                    if (url.length <= maxLength) return url;
+                                    const start = url.substring(0, 15);
+                                    const end = url.substring(url.length - 20);
+                                    return `${start}...${end}`;
+                                  };
+
+                                  return (
+                                    <div key={index} className="mt-2">
+                                      <div className="relative p-3 bg-white rounded-lg border border-gray-300 shadow-sm max-w-sm">
+                                        {/* Download button - top right corner */}
+                                        <a
+                                          href={item.url}
+                                          download
+                                          className="absolute top-2 right-2 p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                          title="Download file"
+                                        >
+                                          <svg
+                                            className="w-4 h-4"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                          >
+                                            <path
+                                              fillRule="evenodd"
+                                              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                              clipRule="evenodd"
+                                            />
+                                          </svg>
+                                        </a>
+
+                                        {/* Main content area */}
+                                        <div className="flex items-center space-x-3 pr-8">
+                                          {/* Folder icon - left side */}
+                                          <div className="flex-shrink-0">
+                                            <svg
+                                              className="w-8 h-8 text-blue-500"
+                                              fill="currentColor"
+                                              viewBox="0 0 20 20"
+                                            >
+                                              <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                                            </svg>
+                                          </div>
+
+                                          {/* Clipped URL - right side */}
+                                          <div className="flex-1 min-w-0">
+                                            <a
+                                              href={item.url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="text-sm text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                                              title={item.url}
+                                            >
+                                              {clipUrl(item.url)}
+                                            </a>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
+                                  );
+                                }
+                              })}
 
-                                    {/* Open button */}
-                                    <div className="flex-shrink-0">
-                                      <a
-                                        href={item.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-white text-sm px-2 py-1 border border-white rounded hover:bg-white hover:text-gray-800 transition-colors"
-                                      >
-                                        [Aç]
-                                      </a>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-
-                            {/* Caption - moved outside the loop and improved styling */}
-                            {message.attachments.caption && (
-                              <div className="mt-2 pt-2 border-t border-gray-200">
-                                <p className="text-sm text-gray-700">
-                                  {message.attachments.caption}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        )}
+                              {/* Caption display below all files */}
+                              {message.attachments.caption && (
+                                <div className="mt-2 pt-2 border-t border-gray-200">
+                                  <p className="text-sm text-gray-700">
+                                    {message.attachments.caption}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          )}
                       </div>
                     </div>
 
@@ -338,6 +378,12 @@ function MessageList({ messages, isUserOnline }) {
           ))}
         </div>
       ))}
+
+      {/* Typing indicator */}
+      {typingUsers && typingUsers.length > 0 && (
+        <TypingIndicator typingUsers={typingUsers} advert={advert} />
+      )}
+
       <div ref={messagesEndRef} />
     </div>
   );
