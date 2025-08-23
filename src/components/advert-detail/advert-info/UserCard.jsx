@@ -116,7 +116,7 @@ function UserCard({
           {/* Loading spinner overlay */}
           {isProcessingRequest && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-full">
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-600 border-t-transparent bg-white rounded-full shadow-lg"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-600 border-t-transparent bg-white  shadow-lg"></div>
             </div>
           )}
           {user.goalKeeper && (
@@ -159,7 +159,6 @@ function UserCard({
             >
               {user.name || "İsimsiz Kullanıcı"}
             </a>
-
 
             {/* Admin badge */}
             {!isAdvertOwner(user._id) && isUserAdmin(user._id) && (
