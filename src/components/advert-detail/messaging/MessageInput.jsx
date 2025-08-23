@@ -62,14 +62,20 @@ function MessageInput({
     }
   };
 
-  // Cleanup typing timeout on unmount
+  // Cleanup typing timeout and object URLs on unmount
   useEffect(() => {
     return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
+      // Clean up any remaining object URLs to prevent memory leaks
+      attachments.forEach((file) => {
+        if (file.url && file.url.startsWith('blob:')) {
+          URL.revokeObjectURL(file.url);
+        }
+      });
     };
-  }, []);
+  }, [attachments]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -104,6 +110,13 @@ function MessageInput({
 
       await onSendMessage(messageData);
       setNewMessage("");
+      
+      // Clean up object URLs before clearing attachments
+      attachments.forEach((file) => {
+        if (file.url && file.url.startsWith('blob:')) {
+          URL.revokeObjectURL(file.url);
+        }
+      });
       setAttachments([]);
 
       // Clear file input
@@ -140,8 +153,13 @@ function MessageInput({
       'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp',
       // Documents  
       'application/pdf', 
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      // Word documents - various formats
+      'application/msword', // .doc
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+      'application/vnd.ms-word', // Alternative .doc MIME type
+      'application/vnd.ms-word.document.macroEnabled.12', // .docm
+      'application/vnd.ms-word.template.macroEnabled.12', // .dotm
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.template', // .dotx
       // Videos
       'video/mp4', 'video/webm', 'video/ogg'
     ];
@@ -151,7 +169,8 @@ function MessageInput({
         return new Promise((resolve, reject) => {
           // Check file type
           if (!allowedTypes.includes(file.type)) {
-            reject(new Error(`Desteklenmeyen dosya türü: ${file.name}. Desteklenen türler: PNG, JPG, GIF, WebP, PDF, DOC, DOCX, MP4, WebM, OGG`));
+            console.log(`File MIME type: ${file.type} for file: ${file.name}`);
+            reject(new Error(`Desteklenmeyen dosya türü: ${file.name} (${file.type}). Desteklenen türler: PNG, JPG, GIF, WebP, PDF, DOC, DOCX ve diğer Word formatları, MP4, WebM, OGG`));
             return;
           }
 
@@ -193,6 +212,12 @@ function MessageInput({
   };
 
   const removeAttachment = () => {
+    // Clean up object URLs to prevent memory leaks
+    attachments.forEach((file) => {
+      if (file.url && file.url.startsWith('blob:')) {
+        URL.revokeObjectURL(file.url);
+      }
+    });
     setAttachments([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -200,9 +225,14 @@ function MessageInput({
   };
 
   const removeIndividualFile = (indexToRemove) => {
-    setAttachments((prev) =>
-      prev.filter((_, index) => index !== indexToRemove)
-    );
+    setAttachments((prev) => {
+      const fileToRemove = prev[indexToRemove];
+      // Clean up object URL to prevent memory leaks
+      if (fileToRemove && fileToRemove.url && fileToRemove.url.startsWith('blob:')) {
+        URL.revokeObjectURL(fileToRemove.url);
+      }
+      return prev.filter((_, index) => index !== indexToRemove);
+    });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -349,7 +379,7 @@ function MessageInput({
           <input
             ref={fileInputRef}
             type="file"
-            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.doc,.docx,.mp4,.webm,.ogg,image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,video/*"
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.doc,.docx,.docm,.dotx,.dotm,.mp4,.webm,.ogg,image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-word,video/*"
             onChange={handleFileSelect}
             className="hidden"
             multiple

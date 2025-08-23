@@ -172,11 +172,11 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
     // Image attachments
     if (item.mimeType && item.mimeType.startsWith("image/")) {
       return (
-        <div key={index} className="mt-2">
+        <div key={index}>
           <img
             src={item.url}
             alt={item.name || "Image"}
-            className="max-w-xs rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+            className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => window.open(item.url, "_blank")}
             onError={(e) => {
               console.error('Image failed to load:', item.url);
@@ -186,16 +186,15 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
           />
           {/* Fallback for broken images */}
           <div 
-            className="hidden p-4 bg-gray-100 border border-gray-300 rounded-lg text-center max-w-xs"
+            className="hidden p-2 bg-gray-100 border border-gray-300 rounded-lg text-center w-full h-24 flex flex-col justify-center"
             style={{display: 'none'}}
           >
-            <div className="text-gray-500 mb-2">
-              <svg className="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+            <div className="text-gray-500 mb-1">
+              <svg className="w-6 h-6 mx-auto" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
             </div>
-            <p className="text-sm text-gray-600">Resim yüklenemedi</p>
-            <p className="text-xs text-gray-500 mt-1">{item.name || "Bilinmeyen dosya"}</p>
+            <p className="text-xs text-gray-600">Resim yüklenemedi</p>
           </div>
         </div>
       );
@@ -346,84 +345,102 @@ function MessageList({ messages, isUserOnline, typingUsers, advert }) {
                   </div>
                 </div>
               ) : (
-                <div
-                  className={`flex items-end space-x-2 ${
-                    isCurrentUser(message.sender)
-                      ? "justify-end flex-row-reverse space-x-reverse"
-                      : "justify-start"
-                  }`}
-                >
-                  {/* Profile picture */}
-                  <div className="flex-shrink-0 relative">
-                    {message.sender?.profilePicture?.url ? (
-                      <img
-                        src={message.sender.profilePicture.url}
-                        alt={message.sender?.name || "User"}
-                        className="w-8 h-8 rounded-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          e.target.nextSibling.style.display = "flex";
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className={`w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-medium ${
-                        message.sender?.profilePicture?.url ? "hidden" : "flex"
-                      }`}
-                    >
-                      {getInitials(message.sender?.name)}
-                    </div>
-
-                    {/* Online indicator for message sender */}
-                    {isUserOnline &&
-                      message.sender?._id &&
-                      isUserOnline(message.sender._id) && (
-                        <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
-                      )}
-                  </div>
-
+                <div className="w-full">
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    className={`flex items-start space-x-2 mb-1 ${
                       isCurrentUser(message.sender)
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-200 text-gray-800"
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
-                    {/* Sender name (only for non-current user messages) */}
+                    {/* Profile picture for others only */}
                     {!isCurrentUser(message.sender) && (
-                      <p className="text-xs text-gray-600 mb-1 font-medium">
-                        {message.sender?.name || "Kullanıcı"}
-                      </p>
-                    )}
-
-                    {/* Message content */}
-                    {message.content && (
-                      <p className="text-sm">{message.content}</p>
-                    )}
-
-                    {/* Attachments */}
-                    {message.attachments &&
-                      message.attachments.items &&
-                      message.attachments.items.length > 0 && (
-                        <div className="mt-2">
-                          {message.attachments.items.map((item, idx) => 
-                            renderAttachment(item, idx)
-                          )}
+                      <div className="flex-shrink-0 relative">
+                        {message.sender?.profilePicture?.url ? (
+                          <img
+                            src={message.sender.profilePicture.url}
+                            alt={message.sender?.name || "User"}
+                            className="w-8 h-8 rounded-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className={`w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-medium ${
+                            message.sender?.profilePicture?.url ? "hidden" : "flex"
+                          }`}
+                        >
+                          {getInitials(message.sender?.name)}
                         </div>
-                      )}
 
-                    {/* Time */}
+                        {/* Online indicator for message sender */}
+                        {isUserOnline &&
+                          message.sender?._id &&
+                          isUserOnline(message.sender._id) && (
+                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
+                          )}
+                      </div>
+                    )}
+
                     <div
-                      className={`text-xs mt-1 ${
+                      className={`max-w-xs lg:max-w-md px-3 py-2 rounded-2xl shadow-sm ${
                         isCurrentUser(message.sender)
-                          ? "text-green-100"
-                          : "text-gray-500"
+                          ? "bg-green-500 text-white rounded-br-md"
+                          : "bg-white text-gray-800 rounded-bl-md border"
                       }`}
                     >
-                      {formatMessageTime(message.createdAt)}
-                      {message.archived && (
-                        <span className="ml-2 opacity-60">(Arşivlendi)</span>
+                      {/* Sender name (only for non-current user messages) */}
+                      {!isCurrentUser(message.sender) && (
+                        <p className="text-xs text-blue-600 mb-1 font-medium">
+                          {message.sender?.name || "Kullanıcı"}
+                        </p>
                       )}
+
+                      {/* Message content */}
+                      {message.content && (
+                        <p className="text-sm">{message.content}</p>
+                      )}
+
+                      {/* Attachments */}
+                      {message.attachments &&
+                        message.attachments.items &&
+                        message.attachments.items.length > 0 && (
+                          <div className="mt-2">
+                            {/* Render images in a grid for side-by-side display */}
+                            {message.attachments.items.filter(item => 
+                              item.mimeType && item.mimeType.startsWith("image/")
+                            ).length > 0 && (
+                              <div className="grid grid-cols-3 gap-1">
+                                {message.attachments.items
+                                  .filter(item => item.mimeType && item.mimeType.startsWith("image/"))
+                                  .map((item, idx) => renderAttachment(item, idx))
+                                }
+                              </div>
+                            )}
+                            
+                            {/* Render non-image attachments normally */}
+                            {message.attachments.items
+                              .filter(item => !item.mimeType || !item.mimeType.startsWith("image/"))
+                              .map((item, idx) => renderAttachment(item, idx))
+                            }
+                          </div>
+                        )}
+
+                      {/* Time */}
+                      <div
+                        className={`text-xs mt-1 text-right ${
+                          isCurrentUser(message.sender)
+                            ? "text-green-100"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {formatMessageTime(message.createdAt)}
+                        {message.archived && (
+                          <span className="ml-2 opacity-60">(Arşivlendi)</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

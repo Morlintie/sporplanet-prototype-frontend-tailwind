@@ -1,9 +1,10 @@
 function MessageHeader({ advert }) {
   return (
     <div
-      className="text-white py-3 px-4 sticky top-0 z-10 shadow-lg"
+      className="text-white py-4 px-4 sticky top-0 z-10 shadow-xl border-b-2 border-green-300"
       style={{
-        backgroundImage: "linear-gradient(135deg, #065f46, #10b981)",
+        background: "linear-gradient(135deg, #064e3b, #059669)",
+        backdropFilter: "blur(10px)"
       }}
     >
       <div className="text-left">

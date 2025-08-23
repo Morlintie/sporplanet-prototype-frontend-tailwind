@@ -160,22 +160,6 @@ function UserCard({
               {user.name || "İsimsiz Kullanıcı"}
             </a>
 
-            {/* Owner crown */}
-            {isAdvertOwner(user._id) && (
-              <div className="flex items-center space-x-1">
-                <svg
-                  className="w-4 h-4 text-yellow-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M5 4a1 1 0 00-.584 1.806L10 9.172l5.584-3.366A1 1 0 0015 4h-1.172l-1.414-1.414a1 1 0 00-1.414 0L10 3.586 9 2.586a1 1 0 00-1.414 0L6.172 4H5z" />
-                  <path d="M4 7l6 3.5L16 7v7a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" />
-                </svg>
-                <span className="text-xs text-yellow-600 font-medium">
-                  Sahibi
-                </span>
-              </div>
-            )}
 
             {/* Admin badge */}
             {!isAdvertOwner(user._id) && isUserAdmin(user._id) && (
