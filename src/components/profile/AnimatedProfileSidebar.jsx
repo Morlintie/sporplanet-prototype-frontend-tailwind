@@ -7,7 +7,7 @@ import AuthRequiredPopup from "../shared/AuthRequiredPopup";
 function AnimatedProfileSidebar() {
   const { isSidebarOpen, closeSidebar, activeSection, setSection } =
     useProfileSidebar();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, getTotalUnseenCount } = useAuth();
   const navigate = useNavigate();
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [communityDropdownOpen, setCommunityDropdownOpen] = useState(false);
@@ -363,7 +363,15 @@ function AnimatedProfileSidebar() {
                     <span className="font-medium">{item.label}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    
+                    {/* Show unseen message count for İlanlarım */}
+                    {item.id === "listings" &&
+                      isAuthenticated &&
+                      getTotalUnseenCount() > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                          {getTotalUnseenCount()}
+                        </span>
+                      )}
+
                     {item.hasDropdown && (
                       <svg
                         className={`w-4 h-4 transition-transform ${

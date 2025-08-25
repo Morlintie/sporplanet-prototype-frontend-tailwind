@@ -153,7 +153,7 @@ function Login() {
 
       // Success - use AuthContext to set user data and redirect
       if (data.user) {
-        authLogin(data.user);
+        await authLogin(data.user);
 
         // Check if user is archived and show success message appropriately
         if (data.user.isDeleted === true && data.user.archived === true) {
@@ -303,7 +303,7 @@ function Login() {
       // Check if user data is returned (user exists and login successful)
       if (data.user) {
         // Use AuthContext login function to set user data
-        authLogin(data.user);
+        await authLogin(data.user);
 
         // Check if user is archived and show success message appropriately
         if (data.user.isDeleted === true && data.user.archived === true) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
@@ -27,6 +27,7 @@ function AdvertDetailPage() {
   // Track if we've joined a room to avoid duplicate joins
   const hasJoinedRoomRef = useRef(false);
   const currentAdvertIdRef = useRef(null);
+  const hasJoinedRealRoomRef = useRef(false); // Track if we've joined the real room
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,6 +47,47 @@ function AdvertDetailPage() {
   });
   const [typingUsers, setTypingUsers] = useState([]); // Array of user IDs who are currently typing
 
+  // Helper function to check if current user is a participant of the advert
+  const isUserParticipant = (advertData, currentUser) => {
+    if (!advertData || !currentUser) {
+      console.log("AdvertDetailPage: isUserParticipant - missing data", {
+        hasAdvert: !!advertData,
+        hasUser: !!currentUser,
+      });
+      return false;
+    }
+
+    // IMPORTANT: Only check if user is in participants array
+    // Users in waitingList are NOT participants yet and should NOT join real room
+    const isParticipant =
+      advertData.participants &&
+      advertData.participants.some(
+        (participant) =>
+          participant.user && participant.user._id === currentUser._id
+      );
+
+    // Check if user is in waiting list (should NOT be in real room)
+    const isInWaitingList =
+      advertData.waitingList &&
+      advertData.waitingList.some(
+        (waiting) => waiting.user && waiting.user._id === currentUser._id
+      );
+
+    console.log("AdvertDetailPage: isUserParticipant check", {
+      userId: currentUser._id,
+      advertId: advertData._id,
+      isParticipant,
+      isInWaitingList,
+      participantsCount: advertData.participants?.length || 0,
+      waitingListCount: advertData.waitingList?.length || 0,
+      createdBy: advertData.createdBy,
+    });
+
+    // Only return true if user is actually in participants array
+    // Being in waitingList does NOT make them a participant
+    return isParticipant;
+  };
+
   // Helper function to process messages and convert base64 attachments to displayable URLs
   const processMessageAttachments = (message) => {
     if (!message.attachments || !message.attachments.items) {
@@ -53,26 +95,28 @@ function AdvertDetailPage() {
     }
 
     const processedMessage = { ...message };
-    processedMessage.attachments.items = processedMessage.attachments.items.map(item => {
-      if (item.content && item.content.startsWith('data:')) {
-        // Already a data URL, use as-is
-        item.url = item.content;
-      } else if (item.content && !item.url) {
-        // If content is base64 without data URL prefix, create proper data URL
-        const mimeType = item.mimeType || 'application/octet-stream';
-        item.url = `data:${mimeType};base64,${item.content}`;
+    processedMessage.attachments.items = processedMessage.attachments.items.map(
+      (item) => {
+        if (item.content && item.content.startsWith("data:")) {
+          // Already a data URL, use as-is
+          item.url = item.content;
+        } else if (item.content && !item.url) {
+          // If content is base64 without data URL prefix, create proper data URL
+          const mimeType = item.mimeType || "application/octet-stream";
+          item.url = `data:${mimeType};base64,${item.content}`;
+        }
+
+        // Ensure we have required properties for display
+        if (!item.name) {
+          item.name = "Attachment";
+        }
+        if (!item.mimeType) {
+          item.mimeType = "application/octet-stream";
+        }
+
+        return item;
       }
-      
-      // Ensure we have required properties for display
-      if (!item.name) {
-        item.name = 'Attachment';
-      }
-      if (!item.mimeType) {
-        item.mimeType = 'application/octet-stream';
-      }
-      
-      return item;
-    });
+    );
 
     return processedMessage;
   };
@@ -251,6 +295,9 @@ function AdvertDetailPage() {
     setLoading(true);
     setError(null);
 
+    // Reset real room tracking for new advert
+    hasJoinedRealRoomRef.current = false;
+
     // Immediate scroll to top
     scrollToTop();
   }, [advertId]); // Depend on advertId to refresh when URL changes
@@ -380,7 +427,9 @@ function AdvertDetailPage() {
               console.log("Messages fetched successfully:", messagesData);
 
               // Process messages to convert base64 attachments to displayable URLs
-              const processedMessages = (messagesData.messages || []).map(processMessageAttachments);
+              const processedMessages = (messagesData.messages || []).map(
+                processMessageAttachments
+              );
               setMessages(processedMessages);
             } else {
               // Handle message fetch errors (but don't fail the whole page)
@@ -481,6 +530,130 @@ function AdvertDetailPage() {
       }
     };
   }, [isAuthenticated, isNotificationConnected, advertId]);
+
+  // Track THIS user's participant status to prevent false triggers
+  const currentUserParticipantStatusRef = useRef(null);
+
+  // ULTIMATE FIX: Only react when THIS user's participant status ACTUALLY changes
+  useEffect(() => {
+    // Basic requirements check
+    if (
+      !isAuthenticated ||
+      !isChatConnected ||
+      !advertId ||
+      !user ||
+      !user._id
+    ) {
+      if (hasJoinedRealRoomRef.current) {
+        console.log(
+          `🚀 ULTIMATE: LEAVE real room - Basic requirements not met`
+        );
+        emitChatEvent("leaveRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = false;
+        currentUserParticipantStatusRef.current = null;
+      }
+      return;
+    }
+
+    // Cleanup when component unmounts
+    return () => {
+      if (hasJoinedRealRoomRef.current && isChatConnected && user && advertId) {
+        console.log(
+          `🚀 ULTIMATE: LEAVE real room - Component unmount/page leave`
+        );
+        emitChatEvent("leaveRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = false;
+        currentUserParticipantStatusRef.current = null;
+      }
+    };
+  }, [isAuthenticated, isChatConnected, advertId, user?._id]); // NO advert dependency!
+
+  // BULLETPROOF: Create a stable reference that only changes when participant IDs change
+  const participantUserIds = useMemo(() => {
+    if (!advert?.participants) return [];
+    return advert.participants
+      .map((p) => p.user?._id)
+      .filter(Boolean)
+      .sort(); // Sort for stable comparison
+  }, [advert?.participants]);
+
+  // BULLETPROOF: Only run when participant user IDs actually change
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      !isChatConnected ||
+      !advertId ||
+      !user ||
+      !user._id
+    ) {
+      return;
+    }
+
+    const isCurrentlyParticipant = participantUserIds.includes(user._id);
+    const previousStatus = currentUserParticipantStatusRef.current;
+
+    console.log(
+      `🚀 BULLETPROOF: Participant status check for user ${user._id}`,
+      {
+        advertId,
+        isCurrentlyParticipant,
+        previousStatus,
+        hasJoinedRealRoom: hasJoinedRealRoomRef.current,
+        participantUserIds,
+        actualChange:
+          previousStatus !== null && previousStatus !== isCurrentlyParticipant,
+      }
+    );
+
+    // ONLY act if THIS user's status ACTUALLY changed
+    if (previousStatus !== null && previousStatus !== isCurrentlyParticipant) {
+      if (isCurrentlyParticipant && !hasJoinedRealRoomRef.current) {
+        // User became participant → JOIN
+        console.log(
+          `🚀 BULLETPROOF: JOIN - User ${user._id} became participant`
+        );
+        emitChatEvent("joinRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = true;
+      } else if (!isCurrentlyParticipant && hasJoinedRealRoomRef.current) {
+        // User lost participation → LEAVE
+        console.log(
+          `🚀 BULLETPROOF: LEAVE - User ${user._id} lost participation`
+        );
+        emitChatEvent("leaveRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = false;
+      }
+    }
+    // Initial join for existing participants
+    else if (
+      previousStatus === null &&
+      isCurrentlyParticipant &&
+      !hasJoinedRealRoomRef.current
+    ) {
+      console.log(
+        `🚀 BULLETPROOF: INITIAL JOIN - User ${user._id} is participant`
+      );
+      emitChatEvent("joinRealRoom", {
+        roomId: advertId,
+        userId: user._id,
+      });
+      hasJoinedRealRoomRef.current = true;
+    }
+
+    // Update status AFTER checking
+    currentUserParticipantStatusRef.current = isCurrentlyParticipant;
+  }, [participantUserIds, user?._id]); // Only when participant IDs or current user changes
 
   // Listen for advertRequest WebSocket events (new join requests)
   useEffect(() => {
@@ -586,6 +759,8 @@ function AdvertDetailPage() {
             console.log("Updated advert with accepted request:", updatedAdvert);
             return updatedAdvert;
           });
+
+          // Real room joining will be handled by main useEffect when advert state updates
 
           // Show success notification
           showNotification(
@@ -753,6 +928,8 @@ function AdvertDetailPage() {
               };
             });
 
+            // Real room leaving will be handled by main useEffect when advert state updates
+
             // Show notification for user expulsion
             showNotification(`${data.user.name} ilandan atıldı`, "warning");
           }
@@ -819,6 +996,8 @@ function AdvertDetailPage() {
               // Regular participant left (scenario 4)
               showNotification(`${data.user.name} ilandan ayrıldı`, "info");
             }
+
+            // Real room leaving will be handled by main useEffect when advert state updates
 
             console.log("Updated advert after leave:", updatedAdvert);
             return updatedAdvert;
@@ -947,6 +1126,8 @@ function AdvertDetailPage() {
               );
               return updatedAdvert;
             });
+
+            // Real room joining will be handled by main useEffect when advert state updates
 
             // Show notification for private link participation
             showNotification(
@@ -1101,7 +1282,7 @@ function AdvertDetailPage() {
         if (data && data.message) {
           // Process message to convert base64 attachments to displayable URLs
           const processedMessage = processMessageAttachments(data.message);
-          
+
           // Add the processed message to the messages array
           setMessages((prevMessages) => [...prevMessages, processedMessage]);
           console.log("New message added to chat:", processedMessage);
@@ -1260,7 +1441,7 @@ function AdvertDetailPage() {
       ) {
         // User provided files - need to format for backend
         console.log("Processing file attachments:", messageData.attachments);
-        
+
         const attachmentsPayload = {
           caption: messageData.attachments.caption || null,
           items: messageData.attachments.items.map((file) => {
@@ -2144,9 +2325,11 @@ function AdvertDetailPage() {
       if (messagesResponse.ok) {
         const messagesData = await messagesResponse.json();
         console.log("Messages refreshed successfully:", messagesData);
-        
+
         // Process messages to convert base64 attachments to displayable URLs
-        const processedMessages = (messagesData.messages || []).map(processMessageAttachments);
+        const processedMessages = (messagesData.messages || []).map(
+          processMessageAttachments
+        );
         setMessages(processedMessages);
       } else {
         console.warn("Failed to refresh messages:", messagesResponse.status);
