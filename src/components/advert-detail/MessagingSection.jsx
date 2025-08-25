@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import MessageHeader from "./messaging/MessageHeader";
 import MessageList from "./messaging/MessageList";
@@ -21,12 +21,15 @@ function MessagingSection({
   const [sending, setSending] = useState(false);
   const { user } = useAuth();
 
-  // Debug log to check if typing props are received
-  console.log("MessagingSection: Received typing props", {
-    hasOnStartTyping: !!onStartTyping,
-    hasOnStopTyping: !!onStopTyping,
-    typingUsersCount: typingUsers?.length || 0,
-  });
+  // Debug log to check if typing props are received (only when typing users change)
+  useEffect(() => {
+    if (typingUsers && typingUsers.length > 0) {
+      console.log("MessagingSection: Typing users updated", {
+        typingUsersCount: typingUsers.length,
+        typingUserIds: typingUsers,
+      });
+    }
+  }, [typingUsers]);
 
   // Determine user's access state to the advert messaging
   const getUserAccessState = () => {

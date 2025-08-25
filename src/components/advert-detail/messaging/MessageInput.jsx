@@ -13,69 +13,66 @@ function MessageInput({
 }) {
   const [newMessage, setNewMessage] = useState("");
   const [attachments, setAttachments] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);
+  const [isCurrentlyTyping, setIsCurrentlyTyping] = useState(false); // Track if user is currently in typing state
   const fileInputRef = useRef(null);
-  const typingTimeoutRef = useRef(null);
 
-  // Handle typing stop
-  const handleTypingStop = useCallback(() => {
-    if (isTyping && onStopTyping) {
-      setIsTyping(false);
-      onStopTyping();
-    }
+  // Handle typing state changes based on input content
+  const handleTypingStateChange = useCallback(
+    (inputValue) => {
+      const hasContent = inputValue.trim() !== "";
 
-    // Clear timeout
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
-    }
-  }, [isTyping, onStopTyping]);
-
-  // Handle typing start
-  const handleTypingStart = useCallback(() => {
-    if (!isTyping && onStartTyping) {
-      setIsTyping(true);
-      onStartTyping();
-    }
-
-    // Clear existing timeout
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
-    // Set timeout to stop typing after 3 seconds of inactivity
-    typingTimeoutRef.current = setTimeout(() => {
-      handleTypingStop();
-    }, 3000);
-  }, [isTyping, onStartTyping, handleTypingStop]);
+      // If input has content and user is not currently typing, start typing
+      if (hasContent && !isCurrentlyTyping) {
+        console.log("MessageInput: Starting typing state");
+        setIsCurrentlyTyping(true);
+        if (onStartTyping) {
+          onStartTyping();
+        }
+      }
+      // If input is empty and user is currently typing, stop typing
+      else if (!hasContent && isCurrentlyTyping) {
+        console.log("MessageInput: Stopping typing state");
+        setIsCurrentlyTyping(false);
+        if (onStopTyping) {
+          onStopTyping();
+        }
+      }
+      // If the state hasn't changed, don't do anything (prevent infinite loops)
+    },
+    [isCurrentlyTyping, onStartTyping, onStopTyping]
+  );
 
   // Handle message input change
   const handleMessageChange = (e) => {
     const value = e.target.value;
     setNewMessage(value);
 
-    // Handle typing events
-    if (value.trim() !== "") {
-      handleTypingStart();
-    } else {
-      handleTypingStop();
-    }
+    // Handle typing state based on input content
+    handleTypingStateChange(value);
   };
 
-  // Cleanup typing timeout and object URLs on unmount
+  // Cleanup object URLs on unmount and stop typing if component unmounts while typing
   useEffect(() => {
     return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
       // Clean up any remaining object URLs to prevent memory leaks
       attachments.forEach((file) => {
-        if (file.url && file.url.startsWith('blob:')) {
+        if (file.url && file.url.startsWith("blob:")) {
           URL.revokeObjectURL(file.url);
         }
       });
     };
   }, [attachments]);
+
+  // Separate effect for cleanup typing on unmount only
+  useEffect(() => {
+    return () => {
+      // Stop typing if component unmounts while user is typing
+      if (isCurrentlyTyping && onStopTyping) {
+        console.log("MessageInput: Component unmounting, stopping typing");
+        onStopTyping();
+      }
+    };
+  }, []); // Empty dependency array - only run on unmount
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -109,11 +106,20 @@ function MessageInput({
       console.log("MessageInput sending data:", messageData);
 
       await onSendMessage(messageData);
+
+      // Stop typing first (before clearing input)
+      if (isCurrentlyTyping && onStopTyping) {
+        console.log("MessageInput: Stopping typing due to message send");
+        setIsCurrentlyTyping(false);
+        onStopTyping();
+      }
+
+      // Clear input field
       setNewMessage("");
-      
+
       // Clean up object URLs before clearing attachments
       attachments.forEach((file) => {
-        if (file.url && file.url.startsWith('blob:')) {
+        if (file.url && file.url.startsWith("blob:")) {
           URL.revokeObjectURL(file.url);
         }
       });
@@ -123,9 +129,6 @@ function MessageInput({
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
-      // Stop typing when message is sent
-      handleTypingStop();
     } catch (err) {
       console.error("Error sending message:", err);
       alert("Mesaj gönderilirken bir hata oluştu.");
@@ -150,18 +153,24 @@ function MessageInput({
     // Allowed file types
     const allowedTypes = [
       // Images
-      'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp',
-      // Documents  
-      'application/pdf', 
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/gif",
+      "image/webp",
+      // Documents
+      "application/pdf",
       // Word documents - various formats
-      'application/msword', // .doc
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-      'application/vnd.ms-word', // Alternative .doc MIME type
-      'application/vnd.ms-word.document.macroEnabled.12', // .docm
-      'application/vnd.ms-word.template.macroEnabled.12', // .dotm
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.template', // .dotx
+      "application/msword", // .doc
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+      "application/vnd.ms-word", // Alternative .doc MIME type
+      "application/vnd.ms-word.document.macroEnabled.12", // .docm
+      "application/vnd.ms-word.template.macroEnabled.12", // .dotm
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.template", // .dotx
       // Videos
-      'video/mp4', 'video/webm', 'video/ogg'
+      "video/mp4",
+      "video/webm",
+      "video/ogg",
     ];
 
     try {
@@ -170,14 +179,22 @@ function MessageInput({
           // Check file type
           if (!allowedTypes.includes(file.type)) {
             console.log(`File MIME type: ${file.type} for file: ${file.name}`);
-            reject(new Error(`Desteklenmeyen dosya türü: ${file.name} (${file.type}). Desteklenen türler: PNG, JPG, GIF, WebP, PDF, DOC, DOCX ve diğer Word formatları, MP4, WebM, OGG`));
+            reject(
+              new Error(
+                `Desteklenmeyen dosya türü: ${file.name} (${file.type}). Desteklenen türler: PNG, JPG, GIF, WebP, PDF, DOC, DOCX ve diğer Word formatları, MP4, WebM, OGG`
+              )
+            );
             return;
           }
 
           // Check file size (max 100MB)
           const maxSize = 100 * 1024 * 1024; // 100MB in bytes
           if (file.size > maxSize) {
-            reject(new Error(`Dosya çok büyük: ${file.name}. Maksimum dosya boyutu 100MB.`));
+            reject(
+              new Error(
+                `Dosya çok büyük: ${file.name}. Maksimum dosya boyutu 100MB.`
+              )
+            );
             return;
           }
 
@@ -214,7 +231,7 @@ function MessageInput({
   const removeAttachment = () => {
     // Clean up object URLs to prevent memory leaks
     attachments.forEach((file) => {
-      if (file.url && file.url.startsWith('blob:')) {
+      if (file.url && file.url.startsWith("blob:")) {
         URL.revokeObjectURL(file.url);
       }
     });
@@ -228,7 +245,11 @@ function MessageInput({
     setAttachments((prev) => {
       const fileToRemove = prev[indexToRemove];
       // Clean up object URL to prevent memory leaks
-      if (fileToRemove && fileToRemove.url && fileToRemove.url.startsWith('blob:')) {
+      if (
+        fileToRemove &&
+        fileToRemove.url &&
+        fileToRemove.url.startsWith("blob:")
+      ) {
         URL.revokeObjectURL(fileToRemove.url);
       }
       return prev.filter((_, index) => index !== indexToRemove);
@@ -265,7 +286,11 @@ function MessageInput({
               className="text-red-500 hover:text-red-700 p-1 rounded"
               title="Tüm dosyaları kaldır"
             >
-              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+              <svg
+                className="w-3 h-3 sm:w-4 sm:h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
                 <path
                   fillRule="evenodd"
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -286,33 +311,73 @@ function MessageInput({
                   {/* File type icon */}
                   <div className="flex-shrink-0">
                     {file.mimeType.startsWith("image/") ? (
-                      <div className="w-6 h-6 rounded flex items-center justify-center" style={{backgroundColor: '#dcfce7'}}>
-                        <svg className="w-3 h-3" style={{color: '#16a34a'}} fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                      <div
+                        className="w-6 h-6 rounded flex items-center justify-center"
+                        style={{ backgroundColor: "#dcfce7" }}
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          style={{ color: "#16a34a" }}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     ) : file.mimeType.startsWith("video/") ? (
-                      <div className="w-6 h-6 rounded flex items-center justify-center" style={{backgroundColor: '#dcfce7'}}>
-                        <svg className="w-3 h-3" style={{color: '#16a34a'}} fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" clipRule="evenodd" />
+                      <div
+                        className="w-6 h-6 rounded flex items-center justify-center"
+                        style={{ backgroundColor: "#dcfce7" }}
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          style={{ color: "#16a34a" }}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     ) : (
-                      <div className="w-6 h-6 rounded flex items-center justify-center" style={{backgroundColor: '#dcfce7'}}>
-                        <svg className="w-3 h-3" style={{color: '#16a34a'}} fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                      <div
+                        className="w-6 h-6 rounded flex items-center justify-center"
+                        style={{ backgroundColor: "#dcfce7" }}
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          style={{ color: "#16a34a" }}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     )}
                   </div>
-                  
+
                   {/* File info */}
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                    <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {formatFileSize(file.size)}
+                    </p>
                   </div>
                 </div>
-                
+
                 {/* Remove individual file button */}
                 <button
                   type="button"
@@ -320,8 +385,16 @@ function MessageInput({
                   className="text-red-500 hover:text-red-700 p-1 ml-2 flex-shrink-0"
                   title="Bu dosyayı kaldır"
                 >
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <svg
+                    className="w-3 h-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
@@ -331,7 +404,10 @@ function MessageInput({
       )}
 
       {/* Mobile-optimized Input Form */}
-      <form onSubmit={handleSendMessage} className="flex flex-col sm:flex-row gap-2 sm:gap-2">
+      <form
+        onSubmit={handleSendMessage}
+        className="flex flex-col sm:flex-row gap-2 sm:gap-2"
+      >
         {/* Text input - full width on mobile */}
         <div className="flex-1">
           <textarea
@@ -367,7 +443,11 @@ function MessageInput({
                 : "Dosya ekle"
             }
           >
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-5 h-5 sm:w-6 sm:h-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
@@ -398,7 +478,9 @@ function MessageInput({
           {/* Send button - optimized for mobile */}
           <button
             type="submit"
-            disabled={(!newMessage.trim() && attachments.length === 0) || sending}
+            disabled={
+              (!newMessage.trim() && attachments.length === 0) || sending
+            }
             className="px-3 py-2 sm:px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 sm:gap-2 flex-shrink-0"
           >
             {sending ? (
@@ -408,7 +490,11 @@ function MessageInput({
               </>
             ) : (
               <>
-                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-3 h-3 sm:w-4 sm:h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                 </svg>
                 <span className="text-xs sm:text-sm">Gönder</span>
