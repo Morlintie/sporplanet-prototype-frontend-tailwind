@@ -399,6 +399,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Clear unseen messages for a specific advert (when user visits advert page)
+  const clearUnseenMessagesForAdvert = (advertId) => {
+    if (advertId && unseenMessages[advertId]) {
+      setUnseenMessages((prev) => {
+        const updated = { ...prev };
+        delete updated[advertId];
+        return updated;
+      });
+      console.log(`Cleared unseen messages for advert: ${advertId}`);
+    }
+  };
+
   const value = {
     // Core state
     user,
@@ -412,6 +424,7 @@ export const AuthProvider = ({ children }) => {
     participantAdverts,
     getTotalUnseenCount,
     refreshUnseenMessages,
+    clearUnseenMessagesForAdvert,
 
     // Actions
     checkAuth,

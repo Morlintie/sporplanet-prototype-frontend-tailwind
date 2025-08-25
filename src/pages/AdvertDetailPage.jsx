@@ -21,7 +21,12 @@ function AdvertDetailPage() {
     isChatConnected,
     listenForChatEvent,
   } = useWebSocket();
-  const { isAuthenticated, user, loading: authLoading } = useAuth();
+  const {
+    isAuthenticated,
+    user,
+    loading: authLoading,
+    clearUnseenMessagesForAdvert,
+  } = useAuth();
   const [advert, setAdvert] = useState(null);
 
   // Track if we've joined a room to avoid duplicate joins
@@ -431,6 +436,9 @@ function AdvertDetailPage() {
                 processMessageAttachments
               );
               setMessages(processedMessages);
+
+              // Clear unseen messages for this advert since user is viewing them
+              clearUnseenMessagesForAdvert(advertId);
             } else {
               // Handle message fetch errors (but don't fail the whole page)
               console.warn(
@@ -2331,6 +2339,9 @@ function AdvertDetailPage() {
           processMessageAttachments
         );
         setMessages(processedMessages);
+
+        // Clear unseen messages for this advert since user is viewing them
+        clearUnseenMessagesForAdvert(advertId);
       } else {
         console.warn("Failed to refresh messages:", messagesResponse.status);
         if (messagesResponse.status === 400) {
