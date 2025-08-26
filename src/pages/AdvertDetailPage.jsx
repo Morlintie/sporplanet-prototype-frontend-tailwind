@@ -51,6 +51,8 @@ function AdvertDetailPage() {
     customMessage: null,
   });
   const [typingUsers, setTypingUsers] = useState([]); // Array of user IDs who are currently typing
+  const [editingMessageId, setEditingMessageId] = useState(null); // ID of message being edited
+  const [editingText, setEditingText] = useState(""); // Text content for editing
 
   // Helper function to check if current user is a participant of the advert
   const isUserParticipant = (advertData, currentUser) => {
@@ -199,6 +201,26 @@ function AdvertDetailPage() {
       "Not Found": "İlan bulunamadı",
       "Too Many Requests": "Çok fazla istek. Lütfen biraz bekleyin.",
       "Service Unavailable": "Servis şu anda kullanılamıyor",
+      "You are not allowed to delete this message":
+        "Bu mesajı silme yetkiniz yok",
+      "Message not found or you are not the sender":
+        "Mesaj bulunamadı veya bu mesajın gönderen kişisi değilsiniz",
+      "Please provide required data.": "Gerekli bilgileri sağlayın",
+      "Message not found or you are not the sender.":
+        "Mesaj bulunamadı veya bu mesajın gönderen kişisi değilsiniz",
+      "You are not allowed to delete this message.":
+        "Bu mesajı silme yetkiniz yok",
+      "You are not allowed to edit this message":
+        "Bu mesajı düzenleme yetkiniz yok",
+      "You are not allowed to edit this message.":
+        "Bu mesajı düzenleme yetkiniz yok",
+      "Message not found or you are not the sender for edit":
+        "Mesaj bulunamadı veya bu mesajın gönderen kişisi değilsiniz",
+      "Text content cannot be empty": "Metin içeriği boş olamaz",
+      "Please provide text content": "Lütfen metin içeriği girin",
+      "Please provide required data": "Gerekli bilgileri sağlayın",
+      "Message not found": "Mesaj bulunamadı",
+      "Failed to update message": "Mesaj güncellenemedi",
     };
 
     return errorMessages[message] || message || "Beklenmeyen bir hata oluştu";
@@ -1370,6 +1392,69 @@ function AdvertDetailPage() {
     }
   }, [isChatConnected, advertId, listenForChatEvent]);
 
+  // Listen for messageDeleted WebSocket events (message was deleted)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up messageDeleted listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("messageDeleted", (data) => {
+        console.log("Received messageDeleted event:", data);
+
+        if (data && data.messageId) {
+          // Remove the deleted message from the messages array
+          setMessages((prevMessages) => {
+            const updatedMessages = prevMessages.filter(
+              (message) => message._id !== data.messageId
+            );
+            console.log(
+              `Message ${data.messageId} removed from chat`,
+              `Messages count: ${prevMessages.length} -> ${updatedMessages.length}`
+            );
+            return updatedMessages;
+          });
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
+  // Listen for editMessage WebSocket events (message was edited)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up editMessage listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("editMessage", (data) => {
+        console.log("Received editMessage event:", data);
+
+        if (data && data.message) {
+          // Update the edited message in the messages array
+          setMessages((prevMessages) => {
+            const updatedMessages = prevMessages.map((message) => {
+              if (message._id === data.message._id) {
+                // Process the updated message to convert base64 attachments to displayable URLs
+                const processedMessage = processMessageAttachments(
+                  data.message
+                );
+                console.log(
+                  `Message ${data.message._id} updated in chat`,
+                  processedMessage
+                );
+                return processedMessage;
+              }
+              return message;
+            });
+            return updatedMessages;
+          });
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
   // Handle typing events
   const handleStartTyping = () => {
     console.log("AdvertDetailPage: handleStartTyping called", {
@@ -2485,6 +2570,251 @@ function AdvertDetailPage() {
     });
   };
 
+  // Handle delete message
+  const handleDeleteMessage = async (messageId) => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      showAuthRequiredPopup("message", "Mesajı silmek için giriş yapmalısınız");
+      return;
+    }
+
+    try {
+      console.log("Deleting message:", messageId);
+
+      const response = await fetch(`/api/v1/advert-chat/delete/${messageId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to delete message";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Please provide required data";
+              break;
+            case 401:
+              errorMessage = "Unauthorized";
+              break;
+            case 403:
+              errorMessage = "You are not allowed to delete this message";
+              break;
+            case 404:
+              errorMessage = "Message not found or you are not the sender";
+              break;
+            case 429:
+              errorMessage = "Too Many Requests";
+              break;
+            case 500:
+              errorMessage = "Internal Server Error";
+              break;
+            case 503:
+              errorMessage = "Service Unavailable";
+              break;
+            default:
+              errorMessage = `Server error: ${response.status}`;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Message deleted successfully:", data.message);
+
+      // Show success notification
+      showNotification("Mesaj başarıyla silindi", "success");
+
+      // Note: The message will be removed from UI via WebSocket listener (messageDeleted event)
+      // No need to manually remove it here since backend will emit it to all connected users
+    } catch (err) {
+      console.error("Error deleting message:", err);
+
+      // Enhanced error handling with Turkish messages
+      let errorMessage = "Mesaj silinirken hata oluştu";
+
+      if (err.message.includes("Network Error") || !navigator.onLine) {
+        errorMessage = "Bağlantı hatası. İnternet bağlantınızı kontrol edin";
+      } else if (err.message) {
+        errorMessage = translateErrorMessage(err.message);
+      }
+
+      showNotification(errorMessage, "error");
+    }
+  };
+
+  // Handle edit message - start inline editing
+  const handleEditMessage = (messageId) => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      showAuthRequiredPopup(
+        "message",
+        "Mesajı düzenlemek için giriş yapmalısınız"
+      );
+      return;
+    }
+
+    try {
+      console.log("Edit message clicked for messageId:", messageId);
+
+      // Find the message to edit
+      const messageToEdit = messages.find((msg) => msg._id === messageId);
+      if (!messageToEdit) {
+        showNotification("Düzenlenecek mesaj bulunamadı", "error");
+        return;
+      }
+
+      // Determine what to edit based on message type
+      let initialText = "";
+      if (
+        messageToEdit.attachments &&
+        messageToEdit.attachments.items &&
+        messageToEdit.attachments.items.length > 0
+      ) {
+        // Message has files - edit caption
+        initialText = messageToEdit.attachments.caption || "";
+      } else {
+        // Text-only message - edit content
+        initialText = messageToEdit.content || "";
+      }
+
+      // Set inline editing state
+      setEditingMessageId(messageId);
+      setEditingText(initialText);
+    } catch (err) {
+      console.error("Error starting edit message:", err);
+      showNotification("Mesaj düzenleme başlatılırken hata oluştu", "error");
+    }
+  };
+
+  // Handle saving edited message
+  const handleSaveEditedMessage = async (messageId) => {
+    if (!editingMessageId || !messageId) return;
+
+    // Check authentication
+    if (!isAuthenticated) {
+      showAuthRequiredPopup(
+        "message",
+        "Mesajı düzenlemek için giriş yapmalısınız"
+      );
+      return;
+    }
+
+    // Validate text content - backend expects non-empty textContent
+    const trimmedText = editingText.trim();
+    if (!trimmedText) {
+      // Find the message to check if it has attachments
+      const messageToEdit = messages.find((msg) => msg._id === messageId);
+      const hasAttachments =
+        messageToEdit?.attachments &&
+        messageToEdit.attachments.items &&
+        messageToEdit.attachments.items.length > 0;
+      const errorMsg = hasAttachments
+        ? "Açıklama boş olamaz. En az bir karakter yazmalısınız."
+        : "Metin içeriği boş olamaz";
+      showNotification(errorMsg, "error");
+      return;
+    }
+
+    try {
+      console.log("Saving edited message:", messageId);
+
+      const response = await fetch(`/api/v1/advert-chat/edit/${messageId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          textContent: trimmedText,
+        }),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to edit message";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Please provide required data";
+              break;
+            case 401:
+              errorMessage = "Unauthorized";
+              break;
+            case 403:
+              errorMessage = "You are not allowed to edit this message";
+              break;
+            case 404:
+              errorMessage = "Message not found";
+              break;
+            case 429:
+              errorMessage = "Too Many Requests";
+              break;
+            case 500:
+              errorMessage = "Internal Server Error";
+              break;
+            case 503:
+              errorMessage = "Service Unavailable";
+              break;
+            default:
+              errorMessage = `Server error: ${response.status}`;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Message edited successfully:", data.message);
+
+      // Show success notification
+      showNotification("Mesaj başarıyla düzenlendi", "success");
+
+      // Clear editing state
+      setEditingMessageId(null);
+      setEditingText("");
+
+      // Note: The message will be updated in UI via WebSocket listener (editMessage event)
+      // No need to manually update it here since backend will emit it to all connected users
+    } catch (err) {
+      console.error("Error editing message:", err);
+
+      // Enhanced error handling with Turkish messages
+      let errorMessage = "Mesaj düzenlenirken hata oluştu";
+
+      if (err.message.includes("Network Error") || !navigator.onLine) {
+        errorMessage = "Bağlantı hatası. İnternet bağlantınızı kontrol edin";
+      } else if (err.message) {
+        errorMessage = translateErrorMessage(err.message);
+      }
+
+      showNotification(errorMessage, "error");
+    }
+  };
+
+  // Handle canceling edit
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  // Handle editing text change
+  const handleEditTextChange = (newText) => {
+    setEditingText(newText);
+  };
+
   if (loading) {
     return (
       <>
@@ -2560,6 +2890,13 @@ function AdvertDetailPage() {
                   typingUsers={typingUsers}
                   onStartTyping={handleStartTyping}
                   onStopTyping={handleStopTyping}
+                  onDeleteMessage={handleDeleteMessage}
+                  onEditMessage={handleEditMessage}
+                  editingMessageId={editingMessageId}
+                  editingText={editingText}
+                  onEditTextChange={handleEditTextChange}
+                  onSaveEdit={handleSaveEditedMessage}
+                  onCancelEdit={handleCancelEdit}
                 />
               </div>
             </div>
@@ -2601,6 +2938,13 @@ function AdvertDetailPage() {
                 typingUsers={typingUsers}
                 onStartTyping={handleStartTyping}
                 onStopTyping={handleStopTyping}
+                onDeleteMessage={handleDeleteMessage}
+                onEditMessage={handleEditMessage}
+                editingMessageId={editingMessageId}
+                editingText={editingText}
+                onEditTextChange={handleEditTextChange}
+                onSaveEdit={handleSaveEditedMessage}
+                onCancelEdit={handleCancelEdit}
               />
             </div>
           </div>
