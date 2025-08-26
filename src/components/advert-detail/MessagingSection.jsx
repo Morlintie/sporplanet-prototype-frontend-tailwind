@@ -17,6 +17,13 @@ function MessagingSection({
   typingUsers,
   onStartTyping,
   onStopTyping,
+  onDeleteMessage,
+  onEditMessage,
+  editingMessageId,
+  editingText,
+  onEditTextChange,
+  onSaveEdit,
+  onCancelEdit,
 }) {
   const [sending, setSending] = useState(false);
   const { user } = useAuth();
@@ -100,6 +107,13 @@ function MessagingSection({
             isUserOnline={isUserOnline}
             typingUsers={typingUsers}
             advert={advert}
+            onDeleteMessage={onDeleteMessage}
+            onEditMessage={onEditMessage}
+            editingMessageId={editingMessageId}
+            editingText={editingText}
+            onEditTextChange={onEditTextChange}
+            onSaveEdit={onSaveEdit}
+            onCancelEdit={onCancelEdit}
           />
           <MessageInput
             onSendMessage={handleSendMessageWithState}

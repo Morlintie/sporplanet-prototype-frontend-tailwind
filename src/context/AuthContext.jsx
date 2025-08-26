@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showArchivedUserPopup, setShowArchivedUserPopup] = useState(false);
+  const [unseenMessages, setUnseenMessages] = useState({});
+  const [participantAdverts, setParticipantAdverts] = useState([]);
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -50,6 +52,38 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
+  // Fetch unseen messages for authenticated user
+  const fetchUnseenMessages = async () => {
+    try {
+      const response = await fetch("/api/v1/advert-chat/unseen", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Unseen messages fetched successfully:", data);
+        setUnseenMessages(data.messages || {});
+        setParticipantAdverts(data.adverts || []);
+      } else {
+        // Handle error cases
+        const errorData = await response.json();
+        console.error("Failed to fetch unseen messages:", errorData);
+        // Don't show error to user for this, just log it
+        setUnseenMessages({});
+        setParticipantAdverts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching unseen messages:", error);
+      // Don't show error to user for this, just log it
+      setUnseenMessages({});
+      setParticipantAdverts([]);
+    }
+  };
+
   // Check user authentication status
   const checkAuth = async () => {
     setLoading(true);
@@ -76,9 +110,14 @@ export const AuthProvider = ({ children }) => {
           if (data.user.isDeleted === true && data.user.archived === true) {
             setShowArchivedUserPopup(true);
           }
+
+          // Fetch unseen messages for authenticated user
+          await fetchUnseenMessages();
         } else {
           setUser(null);
           setIsAuthenticated(false);
+          setUnseenMessages({});
+          setParticipantAdverts([]);
         }
       } else {
         // Handle different error cases
@@ -157,18 +196,23 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setError(null);
       setLoading(false);
+      setUnseenMessages({});
+      setParticipantAdverts([]);
 
       console.log("User authentication state cleared");
     }
   };
 
   // Login function (for after successful authentication)
-  const login = (userData) => {
+  const login = async (userData) => {
     setUser(userData);
     setIsAuthenticated(true);
     setError(null);
     setLoading(false);
     console.log("User logged in successfully:", userData);
+
+    // Fetch unseen messages after login
+    await fetchUnseenMessages();
   };
 
   // Update user data (for profile updates)
@@ -244,6 +288,8 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setLoading(false);
       setShowArchivedUserPopup(false);
+      setUnseenMessages({});
+      setParticipantAdverts([]);
       console.log("User authentication state cleared");
     }
   };
@@ -338,6 +384,33 @@ export const AuthProvider = ({ children }) => {
     return getProfilePictureUrl(user?.profilePicture);
   };
 
+  // Calculate total unseen messages count
+  const getTotalUnseenCount = () => {
+    return Object.values(unseenMessages).reduce(
+      (total, count) => total + count,
+      0
+    );
+  };
+
+  // Refresh unseen messages (can be called from components)
+  const refreshUnseenMessages = async () => {
+    if (isAuthenticated) {
+      await fetchUnseenMessages();
+    }
+  };
+
+  // Clear unseen messages for a specific advert (when user visits advert page)
+  const clearUnseenMessagesForAdvert = (advertId) => {
+    if (advertId && unseenMessages[advertId]) {
+      setUnseenMessages((prev) => {
+        const updated = { ...prev };
+        delete updated[advertId];
+        return updated;
+      });
+      console.log(`Cleared unseen messages for advert: ${advertId}`);
+    }
+  };
+
   const value = {
     // Core state
     user,
@@ -345,6 +418,13 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     showArchivedUserPopup,
+
+    // Unseen messages state
+    unseenMessages,
+    participantAdverts,
+    getTotalUnseenCount,
+    refreshUnseenMessages,
+    clearUnseenMessagesForAdvert,
 
     // Actions
     checkAuth,

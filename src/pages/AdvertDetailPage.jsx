@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
@@ -21,12 +21,18 @@ function AdvertDetailPage() {
     isChatConnected,
     listenForChatEvent,
   } = useWebSocket();
-  const { isAuthenticated, user, loading: authLoading } = useAuth();
+  const {
+    isAuthenticated,
+    user,
+    loading: authLoading,
+    clearUnseenMessagesForAdvert,
+  } = useAuth();
   const [advert, setAdvert] = useState(null);
 
   // Track if we've joined a room to avoid duplicate joins
   const hasJoinedRoomRef = useRef(false);
   const currentAdvertIdRef = useRef(null);
+  const hasJoinedRealRoomRef = useRef(false); // Track if we've joined the real room
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +51,49 @@ function AdvertDetailPage() {
     customMessage: null,
   });
   const [typingUsers, setTypingUsers] = useState([]); // Array of user IDs who are currently typing
+  const [editingMessageId, setEditingMessageId] = useState(null); // ID of message being edited
+  const [editingText, setEditingText] = useState(""); // Text content for editing
+
+  // Helper function to check if current user is a participant of the advert
+  const isUserParticipant = (advertData, currentUser) => {
+    if (!advertData || !currentUser) {
+      console.log("AdvertDetailPage: isUserParticipant - missing data", {
+        hasAdvert: !!advertData,
+        hasUser: !!currentUser,
+      });
+      return false;
+    }
+
+    // IMPORTANT: Only check if user is in participants array
+    // Users in waitingList are NOT participants yet and should NOT join real room
+    const isParticipant =
+      advertData.participants &&
+      advertData.participants.some(
+        (participant) =>
+          participant.user && participant.user._id === currentUser._id
+      );
+
+    // Check if user is in waiting list (should NOT be in real room)
+    const isInWaitingList =
+      advertData.waitingList &&
+      advertData.waitingList.some(
+        (waiting) => waiting.user && waiting.user._id === currentUser._id
+      );
+
+    console.log("AdvertDetailPage: isUserParticipant check", {
+      userId: currentUser._id,
+      advertId: advertData._id,
+      isParticipant,
+      isInWaitingList,
+      participantsCount: advertData.participants?.length || 0,
+      waitingListCount: advertData.waitingList?.length || 0,
+      createdBy: advertData.createdBy,
+    });
+
+    // Only return true if user is actually in participants array
+    // Being in waitingList does NOT make them a participant
+    return isParticipant;
+  };
 
   // Helper function to process messages and convert base64 attachments to displayable URLs
   const processMessageAttachments = (message) => {
@@ -53,26 +102,28 @@ function AdvertDetailPage() {
     }
 
     const processedMessage = { ...message };
-    processedMessage.attachments.items = processedMessage.attachments.items.map(item => {
-      if (item.content && item.content.startsWith('data:')) {
-        // Already a data URL, use as-is
-        item.url = item.content;
-      } else if (item.content && !item.url) {
-        // If content is base64 without data URL prefix, create proper data URL
-        const mimeType = item.mimeType || 'application/octet-stream';
-        item.url = `data:${mimeType};base64,${item.content}`;
+    processedMessage.attachments.items = processedMessage.attachments.items.map(
+      (item) => {
+        if (item.content && item.content.startsWith("data:")) {
+          // Already a data URL, use as-is
+          item.url = item.content;
+        } else if (item.content && !item.url) {
+          // If content is base64 without data URL prefix, create proper data URL
+          const mimeType = item.mimeType || "application/octet-stream";
+          item.url = `data:${mimeType};base64,${item.content}`;
+        }
+
+        // Ensure we have required properties for display
+        if (!item.name) {
+          item.name = "Attachment";
+        }
+        if (!item.mimeType) {
+          item.mimeType = "application/octet-stream";
+        }
+
+        return item;
       }
-      
-      // Ensure we have required properties for display
-      if (!item.name) {
-        item.name = 'Attachment';
-      }
-      if (!item.mimeType) {
-        item.mimeType = 'application/octet-stream';
-      }
-      
-      return item;
-    });
+    );
 
     return processedMessage;
   };
@@ -150,6 +201,26 @@ function AdvertDetailPage() {
       "Not Found": "İlan bulunamadı",
       "Too Many Requests": "Çok fazla istek. Lütfen biraz bekleyin.",
       "Service Unavailable": "Servis şu anda kullanılamıyor",
+      "You are not allowed to delete this message":
+        "Bu mesajı silme yetkiniz yok",
+      "Message not found or you are not the sender":
+        "Mesaj bulunamadı veya bu mesajın gönderen kişisi değilsiniz",
+      "Please provide required data.": "Gerekli bilgileri sağlayın",
+      "Message not found or you are not the sender.":
+        "Mesaj bulunamadı veya bu mesajın gönderen kişisi değilsiniz",
+      "You are not allowed to delete this message.":
+        "Bu mesajı silme yetkiniz yok",
+      "You are not allowed to edit this message":
+        "Bu mesajı düzenleme yetkiniz yok",
+      "You are not allowed to edit this message.":
+        "Bu mesajı düzenleme yetkiniz yok",
+      "Message not found or you are not the sender for edit":
+        "Mesaj bulunamadı veya bu mesajın gönderen kişisi değilsiniz",
+      "Text content cannot be empty": "Metin içeriği boş olamaz",
+      "Please provide text content": "Lütfen metin içeriği girin",
+      "Please provide required data": "Gerekli bilgileri sağlayın",
+      "Message not found": "Mesaj bulunamadı",
+      "Failed to update message": "Mesaj güncellenemedi",
     };
 
     return errorMessages[message] || message || "Beklenmeyen bir hata oluştu";
@@ -250,6 +321,9 @@ function AdvertDetailPage() {
     setMessages([]);
     setLoading(true);
     setError(null);
+
+    // Reset real room tracking for new advert
+    hasJoinedRealRoomRef.current = false;
 
     // Immediate scroll to top
     scrollToTop();
@@ -380,8 +454,13 @@ function AdvertDetailPage() {
               console.log("Messages fetched successfully:", messagesData);
 
               // Process messages to convert base64 attachments to displayable URLs
-              const processedMessages = (messagesData.messages || []).map(processMessageAttachments);
+              const processedMessages = (messagesData.messages || []).map(
+                processMessageAttachments
+              );
               setMessages(processedMessages);
+
+              // Clear unseen messages for this advert since user is viewing them
+              clearUnseenMessagesForAdvert(advertId);
             } else {
               // Handle message fetch errors (but don't fail the whole page)
               console.warn(
@@ -481,6 +560,130 @@ function AdvertDetailPage() {
       }
     };
   }, [isAuthenticated, isNotificationConnected, advertId]);
+
+  // Track THIS user's participant status to prevent false triggers
+  const currentUserParticipantStatusRef = useRef(null);
+
+  // ULTIMATE FIX: Only react when THIS user's participant status ACTUALLY changes
+  useEffect(() => {
+    // Basic requirements check
+    if (
+      !isAuthenticated ||
+      !isChatConnected ||
+      !advertId ||
+      !user ||
+      !user._id
+    ) {
+      if (hasJoinedRealRoomRef.current) {
+        console.log(
+          `🚀 ULTIMATE: LEAVE real room - Basic requirements not met`
+        );
+        emitChatEvent("leaveRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = false;
+        currentUserParticipantStatusRef.current = null;
+      }
+      return;
+    }
+
+    // Cleanup when component unmounts
+    return () => {
+      if (hasJoinedRealRoomRef.current && isChatConnected && user && advertId) {
+        console.log(
+          `🚀 ULTIMATE: LEAVE real room - Component unmount/page leave`
+        );
+        emitChatEvent("leaveRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = false;
+        currentUserParticipantStatusRef.current = null;
+      }
+    };
+  }, [isAuthenticated, isChatConnected, advertId, user?._id]); // NO advert dependency!
+
+  // BULLETPROOF: Create a stable reference that only changes when participant IDs change
+  const participantUserIds = useMemo(() => {
+    if (!advert?.participants) return [];
+    return advert.participants
+      .map((p) => p.user?._id)
+      .filter(Boolean)
+      .sort(); // Sort for stable comparison
+  }, [advert?.participants]);
+
+  // BULLETPROOF: Only run when participant user IDs actually change
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      !isChatConnected ||
+      !advertId ||
+      !user ||
+      !user._id
+    ) {
+      return;
+    }
+
+    const isCurrentlyParticipant = participantUserIds.includes(user._id);
+    const previousStatus = currentUserParticipantStatusRef.current;
+
+    console.log(
+      `🚀 BULLETPROOF: Participant status check for user ${user._id}`,
+      {
+        advertId,
+        isCurrentlyParticipant,
+        previousStatus,
+        hasJoinedRealRoom: hasJoinedRealRoomRef.current,
+        participantUserIds,
+        actualChange:
+          previousStatus !== null && previousStatus !== isCurrentlyParticipant,
+      }
+    );
+
+    // ONLY act if THIS user's status ACTUALLY changed
+    if (previousStatus !== null && previousStatus !== isCurrentlyParticipant) {
+      if (isCurrentlyParticipant && !hasJoinedRealRoomRef.current) {
+        // User became participant → JOIN
+        console.log(
+          `🚀 BULLETPROOF: JOIN - User ${user._id} became participant`
+        );
+        emitChatEvent("joinRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = true;
+      } else if (!isCurrentlyParticipant && hasJoinedRealRoomRef.current) {
+        // User lost participation → LEAVE
+        console.log(
+          `🚀 BULLETPROOF: LEAVE - User ${user._id} lost participation`
+        );
+        emitChatEvent("leaveRealRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+        hasJoinedRealRoomRef.current = false;
+      }
+    }
+    // Initial join for existing participants
+    else if (
+      previousStatus === null &&
+      isCurrentlyParticipant &&
+      !hasJoinedRealRoomRef.current
+    ) {
+      console.log(
+        `🚀 BULLETPROOF: INITIAL JOIN - User ${user._id} is participant`
+      );
+      emitChatEvent("joinRealRoom", {
+        roomId: advertId,
+        userId: user._id,
+      });
+      hasJoinedRealRoomRef.current = true;
+    }
+
+    // Update status AFTER checking
+    currentUserParticipantStatusRef.current = isCurrentlyParticipant;
+  }, [participantUserIds, user?._id]); // Only when participant IDs or current user changes
 
   // Listen for advertRequest WebSocket events (new join requests)
   useEffect(() => {
@@ -586,6 +789,8 @@ function AdvertDetailPage() {
             console.log("Updated advert with accepted request:", updatedAdvert);
             return updatedAdvert;
           });
+
+          // Real room joining will be handled by main useEffect when advert state updates
 
           // Show success notification
           showNotification(
@@ -753,6 +958,8 @@ function AdvertDetailPage() {
               };
             });
 
+            // Real room leaving will be handled by main useEffect when advert state updates
+
             // Show notification for user expulsion
             showNotification(`${data.user.name} ilandan atıldı`, "warning");
           }
@@ -819,6 +1026,8 @@ function AdvertDetailPage() {
               // Regular participant left (scenario 4)
               showNotification(`${data.user.name} ilandan ayrıldı`, "info");
             }
+
+            // Real room leaving will be handled by main useEffect when advert state updates
 
             console.log("Updated advert after leave:", updatedAdvert);
             return updatedAdvert;
@@ -947,6 +1156,8 @@ function AdvertDetailPage() {
               );
               return updatedAdvert;
             });
+
+            // Real room joining will be handled by main useEffect when advert state updates
 
             // Show notification for private link participation
             showNotification(
@@ -1101,7 +1312,7 @@ function AdvertDetailPage() {
         if (data && data.message) {
           // Process message to convert base64 attachments to displayable URLs
           const processedMessage = processMessageAttachments(data.message);
-          
+
           // Add the processed message to the messages array
           setMessages((prevMessages) => [...prevMessages, processedMessage]);
           console.log("New message added to chat:", processedMessage);
@@ -1172,6 +1383,69 @@ function AdvertDetailPage() {
               updatedTypingUsers
             );
             return updatedTypingUsers;
+          });
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
+  // Listen for messageDeleted WebSocket events (message was deleted)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up messageDeleted listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("messageDeleted", (data) => {
+        console.log("Received messageDeleted event:", data);
+
+        if (data && data.messageId) {
+          // Remove the deleted message from the messages array
+          setMessages((prevMessages) => {
+            const updatedMessages = prevMessages.filter(
+              (message) => message._id !== data.messageId
+            );
+            console.log(
+              `Message ${data.messageId} removed from chat`,
+              `Messages count: ${prevMessages.length} -> ${updatedMessages.length}`
+            );
+            return updatedMessages;
+          });
+        }
+      });
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isChatConnected, advertId, listenForChatEvent]);
+
+  // Listen for editMessage WebSocket events (message was edited)
+  useEffect(() => {
+    if (isChatConnected && advertId) {
+      console.log("Setting up editMessage listener for advert:", advertId);
+
+      const cleanup = listenForChatEvent("editMessage", (data) => {
+        console.log("Received editMessage event:", data);
+
+        if (data && data.message) {
+          // Update the edited message in the messages array
+          setMessages((prevMessages) => {
+            const updatedMessages = prevMessages.map((message) => {
+              if (message._id === data.message._id) {
+                // Process the updated message to convert base64 attachments to displayable URLs
+                const processedMessage = processMessageAttachments(
+                  data.message
+                );
+                console.log(
+                  `Message ${data.message._id} updated in chat`,
+                  processedMessage
+                );
+                return processedMessage;
+              }
+              return message;
+            });
+            return updatedMessages;
           });
         }
       });
@@ -1260,7 +1534,7 @@ function AdvertDetailPage() {
       ) {
         // User provided files - need to format for backend
         console.log("Processing file attachments:", messageData.attachments);
-        
+
         const attachmentsPayload = {
           caption: messageData.attachments.caption || null,
           items: messageData.attachments.items.map((file) => {
@@ -2144,10 +2418,15 @@ function AdvertDetailPage() {
       if (messagesResponse.ok) {
         const messagesData = await messagesResponse.json();
         console.log("Messages refreshed successfully:", messagesData);
-        
+
         // Process messages to convert base64 attachments to displayable URLs
-        const processedMessages = (messagesData.messages || []).map(processMessageAttachments);
+        const processedMessages = (messagesData.messages || []).map(
+          processMessageAttachments
+        );
         setMessages(processedMessages);
+
+        // Clear unseen messages for this advert since user is viewing them
+        clearUnseenMessagesForAdvert(advertId);
       } else {
         console.warn("Failed to refresh messages:", messagesResponse.status);
         if (messagesResponse.status === 400) {
@@ -2291,6 +2570,251 @@ function AdvertDetailPage() {
     });
   };
 
+  // Handle delete message
+  const handleDeleteMessage = async (messageId) => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      showAuthRequiredPopup("message", "Mesajı silmek için giriş yapmalısınız");
+      return;
+    }
+
+    try {
+      console.log("Deleting message:", messageId);
+
+      const response = await fetch(`/api/v1/advert-chat/delete/${messageId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to delete message";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Please provide required data";
+              break;
+            case 401:
+              errorMessage = "Unauthorized";
+              break;
+            case 403:
+              errorMessage = "You are not allowed to delete this message";
+              break;
+            case 404:
+              errorMessage = "Message not found or you are not the sender";
+              break;
+            case 429:
+              errorMessage = "Too Many Requests";
+              break;
+            case 500:
+              errorMessage = "Internal Server Error";
+              break;
+            case 503:
+              errorMessage = "Service Unavailable";
+              break;
+            default:
+              errorMessage = `Server error: ${response.status}`;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Message deleted successfully:", data.message);
+
+      // Show success notification
+      showNotification("Mesaj başarıyla silindi", "success");
+
+      // Note: The message will be removed from UI via WebSocket listener (messageDeleted event)
+      // No need to manually remove it here since backend will emit it to all connected users
+    } catch (err) {
+      console.error("Error deleting message:", err);
+
+      // Enhanced error handling with Turkish messages
+      let errorMessage = "Mesaj silinirken hata oluştu";
+
+      if (err.message.includes("Network Error") || !navigator.onLine) {
+        errorMessage = "Bağlantı hatası. İnternet bağlantınızı kontrol edin";
+      } else if (err.message) {
+        errorMessage = translateErrorMessage(err.message);
+      }
+
+      showNotification(errorMessage, "error");
+    }
+  };
+
+  // Handle edit message - start inline editing
+  const handleEditMessage = (messageId) => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      showAuthRequiredPopup(
+        "message",
+        "Mesajı düzenlemek için giriş yapmalısınız"
+      );
+      return;
+    }
+
+    try {
+      console.log("Edit message clicked for messageId:", messageId);
+
+      // Find the message to edit
+      const messageToEdit = messages.find((msg) => msg._id === messageId);
+      if (!messageToEdit) {
+        showNotification("Düzenlenecek mesaj bulunamadı", "error");
+        return;
+      }
+
+      // Determine what to edit based on message type
+      let initialText = "";
+      if (
+        messageToEdit.attachments &&
+        messageToEdit.attachments.items &&
+        messageToEdit.attachments.items.length > 0
+      ) {
+        // Message has files - edit caption
+        initialText = messageToEdit.attachments.caption || "";
+      } else {
+        // Text-only message - edit content
+        initialText = messageToEdit.content || "";
+      }
+
+      // Set inline editing state
+      setEditingMessageId(messageId);
+      setEditingText(initialText);
+    } catch (err) {
+      console.error("Error starting edit message:", err);
+      showNotification("Mesaj düzenleme başlatılırken hata oluştu", "error");
+    }
+  };
+
+  // Handle saving edited message
+  const handleSaveEditedMessage = async (messageId) => {
+    if (!editingMessageId || !messageId) return;
+
+    // Check authentication
+    if (!isAuthenticated) {
+      showAuthRequiredPopup(
+        "message",
+        "Mesajı düzenlemek için giriş yapmalısınız"
+      );
+      return;
+    }
+
+    // Validate text content - backend expects non-empty textContent
+    const trimmedText = editingText.trim();
+    if (!trimmedText) {
+      // Find the message to check if it has attachments
+      const messageToEdit = messages.find((msg) => msg._id === messageId);
+      const hasAttachments =
+        messageToEdit?.attachments &&
+        messageToEdit.attachments.items &&
+        messageToEdit.attachments.items.length > 0;
+      const errorMsg = hasAttachments
+        ? "Açıklama boş olamaz. En az bir karakter yazmalısınız."
+        : "Metin içeriği boş olamaz";
+      showNotification(errorMsg, "error");
+      return;
+    }
+
+    try {
+      console.log("Saving edited message:", messageId);
+
+      const response = await fetch(`/api/v1/advert-chat/edit/${messageId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          textContent: trimmedText,
+        }),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Failed to edit message";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Please provide required data";
+              break;
+            case 401:
+              errorMessage = "Unauthorized";
+              break;
+            case 403:
+              errorMessage = "You are not allowed to edit this message";
+              break;
+            case 404:
+              errorMessage = "Message not found";
+              break;
+            case 429:
+              errorMessage = "Too Many Requests";
+              break;
+            case 500:
+              errorMessage = "Internal Server Error";
+              break;
+            case 503:
+              errorMessage = "Service Unavailable";
+              break;
+            default:
+              errorMessage = `Server error: ${response.status}`;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Message edited successfully:", data.message);
+
+      // Show success notification
+      showNotification("Mesaj başarıyla düzenlendi", "success");
+
+      // Clear editing state
+      setEditingMessageId(null);
+      setEditingText("");
+
+      // Note: The message will be updated in UI via WebSocket listener (editMessage event)
+      // No need to manually update it here since backend will emit it to all connected users
+    } catch (err) {
+      console.error("Error editing message:", err);
+
+      // Enhanced error handling with Turkish messages
+      let errorMessage = "Mesaj düzenlenirken hata oluştu";
+
+      if (err.message.includes("Network Error") || !navigator.onLine) {
+        errorMessage = "Bağlantı hatası. İnternet bağlantınızı kontrol edin";
+      } else if (err.message) {
+        errorMessage = translateErrorMessage(err.message);
+      }
+
+      showNotification(errorMessage, "error");
+    }
+  };
+
+  // Handle canceling edit
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  // Handle editing text change
+  const handleEditTextChange = (newText) => {
+    setEditingText(newText);
+  };
+
   if (loading) {
     return (
       <>
@@ -2366,6 +2890,13 @@ function AdvertDetailPage() {
                   typingUsers={typingUsers}
                   onStartTyping={handleStartTyping}
                   onStopTyping={handleStopTyping}
+                  onDeleteMessage={handleDeleteMessage}
+                  onEditMessage={handleEditMessage}
+                  editingMessageId={editingMessageId}
+                  editingText={editingText}
+                  onEditTextChange={handleEditTextChange}
+                  onSaveEdit={handleSaveEditedMessage}
+                  onCancelEdit={handleCancelEdit}
                 />
               </div>
             </div>
@@ -2407,6 +2938,13 @@ function AdvertDetailPage() {
                 typingUsers={typingUsers}
                 onStartTyping={handleStartTyping}
                 onStopTyping={handleStopTyping}
+                onDeleteMessage={handleDeleteMessage}
+                onEditMessage={handleEditMessage}
+                editingMessageId={editingMessageId}
+                editingText={editingText}
+                onEditTextChange={handleEditTextChange}
+                onSaveEdit={handleSaveEditedMessage}
+                onCancelEdit={handleCancelEdit}
               />
             </div>
           </div>
