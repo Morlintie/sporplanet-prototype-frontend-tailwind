@@ -24,6 +24,7 @@ export const WebSocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const onlineUsersDebounceRef = useRef(null);
   const [connectionError, setConnectionError] = useState(null);
   const socketRef = useRef(null);
 
@@ -120,10 +121,19 @@ export const WebSocketProvider = ({ children }) => {
           }
         });
 
-        // Listen for online users updates from server
+        // Listen for online users updates from server - debounced to prevent cascading re-renders
         socketInstance.on("onlineUsers", (userIds) => {
           console.log("Online users updated:", userIds);
-          setOnlineUsers(userIds || []);
+
+          // Clear existing debounce timer
+          if (onlineUsersDebounceRef.current) {
+            clearTimeout(onlineUsersDebounceRef.current);
+          }
+
+          // Debounce the online users update to prevent rapid re-renders
+          onlineUsersDebounceRef.current = setTimeout(() => {
+            setOnlineUsers(userIds || []);
+          }, 500); // 500ms debounce to batch rapid online/offline changes
         });
 
         // Error handling
@@ -302,6 +312,12 @@ export const WebSocketProvider = ({ children }) => {
 
     // Cleanup function - this will run when component unmounts or dependencies change
     return () => {
+      // Clear debounce timer
+      if (onlineUsersDebounceRef.current) {
+        clearTimeout(onlineUsersDebounceRef.current);
+        onlineUsersDebounceRef.current = null;
+      }
+
       if (socketRef.current) {
         console.log("Cleaning up default WebSocket connection");
         socketRef.current.disconnect();
@@ -404,10 +420,13 @@ export const WebSocketProvider = ({ children }) => {
     }
   }, [isChatConnected, chatSocket, user?._id, addUnseenMessageForAdvert]);
 
-  // Helper functions
-  const isUserOnline = (userId) => {
-    return onlineUsers.includes(userId);
-  };
+  // Helper functions - memoized to prevent unnecessary re-renders
+  const isUserOnline = useCallback(
+    (userId) => {
+      return onlineUsers.includes(userId);
+    },
+    [onlineUsers]
+  );
 
   const getOnlineUsersCount = () => {
     return onlineUsers.length;

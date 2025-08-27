@@ -24,6 +24,7 @@ function MessagingSection({
   onEditTextChange,
   onSaveEdit,
   onCancelEdit,
+  shouldScrollToBottom,
 }) {
   const [sending, setSending] = useState(false);
   const { user } = useAuth();
@@ -114,6 +115,7 @@ function MessagingSection({
             onEditTextChange={onEditTextChange}
             onSaveEdit={onSaveEdit}
             onCancelEdit={onCancelEdit}
+            shouldScrollToBottom={shouldScrollToBottom}
           />
           <MessageInput
             onSendMessage={handleSendMessageWithState}

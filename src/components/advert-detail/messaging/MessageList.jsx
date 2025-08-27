@@ -100,23 +100,29 @@ function MessageList({
   onEditTextChange,
   onSaveEdit,
   onCancelEdit,
+  shouldScrollToBottom,
 }) {
   const messagesEndRef = useRef(null);
   const { user } = useAuth();
 
+  // Controlled scroll to bottom - only triggered by parent component
   const scrollToBottom = () => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
         behavior: "smooth",
         block: "end",
         inline: "nearest",
       });
-    }, 100);
+    }
   };
 
+  // Only scroll when parent component explicitly requests it
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (shouldScrollToBottom) {
+      console.log(`MessageList: Scrolling to bottom for advert ${advert?._id}`);
+      scrollToBottom();
+    }
+  }, [shouldScrollToBottom]);
 
   const formatMessageTime = (dateString) => {
     const date = new Date(dateString);
@@ -480,12 +486,12 @@ function MessageList({
                           {getInitials(message.sender?.name)}
                         </div>
 
-                        {/* Online indicator for message sender */}
+                        {/* DISABLED: Online indicator - was causing cross-user visual interference 
                         {isUserOnline &&
                           message.sender?._id &&
                           isUserOnline(message.sender._id) && (
                             <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
-                          )}
+                          )} */}
                       </div>
                     )}
 
@@ -693,7 +699,8 @@ function MessageList({
         <TypingIndicator typingUsers={typingUsers} advert={advert} />
       )}
 
-      <div ref={messagesEndRef} />
+      {/* Message scroll target - only used for controlled scrolling */}
+      <div ref={messagesEndRef}></div>
     </div>
   );
 }

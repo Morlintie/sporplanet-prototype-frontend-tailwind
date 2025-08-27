@@ -135,7 +135,7 @@ function UserCard({
             </div>
           )}
 
-          {/* Online indicator - positioned differently if user is goalkeeper */}
+          {/* DISABLED: Online indicator - was causing cross-user visual interference
           {isUserOnline && isUserOnline(user._id) && (
             <div
               className={`absolute w-3 h-3 bg-green-400 border-2 border-white rounded-full ${
@@ -144,7 +144,7 @@ function UserCard({
                   : "-bottom-0.5 -right-0.5" // Bottom right if not goalkeeper
               }`}
             ></div>
-          )}
+          )} */}
         </div>
 
         <div className="flex-1 min-w-0">
