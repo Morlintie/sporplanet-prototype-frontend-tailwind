@@ -20,7 +20,7 @@ export const useWebSocket = () => {
 };
 
 export const WebSocketProvider = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, addUnseenMessageForAdvert } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -360,6 +360,49 @@ export const WebSocketProvider = ({ children }) => {
       });
     }
   }, [isChatConnected, user?._id, user?.advertParticipation, chatSocket]);
+
+  // Global newMessage listener for real-time unseen message tracking
+  useEffect(() => {
+    if (
+      isChatConnected &&
+      chatSocket &&
+      user &&
+      user._id &&
+      addUnseenMessageForAdvert
+    ) {
+      console.log(
+        "Setting up global newMessage listener for unseen message tracking"
+      );
+
+      const handleNewMessage = (data) => {
+        console.log("Global newMessage received:", data);
+
+        if (data && data.message && data.advertId) {
+          const { message, advertId } = data;
+
+          // Only count as unseen if message is NOT sent by current user
+          if (message.sender && message.sender._id !== user._id) {
+            console.log(
+              `Message from ${message.sender._id}, not from current user ${user._id}, checking if should be marked unseen`
+            );
+            addUnseenMessageForAdvert(advertId);
+          } else {
+            console.log(
+              `Message from current user ${user._id}, not marking as unseen`
+            );
+          }
+        }
+      };
+
+      chatSocket.on("newMessage", handleNewMessage);
+
+      // Cleanup function
+      return () => {
+        console.log("Cleaning up global newMessage listener");
+        chatSocket.off("newMessage", handleNewMessage);
+      };
+    }
+  }, [isChatConnected, chatSocket, user?._id, addUnseenMessageForAdvert]);
 
   // Helper functions
   const isUserOnline = (userId) => {

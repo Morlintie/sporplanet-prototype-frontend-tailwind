@@ -122,14 +122,15 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
       // İlk context'ten yükle
       const contextBookings = getBookings() || [];
       setUserBookings(contextBookings);
-      
+
       // Sonra API'den güncel veriyi çek
       fetchUserBookings();
     }
   }, [isOpen]);
 
   useEffect(() => {
-    if (userBookings.length >= 0) { // >= 0 çünkü boş array da geçerli
+    if (userBookings.length >= 0) {
+      // >= 0 çünkü boş array da geçerli
       const availableBookings = userBookings.filter(
         (booking) =>
           booking.status === "pending" || booking.status === "confirmed"
@@ -233,11 +234,9 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
         // Booking-based advert
         let playersNeeded, goalKeepersNeeded;
 
-        
         // Her iki ilan türü için de kullanıcının girdiği değerleri kullan
         playersNeeded = parseInt(formData.playersNeeded);
         goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
-        
 
         requestBody = {
           booking: selectedBooking._id,
@@ -263,11 +262,9 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
 
         let playersNeeded, goalKeepersNeeded;
 
-        
         // Her iki ilan türü için de kullanıcının girdiği değerleri kullan
         playersNeeded = parseInt(formData.playersNeeded);
         goalKeepersNeeded = parseInt(formData.goalKeepersNeeded);
-
 
         requestBody = {
           customPitch: {
@@ -465,7 +462,9 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                     Sahada rezervasyonunuz var ve oyuncu arıyorsunuz
                   </p>
                   <p className="text-xs text-gray-500 mt-2">
-                    {bookingsLoading ? "Yükleniyor..." : `${availableBookings.length} aktif rezervasyon`}
+                    {bookingsLoading
+                      ? "Yükleniyor..."
+                      : `${availableBookings.length} aktif rezervasyon`}
                   </p>
                 </button>
 
@@ -613,16 +612,13 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
                   </p>
                   <p>
                     <strong>Tarih:</strong>{" "}
-                    {new Date(selectedBooking.start).toLocaleString(
-                      "tr-TR",
-                      {
-                        weekday: "long",
-                        day: "numeric",
-                        month: "long",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }
-                    )}
+                    {new Date(selectedBooking.start).toLocaleString("tr-TR", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                   <p>
                     <strong>Durum:</strong>{" "}
@@ -829,7 +825,10 @@ function BookingAdvertForm({
             Kaç Kişilik Takım Arıyorsunuz? *
           </label>
           <select
-            value={`${(parseInt(formData.playersNeeded) || 0) + (parseInt(formData.goalKeepersNeeded) || 0)}`}
+            value={`${
+              (parseInt(formData.playersNeeded) || 0) +
+              (parseInt(formData.goalKeepersNeeded) || 0)
+            }`}
             onChange={(e) => {
               const teamSize = parseInt(e.target.value);
               setFormData((prev) => ({
@@ -849,7 +848,6 @@ function BookingAdvertForm({
             <option value="10">10 vs 10</option>
             <option value="11">11 vs 11</option>
           </select>
-          
         </div>
       ) : (
         // Oyuncu İlanı - Manuel Input
@@ -1040,7 +1038,6 @@ function CustomPitchAdvertForm({
         </div>
       </div>
 
-
       {/* Price per Person */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1052,9 +1049,9 @@ function CustomPitchAdvertForm({
           pattern="[0-9]*"
           value={formData.customPitch.price}
           onChange={(e) => {
-            const value = e.target.value.replace(/[^0-9]/g, '');
-            const numValue = value === '' ? '' : parseInt(value);
-            if (numValue === '' || numValue <= 1000) {
+            const value = e.target.value.replace(/[^0-9]/g, "");
+            const numValue = value === "" ? "" : parseInt(value);
+            if (numValue === "" || numValue <= 1000) {
               onCustomPitchChange("price", numValue);
             }
           }}
@@ -1067,18 +1064,18 @@ function CustomPitchAdvertForm({
         </p>
       </div>
 
-             {/* Date and Time Selection */}
-       <div className="grid grid-cols-2 gap-4">
-         <div>
-           <label className="block text-sm font-medium text-gray-700 mb-2">
-             Tarih *
-           </label>
-           <TurkishDatePicker
-             selectedDate={selectedDate}
-             setSelectedDate={setSelectedDate}
-             setSelectedTime={setSelectedTime}
-           />
-         </div>
+      {/* Date and Time Selection */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Tarih *
+          </label>
+          <TurkishDatePicker
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            setSelectedTime={setSelectedTime}
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1187,7 +1184,10 @@ function CustomPitchAdvertForm({
             Kaç Kişilik Takım Arıyorsunuz? *
           </label>
           <select
-            value={`${(parseInt(formData.playersNeeded) || 0) + (parseInt(formData.goalKeepersNeeded) || 0)}`}
+            value={`${
+              (parseInt(formData.playersNeeded) || 0) +
+              (parseInt(formData.goalKeepersNeeded) || 0)
+            }`}
             onChange={(e) => {
               const teamSize = parseInt(e.target.value);
               setFormData((prev) => ({
@@ -1207,7 +1207,6 @@ function CustomPitchAdvertForm({
             <option value="10">10 vs 10</option>
             <option value="11">11 vs 11</option>
           </select>
-          
         </div>
       ) : (
         // Oyuncu İlanı - Manuel Input
@@ -1267,7 +1266,10 @@ function CustomPitchAdvertForm({
           </div>
           <div className="mt-2 text-sm text-gray-600">
             <span>
-              Toplam Eksik Oyuncu: {(parseInt(formData.playersNeeded) || 0) + (parseInt(formData.goalKeepersNeeded) || 0)} kişi
+              Toplam Eksik Oyuncu:{" "}
+              {(parseInt(formData.playersNeeded) || 0) +
+                (parseInt(formData.goalKeepersNeeded) || 0)}{" "}
+              kişi
             </span>
           </div>
         </div>

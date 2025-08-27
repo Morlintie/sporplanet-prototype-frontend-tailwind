@@ -26,6 +26,7 @@ function AdvertDetailPage() {
     user,
     loading: authLoading,
     clearUnseenMessagesForAdvert,
+    setCurrentlyViewingAdvert,
   } = useAuth();
   const [advert, setAdvert] = useState(null);
 
@@ -325,9 +326,19 @@ function AdvertDetailPage() {
     // Reset real room tracking for new advert
     hasJoinedRealRoomRef.current = false;
 
+    // Notify AuthContext about which advert user is currently viewing
+    if (advertId) {
+      setCurrentlyViewingAdvert(advertId);
+    }
+
     // Immediate scroll to top
     scrollToTop();
-  }, [advertId]); // Depend on advertId to refresh when URL changes
+
+    // Cleanup - notify AuthContext when user leaves this advert
+    return () => {
+      setCurrentlyViewingAdvert(null);
+    };
+  }, [advertId, setCurrentlyViewingAdvert]); // Depend on advertId to refresh when URL changes
 
   // Prevent scrolling when loading state changes
   useEffect(() => {

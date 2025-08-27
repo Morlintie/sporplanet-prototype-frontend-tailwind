@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [showArchivedUserPopup, setShowArchivedUserPopup] = useState(false);
   const [unseenMessages, setUnseenMessages] = useState({});
   const [participantAdverts, setParticipantAdverts] = useState([]);
+  const [currentViewingAdvertId, setCurrentViewingAdvertId] = useState(null);
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -411,6 +412,43 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Set currently viewing advert (to track when to mark messages as seen)
+  const setCurrentlyViewingAdvert = (advertId) => {
+    setCurrentViewingAdvertId(advertId);
+    // When user starts viewing an advert, clear its unseen messages
+    if (advertId) {
+      clearUnseenMessagesForAdvert(advertId);
+    }
+    console.log(`User now viewing advert: ${advertId}`);
+  };
+
+  // Add unseen message for an advert (called when newMessage received via WebSocket)
+  const addUnseenMessageForAdvert = (advertId) => {
+    // Only increment if user is not currently viewing this specific advert
+    if (advertId && advertId !== currentViewingAdvertId) {
+      // Check if user is actually a participant of this advert
+      const isParticipant = participantAdverts.some(
+        (advert) => advert._id === advertId
+      );
+
+      if (isParticipant) {
+        setUnseenMessages((prev) => ({
+          ...prev,
+          [advertId]: (prev[advertId] || 0) + 1,
+        }));
+        console.log(`Added unseen message for advert: ${advertId}`);
+      } else {
+        console.log(
+          `User is not a participant of advert: ${advertId}, not adding unseen message`
+        );
+      }
+    } else if (advertId === currentViewingAdvertId) {
+      console.log(
+        `User is currently viewing advert: ${advertId}, not marking as unseen`
+      );
+    }
+  };
+
   const value = {
     // Core state
     user,
@@ -422,9 +460,12 @@ export const AuthProvider = ({ children }) => {
     // Unseen messages state
     unseenMessages,
     participantAdverts,
+    currentViewingAdvertId,
     getTotalUnseenCount,
     refreshUnseenMessages,
     clearUnseenMessagesForAdvert,
+    setCurrentlyViewingAdvert,
+    addUnseenMessageForAdvert,
 
     // Actions
     checkAuth,
