@@ -5,6 +5,61 @@ import Footer from "../components/shared/Footer";
 import { useAuth } from "../context/AuthContext";
 import Notification from "../components/shared/Notification";
 
+// FAQ Item Component
+function FAQItem({ question, answer, icon }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden hover:shadow-sm transition-all duration-300">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors"
+        aria-expanded={isOpen}
+      >
+        <div className="flex items-center">
+          <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+            {icon}
+          </div>
+          <h3 className="text-base font-medium text-gray-700">
+            {question}
+          </h3>
+        </div>
+        <div className="flex-shrink-0 ml-4">
+          <svg
+            className={`w-4 h-4 text-gray-400 transform transition-transform duration-300 ${
+              isOpen ? 'rotate-180' : ''
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </button>
+      
+      <div
+        className={`overflow-hidden transition-all duration-400 ease-in-out ${
+          isOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-6 pb-4">
+          <div className="pt-3 border-t border-gray-200">
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {answer}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HomePage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -16,13 +71,27 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Hero background images rotation
+  // Hero background images rotation - Optimized
+  
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const heroImages = [
     '/images/homepage-hero-2.avif',
     '/images/hompage-hero-1.avif',
     '/images/homepage-hero-3.avif'
   ];
+  
+  // Preload critical hero images
+  useEffect(() => {
+    heroImages.forEach((src, index) => {
+      if (index <= 1) { // Only preload first 2 images
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        document.head.appendChild(link);
+      }
+    });
+  }, [heroImages]);
   
   // Notification state
   const [notification, setNotification] = useState({
@@ -36,48 +105,87 @@ function HomePage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Hero image rotation
+  // Hero image rotation - Performance optimized
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => 
         (prevIndex + 1) % heroImages.length
       );
-    }, 5000); // Change image every 5 seconds
+    }, 8000); // Change image every 8 seconds (less frequent)
 
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
-  // Enhanced Intersection Observer for scroll animations
+  // Optimized Intersection Observer for scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
-            
-            // Add scroll animation classes
-            entry.target.classList.add('animate-fade-in-up');
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+              // Check if this is the FAQ section for typing animation
+              if (entry.target.id === 'faq-section') {
+                startTypingAnimation();
+              }
+              
+              entry.target.classList.add('animate-fade-in-up');
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            });
+            // Stop observing once animated to save resources
+            observer.unobserve(entry.target);
           }
         });
       },
       { 
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px' // Trigger animation earlier
+        threshold: 0.15, // Slightly higher threshold
+        rootMargin: '0px 0px -30px 0px' // Less aggressive trigger
       }
     );
 
-    const elements = document.querySelectorAll("[data-animate]");
-    elements.forEach((el) => {
-      // Set initial state for animations
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(30px)';
-      el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-      observer.observe(el);
-    });
+    // Typing animation function
+    const startTypingAnimation = () => {
+      const textToType = "Sıkça Sorulan Sorular";
+      const typingTextElement = document.getElementById('typing-text');
+      const cursorElement = document.getElementById('typing-cursor');
+      
+      if (!typingTextElement || !cursorElement) return;
+      
+      // Show cursor
+      cursorElement.style.opacity = '1';
+      
+      let currentIndex = 0;
+      const typeInterval = setInterval(() => {
+        if (currentIndex < textToType.length) {
+          typingTextElement.textContent = textToType.slice(0, currentIndex + 1);
+          currentIndex++;
+        } else {
+          clearInterval(typeInterval);
+          // Hide cursor after typing is complete
+          setTimeout(() => {
+            cursorElement.style.opacity = '0';
+          }, 1000);
+        }
+      }, 80); // Type one character every 80ms
+    };
 
-    return () => observer.disconnect();
+    // Use setTimeout to defer non-critical setup
+    const timeoutId = setTimeout(() => {
+    const elements = document.querySelectorAll("[data-animate]");
+      elements.forEach((el) => {
+        // Set initial state for animations
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)'; // Reduced distance
+        el.style.transition = 'all 0.4s ease-out'; // Faster, simpler transition
+        observer.observe(el);
+      });
+    }, 100);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const handleGetStarted = () => {
@@ -303,21 +411,27 @@ function HomePage() {
     }
   };
 
-  // Load data on component mount
+  // Load data on component mount - Performance optimized
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        await Promise.all([fetchMatches(), fetchPitches()]);
+        // Load matches first (priority), then pitches
+        await fetchMatches();
+        // Use setTimeout to defer pitch loading slightly
+        setTimeout(() => {
+          fetchPitches().finally(() => setLoading(false));
+        }, 50);
       } catch (err) {
         console.error("Error loading homepage data:", err);
         showNotification("Veriler yüklenirken hata oluştu", "error");
-      } finally {
         setLoading(false);
       }
     };
 
-    loadData();
+    // Defer initial load slightly to not block initial render
+    const timeoutId = setTimeout(loadData, 10);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -331,20 +445,21 @@ function HomePage() {
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 z-10"></div>
           
-          {/* Multiple background images with crossfade effect */}
-          {heroImages.map((image, index) => (
-            <div 
-              key={index}
-              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-2000 ${
-                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{
-                backgroundImage: `url('${image}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-              }}
-            ></div>
-          ))}
+                     {/* Multiple background images with crossfade effect - Optimized */}
+           {heroImages.map((image, index) => (
+             <div 
+               key={index}
+               className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+                 index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+               }`}
+               style={{
+                 backgroundImage: `url('${image}')`,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+                 willChange: index === currentImageIndex ? 'opacity' : 'auto' // GPU acceleration
+               }}
+             ></div>
+           ))}
           
           {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30 z-10"></div>
@@ -361,13 +476,13 @@ function HomePage() {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <div className="p-8 sm:p-12">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
+                                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
             Futbol Tutkun
-              <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-                Burada Başlıyor
-              </span>
+               <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                 Burada Başlıyor
+               </span>
           </h1>
-            <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto text-gray-100 leading-relaxed drop-shadow-md">
+             <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto text-gray-100 leading-relaxed drop-shadow-md">
             Arkadaşlarını bul, maç organize et, saha kirala. Türkiye'nin en büyük futbol topluluğuna katıl!
           </p>
           
@@ -387,14 +502,14 @@ function HomePage() {
       </section>
 
       {/* Features Introduction Section */}
-      <section id="features-section" className="py-16 bg-gray-50">
+      <section id="features-section" className="py-16 bg-gray-50" role="main" aria-label="Özellikler ve hizmetler">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Futbol Dünyasında Her Şey Burada
+                                      <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+               Futbol Dünyasında Her Şey Burada
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              SporPlanet ile futbol tutkunu ile ilgili tüm ihtiyaçlarını karşıla
+               SporPlanet ile futbol tutkunu ile ilgili tüm ihtiyaçlarını karşıla
               </p>
             </div>
 
@@ -416,37 +531,37 @@ function HomePage() {
                 </svg>
               </div>
                 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors text-center sm:text-left">
-                  Maç İlanları
-                </h3>
-                
-                <p className="text-gray-600 mb-6 leading-relaxed text-center sm:text-left">
-                  <span className="font-semibold text-green-600">Binlerce oyuncu</span> seni bekliyor! 
-                  Seviyene uygun maçlar bul, yeni arkadaşlar edin ve futbol tutkunu paylaş.
-                </p>
+                                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors text-center sm:text-left">
+                   Maç İlanları
+                 </h3>
+                 
+                 <p className="text-gray-600 mb-6 leading-relaxed text-center sm:text-left">
+                   <span className="font-semibold text-green-600">Binlerce futbolcu</span> ile maç organize et! 
+                   Oyuncu arıyor, takım kuruyorsun? Hemen ilan ver, maç bul, futbol oyna.
+                 </p>
 
                 {/* Stats */}
                 <div className="flex items-center justify-between mb-6 p-3 bg-green-50 rounded-xl">
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">1000+</div>
-                    <div className="text-xs text-gray-600">Aktif Oyuncu</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">50+</div>
-                    <div className="text-xs text-gray-600">Günlük Maç</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">7/24</div>
-                    <div className="text-xs text-gray-600">Aktif Sistem</div>
-                  </div>
+                                     <div className="text-center">
+                     <div className="text-lg font-bold text-green-600">5000+</div>
+                     <div className="text-xs text-gray-600">Aktif Futbolcu</div>
+                   </div>
+                   <div className="text-center">
+                     <div className="text-lg font-bold text-green-600">200+</div>
+                     <div className="text-xs text-gray-600">Günlük Maç</div>
+                   </div>
+                   <div className="text-center">
+                     <div className="text-lg font-bold text-green-600">24/7</div>
+                     <div className="text-xs text-gray-600">Online Rezervasyon</div>
+                   </div>
                 </div>
                 
               <button 
                 onClick={() => navigate("/matches")}
                   className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
               >
-                  Maçları Keşfet
-                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   Maç Organize Et
+                   <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </button>
@@ -473,40 +588,40 @@ function HomePage() {
                      <rect x="18" y="8" width="4" height="8" rx="1" stroke="currentColor" fill="none"/>
                      <rect x="2" y="10" width="2" height="4" rx="0.5" stroke="currentColor" fill="rgba(255,255,255,0.2)"/>
                      <rect x="20" y="10" width="2" height="4" rx="0.5" stroke="currentColor" fill="rgba(255,255,255,0.2)"/>
-                   </svg>
-               </div>
+                </svg>
+              </div>
                 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors text-center sm:text-left">
-                  Saha Rezervasyonu
-                </h3>
-                
-                <p className="text-gray-600 mb-6 leading-relaxed text-center sm:text-left">
-                  <span className="font-semibold text-blue-600">Türkiye'nin her yerinden</span> binlerce saha! 
-                  Kolayca rezervasyon yap, anında onayla ve hemen oynamaya başla.
-                </p>
+                                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors text-center sm:text-left">
+                   Saha Rezervasyonu
+                 </h3>
+                 
+                 <p className="text-gray-600 mb-6 leading-relaxed text-center sm:text-left">
+                   <span className="font-semibold text-blue-600">Türkiye'nin her şehrinden</span> binlerce halı saha! 
+                   Online rezervasyon yap, anında onayla, uygun fiyatla futbol sahası kirala.
+                 </p>
 
                 {/* Stats */}
                 <div className="flex items-center justify-between mb-6 p-3 bg-blue-50 rounded-xl">
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">500+</div>
-                    <div className="text-xs text-gray-600">Saha</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">81</div>
-                    <div className="text-xs text-gray-600">Şehir</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">7/24</div>
-                    <div className="text-xs text-gray-600">Rezervasyon</div>
-                  </div>
+                                     <div className="text-center">
+                     <div className="text-lg font-bold text-blue-600">1500+</div>
+                     <div className="text-xs text-gray-600">Halı Saha</div>
+                   </div>
+                   <div className="text-center">
+                     <div className="text-lg font-bold text-blue-600">81</div>
+                     <div className="text-xs text-gray-600">İl</div>
+                   </div>
+                   <div className="text-center">
+                     <div className="text-lg font-bold text-blue-600">24/7</div>
+                     <div className="text-xs text-gray-600">Online Rezervasyon</div>
+                   </div>
                 </div>
                 
               <button 
                 onClick={() => navigate("/reservation")}
                   className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
               >
-                  Sahaları Keşfet
-                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   Halı Saha Kirala
+                   <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </button>
@@ -527,17 +642,17 @@ function HomePage() {
                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                      <path d="M12 6.5l1.5 3h3.5l-2.5 2 1 3.5-3-2-3 2 1-3.5-2.5-2h3.5z" fill="rgba(255,255,255,0.3)"/>
-                   </svg>
-               </div>
+                </svg>
+              </div>
                 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-indigo-600 transition-colors text-center sm:text-left">
-                  Turnuvalar
-                </h3>
-                
-                <p className="text-gray-600 mb-6 leading-relaxed text-center sm:text-left">
-                  <span className="font-semibold text-indigo-600">Rekabetçi turnuvalara</span> katıl! 
-                  Şampiyonluklar kazan, ödüller al ve futbol kariyerinde zirveye çık.
-                </p>
+                                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-indigo-600 transition-colors text-center sm:text-left">
+                   Turnuvalar
+                 </h3>
+                 
+                 <p className="text-gray-600 mb-6 leading-relaxed text-center sm:text-left">
+                   <span className="font-semibold text-indigo-600">Futbol turnuvası organize et</span> veya katıl! 
+                   Halı saha ligi, amatör turnuva, şampiyonluk kupası kazanma fırsatı.
+                 </p>
 
                 {/* Stats */}
                 <div className="flex items-center justify-between mb-6 p-3 bg-indigo-50 rounded-xl">
@@ -572,11 +687,11 @@ function HomePage() {
       </section>
 
       {/* Dynamic Matches Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50" role="region" aria-labelledby="matches-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12" data-animate id="matches-header">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Popüler Maç İlanları</h2>
-            <p className="text-lg text-gray-600">Şu anda en çok ilgi gören maçlar</p>
+                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Futbol Maçı Organize Et - Oyuncu Bul</h2>
+             <p className="text-lg text-gray-600">En popüler maç ilanları ve oyuncu arama duyuruları</p>
           </div>
 
           {loading ? (
@@ -691,7 +806,7 @@ function HomePage() {
                         </div>
                         <div className="flex-1">
                           <div className="font-medium">
-                            {match.startsAt 
+                          {match.startsAt 
                               ? new Date(match.startsAt).toLocaleDateString("tr-TR")
                               : "Tarih Belirtilmemiş"}
                           </div>
@@ -699,8 +814,8 @@ function HomePage() {
                             <div className="text-xs text-gray-500 mt-1">
                               {(() => {
                                 const startTime = new Date(match.startsAt).toLocaleTimeString("tr-TR", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
                                 });
                                 // Calculate end time (assuming 1 hour duration if not specified)
                                 const endDate = new Date(match.startsAt);
@@ -731,18 +846,18 @@ function HomePage() {
               onClick={() => navigate("/matches")}
               className="px-8 py-3 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
             >
-              Tüm Maçları Gör
+               Tüm Maç İlanlarını Gör
             </button>
           </div>
         </div>
       </section>
 
       {/* Dynamic Reservations Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" role="region" aria-labelledby="pitches-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12" data-animate id="pitches-header">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Popüler Sahalar</h2>
-            <p className="text-lg text-gray-600">En çok tercih edilen futbol sahaları</p>
+                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Halı Saha Rezervasyon - En Uygun Fiyatlar</h2>
+             <p className="text-lg text-gray-600">En çok tercih edilen halı sahalar ve futbol sahası kiralama seçenekleri</p>
           </div>
 
           {loading ? (
@@ -782,12 +897,14 @@ function HomePage() {
                 >
                   <div className="relative overflow-hidden">
                     <div className="h-56 relative transition-transform duration-300 group-hover:scale-105">
-                      {pitch.image ? (
+                                             {pitch.image ? (
                         <>
                           <img 
-                            src={pitch.image} 
-                            alt={pitch.name || 'Saha Fotoğrafı'}
+                             src={pitch.image} 
+                             alt={pitch.name || 'Saha Fotoğrafı'}
                             className="w-full h-full object-cover"
+                             loading="lazy"
+                             decoding="async"
                             onError={(e) => {
                               e.target.style.display = 'none';
                               e.target.nextSibling.style.display = 'flex';
@@ -903,14 +1020,14 @@ function HomePage() {
               onClick={() => navigate("/reservation")}
               className="px-8 py-3 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors"
             >
-              Tüm Sahaları Gör
+               Tüm Halı Sahaları Gör
             </button>
           </div>
         </div>
       </section>
 
       {/* Tournament System Explanation */}
-      <section className="py-16 bg-gradient-to-br from-blue-800 via-indigo-800 to-blue-900 relative overflow-hidden" data-animate id="tournament-section">
+      <section className="py-16 bg-gradient-to-br from-blue-800 via-indigo-800 to-blue-900 relative overflow-hidden" data-animate id="tournament-section" role="region" aria-label="Turnuva sistemi açıklaması">
         {/* Champions League Stars Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10">
@@ -933,11 +1050,11 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center text-white mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-              Turnuva Sistemi
-              <span className="block text-blue-200 text-lg font-normal mt-2">⭐ Şampiyonlar Ligi Seviyesinde ⭐</span>
+               Futbol Turnuvası Organize Et
+               <span className="block text-blue-200 text-lg font-normal mt-2">⭐ Halı Saha Ligi ve Amatör Turnuvalar ⭐</span>
             </h2>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Profesyonel turnuva deneyimi ile futbol kariyerinde yeni zirvelere çık
+               Futbol turnuvası düzenle, halı saha ligi kur, şampiyonluk kupası kazan
             </p>
           </div>
 
@@ -1037,7 +1154,120 @@ function HomePage() {
         </div>
       </section>
 
+      {/* FAQ Section - Sıkça Sorulan Sorular */}
+      <section className="py-12 bg-white" data-animate id="faq-section" role="region" aria-label="Sıkça sorulan sorular">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
+              <span id="typing-text"></span>
+              <span id="typing-cursor" className="opacity-0">|</span>
+            </h2>
+            <p className="text-base text-gray-500 max-w-xl mx-auto">
+              SporPlanet hakkında merak ettiğiniz sorular ve yanıtları
+            </p>
+          </div>
 
+          <div className="space-y-3">
+            <FAQItem
+              question="SporPlanet nedir?"
+              answer="Türkiye'nin en büyük futbol topluluğu. Maç organize et, halı saha rezervasyonu yap, arkadaş edin ve futbol oyna."
+              icon={
+                <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+              }
+            />
+            <FAQItem
+              question="SporPlanet'in amacı nedir?"
+              answer="Futbol severleri bir araya getirmek, maç organize etmeyi kolaylaştırmak ve herkesin futbol oynayabileceği bir topluluk oluşturmak."
+              icon={
+                <svg className="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-5-8c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5-5 2.24-5 5zm7-3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/>
+                </svg>
+              }
+            />
+            
+            <FAQItem
+              question="Nasıl maç organize edebilirim?"
+              answer="'Maç İlanları' bölümünden yeni ilan oluştur, maç detaylarını gir ve yayınla. Diğer oyuncular katılım sağlayabilir."
+              icon={
+                <svg className="w-4 h-4 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 12A5 5 0 1 1 9 2a5 5 0 0 1 0 10z"/>
+                  <path d="M23 21c0-7-4-13-9-13s-9 6-9 13h18z"/>
+                  <circle cx="16" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="2"/>
+                  <path d="m14.5 9.5 2 2 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              }
+            />
+
+          
+            
+            <FAQItem
+              question="Halı saha rezervasyonu nasıl yapılır?"
+              answer="Rezervasyon sayfasından şehir ve tarih seç, uygun sahaları listele, online ödeme ile rezervasyonu tamamla."
+              icon={
+                <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
+                </svg>
+              }
+            />
+            
+            <FAQItem
+              question="Platform ücretsiz mi?"
+              answer="Kayıt olmak ve temel özellikler tamamen ücretsiz. Sadece saha rezervasyonları için ücret ödersiniz."
+              icon={
+                <svg className="w-4 h-4 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"/>
+                </svg>
+              }
+            />
+            
+            
+
+            <FAQItem
+              question="Güvenlik ve gizlilik nasıl sağlanıyor?"
+              answer="Tüm kullanıcı bilgileri KVKK kapsamında korunur. SSL şifreleme, güvenli ödeme sistemleri ve 7/24 moderasyon ile güvenliğinizi sağlıyoruz."
+              icon={
+                <svg className="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                </svg>
+              }
+            />
+
+            <FAQItem
+              question="Turnuva sistemi ne zaman aktif olacak?"
+              answer="Turnuva sistemi yakında aktif olacak! Halı saha ligi, amatör turnuvalar, şampiyonluk kupaları ve özel ödüller sistemi geliştiriliyor."
+              icon={
+                <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
+                </svg>
+              }
+            />
+
+            <FAQItem
+              question="Mobil uygulamanız var mı?"
+              answer="Şu anda web sitemiz mobil uyumlu. iOS ve Android uygulamalarımız geliştirme aşamasında. Yakında App Store ve Google Play'de!"
+              icon={
+                <svg className="w-4 h-4 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd"/>
+                </svg>
+              }
+            />
+
+            <FAQItem
+              question="Nasıl arkadaş edinebilirim?"
+              answer="Maçlara katıl, diğer oyuncularla tanış, profil sayfalarını ziyaret et ve arkadaşlık isteği gönder. Ortak ilgi alanlarına sahip futbolcularla bağlantı kur."
+              icon={
+                <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                </svg>
+              }
+            />
+
+            
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <Footer />

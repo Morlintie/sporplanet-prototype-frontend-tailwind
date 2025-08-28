@@ -87,28 +87,18 @@ function Footer() {
     { name: "Profil", href: "/profile", icon: "👤" }
   ];
 
-  const companyLinks = [
-    { name: "Hakkımızda", href: "/about" },
-    { name: "Kariyer", href: "/careers" },
-    { name: "Blog", href: "/blog" },
-    { name: "Basın Kiti", href: "/press" },
-    { name: "Yatırımcılar", href: "/investors" }
-  ];
+
 
   const supportLinks = [
+    { name: "Hakkımızda", href: "/about" },
     { name: "Yardım Merkezi", href: "/help" },
-    { name: "İletişim", href: "/contact" },
-    { name: "SSS", href: "/faq" },
-    { name: "Canlı Destek", href: "/live-support" },
-    { name: "Durum Sayfası", href: "/status" }
+    { name: "İletişim", href: "/contact" }
   ];
 
   const legalLinks = [
     { name: "Gizlilik Politikası", href: "/privacy" },
     { name: "Kullanım Şartları", href: "/terms" },
-    { name: "Çerez Politikası", href: "/cookies" },
-    { name: "KVKK", href: "/kvkk" },
-    { name: "Güvenlik", href: "/security" }
+    { name: "KVKK", href: "/kvkk" }
   ];
 
 
@@ -165,7 +155,7 @@ function Footer() {
             <div>
               <h3 className="text-sm font-semibold mb-3 text-green-400">Destek</h3>
               <ul className="space-y-1.5">
-                {supportLinks.slice(0, 4).map((link) => (
+                {supportLinks.map((link) => (
                   <li key={link.name}>
                     <button
                       onClick={() => handleNavClick(link.href)}
@@ -182,7 +172,7 @@ function Footer() {
             <div>
               <h3 className="text-sm font-semibold mb-3 text-green-400">Yasal</h3>
               <ul className="space-y-1.5">
-                {legalLinks.slice(0, 4).map((link) => (
+                {legalLinks.map((link) => (
                   <li key={link.name}>
                     <button
                       onClick={() => handleNavClick(link.href)}
