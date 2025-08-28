@@ -46,17 +46,17 @@ function CreatorInfo({ advert, isCreator, isUserOnline }) {
           >
             {getInitials(advert.createdBy?.name)}
           </div>
-          {/* Online indicator - show only if user is online */}
+          {/* DISABLED: Online indicator - was causing cross-user visual interference
           {isUserOnline && isUserOnline(advert.createdBy?._id) && (
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
-          )}
+          )} */}
         </div>
         <div className="flex-1">
           <button
             onClick={() => {
               if (advert.createdBy?._id) {
-                window.scrollTo(0, 0);
-                navigate(`/profile?userId=${advert.createdBy._id}`);
+                // REMOVED: Scroll to top eliminated per user request
+                navigate(`/user/${advert.createdBy._id}`);
               }
             }}
             className="font-medium text-gray-900 hover:text-green-600 text-sm transition-colors cursor-pointer text-left"
@@ -70,4 +70,3 @@ function CreatorInfo({ advert, isCreator, isUserOnline }) {
 }
 
 export default CreatorInfo;
-

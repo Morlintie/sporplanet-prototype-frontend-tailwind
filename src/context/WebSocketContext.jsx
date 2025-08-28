@@ -20,10 +20,11 @@ export const useWebSocket = () => {
 };
 
 export const WebSocketProvider = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, addUnseenMessageForAdvert } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const onlineUsersDebounceRef = useRef(null);
   const [connectionError, setConnectionError] = useState(null);
   const socketRef = useRef(null);
 
@@ -120,10 +121,19 @@ export const WebSocketProvider = ({ children }) => {
           }
         });
 
-        // Listen for online users updates from server
+        // Listen for online users updates from server - debounced to prevent cascading re-renders
         socketInstance.on("onlineUsers", (userIds) => {
           console.log("Online users updated:", userIds);
-          setOnlineUsers(userIds || []);
+
+          // Clear existing debounce timer
+          if (onlineUsersDebounceRef.current) {
+            clearTimeout(onlineUsersDebounceRef.current);
+          }
+
+          // Debounce the online users update to prevent rapid re-renders
+          onlineUsersDebounceRef.current = setTimeout(() => {
+            setOnlineUsers(userIds || []);
+          }, 500); // 500ms debounce to batch rapid online/offline changes
         });
 
         // Error handling
@@ -302,6 +312,12 @@ export const WebSocketProvider = ({ children }) => {
 
     // Cleanup function - this will run when component unmounts or dependencies change
     return () => {
+      // Clear debounce timer
+      if (onlineUsersDebounceRef.current) {
+        clearTimeout(onlineUsersDebounceRef.current);
+        onlineUsersDebounceRef.current = null;
+      }
+
       if (socketRef.current) {
         console.log("Cleaning up default WebSocket connection");
         socketRef.current.disconnect();
@@ -361,10 +377,56 @@ export const WebSocketProvider = ({ children }) => {
     }
   }, [isChatConnected, user?._id, user?.advertParticipation, chatSocket]);
 
-  // Helper functions
-  const isUserOnline = (userId) => {
-    return onlineUsers.includes(userId);
-  };
+  // Global newMessage listener for real-time unseen message tracking
+  useEffect(() => {
+    if (
+      isChatConnected &&
+      chatSocket &&
+      user &&
+      user._id &&
+      addUnseenMessageForAdvert
+    ) {
+      console.log(
+        "Setting up global newMessage listener for unseen message tracking"
+      );
+
+      const handleNewMessage = (data) => {
+        console.log("Global newMessage received:", data);
+
+        if (data && data.message && data.advertId) {
+          const { message, advertId } = data;
+
+          // Only count as unseen if message is NOT sent by current user
+          if (message.sender && message.sender._id !== user._id) {
+            console.log(
+              `Message from ${message.sender._id}, not from current user ${user._id}, checking if should be marked unseen`
+            );
+            addUnseenMessageForAdvert(advertId);
+          } else {
+            console.log(
+              `Message from current user ${user._id}, not marking as unseen`
+            );
+          }
+        }
+      };
+
+      chatSocket.on("newMessage", handleNewMessage);
+
+      // Cleanup function
+      return () => {
+        console.log("Cleaning up global newMessage listener");
+        chatSocket.off("newMessage", handleNewMessage);
+      };
+    }
+  }, [isChatConnected, chatSocket, user?._id, addUnseenMessageForAdvert]);
+
+  // Helper functions - memoized to prevent unnecessary re-renders
+  const isUserOnline = useCallback(
+    (userId) => {
+      return onlineUsers.includes(userId);
+    },
+    [onlineUsers]
+  );
 
   const getOnlineUsersCount = () => {
     return onlineUsers.length;

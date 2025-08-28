@@ -26,6 +26,7 @@ function AdvertDetailPage() {
     user,
     loading: authLoading,
     clearUnseenMessagesForAdvert,
+    setCurrentlyViewingAdvert,
   } = useAuth();
   const [advert, setAdvert] = useState(null);
 
@@ -53,6 +54,7 @@ function AdvertDetailPage() {
   const [typingUsers, setTypingUsers] = useState([]); // Array of user IDs who are currently typing
   const [editingMessageId, setEditingMessageId] = useState(null); // ID of message being edited
   const [editingText, setEditingText] = useState(""); // Text content for editing
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false); // Control message area scrolling
 
   // Helper function to check if current user is a participant of the advert
   const isUserParticipant = (advertData, currentUser) => {
@@ -262,59 +264,35 @@ function AdvertDetailPage() {
     });
   };
 
-  // Scroll to top function
-  const scrollToTop = () => {
-    // Multiple methods to ensure scroll to top works
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-
-    // Force scroll position multiple times
-    setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 0);
-
-    setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 50);
-  };
-
-  // Disable browser scroll restoration
+  // FORCE: Disable ALL scroll behaviors and animations
   useEffect(() => {
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual";
-    }
+    // Disable smooth scrolling globally while on this page
+    const originalScrollBehavior =
+      document.documentElement.style.scrollBehavior;
+    const originalBodyScrollBehavior = document.body.style.scrollBehavior;
 
-    // Force scroll to top immediately on page load/refresh
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    document.documentElement.style.scrollBehavior = "auto";
+    document.body.style.scrollBehavior = "auto";
 
-    // Multiple aggressive scroll attempts
-    const forceScrollTop = () => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    };
-
-    forceScrollTop();
-    setTimeout(forceScrollTop, 10);
-    setTimeout(forceScrollTop, 50);
-    setTimeout(forceScrollTop, 100);
-    setTimeout(forceScrollTop, 200);
+    // Disable any CSS scroll animations
+    const style = document.createElement("style");
+    style.textContent = `
+      .no-smooth-scroll * {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    `;
+    document.head.appendChild(style);
 
     return () => {
-      if ("scrollRestoration" in history) {
-        history.scrollRestoration = "auto";
-      }
+      // Cleanup: restore original values
+      document.documentElement.style.scrollBehavior = originalScrollBehavior;
+      document.body.style.scrollBehavior = originalBodyScrollBehavior;
+      document.head.removeChild(style);
     };
   }, []);
 
-  // Scroll to top and refresh data when component mounts or advertId changes
+  // Refresh data when component mounts or advertId changes
   useEffect(() => {
     // Clear previous data to force fresh load
     setAdvert(null);
@@ -325,31 +303,32 @@ function AdvertDetailPage() {
     // Reset real room tracking for new advert
     hasJoinedRealRoomRef.current = false;
 
-    // Immediate scroll to top
-    scrollToTop();
-  }, [advertId]); // Depend on advertId to refresh when URL changes
-
-  // Prevent scrolling when loading state changes
-  useEffect(() => {
-    if (!loading) {
-      // When loading completes, ensure we're at the top
-      scrollToTop();
+    // Notify AuthContext about which advert user is currently viewing
+    if (advertId) {
+      setCurrentlyViewingAdvert(advertId);
     }
-  }, [loading]);
 
-  // Additional scroll control for page visibility changes
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        // When page becomes visible again, scroll to top
-        setTimeout(() => scrollToTop(), 100);
-      }
+    // REMOVED: All scroll functionality eliminated
+
+    // Cleanup - notify AuthContext when user leaves this advert
+    return () => {
+      setCurrentlyViewingAdvert(null);
     };
+  }, [advertId, setCurrentlyViewingAdvert]); // Depend on advertId to refresh when URL changes
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () =>
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, []);
+  // Scroll to bottom when messages are initially loaded
+  useEffect(() => {
+    if (messages.length > 0 && !loading) {
+      console.log(
+        `AdvertDetailPage: Initial messages loaded for advert ${advertId}, scrolling to bottom`
+      );
+      setShouldScrollToBottom(true);
+      // Reset the scroll trigger after a short delay
+      setTimeout(() => setShouldScrollToBottom(false), 100);
+    }
+  }, [messages.length, loading, advertId]);
+
+  // REMOVED: All scroll functionality eliminated
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1313,9 +1292,33 @@ function AdvertDetailPage() {
           // Process message to convert base64 attachments to displayable URLs
           const processedMessage = processMessageAttachments(data.message);
 
-          // Add the processed message to the messages array
-          setMessages((prevMessages) => [...prevMessages, processedMessage]);
-          console.log("New message added to chat:", processedMessage);
+          // Check if this message belongs to the current advert
+          const messageAdvertId =
+            data.advertId || data.message.advertId || data.message.advert;
+          const isForCurrentAdvert = messageAdvertId === advertId;
+
+          console.log(`Message advert check:`, {
+            messageAdvertId,
+            currentAdvertId: advertId,
+            isForCurrentAdvert,
+          });
+
+          // Only update messages and scroll if message is for THIS advert
+          if (isForCurrentAdvert) {
+            // Add the processed message to the messages array
+            setMessages((prevMessages) => [...prevMessages, processedMessage]);
+            console.log("New message added to chat:", processedMessage);
+
+            // Scroll to bottom for users viewing THIS advert
+            console.log(
+              `AdvertDetailPage: New message for current advert ${advertId}, scrolling to bottom`
+            );
+            setShouldScrollToBottom(true);
+            // Reset the scroll trigger after a short delay
+            setTimeout(() => setShouldScrollToBottom(false), 100);
+          } else {
+            console.log(`Message not for current advert ${advertId}, ignoring`);
+          }
         }
       });
 
@@ -1633,16 +1636,21 @@ function AdvertDetailPage() {
   };
 
   const handleAdvertUpdate = (updatedAdvert) => {
+    console.log(
+      `AdvertDetailPage: handleAdvertUpdate called for advert ${advertId}`
+    );
     setAdvert(updatedAdvert);
 
-    // Force a complete data refresh to ensure everything is up to date
-    setTimeout(() => {
-      if (advertId) {
-        // Clear state and trigger fresh fetch
-        setLoading(true);
-        // The fetchData useEffect will trigger automatically
-      }
-    }, 100);
+    // REMOVED: Force refresh that was causing cross-user scroll interference
+    // The automatic refresh was triggering setLoading(true) which caused scrollToTop for all users
+    // Real-time updates via WebSocket are sufficient for keeping data current
+    // setTimeout(() => {
+    //   if (advertId) {
+    //     // Clear state and trigger fresh fetch
+    //     setLoading(true);
+    //     // The fetchData useEffect will trigger automatically
+    //   }
+    // }, 100);
   };
 
   // Handle join request functionality
@@ -2849,7 +2857,7 @@ function AdvertDetailPage() {
   }
 
   return (
-    <>
+    <div style={{ scrollBehavior: "auto" }} className="no-smooth-scroll">
       <Header />
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-6">
@@ -2897,6 +2905,7 @@ function AdvertDetailPage() {
                   onEditTextChange={handleEditTextChange}
                   onSaveEdit={handleSaveEditedMessage}
                   onCancelEdit={handleCancelEdit}
+                  shouldScrollToBottom={shouldScrollToBottom}
                 />
               </div>
             </div>
@@ -2945,13 +2954,13 @@ function AdvertDetailPage() {
                 onEditTextChange={handleEditTextChange}
                 onSaveEdit={handleSaveEditedMessage}
                 onCancelEdit={handleCancelEdit}
+                shouldScrollToBottom={shouldScrollToBottom}
               />
             </div>
           </div>
         </div>
       </div>
       <Footer />
-
       {/* Notification component for error messages */}
       <Notification
         message={notification.message}
@@ -2975,8 +2984,9 @@ function AdvertDetailPage() {
         actionType={authRequiredPopup.actionType}
         customMessage={authRequiredPopup.customMessage}
       />
-    </>
+    </div>
   );
 }
 
+// Remove memoization - it wasn't helping and we fixed the real issues
 export default AdvertDetailPage;

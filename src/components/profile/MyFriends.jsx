@@ -1,112 +1,58 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useWebSocket } from "../../context/WebSocketContext";
+import { useNavigate } from "react-router-dom";
 
 function MyFriends({ user }) {
   const { getProfilePictureUrl } = useAuth();
+  const { isUserOnline } = useWebSocket();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("online");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock arkadaş verileri
-  const friends = [
-    {
-      id: 1,
-      name: "MaSSer",
-      avatar:
-        "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      status: "online",
-      activity: "Far Cry 4 oynuyor",
+  // Process friends data with real-time online status
+  const friends = useMemo(() => {
+    if (!user?.friends) return [];
+
+    return user.friends.map((friend) => ({
+      _id: friend._id,
+      name: friend.name,
+      email: friend.email,
+      avatar: getProfilePictureUrl(friend.profilePicture),
+      status: isUserOnline(friend._id) ? "online" : "offline",
+      activity: isUserOnline(friend._id) ? "Aktif" : null,
+      lastSeen: !isUserOnline(friend._id) ? "Son çevrimiçi bilinmiyor" : null,
+      school: friend.school,
+      age: friend.age,
+      location: friend.location,
+      goalKeeper: friend.goalKeeper,
+      role: friend.role,
+      createdAt: friend.createdAt,
+      updatedAt: friend.updatedAt,
+    }));
+  }, [user?.friends, isUserOnline, getProfilePictureUrl]);
+
+  // Process pending friend requests
+  const pendingRequests = useMemo(() => {
+    if (!user?.selfFriendRequests) return [];
+
+    return user.selfFriendRequests.map((request) => ({
+      _id: request._id,
+      name: request.name,
+      email: request.email,
+      avatar: getProfilePictureUrl(request.profilePicture),
+      status: "pending",
+      activity: null,
       lastSeen: null,
-    },
-    {
-      id: 2,
-      name: "Phyrex",
-      avatar: null,
-      status: "online",
-      activity: "Spotify'da müzik dinliyor",
-      lastSeen: null,
-    },
-    {
-      id: 3,
-      name: "Yorgo",
-      avatar:
-        "https://res.cloudinary.com/dppjlhdth/image/upload/v1745746418/SporPlanet_Transparent_Logo_hecyyn.png",
-      status: "online",
-      activity: "Halısaha maçı arıyor",
-      lastSeen: null,
-    },
-    {
-      id: 4,
-      name: "DeVoe",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "1294 gün önce",
-    },
-    {
-      id: 5,
-      name: "Klein",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "21 gün önce",
-    },
-    {
-      id: 6,
-      name: "Larisa",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "3 saat önce",
-    },
-    {
-      id: 7,
-      name: "menesay005",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "46 gün önce",
-    },
-    {
-      id: 8,
-      name: "Mergen",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "27 gün önce",
-    },
-    {
-      id: 9,
-      name: "muhammedbayram4444",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "16 saat önce",
-    },
-    {
-      id: 10,
-      name: "NYmeX+",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "12 gün önce",
-    },
-    {
-      id: 11,
-      name: "STICK",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "8 gün önce",
-    },
-    {
-      id: 12,
-      name: "G A G A V U Z",
-      avatar: null,
-      status: "offline",
-      activity: null,
-      lastSeen: "5 gün önce",
-    },
-  ];
+      school: request.school,
+      age: request.age,
+      location: request.location,
+      goalKeeper: request.goalKeeper,
+      role: request.role,
+      createdAt: request.createdAt,
+      updatedAt: request.updatedAt,
+    }));
+  }, [user?.selfFriendRequests, getProfilePictureUrl]);
 
   const getInitials = (name) => {
     if (!name) return "?";
@@ -135,6 +81,10 @@ function MyFriends({ user }) {
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredPendingRequests = pendingRequests.filter((request) =>
+    request.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const onlineFriends = filteredFriends.filter(
     (friend) => friend.status === "online"
   );
@@ -145,7 +95,7 @@ function MyFriends({ user }) {
   const tabs = [
     { id: "online", label: "Çevrimiçi", count: onlineFriends.length },
     { id: "all", label: "Tümü", count: filteredFriends.length },
-    { id: "pending", label: "Bekleyen", count: 0 },
+    { id: "pending", label: "Bekleyen", count: filteredPendingRequests.length },
   ];
 
   const getFriendsToShow = () => {
@@ -155,10 +105,15 @@ function MyFriends({ user }) {
       case "all":
         return [...onlineFriends, ...offlineFriends];
       case "pending":
-        return [];
+        return filteredPendingRequests;
       default:
         return filteredFriends;
     }
+  };
+
+  // Handle navigation to user profile
+  const handleUserClick = (userId) => {
+    navigate(`/user/${userId}`);
   };
 
   return (
@@ -195,13 +150,13 @@ function MyFriends({ user }) {
             <div className="flex space-x-8">
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">
-                  {user.followers?.length || 0}
+                  {user.friendRequests?.length || 0}
                 </div>
                 <div className="text-sm text-gray-600">Takipçilerim</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">
-                  {user.following?.length || 0}
+                  {user.friends?.length || 0}
                 </div>
                 <div className="text-sm text-gray-600">Takip Ettiklerim</div>
               </div>
@@ -274,8 +229,9 @@ function MyFriends({ user }) {
             <div className="space-y-3">
               {onlineFriends.map((friend) => (
                 <div
-                  key={friend.id}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  key={friend._id}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                  onClick={() => handleUserClick(friend._id)}
                 >
                   <div className="relative">
                     <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center overflow-hidden">
@@ -306,9 +262,19 @@ function MyFriends({ user }) {
                         {friend.activity}
                       </p>
                     )}
+                    {friend.location && (
+                      <p className="text-xs text-gray-400 truncate">
+                        {friend.location.city}, {friend.location.district}
+                      </p>
+                    )}
                   </div>
                   <div className="flex space-x-2">
-                    <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                    <button
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation(); /* Add message functionality */
+                      }}
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -323,7 +289,12 @@ function MyFriends({ user }) {
                         />
                       </svg>
                     </button>
-                    <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                    <button
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation(); /* Add more options */
+                      }}
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -355,8 +326,9 @@ function MyFriends({ user }) {
                 <div className="space-y-3">
                   {onlineFriends.map((friend) => (
                     <div
-                      key={friend.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                      key={friend._id}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={() => handleUserClick(friend._id)}
                     >
                       <div className="relative">
                         <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center overflow-hidden">
@@ -387,9 +359,19 @@ function MyFriends({ user }) {
                             {friend.activity}
                           </p>
                         )}
+                        {friend.location && (
+                          <p className="text-xs text-gray-400 truncate">
+                            {friend.location.city}, {friend.location.district}
+                          </p>
+                        )}
                       </div>
                       <div className="flex space-x-2">
-                        <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                        <button
+                          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation(); /* Add message functionality */
+                          }}
+                        >
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -404,7 +386,12 @@ function MyFriends({ user }) {
                             />
                           </svg>
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                        <button
+                          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation(); /* Add more options */
+                          }}
+                        >
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -433,8 +420,9 @@ function MyFriends({ user }) {
               <div className="space-y-3">
                 {offlineFriends.map((friend) => (
                   <div
-                    key={friend.id}
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors opacity-60"
+                    key={friend._id}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors opacity-60 cursor-pointer"
+                    onClick={() => handleUserClick(friend._id)}
                   >
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
@@ -462,12 +450,22 @@ function MyFriends({ user }) {
                       </p>
                       {friend.lastSeen && (
                         <p className="text-xs text-gray-500 truncate">
-                          Son çevrimiçi {friend.lastSeen}
+                          {friend.lastSeen}
+                        </p>
+                      )}
+                      {friend.location && (
+                        <p className="text-xs text-gray-400 truncate">
+                          {friend.location.city}, {friend.location.district}
                         </p>
                       )}
                     </div>
                     <div className="flex space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                      <button
+                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation(); /* Add message functionality */
+                        }}
+                      >
                         <svg
                           className="w-4 h-4"
                           fill="none"
@@ -482,7 +480,12 @@ function MyFriends({ user }) {
                           />
                         </svg>
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                      <button
+                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation(); /* Add more options */
+                        }}
+                      >
                         <svg
                           className="w-4 h-4"
                           fill="none"
@@ -530,26 +533,130 @@ function MyFriends({ user }) {
         )}
 
         {activeTab === "pending" && (
-          <div className="text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              Bekleyen istek yok
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Bekleyen arkadaşlık isteğiniz bulunmuyor.
-            </p>
+          <div>
+            {filteredPendingRequests.length > 0 ? (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Bekleyen İstekler — {filteredPendingRequests.length}
+                </h3>
+                <div className="space-y-3">
+                  {filteredPendingRequests.map((request) => (
+                    <div
+                      key={request._id}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={() => handleUserClick(request._id)}
+                    >
+                      <div className="relative">
+                        <div className="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center overflow-hidden">
+                          {request.avatar ? (
+                            <img
+                              src={request.avatar}
+                              alt={request.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-white font-semibold text-sm">
+                              {getInitials(request.name)}
+                            </span>
+                          )}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <svg
+                            className="w-2 h-2 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {request.name}
+                        </p>
+                        <p className="text-xs text-yellow-600 truncate">
+                          Bekleyen arkadaşlık isteği
+                        </p>
+                        {request.location && (
+                          <p className="text-xs text-gray-400 truncate">
+                            {request.location.city}, {request.location.district}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation(); /* Add cancel request functionality */
+                          }}
+                          title="İsteği İptal Et"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation(); /* Add more options */
+                          }}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <svg
+                  className="mx-auto h-12 w-12 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  />
+                </svg>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">
+                  Bekleyen istek yok
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Bekleyen arkadaşlık isteğiniz bulunmuyor.
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

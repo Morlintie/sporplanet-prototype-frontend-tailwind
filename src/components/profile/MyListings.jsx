@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function MyListings({ user }) {
   const [activeSection, setActiveSection] = useState("myAdverts"); // myAdverts, joinedAdverts, waitingRequests
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
   const { user: authUser, unseenMessages } = useAuth();
+  const navigate = useNavigate();
 
   // Use authenticated user data directly from AuthContext
   const currentUser = authUser;
@@ -163,7 +165,7 @@ function MyListings({ user }) {
   // Handle navigation to advert detail
   const handleViewDetails = (advertId) => {
     window.scrollTo(0, 0);
-    window.location.href = `/advert-detail/${advertId}`;
+    navigate(`/advert-detail/${advertId}`);
   };
 
   // Loading state - check if user data is available
@@ -742,7 +744,7 @@ function MyListings({ user }) {
             <button
               onClick={() => {
                 window.scrollTo(0, 0);
-                window.location.href = "/matches";
+                navigate("/matches");
               }}
               className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
             >

@@ -13,3 +13,5 @@ alwaysApply: true
 -Leave websocket namespace rooms when I tell you to do otherwise do bot leave any of websocket namespace rooms your own and if you were to do that ask me first.
 
 -We got multiple namespaces for websocket connections to provide better isolation between connections so while making the connections do not forget which namespace we are doing that connection to do.
+
+- Be careful about cross websocket bugs and issues. They are too hard to fix and identify so please make sure you are not creating something like that while dealing with websockets.

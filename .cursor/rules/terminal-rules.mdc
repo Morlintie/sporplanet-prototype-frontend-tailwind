@@ -7,3 +7,5 @@ alwaysApply: true
 1. Do not install any dependencies without my permisson. If you need a dependency ask me to install it.
 2. Do not run application. I will do it manually.
 3. Do not run any powershell script.
+4. Do not use "npm run build" for test and do not ask me for that to get permission to run it.
+5. Do not ever use "npm run build" and do not ask me ever to use that.
