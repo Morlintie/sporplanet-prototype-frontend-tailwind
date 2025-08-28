@@ -2,28 +2,30 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/shared/Header";
 import Footer from "../components/shared/Footer";
-import MatchesFeature from "../components/home/MatchesFeature";
-import ReservationFeature from "../components/home/ReservationFeature";
-import TournamentFeature from "../components/home/TournamentFeature";
 import { useAuth } from "../context/AuthContext";
+import Notification from "../components/shared/Notification";
 
 function HomePage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
+  
+  // Real data states
+  const [matches, setMatches] = useState([]);
+  const [pitches, setPitches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Notification state
+  const [notification, setNotification] = useState({
+    isVisible: false,
+    message: "",
+    type: "success",
+  });
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  // Auto-slider for hero section
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   // Intersection Observer for animations
@@ -53,370 +55,607 @@ function HomePage() {
     }
   };
 
-  const handleLearnMore = () => {
-    document.getElementById("features").scrollIntoView({ behavior: "smooth" });
+  // Notification helper functions
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      isVisible: true,
+      message,
+      type,
+    });
   };
 
-  const heroSlides = [
-    {
-      title: "Futbol Tutkun",
-      subtitle: "Burada Başlıyor",
-      description: "Arkadaşlarını bul, maç organize et, saha kirala. Türkiye'nin en büyük futbol topluluğuna katıl!",
-      bg: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?q=80&w=1170&auto=format&fit=crop"
-    },
-    {
-      title: "Her Gün Yeni",
-      subtitle: "Maçlar ve Fırsatlar",
-      description: "Binlerce oyuncu seni bekliyor. Seviyene uygun maçlar bul, yeni arkadaşlar edin!",
-      bg: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1170&auto=format&fit=crop"
-    },
-    {
-      title: "Rekabetçi Ortamda",
-      subtitle: "Şampiyonluklar Kazan",
-      description: "Turnuvalara katıl, ligde oyna, ödüller kazan. Futbol kariyerinde yeni bir sayfa aç!",
-      bg: "https://images.unsplash.com/photo-1552318965-6e6be7484ada?q=80&w=1170&auto=format&fit=crop"
-    }
-  ];
+  const closeNotification = () => {
+    setNotification({
+      isVisible: false,
+      message: "",
+      type: "success",
+    });
+  };
 
-  const testimonials = [
-    {
-      name: "Ahmet Yılmaz",
-      location: "İstanbul",
-      text: "SporPlanet sayesinde her hafta düzenli maç yapıyorum. Harika arkadaşlar edindim!",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face"
-    },
-    {
-      name: "Mehmet Demir",
-      location: "Ankara",
-      text: "Saha rezervasyonu çok kolay, fiyatlar uygun. Kesinlikle tavsiye ederim.",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face"
-    },
-    {
-      name: "Ali Özkan",
-      location: "İzmir",
-      text: "Turnuva sistemleri çok iyi organize edilmiş. Gerçek bir futbol deneyimi!",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&fit=crop&crop=face"
+  // Fetch matches from backend
+  const fetchMatches = async () => {
+    try {
+      console.log("Fetching matches from API...");
+      const response = await fetch("/api/v1/advert/getAll", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Matches API response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch matches");
+      }
+
+      const data = await response.json();
+      console.log("Matches data received:", data);
+      
+      // API response'u kontrol et ve doğru field'ı kullan
+      const matchesData = data.adverts || data.data || data || [];
+      setMatches(matchesData.slice(0, 3)); // İlk 3 tanesini al
+      console.log("Matches set:", matchesData.slice(0, 3));
+    } catch (err) {
+      console.error("Error fetching matches:", err);
+      setError("Maçlar yüklenemedi");
     }
-  ];
+  };
+
+  // Fetch pitches from backend
+  const fetchPitches = async () => {
+    try {
+      console.log("Fetching pitches from API...");
+      const response = await fetch("/api/v1/pitch/getAll", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Pitches API response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch pitches");
+      }
+
+      const data = await response.json();
+      console.log("Pitches data received:", data);
+      
+      // API response'u kontrol et ve doğru field'ı kullan
+      const pitchesData = data.pitches || data.data || data || [];
+      setPitches(pitchesData.slice(0, 3)); // İlk 3 tanesini al
+      console.log("Pitches set:", pitchesData.slice(0, 3));
+    } catch (err) {
+      console.error("Error fetching pitches:", err);
+      setError("Sahalar yüklenemedi");
+    }
+  };
+
+  // Load data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([fetchMatches(), fetchPitches()]);
+      } catch (err) {
+        console.error("Error loading homepage data:", err);
+        showNotification("Veriler yüklenirken hata oluştu", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       {/* Header */}
       <Header />
 
-      {/* Hero Section - Enhanced with Slider */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Slider */}
-        <div className="absolute inset-0">
-          {heroSlides.map((slide, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? "opacity-100" : "opacity-0"
-              }`}
-              style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${slide.bg}')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat"
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-green-400 opacity-10 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-400 opacity-10 rounded-full animate-bounce" style={{ animationDuration: "3s" }}></div>
-          <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-yellow-400 opacity-10 rounded-full animate-ping" style={{ animationDuration: "4s" }}></div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="text-center text-white">
-            <div className="mb-8">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                {heroSlides[currentSlide].title}
-                <span className="block text-green-300 bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-transparent">
-                  {heroSlides[currentSlide].subtitle}
-                </span>
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-                {heroSlides[currentSlide].description}
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <button 
-                onClick={handleGetStarted}
-                className="group relative px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg rounded-full shadow-2xl hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-300 cursor-pointer"
-              >
-                <span className="relative z-10">
-                  {isAuthenticated ? "Maçları Keşfet" : "Hemen Başla"}
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </button>
-              
-              <button 
-                onClick={handleLearnMore}
-                className="group px-10 py-4 border-2 border-white text-white font-bold text-lg rounded-full hover:bg-white hover:text-green-700 transition-all duration-300 cursor-pointer"
-              >
-                Nasıl Çalışır?
-                <svg className="inline-block w-5 h-5 ml-2 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Slider Indicators */}
-            <div className="flex justify-center space-x-3 mt-12">
-              {heroSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentSlide ? "bg-white scale-125" : "bg-white/50 hover:bg-white/75"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <div className="animate-bounce">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section - Enhanced */}
-      <section id="features" className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
-        <div className="relative w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div 
-            className={`text-center mb-20 transition-all duration-1000 ${
-              isVisible.features ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-            id="features"
-            data-animate
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Futbol Dünyanda
-              <span className="block text-green-600 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                Her Şey
-              </span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              SporPlanet ile futbol tutkunu ile ilgili tüm ihtiyaçlarını karşılayabilirsin. 
-              Maç bulmadan saha kiralamaya, turnuvalara kadar!
-            </p>
-          </div>
-
-          {/* Feature Cards Grid - Enhanced */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div 
-              className={`transform transition-all duration-1000 delay-100 ${
-                isVisible.features ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95"
-              }`}
-            >
-              <MatchesFeature />
-            </div>
-            <div 
-              className={`transform transition-all duration-1000 delay-200 ${
-                isVisible.features ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95"
-              }`}
-            >
-              <ReservationFeature />
-            </div>
-            <div 
-              className={`transform transition-all duration-1000 delay-300 ${
-                isVisible.features ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95"
-              }`}
-            >
-              <TournamentFeature />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section - Enhanced with Animations */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-green-600 via-emerald-600 to-green-700"></div>
+      {/* Hero Section - Shortened and Simplified */}
+      <section className="relative bg-gradient-to-br from-green-600 via-green-700 to-emerald-800 py-20 pt-24 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         
-        {/* Animated Background Pattern */}
+        {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
-                </pattern>
-              </defs>
-              <rect width="100" height="100" fill="url(#grid)" />
-            </svg>
-          </div>
+          <div className="absolute inset-0" 
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          />
         </div>
 
-        <div className="relative w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div 
-            className={`text-center mb-16 transition-all duration-1000 ${
-              isVisible.stats ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-            id="stats"
-            data-animate
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Türkiye'nin En Büyük Futbol Topluluğu
-            </h2>
-            <p className="text-green-100 text-lg">Binlerce oyuncu her gün bizimle futbol oynuyor</p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { number: "25K+", label: "Aktif Oyuncu", delay: "delay-100" },
-              { number: "5K+", label: "Günlük Maçlar", delay: "delay-200" },
-              { number: "1K+", label: "Futbol Sahası", delay: "delay-300" },
-              { number: "100+", label: "Turnuva", delay: "delay-400" }
-            ].map((stat, index) => (
-              <div 
-                key={index}
-                className={`text-center transform transition-all duration-1000 ${stat.delay} ${
-                  isVisible.stats ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95"
-                }`}
-              >
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 group">
-                  <div className="text-4xl md:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
-                    {stat.number}
-                  </div>
-                  <div className="text-green-200 text-sm md:text-base">{stat.label}</div>
-                </div>
-              </div>
-            ))}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+            Futbol Tutkun
+            <span className="block text-green-300">Burada Başlıyor</span>
+          </h1>
+          <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto text-green-100 leading-relaxed">
+            Arkadaşlarını bul, maç organize et, saha kirala. Türkiye'nin en büyük futbol topluluğuna katıl!
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button 
+              onClick={handleGetStarted}
+              className="px-8 py-3 bg-white text-green-700 font-semibold rounded-full hover:bg-green-50 transform hover:scale-105 transition-all duration-300 shadow-lg"
+            >
+              {isAuthenticated ? "Maçları Keşfet" : "Hemen Başla"}
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gray-100">
-        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div 
-            className={`text-center mb-16 transition-all duration-1000 ${
-              isVisible.testimonials ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-            id="testimonials"
-            data-animate
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Kullanıcılarımız Ne Diyor?
+      {/* Features Introduction Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+              Futbol Dünyanda
+              <span className="block text-green-600">Her Şey Burada</span>
             </h2>
-            <p className="text-lg text-gray-600">Binlerce mutlu kullanıcıdan sadece birkaçı</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                className={`transform transition-all duration-1000 delay-${(index + 1) * 100} ${
-                  isVisible.testimonials ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                }`}
-              >
-                <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-200">
-                  <div className="flex items-center mb-4">
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover mr-4"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                      <p className="text-sm text-gray-600">{testimonial.location}</p>
-                    </div>
-                  </div>
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">"{testimonial.text}"</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Call to Action Section */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-800 via-green-600 to-emerald-600"></div>
-        <div className="absolute inset-0 bg-black/30"></div>
-        
-        {/* Floating Elements */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
-        <div className="absolute top-1/4 right-10 w-32 h-32 bg-white/5 rounded-full animate-float" style={{ animationDelay: "1s" }}></div>
-        <div className="absolute bottom-20 left-1/4 w-16 h-16 bg-white/10 rounded-full animate-float" style={{ animationDelay: "2s" }}></div>
-
-        <div className="relative w-full px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center">
-          <div 
-            className={`transition-all duration-1000 ${
-              isVisible.cta ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-            id="cta"
-            data-animate
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
-              Hazır mısın?
-              <span className="block text-green-200">Macera Başlasın!</span>
-            </h2>
-            <p className="text-xl text-green-100 mb-10 leading-relaxed">
-              Binlerce futbol sever seni bekliyor. Hemen üye ol ve futbol maceran başlasın!
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              SporPlanet ile futbol tutkunu ile ilgili tüm ihtiyaçlarını karşılayabilirsin
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {/* Match Feature */}
+            <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Maç İlanları</h3>
+              <p className="text-gray-600 mb-6">
+                Binlerce oyuncu seni bekliyor. Seviyene uygun maçlar bul, takım arkadaşları edin!
+              </p>
               <button 
-                onClick={handleGetStarted}
-                className="group relative px-12 py-4 bg-white text-green-700 font-bold text-lg rounded-full shadow-2xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 cursor-pointer"
+                onClick={() => navigate("/matches")}
+                className="text-green-600 font-semibold hover:text-green-700 flex items-center"
               >
-                <span className="relative z-10">
-                  {isAuthenticated ? "Maçlara Katıl" : "Ücretsiz Üye Ol"}
-                </span>
-                <svg className="inline-block w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                Maçları Gör
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </button>
-              
-              <div className="text-green-200 text-sm">
-                <span className="block">✓ Ücretsiz kayıt</span>
-                <span className="block">✓ Anında maç bulma</span>
+            </div>
+
+            {/* Reservation Feature */}
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" clipRule="evenodd" />
+                </svg>
               </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Saha Rezervasyonu</h3>
+              <p className="text-gray-600 mb-6">
+                Türkiye'nin her yerinden binlerce saha. Kolayca rezervasyon yap, hemen oyna!
+              </p>
+              <button 
+                onClick={() => navigate("/reservation")}
+                className="text-blue-600 font-semibold hover:text-blue-700 flex items-center"
+              >
+                Sahaları Gör
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Tournament Feature */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-blue-200">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Turnuvalar</h3>
+              <p className="text-gray-600 mb-6">
+                Rekabetçi turnuvalara katıl, şampiyonluklar kazan ve futbol kariyerinde yüksel!
+              </p>
+              <button 
+                onClick={() => navigate("/tournaments")}
+                className="text-blue-600 font-semibold hover:text-blue-700 flex items-center"
+              >
+                Turnuvaları Gör
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Dynamic Matches Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Popüler Maç İlanları</h2>
+            <p className="text-lg text-gray-600">Şu anda en çok ilgi gören maçlar</p>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
+                  <div className="h-2 bg-gray-200"></div>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="h-6 bg-gray-200 rounded w-24"></div>
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                    <div className="space-y-2 mb-4">
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                    </div>
+                    <div className="h-10 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {matches.slice(0, 3).map((match) => (
+                <div 
+                  key={match._id || match.id} 
+                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                  onClick={() => navigate(`/advert-detail/${match._id || match.id}`)}
+                >
+                  <div 
+                    className="h-32 bg-cover bg-center relative"
+                    style={{
+                      backgroundImage: match.matchType === "team" 
+                        ? `url('/images/takım.png')` 
+                        : `url('/images/oyuncu.png')`
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                    <div className="absolute top-4 left-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        match.matchType === 'team' 
+                          ? 'bg-green-500 text-white' 
+                          : 'bg-blue-500 text-white'
+                      }`}>
+                        {match.matchType === 'team' ? '👥 Takım Arıyor' : '👤 Oyuncu Arıyor'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-3 line-clamp-2">
+                      {match.name || "Maç İlanı"}
+                    </h3>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        </svg>
+                        <span className="truncate">
+                          {match.address?.district && match.address?.city 
+                            ? `${match.address.district}, ${match.address.city}`
+                            : "Konum Belirtilmemiş"}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="truncate">
+                          {match.startsAt 
+                            ? new Date(match.startsAt).toLocaleDateString("tr-TR") + " • " +
+                              new Date(match.startsAt).toLocaleTimeString("tr-TR", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "Tarih Belirtilmemiş"}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span className="truncate">
+                          {match.playersNeeded || match.goalKeepersNeeded 
+                            ? `${(match.playersNeeded || 0) + (match.goalKeepersNeeded || 0)} kişi arıyor`
+                            : "Oyuncu sayısı belirtilmemiş"}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <button className="w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                      Detayları Gör
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="text-center">
+            <button 
+              onClick={() => navigate("/matches")}
+              className="px-8 py-3 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
+            >
+              Tüm Maçları Gör
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Dynamic Reservations Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Popüler Sahalar</h2>
+            <p className="text-lg text-gray-600">En çok tercih edilen futbol sahaları</p>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
+                  <div className="h-48 bg-gray-200"></div>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="h-6 bg-gray-200 rounded w-32"></div>
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                      <div className="h-6 bg-gray-200 rounded w-20"></div>
+                      <div className="h-6 bg-gray-200 rounded w-24"></div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="h-6 bg-gray-200 rounded w-20"></div>
+                      <div className="h-10 bg-gray-200 rounded w-24"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {pitches.slice(0, 3).map((pitch) => (
+                <div 
+                  key={pitch._id || pitch.id} 
+                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                  onClick={() => navigate(`/pitch-detail/${pitch._id || pitch.id}`)}
+                >
+                  <div className="h-48 bg-gradient-to-r from-green-400 to-blue-500 relative overflow-hidden">
+                    {pitch.images && pitch.images.length > 0 ? (
+                      <img 
+                        src={pitch.images[0]} 
+                        alt={pitch.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+                        <svg className="w-16 h-16 text-white/50" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-gray-900 line-clamp-1">
+                        {pitch.name || "Saha Adı"}
+                      </h3>
+                      {pitch.rating && (
+                        <div className="flex items-center">
+                          <svg className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          <span className="text-sm font-semibold">{pitch.rating}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center text-gray-600 text-sm mb-4">
+                      <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      <span className="truncate">
+                        {pitch.address?.district && pitch.address?.city 
+                          ? `${pitch.address.district}, ${pitch.address.city}`
+                          : "Konum Belirtilmemiş"}
+                      </span>
+                    </div>
+                    
+                    {pitch.features && pitch.features.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {pitch.features.slice(0, 3).map((feature, index) => (
+                          <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            {feature}
+                          </span>
+                        ))}
+                        {pitch.features.length > 3 && (
+                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            +{pitch.features.length - 3} daha
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-green-600 font-bold text-lg">
+                        {pitch.pricePerHour ? `₺${pitch.pricePerHour}/saat` : "Fiyat Belirtilmemiş"}
+                      </span>
+                      <button className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                        Rezerve Et
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="text-center">
+            <button 
+              onClick={() => navigate("/reservation")}
+              className="px-8 py-3 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors"
+            >
+              Tüm Sahaları Gör
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Tournament System Explanation */}
+      <section className="py-16 bg-gradient-to-br from-blue-800 via-indigo-800 to-blue-900 relative overflow-hidden">
+        {/* Champions League Stars Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10">
+            <svg className="w-8 h-8 text-white animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="absolute top-32 right-20">
+            <svg className="w-6 h-6 text-white animate-pulse" style={{animationDelay: '1s'}} fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="absolute bottom-20 left-1/4">
+            <svg className="w-5 h-5 text-white animate-pulse" style={{animationDelay: '2s'}} fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+            </svg>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center text-white mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+              Turnuva Sistemi
+              <span className="block text-blue-200 text-lg font-normal mt-2">⭐ Şampiyonlar Ligi Seviyesinde ⭐</span>
+            </h2>
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+              Profesyonel turnuva deneyimi ile futbol kariyerinde yeni zirvelere çık
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Step 1 */}
+            <div className="text-center text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-white/30">
+                <span className="text-2xl font-bold">1</span>
+              </div>
+              <h3 className="text-lg font-bold mb-3">Takım Oluştur</h3>
+              <p className="text-blue-100 text-sm">
+                Arkadaşlarınla birlikte takımını oluştur veya mevcut takımlara katıl
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="text-center text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-white/30">
+                <span className="text-2xl font-bold">2</span>
+              </div>
+              <h3 className="text-lg font-bold mb-3">Turnuvaya Katıl</h3>
+              <p className="text-blue-100 text-sm">
+                Seviyene uygun turnuvaları seç ve takımınla birlikte kayıt ol
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-white/30">
+                <span className="text-2xl font-bold">3</span>
+              </div>
+              <h3 className="text-lg font-bold mb-3">Maçlara Çık</h3>
+              <p className="text-blue-100 text-sm">
+                Otomatik eşleşme sistemi ile rakip takımlarla karşılaş ve mücadele et
+              </p>
+            </div>
+
+            {/* Step 4 */}
+            <div className="text-center text-white">
+              <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-white/50">
+                <span className="text-2xl font-bold text-blue-900">4</span>
+              </div>
+              <h3 className="text-lg font-bold mb-3">🏆 Şampiyon Ol</h3>
+              <p className="text-blue-100 text-sm">
+                Şampiyonluklar kazan, altın rozetler topla ve futbol kariyerinde ilerle
+              </p>
+            </div>
+          </div>
+
+          {/* Tournament Features */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-yellow-900" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">Ödül Sistemi</h3>
+              <p className="text-blue-100 text-sm">
+                Şampiyon takımlara özel ödüller, rozetler ve başarı sertifikaları
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-500 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">Canlı Skor Tablosu</h3>
+              <p className="text-blue-100 text-sm">
+                Maç sonuçlarını takip et, puan tablosunu görüntüle ve sıralamayı izle
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="w-12 h-12 bg-gradient-to-r from-indigo-400 to-blue-500 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">İstatistik Takibi</h3>
+              <p className="text-blue-100 text-sm">
+                Oyuncu ve takım istatistiklerini detaylı bir şekilde takip et
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="inline-flex items-center px-8 py-4 bg-white/10 text-white rounded-full text-lg font-semibold cursor-not-allowed opacity-75 border border-white/30">
+              <svg className="w-6 h-6 mr-2 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+              </svg>
+              ⭐ Çok Yakında ⭐
+            </div>
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Footer */}
       <Footer />
 
-      {/* Add custom CSS for animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          33% { transform: translateY(-10px) rotate(1deg); }
-          66% { transform: translateY(5px) rotate(-1deg); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
+      {/* Notification */}
+      <Notification
+        isVisible={notification.isVisible}
+        message={notification.message}
+        type={notification.type}
+        onClose={closeNotification}
+      />
     </div>
   );
 }

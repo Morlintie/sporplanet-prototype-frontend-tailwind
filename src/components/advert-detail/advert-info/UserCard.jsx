@@ -70,9 +70,9 @@ function UserCard({
     return true;
   };
 
-  // Check if user should have admin controls menu
+  // Check if user should have admin controls (either direct buttons or menu)
   const shouldShowAdminMenu = () => {
-    if (user._id === currentUser?._id) return false; // No menu for self
+    if (user._id === currentUser?._id) return false; // No controls for self
     return (
       canCurrentUserManage() &&
       (canPromoteToAdmin() ||
@@ -184,108 +184,113 @@ function UserCard({
         </div>
 
         <div className="flex items-center space-x-2">
-          <div className="text-right">
-            <p
-              className={`text-xs ${
-                isWaitingListUser ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              {userItem.joinedAt
-                ? new Date(userItem.joinedAt).toLocaleDateString("tr-TR")
-                : "-"}
-            </p>
-          </div>
-
-          {/* Admin controls - three-dot menu for manageable users */}
+          {/* Admin controls */}
           {shouldShowAdminMenu() && (
             <div className="relative">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (!isProcessingRequest) {
-                    toggleDropdown(user._id);
+              {/* Direct approve/reject buttons for waiting list users */}
+              {isWaitingListUser && canCurrentUserManage() ? (
+                <div className="flex items-center space-x-1">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleAcceptRequest(user._id);
+                    }}
+                    disabled={isProcessingRequest}
+                    className={`p-1.5 rounded-full transition-colors ${
+                      isProcessingRequest
+                        ? "cursor-not-allowed opacity-50"
+                        : "hover:bg-green-50 text-green-600 hover:text-green-700"
+                    }`}
+                    title={
+                      isProcessingRequest
+                        ? "İşlem devam ediyor..."
+                        : "Katılım Talebini Kabul Et"
+                    }
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRejectRequest(user._id);
+                    }}
+                    disabled={isProcessingRequest}
+                    className={`p-1.5 rounded-full transition-colors ${
+                      isProcessingRequest
+                        ? "cursor-not-allowed opacity-50"
+                        : "hover:bg-red-50 text-red-600 hover:text-red-700"
+                    }`}
+                    title={
+                      isProcessingRequest
+                        ? "İşlem devam ediyor..."
+                        : "Katılım Talebini Reddet"
+                    }
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                /* Three-dot menu for approved participants */
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!isProcessingRequest) {
+                      toggleDropdown(user._id);
+                    }
+                  }}
+                  disabled={isProcessingRequest}
+                  className={`p-1 rounded-full transition-colors ${
+                    isProcessingRequest
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-gray-100"
+                  }`}
+                  title={
+                    isProcessingRequest
+                      ? "İşlem devam ediyor..."
+                      : "Yönetim Seçenekleri"
                   }
-                }}
-                disabled={isProcessingRequest}
-                className={`p-1 rounded-full transition-colors ${
-                  isProcessingRequest
-                    ? "cursor-not-allowed opacity-50"
-                    : "hover:bg-gray-100"
-                }`}
-                title={
-                  isProcessingRequest
-                    ? "İşlem devam ediyor..."
-                    : "Yönetim Seçenekleri"
-                }
-              >
-                <svg
-                  className="w-4 h-4 text-gray-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
                 >
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
-              </button>
+                  <svg
+                    className="w-4 h-4 text-gray-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                </button>
+              )}
 
-              {/* Dropdown Menu */}
-              {openDropdownId === user._id && (
+              {/* Dropdown Menu - Only for approved participants */}
+              {openDropdownId === user._id && !isWaitingListUser && (
                 <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="py-1">
-                    {/* Waiting list controls */}
-                    {isWaitingListUser && (
-                      <>
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleAcceptRequest(user._id);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-green-700 hover:bg-green-50 transition-colors"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                          Katılım Talebini Kabul Et
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleRejectRequest(user._id);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                          Katılım Talebini Reddet
-                        </button>
-                        {(canPromoteToAdmin() || canExpelUser()) && (
-                          <div className="border-t border-gray-100 my-1"></div>
-                        )}
-                      </>
-                    )}
 
                     {/* Admin promotion controls */}
                     {canPromoteToAdmin() && (
@@ -377,6 +382,18 @@ function UserCard({
               )}
             </div>
           )}
+
+          <div className="text-right">
+            <p
+              className={`text-xs ${
+                isWaitingListUser ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              {userItem.joinedAt
+                ? new Date(userItem.joinedAt).toLocaleDateString("tr-TR")
+                : "-"}
+            </p>
+          </div>
         </div>
       </div>
     </div>

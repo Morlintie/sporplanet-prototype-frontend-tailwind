@@ -155,14 +155,14 @@ function JoinButton({
               setShowOwnerDropdown(!showOwnerDropdown);
             }}
             disabled={isLeaving || isDeleting}
-            className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-4 px-6 rounded-xl text-center shadow-lg transition-all duration-200 ${
+            className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-center shadow-md transition-all duration-200 ${
               isLeaving || isDeleting
                 ? "opacity-75 cursor-not-allowed"
-                : "hover:from-blue-600 hover:to-blue-700 hover:shadow-xl"
+                : "hover:from-blue-600 hover:to-blue-700 hover:shadow-lg"
             }`}
           >
             <div className="flex items-center justify-center space-x-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
@@ -249,21 +249,21 @@ function JoinButton({
           type="button"
           onClick={handleRevokeRequest}
           disabled={isRevoking}
-          className={`w-full text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg flex items-center justify-center space-x-3 ${
+          className={`w-full text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md flex items-center justify-center space-x-2 ${
             isRevoking
               ? "bg-gradient-to-r from-yellow-400 to-orange-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 hover:shadow-xl transform hover:-translate-y-0.5"
+              : "bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 hover:shadow-lg transform hover:-translate-y-0.5"
           }`}
         >
           {isRevoking ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-              <span className="text-lg">İstek Geri Alınıyor...</span>
+              <span className="text-base">İstek Geri Alınıyor...</span>
             </>
           ) : (
             <>
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -275,7 +275,7 @@ function JoinButton({
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span className="text-lg">Katılım İsteğini Geri Al</span>
+              <span className="text-base">Katılım İsteğini Geri Al</span>
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -291,20 +291,20 @@ function JoinButton({
           type="button"
           onClick={handleLeaveAdvert}
           disabled={isLeaving}
-          className={`w-full text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg flex items-center justify-center space-x-3 ${
+          className={`w-full text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md flex items-center justify-center space-x-2 ${
             isLeaving
               ? "bg-gradient-to-r from-red-400 to-red-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-xl transform hover:-translate-y-0.5"
+              : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-lg transform hover:-translate-y-0.5"
           }`}
         >
           {isLeaving ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-              <span className="text-lg">İlandan Ayrılınıyor...</span>
+              <span className="text-base">İlandan Ayrılınıyor...</span>
             </>
           ) : (
             <>
-              <span className="text-lg">İlandan Ayrıl</span>
+              <span className="text-base">İlandan Ayrıl</span>
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -325,27 +325,27 @@ function JoinButton({
           type="button"
           onClick={handleJoinAdvert}
           disabled={isJoining}
-          className={`w-full text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg flex items-center justify-center space-x-3 ${
+          className={`w-full text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md flex items-center justify-center space-x-2 ${
             isJoining
               ? "bg-gradient-to-r from-green-400 to-emerald-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:shadow-xl transform hover:-translate-y-0.5"
+              : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:shadow-lg transform hover:-translate-y-0.5"
           }`}
         >
           {isJoining ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-              <span className="text-lg">Maça Katılınıyor...</span>
+              <span className="text-base">Maça Katılınıyor...</span>
             </>
           ) : (
             <>
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-lg">Maça Katıl</span>
+              <span className="text-base">Maça Katıl</span>
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"

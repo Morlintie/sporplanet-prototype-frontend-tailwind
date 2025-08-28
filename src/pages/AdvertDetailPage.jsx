@@ -56,6 +56,8 @@ function AdvertDetailPage() {
   const [editingText, setEditingText] = useState(""); // Text content for editing
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false); // Control message area scrolling
 
+
+
   // Helper function to check if current user is a participant of the advert
   const isUserParticipant = (advertData, currentUser) => {
     if (!advertData || !currentUser) {
@@ -339,17 +341,15 @@ function AdvertDetailPage() {
         authLoading,
       });
 
-      // Don't fetch if auth is still loading
-      if (authLoading) {
-        console.log("AdvertDetailPage: Skipping fetch - auth still loading");
-        return;
-      }
+      // Always fetch advert data regardless of auth state
+      console.log("AdvertDetailPage: Proceeding with fetch");
 
       try {
         setLoading(true);
         setError(null);
 
         // Fetch advert data from backend API
+        console.log("AdvertDetailPage: Fetching advert from API:", `/api/v1/advert/${advertId}`);
         const advertResponse = await fetch(`/api/v1/advert/${advertId}`, {
           method: "GET",
           credentials: "include",
@@ -357,6 +357,8 @@ function AdvertDetailPage() {
             "Content-Type": "application/json",
           },
         });
+        
+        console.log("AdvertDetailPage: Advert API response status:", advertResponse.status);
 
         if (!advertResponse.ok) {
           let errorMessage = "Failed to fetch advert";
@@ -397,12 +399,15 @@ function AdvertDetailPage() {
         }
 
         const advertData = await advertResponse.json();
+        console.log("AdvertDetailPage: Raw advert data:", advertData);
         const foundAdvert = advertData.advert;
 
         if (!foundAdvert) {
+          console.error("AdvertDetailPage: No advert found in response:", advertData);
           throw new Error("Advert not found");
         }
 
+        console.log("AdvertDetailPage: Setting advert:", foundAdvert);
         setAdvert(foundAdvert);
 
         // Fetch messages data from backend API (only for authenticated participants)
@@ -465,14 +470,19 @@ function AdvertDetailPage() {
           setMessages([]);
         }
       } catch (err) {
-        console.error("Error fetching advert data:", err);
+        console.error("AdvertDetailPage: Error fetching advert data:", err);
 
         // Handle network errors specifically
         let errorMessage = err.message || "Failed to fetch advert";
         if (err.name === "TypeError" && err.message.includes("fetch")) {
-          errorMessage = "Network Error";
+          errorMessage = "Bağlantı hatası. İnternet bağlantınızı kontrol edin.";
+        } else if (err.message === "Advert not found") {
+          errorMessage = "İlan bulunamadı";
+        } else if (err.message.includes("Failed to fetch advert")) {
+          errorMessage = "İlan yüklenemedi";
         }
 
+        console.error("AdvertDetailPage: Setting error:", errorMessage);
         setError(errorMessage);
         showNotification(errorMessage, "error");
       } finally {
@@ -483,7 +493,7 @@ function AdvertDetailPage() {
     if (advertId) {
       fetchData();
     }
-  }, [advertId, isAuthenticated, user, authLoading]);
+  }, [advertId, isAuthenticated, user]);
 
   // Handle notification room join/leave for advert-specific notifications
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import Notification from "../../components/shared/Notification";
 import "../../styles/auth-background.css";
 
 // Loading Spinner Component
@@ -101,6 +102,30 @@ function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // Notification state
+  const [notification, setNotification] = useState({
+    isVisible: false,
+    message: "",
+    type: "success",
+  });
+
+  // Show notification function
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      isVisible: true,
+      message,
+      type,
+    });
+  };
+
+  // Close notification function
+  const closeNotification = () => {
+    setNotification((prev) => ({
+      ...prev,
+      isVisible: false,
+    }));
+  };
+
   // Google OAuth callback handler
   useEffect(() => {
     const statusCode = searchParams.get("statusCode");
@@ -157,11 +182,13 @@ function Login() {
 
         // Check if user is archived and show success message appropriately
         if (data.user.isDeleted === true && data.user.archived === true) {
-          setSuccess(
-            "Google ile giriş başarılı! Hesap geri yükleme seçeneği görüntüleniyor..."
-          );
+          const archiveMessage = "Google ile giriş başarılı! Hesap geri yükleme seçeneği görüntüleniyor...";
+          setSuccess(archiveMessage);
+          showNotification(archiveMessage, "success");
         } else {
-          setSuccess(translateMessage(data.msg || "Login successful", true));
+          const successMessage = translateMessage(data.msg || "Login successful", true);
+          setSuccess(successMessage);
+          showNotification(successMessage, "success");
         }
       }
 
@@ -307,11 +334,13 @@ function Login() {
 
         // Check if user is archived and show success message appropriately
         if (data.user.isDeleted === true && data.user.archived === true) {
-          setSuccess(
-            "Giriş başarılı! Hesap geri yükleme seçeneği görüntüleniyor..."
-          );
+          const archiveMessage = "Giriş başarılı! Hesap geri yükleme seçeneği görüntüleniyor...";
+          setSuccess(archiveMessage);
+          showNotification(archiveMessage, "success");
         } else {
-          setSuccess("Giriş başarılı! Yönlendiriliyorsunuz...");
+          const successMessage = "Giriş başarılı! Yönlendiriliyorsunuz...";
+          setSuccess(successMessage);
+          showNotification(successMessage, "success");
         }
 
         // Allow time for the auth state to propagate to all components
@@ -357,6 +386,15 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-white relative flex items-center justify-center p-4">
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={closeNotification}
+        duration={3000}
+      />
+      
       {/* Right side purplish background area */}
       <div className="absolute top-0 right-0 w-full h-full background-gradient"></div>
 

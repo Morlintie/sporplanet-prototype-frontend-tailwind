@@ -72,7 +72,7 @@ function AccessControl({ advert, message }) {
           className="absolute inset-0 overflow-y-auto p-4 space-y-4"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('https://res.cloudinary.com/dyepiphy8/image/upload/v1755275577/ChatGPT_Image_Aug_15_2025_07_32_40_PM_jhshte.png')",
+              "linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('/images/mesajlaşma.png')",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",

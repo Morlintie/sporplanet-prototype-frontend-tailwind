@@ -890,7 +890,7 @@ function Settings({ user }) {
         showNotificationMessage(successMessage, "success");
 
         // Clear local authentication state via AuthContext
-        await logout();
+        await logout(true); // Pass true to show loading screen
 
         // Wait a moment for notification to be visible before redirecting
         setTimeout(() => {
@@ -902,7 +902,7 @@ function Settings({ user }) {
         showNotificationMessage(errorMessage, "error");
 
         // Even if logout API fails, clear local state and redirect
-        await logout();
+        await logout(true); // Pass true to show loading screen
         setTimeout(() => {
           navigate("/");
         }, 1500);
@@ -913,7 +913,7 @@ function Settings({ user }) {
 
       // Even if logout fails, clear local state and redirect
       try {
-        await logout();
+        await logout(true); // Pass true to show loading screen
       } catch (logoutError) {
         console.error("Local logout error:", logoutError);
       }

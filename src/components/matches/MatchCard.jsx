@@ -6,15 +6,15 @@ function MatchCard({ match, onJoinMatch }) {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    // Navigate to advert detail page with dynamic data
+    // Navigate to advert detail page with page refresh for reliability
     const advertId = match.id || match._id;
     if (!advertId) {
       console.error('No advertId found in match data:', match);
       return;
     }
-    // Scroll to top before navigation
-    window.scrollTo(0, 0);
-    navigate(`/advert-detail/${advertId}`);
+    console.log('Navigating to advert with page refresh:', advertId);
+    // Force page refresh for reliable navigation
+    window.location.href = `/advert-detail/${advertId}`;
   };
   
   // Check if description already contains creator info
@@ -38,7 +38,7 @@ function MatchCard({ match, onJoinMatch }) {
       <div 
         className="rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(https://res.cloudinary.com/dyepiphy8/image/upload/v1755089552/ChatGPT_Image_Aug_13_2025_03_32_46_PM_o6yrq8.png)`
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/images/takım.png')`
         }}
       >
         <div className="flex justify-between items-start mb-4">
@@ -143,7 +143,7 @@ function MatchCard({ match, onJoinMatch }) {
   return (
     <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-green-100"
     style={{
-      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(https://res.cloudinary.com/dyepiphy8/image/upload/v1755090617/20250813_1607_Anonim_Futbolcunun_Pozu_simple_compose_01k2hrk1akf9b89nqc967haa0x_pan6au.png)`
+      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/images/oyuncu.png')`
     }}>
       <div className="flex justify-between items-start mb-4">
         <div>
