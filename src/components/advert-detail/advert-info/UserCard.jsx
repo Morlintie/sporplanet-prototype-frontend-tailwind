@@ -150,7 +150,7 @@ function UserCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">
             <a
-              href={`/profile/${user._id}`}
+              href={`/user/${user._id}`}
               className={`font-medium text-sm truncate cursor-pointer hover:underline ${
                 isWaitingListUser
                   ? "text-blue-400 hover:text-blue-600" // Faded blue for waiting list

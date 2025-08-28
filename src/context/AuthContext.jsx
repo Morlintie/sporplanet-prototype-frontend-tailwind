@@ -371,6 +371,10 @@ export const AuthProvider = ({ children }) => {
     return user?.recentlySearchedPitch || [];
   };
 
+  const getBannedProfiles = () => {
+    return user?.bannedProfiles || [];
+  };
+
   // Helper function to get profile picture URL (handles both string and object formats)
   const getProfilePictureUrl = (profilePicture) => {
     if (!profilePicture) return null;
@@ -495,6 +499,7 @@ export const AuthProvider = ({ children }) => {
     getAdvertWaitingList,
     getRecentlySearchedUsers,
     getRecentlySearchedPitches,
+    getBannedProfiles,
     getProfilePictureUrl,
     getUserProfilePictureUrl,
   };

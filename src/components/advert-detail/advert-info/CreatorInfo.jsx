@@ -56,7 +56,7 @@ function CreatorInfo({ advert, isCreator, isUserOnline }) {
             onClick={() => {
               if (advert.createdBy?._id) {
                 // REMOVED: Scroll to top eliminated per user request
-                navigate(`/profile?userId=${advert.createdBy._id}`);
+                navigate(`/user/${advert.createdBy._id}`);
               }
             }}
             className="font-medium text-gray-900 hover:text-green-600 text-sm transition-colors cursor-pointer text-left"
