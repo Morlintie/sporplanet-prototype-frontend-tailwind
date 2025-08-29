@@ -2,10 +2,11 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Notification from "../shared/Notification";
+import LocationPermissionPopup from "../shared/LocationPermissionPopup";
 
 function BlockedUsers({ user }) {
   const navigate = useNavigate();
-  const { getProfilePictureUrl } = useAuth();
+  const { getProfilePictureUrl, removeFromBannedProfiles } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -14,6 +15,12 @@ function BlockedUsers({ user }) {
     isVisible: false,
     message: "",
     type: "success",
+  });
+
+  // Confirmation popup state
+  const [confirmationPopup, setConfirmationPopup] = useState({
+    isVisible: false,
+    userToUnblock: null,
   });
 
   // Show notification helper
@@ -32,6 +39,36 @@ function BlockedUsers({ user }) {
       message: "",
       type: "success",
     });
+  };
+
+  // Error message translation function
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages
+      "You have been banned, please get contact with our customer service.":
+        "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+      "User not found.": "Kullanıcı bulunamadı.",
+      "Please provide required data.": "Gerekli bilgileri girin.",
+
+      // Unblock specific errors
+      "User is not banned": "Bu kullanıcı zaten engellenmemiş.",
+      "Unblock user failed": "Kullanıcı engel kaldırma başarısız.",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Yetkisiz erişim.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
   };
 
   // Get blocked users from AuthContext - process bannedProfiles data
@@ -64,42 +101,72 @@ function BlockedUsers({ user }) {
     navigate(`/user/${userId}`);
   };
 
-  // Handle unblock user
-  const handleUnblock = async (userId) => {
-    if (
-      window.confirm(
-        "Bu kullanıcının engelini kaldırmak istediğinizden emin misiniz?"
-      )
-    ) {
-      try {
-        // TODO: Implement real unblock API call
-        // const response = await fetch(`/api/v1/user/unblock/${userId}`, {
-        //   method: "POST",
-        //   credentials: "include",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // });
+  // Show confirmation popup for unblocking
+  const showUnblockConfirmation = (userId, userName) => {
+    setConfirmationPopup({
+      isVisible: true,
+      userToUnblock: { id: userId, name: userName },
+    });
+  };
 
-        // if (!response.ok) {
-        //   const errorData = await response.json();
-        //   throw new Error(errorData.msg || "Engel kaldırma başarısız");
-        // }
+  // Handle unblock user confirmation
+  const handleUnblockConfirmed = async () => {
+    const userId = confirmationPopup.userToUnblock?.id;
 
-        // For now, just show success message
-        console.log(`Unblocking user ${userId}`);
+    if (!userId) return;
+
+    // Hide the confirmation popup
+    setConfirmationPopup({
+      isVisible: false,
+      userToUnblock: null,
+    });
+
+    try {
+      const response = await fetch(
+        `/api/v1/user/removeBannedProfile/${userId}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Unblock user failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("User unblocked successfully:", data);
+
+      // Update AuthContext to remove the user from bannedProfiles
+      // The HTTP response contains { userId: id } which is the user we unblocked
+      if (data && data.userId) {
+        removeFromBannedProfiles(data.userId);
+
         showNotification(
           "Kullanıcının engeli başarıyla kaldırıldı.",
           "success"
         );
-
-        // TODO: Update user data in AuthContext to reflect the change
-        // await refreshUserData();
-      } catch (error) {
-        console.error("Unblock error:", error);
-        showNotification("Engel kaldırma işlemi başarısız oldu.", "error");
+      } else {
+        console.log("No userId in response:", data);
       }
+    } catch (error) {
+      console.error("Unblock error:", error);
+      showNotification(translateMessage(error.message), "error");
     }
+  };
+
+  // Handle cancel unblock
+  const handleUnblockCancelled = () => {
+    setConfirmationPopup({
+      isVisible: false,
+      userToUnblock: null,
+    });
   };
 
   const filteredBlockedUsers = blockedUsers.filter(
@@ -181,7 +248,9 @@ function BlockedUsers({ user }) {
                 {/* Unblock Button */}
                 <div onClick={(e) => e.stopPropagation()}>
                   <button
-                    onClick={() => handleUnblock(blockedUser._id)}
+                    onClick={() =>
+                      showUnblockConfirmation(blockedUser._id, blockedUser.name)
+                    }
                     className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition-colors cursor-pointer text-sm"
                     tabIndex="0"
                   >
@@ -244,6 +313,23 @@ function BlockedUsers({ user }) {
         type={notification.type}
         isVisible={notification.isVisible}
         onClose={hideNotification}
+      />
+
+      {/* Unblock Confirmation Popup */}
+      <LocationPermissionPopup
+        isVisible={confirmationPopup.isVisible}
+        onAccept={handleUnblockConfirmed}
+        onDecline={handleUnblockCancelled}
+        title="Engeli Kaldır"
+        message={`${
+          confirmationPopup.userToUnblock?.name || "Bu kullanıcı"
+        }nın engelini kaldırmak istediğinizden emin misiniz?`}
+        acceptText="Evet, Engeli Kaldır"
+        declineText="Hayır, İptal Et"
+        icon="delete"
+        infoTitle="Engel Kaldırma"
+        infoMessage="Engeli kaldırdığınızda bu kullanıcı profilinizi görebilecek ve size mesaj gönderebilecektir."
+        showInfo={true}
       />
     </div>
   );

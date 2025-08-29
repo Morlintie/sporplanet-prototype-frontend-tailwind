@@ -12,6 +12,8 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import GoogleFailure from "./pages/auth/GoogleFailure";
 import ProfilePage from "./pages/ProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
+import FollowersPage from "./pages/FollowersPage";
+import FollowingPage from "./pages/FollowingPage";
 import AdvertDetailPage from "./pages/AdvertDetailPage";
 import PrivateInvitePage from "./pages/PrivateInvitePage";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
@@ -24,6 +26,7 @@ import ContactPage from "./pages/ContactPage";
 import HelpPage from "./pages/HelpPage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 import ArchivedUserPopup from "./components/shared/ArchivedUserPopup";
+import GlobalNotification from "./components/shared/GlobalNotification";
 
 function AppContent() {
   const location = useLocation();
@@ -45,6 +48,8 @@ function AppContent() {
         <Route path="/private-invite" element={<PrivateInvitePage />} />
         <Route path="/tournaments" element={<TournamentsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/followers" element={<FollowersPage />} />
+        <Route path="/following" element={<FollowingPage />} />
         <Route path="/user/:userId" element={<UserProfilePage />} />
         <Route path="/auth/google-failure" element={<GoogleFailure />} />
         <Route path="/auth/login" element={<Login />} />
@@ -77,6 +82,7 @@ function AppContent() {
       </Routes>
       <AnimatedProfileSidebar />
       <ArchivedUserPopup />
+      <GlobalNotification />
     </div>
   );
 }

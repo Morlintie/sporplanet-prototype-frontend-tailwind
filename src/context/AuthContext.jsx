@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 const AuthContext = createContext();
 
@@ -12,6 +18,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [followerCount, setFollowerCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -20,6 +27,9 @@ export const AuthProvider = ({ children }) => {
   const [unseenMessages, setUnseenMessages] = useState({});
   const [participantAdverts, setParticipantAdverts] = useState([]);
   const [currentViewingAdvertId, setCurrentViewingAdvertId] = useState(null);
+
+  // Friend request viewing state
+  const [isViewingFriendRequests, setIsViewingFriendRequests] = useState(false);
 
   // Error message translation function
   const translateMessage = (message) => {
@@ -106,6 +116,7 @@ export const AuthProvider = ({ children }) => {
 
         if (data.user) {
           setUser(data.user);
+          setFollowerCount(data.followerCount || 0);
           setIsAuthenticated(true);
 
           // Check if user is archived (isDeleted: true and archived: true)
@@ -117,6 +128,7 @@ export const AuthProvider = ({ children }) => {
           await fetchUnseenMessages();
         } else {
           setUser(null);
+          setFollowerCount(0);
           setIsAuthenticated(false);
           setUnseenMessages({});
           setParticipantAdverts([]);
@@ -127,6 +139,7 @@ export const AuthProvider = ({ children }) => {
           // User not found - not an error, just not authenticated
           console.log("User not authenticated");
           setUser(null);
+          setFollowerCount(0);
           setIsAuthenticated(false);
         } else if (response.status === 403) {
           // User is banned
@@ -146,11 +159,13 @@ export const AuthProvider = ({ children }) => {
             );
           }
           setUser(null);
+          setFollowerCount(0);
           setIsAuthenticated(false);
         } else {
           // Other server errors - don't show to user, just log
           console.error("Auth check failed with status:", response.status);
           setUser(null);
+          setFollowerCount(0);
           setIsAuthenticated(false);
         }
       }
@@ -163,6 +178,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       setUser(null);
+      setFollowerCount(0);
       setIsAuthenticated(false);
     } finally {
       setLoading(false);
@@ -201,6 +217,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       // Always clear local authentication state
       setUser(null);
+      setFollowerCount(0);
       setIsAuthenticated(false);
       setError(null);
       setLoading(false);
@@ -214,8 +231,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Login function (for after successful authentication)
-  const login = async (userData) => {
+  const login = async (userData, followerCount = 0) => {
     setUser(userData);
+    setFollowerCount(followerCount);
     setIsAuthenticated(true);
     setError(null);
     setLoading(false);
@@ -294,6 +312,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       // Always clear local authentication state
       setUser(null);
+      setFollowerCount(0);
       setIsAuthenticated(false);
       setError(null);
       setLoading(false);
@@ -384,6 +403,66 @@ export const AuthProvider = ({ children }) => {
     return user?.bannedProfiles || [];
   };
 
+  // Remove a user from bannedProfiles
+  const removeFromBannedProfiles = (userId) => {
+    if (!user || !userId) return;
+
+    const updatedUser = {
+      ...user,
+      bannedProfiles: user.bannedProfiles.filter(
+        (bannedProfile) => (bannedProfile._id || bannedProfile) !== userId
+      ),
+    };
+    setUser(updatedUser);
+  };
+
+  // Helper functions for blocking logic
+  const isUserBlockedByMe = (userId) => {
+    if (!user?.bannedProfiles || !userId) return false;
+    return user.bannedProfiles.some(
+      (bannedProfile) =>
+        bannedProfile._id === userId || bannedProfile === userId
+    );
+  };
+
+  const isCurrentUserBlockedBy = (targetUserBannedProfiles) => {
+    if (!targetUserBannedProfiles || !user?._id) return false;
+    return targetUserBannedProfiles.some(
+      (bannedProfile) =>
+        bannedProfile._id === user._id || bannedProfile === user._id
+    );
+  };
+
+  const applyBlockingLogic = (userData) => {
+    if (!userData) return userData;
+
+    // Check if current user is blocked by this user
+    const isCurrentUserBlocked = isCurrentUserBlockedBy(
+      userData.bannedProfiles
+    );
+    // Check if we have blocked this user
+    const isUserBlockedByCurrentUser = isUserBlockedByMe(userData._id);
+
+    // If there's any blocking, return only basic info
+    if (isCurrentUserBlocked || isUserBlockedByCurrentUser) {
+      return {
+        _id: userData._id,
+        name: userData.name,
+        email: userData.email,
+        bannedProfiles: userData.bannedProfiles, // Keep this for blocking logic checks
+        // Remove all other sensitive data
+      };
+    }
+
+    // No blocking, return full data
+    return userData;
+  };
+
+  // Filter user data in lists for blocking
+  const getFilteredUserData = (userData) => {
+    return applyBlockingLogic(userData);
+  };
+
   // Helper function to get profile picture URL (handles both string and object formats)
   const getProfilePictureUrl = (profilePicture) => {
     if (!profilePicture) return null;
@@ -435,6 +514,158 @@ export const AuthProvider = ({ children }) => {
     console.log(`User now viewing advert: ${advertId}`);
   };
 
+  // Friend request viewing state management
+  const setCurrentlyViewingFriendRequests = (isViewing) => {
+    setIsViewingFriendRequests(isViewing);
+
+    // When user starts viewing pending friend requests, mark all as seen
+    if (isViewing && user?.friendRequests) {
+      markAllFriendRequestsAsSeen();
+    }
+  };
+
+  // Calculate unseen friend requests count
+  const getUnseenFriendRequestsCount = () => {
+    if (!user?.friendRequests) return 0;
+
+    return user.friendRequests.filter((request) => !request.seen).length;
+  };
+
+  // Update follower count (+1 when user accepts someone's friend request)
+  const incrementFollowerCount = () => {
+    setFollowerCount((prevCount) => prevCount + 1);
+    console.log("Follower count incremented by 1");
+  };
+
+  // Decrement follower count (-1 when someone unfriends the user)
+  const decrementFollowerCount = () => {
+    setFollowerCount((prevCount) => Math.max(0, prevCount - 1));
+    console.log("Follower count decremented by 1");
+  };
+
+  // Remove friend from user's friends array (when user unfriends someone)
+  const removeFriend = useCallback((friendUserId) => {
+    if (!friendUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log("Removing user from friends list:", friendUserId);
+      return {
+        ...prevUser,
+        friends: (prevUser.friends || []).filter(
+          (friend) => friend._id !== friendUserId
+        ),
+      };
+    });
+  }, []);
+
+  // Remove current user from someone else's friends (when someone unfriends us)
+  const removeFromFriendsList = useCallback((unfrienderUserId) => {
+    if (!unfrienderUserId) return;
+
+    // This doesn't affect our friends array, but decrements our follower count
+    // since someone removed us from their friends list
+    decrementFollowerCount();
+    console.log(
+      "We were removed from someone's friends list:",
+      unfrienderUserId
+    );
+  }, []);
+
+  // Mark all friend requests as seen (when user views the pending tab)
+  const markAllFriendRequestsAsSeen = async () => {
+    if (!user?.friendRequests || user.friendRequests.length === 0) return;
+
+    // Check if there are any unseen requests to avoid unnecessary API calls
+    const unseenRequests = user.friendRequests.filter(
+      (request) => !request.seen
+    );
+    if (unseenRequests.length === 0) {
+      console.log("No unseen friend requests to mark as seen");
+      return;
+    }
+
+    try {
+      console.log(
+        `Marking ${unseenRequests.length} friend requests as seen in database`
+      );
+
+      // Update local state immediately for better UX
+      setUser((prevUser) => ({
+        ...prevUser,
+        friendRequests: prevUser.friendRequests.map((request) => ({
+          ...request,
+          seen: true,
+        })),
+      }));
+
+      // Make API call to mark requests as seen in database
+      const response = await fetch("/api/v1/user/markAllFriendRequests", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg ||
+            errorData.message ||
+            "Failed to mark friend requests as seen"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Backend response:", data.message);
+      console.log("All friend requests marked as seen in database");
+    } catch (error) {
+      console.error("Error marking friend requests as seen:", error);
+
+      // Revert local state if API call failed
+      setUser((prevUser) => ({
+        ...prevUser,
+        friendRequests: prevUser.friendRequests.map((request, index) => {
+          // Only revert the ones that were originally unseen
+          const wasUnseen = unseenRequests.some(
+            (unseenReq) => unseenReq.user._id === request.user._id
+          );
+          if (wasUnseen) {
+            return {
+              ...request,
+              seen: false,
+            };
+          }
+          return request;
+        }),
+      }));
+
+      // Handle network errors with Turkish translation
+      let errorMessage =
+        "Arkadaşlık istekleri okundu olarak işaretlenirken hata oluştu.";
+
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        errorMessage =
+          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.";
+      } else if (error.message.includes("Failed to fetch")) {
+        errorMessage =
+          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.";
+      } else if (error.message.includes("Network Error")) {
+        errorMessage = "Ağ hatası oluştu. Lütfen tekrar deneyin.";
+      } else if (error.message.includes("Unauthorized")) {
+        errorMessage = "Yetkisiz erişim.";
+      } else if (error.message.includes("Server Error")) {
+        errorMessage =
+          "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.";
+      }
+
+      // Show error notification (this would need to be implemented if we want to show errors)
+      console.error("Translated error message:", errorMessage);
+    }
+  };
+
   // Add unseen message for an advert (called when newMessage received via WebSocket)
   const addUnseenMessageForAdvert = (advertId) => {
     // Only increment if user is not currently viewing this specific advert
@@ -462,15 +693,184 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Initialize auth on mount
-  useEffect(() => {
-    console.log("AuthContext: Initializing auth check on mount");
-    checkAuth();
+
+  // Friend request management functions
+  const addOutgoingFriendRequest = (recipientUser) => {
+    if (!user || !recipientUser) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if request already exists
+      const exists = prevUser.selfFriendRequests?.some(
+        (req) => req._id === recipientUser._id
+      );
+      if (exists) {
+        console.log(
+          "Outgoing friend request already exists for user:",
+          recipientUser.name
+        );
+        return prevUser;
+      }
+
+      console.log(
+        "Adding outgoing friend request to AuthContext for user:",
+        recipientUser.name
+      );
+      return {
+        ...prevUser,
+        selfFriendRequests: [
+          ...(prevUser.selfFriendRequests || []),
+          recipientUser,
+        ],
+      };
+    });
+  };
+
+  const addIncomingFriendRequest = useCallback((senderUser) => {
+    if (!senderUser) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if request already exists
+      const exists = prevUser.friendRequests?.some(
+        (req) => req.user._id === senderUser._id
+      );
+      if (exists) {
+        console.log(
+          "Incoming friend request already exists from user:",
+          senderUser.name
+        );
+        return prevUser;
+      }
+
+      console.log(
+        "Adding incoming friend request to AuthContext from user:",
+        senderUser.name
+      );
+      const newFriendRequest = {
+        user: senderUser,
+        seen: false,
+      };
+
+      return {
+        ...prevUser,
+        friendRequests: [...(prevUser.friendRequests || []), newFriendRequest],
+      };
+    });
+  }, []);
+
+  const removeOutgoingFriendRequest = (recipientUserId) => {
+    if (!user || !recipientUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Removing outgoing friend request from AuthContext for user:",
+        recipientUserId
+      );
+      return {
+        ...prevUser,
+        selfFriendRequests: (prevUser.selfFriendRequests || []).filter(
+          (req) => req._id !== recipientUserId
+        ),
+      };
+    });
+  };
+
+  const removeIncomingFriendRequest = useCallback((senderUserId) => {
+    if (!senderUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Removing incoming friend request from AuthContext from user:",
+        senderUserId
+      );
+      return {
+        ...prevUser,
+        friendRequests: (prevUser.friendRequests || []).filter(
+          (req) => req.user._id !== senderUserId
+        ),
+      };
+    });
+  }, []);
+
+  const acceptFriendRequest = (senderUserId) => {
+    if (!user || !senderUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Accepting friend request and removing from incoming requests for user:",
+        senderUserId
+      );
+
+      // Remove from incoming friend requests only
+      // Note: We don't add to friends array because according to the backend logic,
+      // only the sender gets added to our friends array, not vice versa
+      return {
+        ...prevUser,
+        friendRequests: (prevUser.friendRequests || []).filter(
+          (req) => req.user._id !== senderUserId
+        ),
+      };
+    });
+  };
+
+  const addFriend = useCallback((friendUser) => {
+    if (!friendUser) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if friend already exists
+      const exists = prevUser.friends?.some(
+        (friend) => friend._id === friendUser._id
+      );
+      if (exists) {
+        console.log("User already in friends list:", friendUser.name);
+        return prevUser;
+      }
+
+      console.log("Adding user to friends list:", friendUser.name);
+      return {
+        ...prevUser,
+        friends: [...(prevUser.friends || []), friendUser],
+      };
+    });
+  }, []);
+
+  const removeFriendRequest = useCallback((userId) => {
+    if (!userId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Removing friend request (accepted/rejected) for user:",
+        userId
+      );
+
+      // Remove from selfFriendRequests (outgoing requests)
+      return {
+        ...prevUser,
+        selfFriendRequests: (prevUser.selfFriendRequests || []).filter(
+          (req) => req._id !== userId
+        ),
+      };
+    });
+
   }, []);
 
   const value = {
     // Core state
     user,
+    followerCount,
     isAuthenticated,
     loading,
     isLoggingOut,
@@ -486,6 +886,29 @@ export const AuthProvider = ({ children }) => {
     clearUnseenMessagesForAdvert,
     setCurrentlyViewingAdvert,
     addUnseenMessageForAdvert,
+
+    // Friend request viewing and unseen management
+    isViewingFriendRequests,
+    setCurrentlyViewingFriendRequests,
+    getUnseenFriendRequestsCount,
+    markAllFriendRequestsAsSeen,
+
+    // Follower count management
+    incrementFollowerCount,
+    decrementFollowerCount,
+
+    // Friend management
+    removeFriend,
+    removeFromFriendsList,
+
+    // Friend request management
+    addOutgoingFriendRequest,
+    addIncomingFriendRequest,
+    removeOutgoingFriendRequest,
+    removeIncomingFriendRequest,
+    acceptFriendRequest,
+    addFriend,
+    removeFriendRequest,
 
     // Actions
     checkAuth,
@@ -518,6 +941,13 @@ export const AuthProvider = ({ children }) => {
     getBannedProfiles,
     getProfilePictureUrl,
     getUserProfilePictureUrl,
+
+    // Blocking logic helpers
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
+    applyBlockingLogic,
+    getFilteredUserData,
+    removeFromBannedProfiles,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

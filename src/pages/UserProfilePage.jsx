@@ -12,8 +12,22 @@ import UserFriends from "../components/user-profile/UserFriends";
 
 function UserProfilePage() {
   const { userId } = useParams();
-  const { isAuthenticated } = useAuth();
-  const { isUserOnline } = useWebSocket();
+  const {
+    isAuthenticated,
+    addOutgoingFriendRequest,
+    removeOutgoingFriendRequest,
+    removeFriend,
+    user,
+    updateUser,
+    applyBlockingLogic,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
+  } = useAuth();
+  const {
+    isUserOnline,
+    listenForNotificationEvent,
+    removeNotificationEventListener,
+  } = useWebSocket();
   const [activeSection, setActiveSection] = useState("profile");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,6 +55,248 @@ function UserProfilePage() {
       ...notification,
       isVisible: false,
     });
+  };
+
+  // Error message translation function
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages
+      "You have been banned, please get contact with our customer service.":
+        "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+      "User couldn't found.": "Kullanıcı bulunamadı.",
+      "User not found.": "Kullanıcı bulunamadı.",
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "Please provide user credentials.": "Kullanıcı bilgilerini sağlayın.",
+
+      // Friend request specific errors
+      "This user has been banned.": "Bu kullanıcı yasaklanmıştır.",
+      "Users cannot send friend requests for themselves.":
+        "Kendinize arkadaşlık isteği gönderemezsiniz.",
+      "You have already sent a friend request for this user.":
+        "Bu kullanıcıya zaten arkadaşlık isteği gönderdiniz.",
+      "You are already friends with this user.":
+        "Bu kullanıcıyla zaten arkadaşsınız.",
+      "You have been banned by this user":
+        "Bu kullanıcı tarafından engellendiniz.",
+      "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
+
+      // Unfriend specific errors
+      "You are not friends with that user.":
+        "Bu kullanıcıyla arkadaş değilsiniz.",
+      "Unfriend failed": "Arkadaşlıktan çıkarma başarısız.",
+
+      // Block specific errors
+      "User is already banned": "Bu kullanıcı zaten engellenmiş.",
+      "Block user failed": "Kullanıcı engelleme başarısız.",
+      "User not found.": "Kullanıcı bulunamadı.",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Yetkisiz erişim.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
+
+  // Check if current user has sent a friend request to the viewed user
+  const hasPendingRequest = (targetUserId) => {
+    if (!user?.selfFriendRequests || !targetUserId) return false;
+    return user.selfFriendRequests.some(
+      (request) => request._id === targetUserId
+    );
+  };
+
+  // Check if current user is friends with the viewed user
+  const isFriend = (targetUserId) => {
+    if (!user?.friends || !targetUserId) return false;
+    return user.friends.some((friend) => friend._id === targetUserId);
+  };
+
+  // Check if user should be blocked from viewing this profile
+  const isBlocked = (targetUserId) => {
+    if (!targetUserId || !user) return false;
+
+    // Check if current user has blocked the target user
+    const hasBlockedUser = isUserBlockedByMe(targetUserId);
+
+    // Check if current user has been blocked by the target user (we'll get this from API response)
+    // This check will be handled in fetchUserData where we get the target user's bannedProfiles
+
+    return hasBlockedUser;
+  };
+
+  // Handle send friend request
+  const handleSendFriendRequest = async (targetUserId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/sendFriendRequest/${targetUserId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Friend request failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request sent successfully:", data);
+
+      // Update AuthContext with the response data (same as other components)
+      // The HTTP response contains { user: sendFriendRequest } which is the recipient user data
+      if (data && data.user) {
+        addOutgoingFriendRequest(data.user);
+      }
+
+      showNotification("Arkadaşlık isteği gönderildi!", "success");
+    } catch (error) {
+      console.error("Friend request error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
+  // Handle revoke friend request (same as MyFriends.jsx)
+  const handleRevokeFriendRequest = async (targetUserId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/revokeFriendRequest/${targetUserId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Request revoke failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request revoked successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id } which is the user we revoked the request from
+      if (data && data.userId) {
+        removeOutgoingFriendRequest(data.userId);
+        showNotification("Arkadaşlık isteği geri çekildi!", "success");
+      } else {
+        console.log("No userId in response:", data);
+      }
+    } catch (error) {
+      console.error("Friend request revoke error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
+  // Handle send message (placeholder)
+  const handleSendMessage = async (targetUserId) => {
+    // TODO: Implement DM functionality
+    showNotification("Mesaj özelliği henüz aktif değil.", "info");
+  };
+
+  // Handle unfriend user
+  const handleUnfriend = async (targetUserId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/removeFromFriends/${targetUserId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Unfriend failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("User unfriended successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id } which is the user we removed from friends
+      if (data && data.userId) {
+        removeFriend(data.userId);
+        showNotification("Arkadaşlıktan çıkarıldı!", "success");
+      } else {
+        console.log("No userId in response:", data);
+      }
+    } catch (error) {
+      console.error("Unfriend error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
+  // Handle block user
+  const handleBlockUser = async (targetUserId) => {
+    try {
+      const response = await fetch(`/api/v1/user/banProfile/${targetUserId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Block user failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("User blocked successfully:", data);
+
+      // Update AuthContext with the blocked user data
+      // The HTTP response contains { user: foreignUser } which is the blocked user data
+      if (data && data.user) {
+        // Add the blocked user to our bannedProfiles
+        const updatedUser = {
+          ...user,
+          bannedProfiles: [...(user?.bannedProfiles || []), data.user],
+        };
+        updateUser(updatedUser);
+
+        showNotification("Kullanıcı başarıyla engellendi!", "success");
+
+        // Redirect to home page since the user is now blocked
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
+      } else {
+        console.log("No user data in response:", data);
+      }
+    } catch (error) {
+      console.error("Block user error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
   };
 
   // Fetch user data from backend
@@ -83,7 +339,9 @@ function UserProfilePage() {
         throw new Error(errorMessage);
       }
 
-      setUserData(data.user);
+      // Apply blocking logic to the user data
+      const filteredUserData = applyBlockingLogic(data.user);
+      setUserData(filteredUserData);
     } catch (err) {
       console.error("Error fetching user data:", err);
       setError(err.message);
@@ -291,6 +549,127 @@ function UserProfilePage() {
     }
   }, [userId]);
 
+  // Set up WebSocket listeners for friend request events
+  useEffect(() => {
+    if (isAuthenticated && listenForNotificationEvent) {
+      console.log("Setting up WebSocket listeners for UserProfilePage");
+
+      const handleFriendRequest = (data) => {
+        console.log("Received friendRequest event in UserProfilePage:", data);
+
+        if (data && data.user) {
+          const requesterName = data.user.name || "Bir kullanıcı";
+          showNotification(
+            `${requesterName} size arkadaşlık isteği gönderdi!`,
+            "info"
+          );
+        }
+      };
+
+      const handleFriendRequestRevoked = (data) => {
+        console.log(
+          "Received friendRequestRevoked event in UserProfilePage:",
+          data
+        );
+
+        if (data && data.userId) {
+          // Update AuthContext to remove the revoked incoming friend request
+          // This is handled globally in WebSocketContext, but we can show a local notification
+          showNotification("Arkadaşlık isteği geri çekildi.", "info");
+        }
+      };
+
+      const handleFriendRequestAccepted = (data) => {
+        console.log(
+          "Received friendRequestAccepted event in UserProfilePage:",
+          data
+        );
+
+        if (data && data.userId) {
+          // When our friend request gets accepted, the user becomes our friend
+          // AuthContext is updated globally, but we can show a local notification
+          showNotification("Arkadaşlık isteği kabul edildi!", "success");
+        }
+      };
+
+      const handleUserBanned = (data) => {
+        console.log("Received userBanned event in UserProfilePage:", data);
+
+        if (data && data.user) {
+          // We've been blocked by the user we're currently viewing
+          // The data.user contains the info of the user who blocked us
+          if (data.user._id === userId) {
+            showNotification(
+              "Bu kullanıcı tarafından engellendiniz.",
+              "warning"
+            );
+
+            // Redirect to home page since we can no longer access this profile
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000);
+          }
+        }
+      };
+
+      const handleUserUnbanned = (data) => {
+        console.log("Received userUnbanned event in UserProfilePage:", data);
+
+        if (data && data.userId) {
+          // We've been unblocked by the user whose userId is provided
+          // The data.userId contains the _id of the user who unblocked us
+          if (data.userId === userId) {
+            showNotification(
+              "Bu kullanıcı tarafından engel kaldırıldı. Profili görüntüleyebilirsiniz.",
+              "success"
+            );
+
+            // Refresh the page to allow access to the profile
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          }
+        }
+      };
+
+      // Listen for friend request events
+      const cleanupFriendRequest = listenForNotificationEvent(
+        "friendRequest",
+        handleFriendRequest
+      );
+
+      const cleanupFriendRequestRevoked = listenForNotificationEvent(
+        "friendRequestRevoked",
+        handleFriendRequestRevoked
+      );
+
+      const cleanupFriendRequestAccepted = listenForNotificationEvent(
+        "friendRequestAccepted",
+        handleFriendRequestAccepted
+      );
+
+      const cleanupUserBanned = listenForNotificationEvent(
+        "userBanned",
+        handleUserBanned
+      );
+
+      const cleanupUserUnbanned = listenForNotificationEvent(
+        "userUnbanned",
+        handleUserUnbanned
+      );
+
+      // Cleanup on unmount
+      return () => {
+        console.log("Cleaning up WebSocket listeners in UserProfilePage");
+        if (cleanupFriendRequest) cleanupFriendRequest();
+        if (cleanupFriendRequestRevoked) cleanupFriendRequestRevoked();
+        if (cleanupFriendRequestAccepted) cleanupFriendRequestAccepted();
+        if (cleanupUserBanned) cleanupUserBanned();
+        if (cleanupUserUnbanned) cleanupUserUnbanned();
+      };
+    }
+  }, [isAuthenticated, listenForNotificationEvent, showNotification]);
+
   // Loading state
   if (loading) {
     return (
@@ -369,7 +748,19 @@ function UserProfilePage() {
 
     switch (activeSection) {
       case "profile":
-        return <UserProfileMain user={currentUserData} />;
+        return (
+          <UserProfileMain
+            user={currentUserData}
+            onSendFriendRequest={handleSendFriendRequest}
+            onRevokeFriendRequest={handleRevokeFriendRequest}
+            onUnfriend={handleUnfriend}
+            onSendMessage={handleSendMessage}
+            onBlockUser={handleBlockUser}
+            hasPendingRequest={hasPendingRequest(currentUserData._id)}
+            isFriend={isFriend(currentUserData._id)}
+            isBlocked={isBlocked(currentUserData._id)}
+          />
+        );
       case "listings":
         return <UserListings user={currentUserData} />;
       case "pitches":
@@ -377,7 +768,19 @@ function UserProfilePage() {
       case "friends":
         return <UserFriends user={currentUserData} />;
       default:
-        return <UserProfileMain user={currentUserData} />;
+        return (
+          <UserProfileMain
+            user={currentUserData}
+            onSendFriendRequest={handleSendFriendRequest}
+            onRevokeFriendRequest={handleRevokeFriendRequest}
+            onUnfriend={handleUnfriend}
+            onSendMessage={handleSendMessage}
+            onBlockUser={handleBlockUser}
+            hasPendingRequest={hasPendingRequest(currentUserData._id)}
+            isFriend={isFriend(currentUserData._id)}
+            isBlocked={isBlocked(currentUserData._id)}
+          />
+        );
     }
   };
 

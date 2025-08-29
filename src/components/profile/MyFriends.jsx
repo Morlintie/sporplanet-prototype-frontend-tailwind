@@ -1,14 +1,137 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useWebSocket } from "../../context/WebSocketContext";
 import { useNavigate } from "react-router-dom";
+import Notification from "../shared/Notification";
 
 function MyFriends({ user }) {
-  const { getProfilePictureUrl } = useAuth();
+  const {
+    getProfilePictureUrl,
+    addOutgoingFriendRequest,
+    addIncomingFriendRequest,
+    removeOutgoingFriendRequest,
+    removeIncomingFriendRequest,
+    acceptFriendRequest,
+    addFriend,
+    removeFriendRequest,
+    setCurrentlyViewingFriendRequests,
+    followerCount,
+    incrementFollowerCount,
+  } = useAuth();
   const { isUserOnline } = useWebSocket();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("online");
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Notification state
+  const [notification, setNotification] = useState({
+    isVisible: false,
+    message: "",
+    type: "success",
+  });
+
+  // Show notification helper
+  const showNotification = (message, type = "success") => {
+    setNotification({
+      isVisible: true,
+      message,
+      type,
+    });
+  };
+
+  // Hide notification helper
+  const hideNotification = () => {
+    setNotification({
+      isVisible: false,
+      message: "",
+      type: "success",
+    });
+  };
+
+  // Error message translation function for revoke functionality
+  const translateRevokeMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages from the controller
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "User couldn't found.": "Kullanıcı bulunamadı.",
+      "You have not sent a friend request to that user.":
+        "Bu kullanıcıya arkadaşlık isteği göndermemişsiniz.",
+      "That user has not sent you a friend request.":
+        "Bu kullanıcı size arkadaşlık isteği göndermemiş.",
+      "You are already friends with that user.":
+        "Bu kullanıcıyla zaten arkadaşsınız.",
+      "You have been banned by this user":
+        "Bu kullanıcı tarafından engellendiniz.",
+      "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
+
+      // Generic errors
+      "Request revoke failed": "İstek iptal etme başarısız.",
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Yetkisiz erişim.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
+
+  // Error message translation function for accept/reject functionality
+  const translateReplyMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages from the replyFriendRequest controller
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "User couldn't found.": "Kullanıcı bulunamadı.",
+      "This user did not send you a friend request.":
+        "Bu kullanıcı size arkadaşlık isteği göndermedi.",
+      "This user has not sent you a friend request.":
+        "Bu kullanıcı size arkadaşlık isteği göndermemiş.",
+      "This user is already your friend.": "Bu kullanıcı zaten arkadaşınız.",
+      "You have been banned by this user":
+        "Bu kullanıcı tarafından engellendiniz.",
+      "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
+
+      // Generic errors
+      "Accept request failed": "İstek kabul etme başarısız.",
+      "Reject request failed": "İstek reddetme başarısız.",
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Yetkisiz erişim.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
+
+  // Track when user is viewing the pending friend requests tab
+  useEffect(() => {
+    // Notify AuthContext when user is viewing pending friend requests
+    const isViewingPending = activeTab === "pending";
+    setCurrentlyViewingFriendRequests(isViewingPending);
+
+    // Cleanup: when component unmounts or tab changes, stop viewing
+    return () => {
+      if (isViewingPending) {
+        setCurrentlyViewingFriendRequests(false);
+      }
+    };
+  }, [activeTab, setCurrentlyViewingFriendRequests]);
+
+  // WebSocket listeners are now handled globally in WebSocketContext
+  // No local listeners needed here anymore
 
   // Process friends data with real-time online status
   const friends = useMemo(() => {
@@ -32,16 +155,19 @@ function MyFriends({ user }) {
     }));
   }, [user?.friends, isUserOnline, getProfilePictureUrl]);
 
-  // Process pending friend requests
-  const pendingRequests = useMemo(() => {
-    if (!user?.selfFriendRequests) return [];
+  // Process outgoing friend requests (selfFriendRequests - requests we sent)
+  const outgoingRequests = useMemo(() => {
+    if (!user?.selfFriendRequests || user.selfFriendRequests.length === 0) {
+      return [];
+    }
 
-    return user.selfFriendRequests.map((request) => ({
+    const processed = user.selfFriendRequests.map((request) => ({
       _id: request._id,
       name: request.name,
       email: request.email,
       avatar: getProfilePictureUrl(request.profilePicture),
-      status: "pending",
+      status: "outgoing",
+      type: "outgoing",
       activity: null,
       lastSeen: null,
       school: request.school,
@@ -52,7 +178,37 @@ function MyFriends({ user }) {
       createdAt: request.createdAt,
       updatedAt: request.updatedAt,
     }));
+    return processed;
   }, [user?.selfFriendRequests, getProfilePictureUrl]);
+
+  // Process incoming friend requests (friendRequests - requests sent to us)
+  const incomingRequests = useMemo(() => {
+    if (!user?.friendRequests || user.friendRequests.length === 0) return [];
+
+    return user.friendRequests.map((request) => ({
+      _id: request.user._id,
+      name: request.user.name,
+      email: request.user.email,
+      avatar: getProfilePictureUrl(request.user.profilePicture),
+      status: "incoming",
+      type: "incoming",
+      activity: null,
+      lastSeen: null,
+      school: request.user.school,
+      age: request.user.age,
+      location: request.user.location,
+      goalKeeper: request.user.goalKeeper,
+      role: request.user.role,
+      seen: request.seen,
+      createdAt: request.user.createdAt,
+      updatedAt: request.user.updatedAt,
+    }));
+  }, [user?.friendRequests, getProfilePictureUrl]);
+
+  // Combine all pending requests
+  const allPendingRequests = useMemo(() => {
+    return [...outgoingRequests, ...incomingRequests];
+  }, [outgoingRequests, incomingRequests]);
 
   const getInitials = (name) => {
     if (!name) return "?";
@@ -81,7 +237,15 @@ function MyFriends({ user }) {
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredPendingRequests = pendingRequests.filter((request) =>
+  const filteredPendingRequests = allPendingRequests.filter((request) =>
+    request.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredOutgoingRequests = outgoingRequests.filter((request) =>
+    request.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredIncomingRequests = incomingRequests.filter((request) =>
     request.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -116,6 +280,183 @@ function MyFriends({ user }) {
     navigate(`/user/${userId}`);
   };
 
+  // Placeholder action handlers (will be implemented later)
+  const handleAcceptRequest = async (userId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/replyFriendRequest/${userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            accepted: "true", // String, not boolean as per backend requirement
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Accept request failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request accepted successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id, accepted: true }
+      if (data && data.userId && data.accepted === true) {
+        acceptFriendRequest(data.userId);
+
+        // Increment follower count since user accepted someone's friend request
+        incrementFollowerCount();
+
+        showNotification("Arkadaşlık isteği kabul edildi!", "success");
+      } else {
+        console.log("Unexpected response data:", data);
+      }
+    } catch (error) {
+      console.error("Friend request accept error:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        showNotification(translateReplyMessage("Failed to fetch"), "error");
+      } else {
+        showNotification(translateReplyMessage(error.message), "error");
+      }
+    }
+  };
+
+  const handleRejectRequest = async (userId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/replyFriendRequest/${userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            accepted: "false", // String, not boolean as per backend requirement
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Reject request failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request rejected successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id, accepted: false }
+      if (data && data.userId && data.accepted === false) {
+        acceptFriendRequest(data.userId); // This just removes from incoming requests
+        showNotification("Arkadaşlık isteği reddedildi.", "info");
+      } else {
+        console.log("Unexpected response data:", data);
+      }
+    } catch (error) {
+      console.error("Friend request reject error:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        showNotification(translateReplyMessage("Failed to fetch"), "error");
+      } else {
+        showNotification(translateReplyMessage(error.message), "error");
+      }
+    }
+  };
+
+  const handleSendRequest = async (userId) => {
+    try {
+      const response = await fetch(`/api/v1/user/sendFriendRequest/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Friend request failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request sent successfully:", data);
+      // Update AuthContext with the response data
+      // The HTTP response contains { user: sendFriendRequest } which is the recipient user data
+      if (data && data.user) {
+        addOutgoingFriendRequest(data.user);
+        console.log("Arkadaşlık isteği gönderildi!");
+      } else {
+        console.log("No user data in response:", data);
+      }
+    } catch (error) {
+      console.error("Friend request error:", error);
+      console.log(
+        "Arkadaşlık isteği gönderilirken hata oluştu:",
+        error.message
+      );
+      // TODO: Show error notification to user
+    }
+  };
+
+  const handleCancelRequest = async (userId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/revokeFriendRequest/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Request revoke failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request revoked successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id } which is the user we revoked the request from
+      if (data && data.userId) {
+        removeOutgoingFriendRequest(data.userId);
+        showNotification("Arkadaşlık isteği iptal edildi!", "success");
+      } else {
+        console.log("No userId in response:", data);
+      }
+    } catch (error) {
+      console.error("Friend request revoke error:", error);
+
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        showNotification(translateRevokeMessage("Failed to fetch"), "error");
+      } else {
+        showNotification(translateRevokeMessage(error.message), "error");
+      }
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md">
       {/* Header - Profile Info */}
@@ -148,18 +489,32 @@ function MyFriends({ user }) {
 
             {/* Stats */}
             <div className="flex space-x-8">
-              <div className="text-center">
+              <button
+                onClick={() => navigate("/followers")}
+                className="text-center hover:bg-gray-50 rounded-lg p-2 transition-colors cursor-pointer"
+                tabIndex="0"
+                aria-label="Takipçilerim sayfasına git"
+              >
                 <div className="text-2xl font-bold text-gray-900">
-                  {user.friendRequests?.length || 0}
+                  {followerCount || 0}
                 </div>
-                <div className="text-sm text-gray-600">Takipçilerim</div>
-              </div>
-              <div className="text-center">
+                <div className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  Takipçilerim
+                </div>
+              </button>
+              <button
+                onClick={() => navigate("/following")}
+                className="text-center hover:bg-gray-50 rounded-lg p-2 transition-colors cursor-pointer"
+                tabIndex="0"
+                aria-label="Takip ettiklerim sayfasına git"
+              >
                 <div className="text-2xl font-bold text-gray-900">
                   {user.friends?.length || 0}
                 </div>
-                <div className="text-sm text-gray-600">Takip Ettiklerim</div>
-              </div>
+                <div className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  Takip Ettiklerim
+                </div>
+              </button>
             </div>
           </div>
         </div>
@@ -534,13 +889,149 @@ function MyFriends({ user }) {
 
         {activeTab === "pending" && (
           <div>
-            {filteredPendingRequests.length > 0 ? (
-              <div>
+            {/* Incoming Friend Requests Section */}
+            {filteredIncomingRequests.length > 0 && (
+              <div className="mb-6">
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Bekleyen İstekler — {filteredPendingRequests.length}
+                  Gelen İstekler — {filteredIncomingRequests.length}
                 </h3>
                 <div className="space-y-3">
-                  {filteredPendingRequests.map((request) => (
+                  {filteredIncomingRequests.map((request) => (
+                    <div
+                      key={request._id}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={() => handleUserClick(request._id)}
+                    >
+                      <div className="relative">
+                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden">
+                          {request.avatar ? (
+                            <img
+                              src={request.avatar}
+                              alt={request.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-white font-semibold text-sm">
+                              {getInitials(request.name)}
+                            </span>
+                          )}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
+                          <svg
+                            className="w-2 h-2 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        {/* New Request Indicator */}
+                        {!request.seen && (
+                          <div className="absolute -top-1 -left-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {request.name}
+                        </p>
+                        <p className="text-xs text-blue-600 truncate">
+                          Size arkadaşlık isteği gönderdi
+                        </p>
+                        {request.location && (
+                          <p className="text-xs text-gray-400 truncate">
+                            {request.location.city}, {request.location.district}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex space-x-1">
+                        <button
+                          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAcceptRequest(request._id);
+                          }}
+                          title="İsteği Kabul Et"
+                          tabIndex="0"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRejectRequest(request._id);
+                          }}
+                          title="İsteği Reddet"
+                          tabIndex="0"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSendRequest(request._id);
+                          }}
+                          title="İstek Gönder"
+                          tabIndex="0"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Outgoing Friend Requests Section */}
+            {filteredOutgoingRequests.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Gönderilen İstekler — {filteredOutgoingRequests.length}
+                </h3>
+                <div className="space-y-3">
+                  {filteredOutgoingRequests.map((request) => (
                     <div
                       key={request._id}
                       className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
@@ -568,7 +1059,7 @@ function MyFriends({ user }) {
                           >
                             <path
                               fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                               clipRule="evenodd"
                             />
                           </svg>
@@ -579,7 +1070,7 @@ function MyFriends({ user }) {
                           {request.name}
                         </p>
                         <p className="text-xs text-yellow-600 truncate">
-                          Bekleyen arkadaşlık isteği
+                          Gönderdiğiniz arkadaşlık isteği bekliyor
                         </p>
                         {request.location && (
                           <p className="text-xs text-gray-400 truncate">
@@ -591,9 +1082,11 @@ function MyFriends({ user }) {
                         <button
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           onClick={(e) => {
-                            e.stopPropagation(); /* Add cancel request functionality */
+                            e.stopPropagation();
+                            handleCancelRequest(request._id);
                           }}
                           title="İsteği İptal Et"
+                          tabIndex="0"
                         >
                           <svg
                             className="w-4 h-4"
@@ -609,32 +1102,15 @@ function MyFriends({ user }) {
                             />
                           </svg>
                         </button>
-                        <button
-                          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation(); /* Add more options */
-                          }}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                            />
-                          </svg>
-                        </button>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-            ) : (
+            )}
+
+            {/* Empty State */}
+            {filteredPendingRequests.length === 0 && (
               <div className="text-center py-12">
                 <svg
                   className="mx-auto h-12 w-12 text-gray-400"
@@ -653,13 +1129,22 @@ function MyFriends({ user }) {
                   Bekleyen istek yok
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                  Bekleyen arkadaşlık isteğiniz bulunmuyor.
+                  Gelen veya gönderilen bekleyen arkadaşlık isteğiniz
+                  bulunmuyor.
                 </p>
               </div>
             )}
           </div>
         )}
       </div>
+
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={hideNotification}
+      />
     </div>
   );
 }
