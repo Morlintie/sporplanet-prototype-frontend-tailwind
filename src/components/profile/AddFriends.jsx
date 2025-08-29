@@ -5,7 +5,7 @@ import Notification from "../shared/Notification";
 
 function AddFriends({ user }) {
   const navigate = useNavigate();
-  const { getProfilePictureUrl } = useAuth();
+  const { getProfilePictureUrl, addOutgoingFriendRequest } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -56,6 +56,19 @@ function AddFriends({ user }) {
       "User couldn't found.": "Kullanıcı bulunamadı.",
       "User not found.": "Kullanıcı bulunamadı.",
       "Please provide required data.": "Gerekli bilgileri girin.",
+      "Please provide user credentials.": "Kullanıcı bilgilerini sağlayın.",
+
+      // Friend request specific errors
+      "This user has been banned.": "Bu kullanıcı yasaklanmıştır.",
+      "Users cannot send friend requests for themselves.":
+        "Kendinize arkadaşlık isteği gönderemezsiniz.",
+      "You have already sent a friend request for this user.":
+        "Bu kullanıcıya zaten arkadaşlık isteği gönderdiniz.",
+      "You are already friends with this user.":
+        "Bu kullanıcıyla zaten arkadaşsınız.",
+      "You have been banned by this user":
+        "Bu kullanıcı tarafından engellendiniz.",
+      "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -190,16 +203,44 @@ function AddFriends({ user }) {
   };
 
   const handleFollowRequest = async (userId) => {
-    // TODO: Implement real follow request API
-    // For now, just update the UI optimistically
-    const updatedResults = searchResults.map((user) => {
-      if (user._id === userId) {
-        return { ...user, isPending: true };
+    try {
+      const response = await fetch(`/api/v1/user/sendFriendRequest/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Friend request failed"
+        );
       }
-      return user;
-    });
-    setSearchResults(updatedResults);
-    showNotification("Arkadaşlık isteği gönderildi!", "success");
+
+      const data = await response.json();
+      console.log("Friend request sent successfully:", data);
+
+      // Update AuthContext with the response data (same as MyFriends.jsx)
+      // The HTTP response contains { user: sendFriendRequest } which is the recipient user data
+      if (data && data.user) {
+        addOutgoingFriendRequest(data.user);
+      }
+
+      // Update the UI optimistically for search results
+      const updatedResults = searchResults.map((user) => {
+        if (user._id === userId) {
+          return { ...user, isPending: true };
+        }
+        return user;
+      });
+      setSearchResults(updatedResults);
+      showNotification("Arkadaşlık isteği gönderildi!", "success");
+    } catch (error) {
+      console.error("Friend request error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
   };
 
   const handleUnfollow = async (userId) => {

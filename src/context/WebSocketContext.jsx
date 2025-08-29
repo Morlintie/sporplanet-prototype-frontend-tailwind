@@ -20,13 +20,47 @@ export const useWebSocket = () => {
 };
 
 export const WebSocketProvider = ({ children }) => {
-  const { user, isAuthenticated, addUnseenMessageForAdvert } = useAuth();
+  const {
+    user,
+    isAuthenticated,
+    addUnseenMessageForAdvert,
+    addIncomingFriendRequest,
+    removeIncomingFriendRequest,
+    addFriend,
+    removeFriendRequest,
+    markNewFriendRequestAsSeen,
+  } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const onlineUsersDebounceRef = useRef(null);
   const [connectionError, setConnectionError] = useState(null);
   const socketRef = useRef(null);
+
+  // Global notification state for WebSocket events
+  const [globalNotification, setGlobalNotification] = useState({
+    isVisible: false,
+    message: "",
+    type: "success",
+  });
+
+  // Show global notification helper
+  const showGlobalNotification = (message, type = "success") => {
+    setGlobalNotification({
+      isVisible: true,
+      message,
+      type,
+    });
+  };
+
+  // Hide global notification helper
+  const hideGlobalNotification = () => {
+    setGlobalNotification({
+      isVisible: false,
+      message: "",
+      type: "success",
+    });
+  };
 
   // Notification namespace socket state
   const [notificationSocket, setNotificationSocket] = useState(null);
@@ -282,6 +316,83 @@ export const WebSocketProvider = ({ children }) => {
           console.error("Chat WebSocket reconnection completely failed");
           setChatConnectionError("Chat WebSocket bağlantısı tamamen başarısız");
         });
+
+        // Global friend request state management listeners
+        notificationSocketInstance.on("friendRequest", (data) => {
+          console.log("Received global friendRequest event:", data);
+
+          if (data && data.user) {
+            // Add the new incoming friend request to AuthContext globally
+            addIncomingFriendRequest(data.user);
+
+            // Show global notification to inform user about new friend request
+            const senderName = data.user.name || "Bilinmeyen kullanıcı";
+            showGlobalNotification(
+              `${senderName} arkadaşlık isteği gönderdi`,
+              "info"
+            );
+
+            // If user is currently viewing friend requests, mark the new request as seen on backend
+            markNewFriendRequestAsSeen();
+          }
+        });
+
+        notificationSocketInstance.on("friendRequestRevoked", (data) => {
+          console.log("Received global friendRequestRevoked event:", data);
+
+          if (data && data.userId) {
+            // Remove the revoked incoming friend request from AuthContext globally
+            removeIncomingFriendRequest(data.userId);
+          }
+        });
+
+        notificationSocketInstance.on("friendRequestAccepted", (data) => {
+          console.log("Received global friendRequestAccepted event:", data);
+
+          if (data && data.userId) {
+            // Find the user who accepted our request
+            const acceptedUser = user?.selfFriendRequests?.find(
+              (req) => req._id === data.userId
+            );
+            const acceptedUserName =
+              acceptedUser?.name || "Bilinmeyen kullanıcı";
+
+            // Show global notification
+            showGlobalNotification(
+              `${acceptedUserName} arkadaşlık isteğini kabul etti`,
+              "success"
+            );
+
+            // Update state: Remove from selfFriendRequests and add the accepter to friends
+            removeFriendRequest(data.userId);
+
+            if (acceptedUser) {
+              addFriend(acceptedUser);
+            }
+          }
+        });
+
+        notificationSocketInstance.on("friendRequestRejected", (data) => {
+          console.log("Received global friendRequestRejected event:", data);
+
+          if (data && data.userId) {
+            // Find the user who rejected our request
+            const rejectedUser = user?.selfFriendRequests?.find(
+              (req) => req._id === data.userId
+            );
+            const rejectedUserName =
+              rejectedUser?.name || "Bilinmeyen kullanıcı";
+
+            // Show global notification
+            showGlobalNotification(
+              `${rejectedUserName} arkadaşlık isteğini reddetti`,
+              "info"
+            );
+
+            // Update state: Just remove from selfFriendRequests, don't add to friends
+            removeFriendRequest(data.userId);
+          }
+        });
       } catch (error) {
         console.error("Error creating WebSocket connection:", error);
         setConnectionError(`WebSocket oluşturma hatası: ${error.message}`);
@@ -346,7 +457,16 @@ export const WebSocketProvider = ({ children }) => {
         setChatConnectionError(null);
       }
     };
-  }, [isAuthenticated, user?._id]);
+  }, [
+    isAuthenticated,
+    user?._id,
+    user?.selfFriendRequests,
+    addIncomingFriendRequest,
+    removeIncomingFriendRequest,
+    addFriend,
+    removeFriendRequest,
+    markNewFriendRequestAsSeen,
+  ]);
 
   // Auto-join advert chat rooms when chat connection is established and user is authenticated
   useEffect(() => {
@@ -648,6 +768,11 @@ export const WebSocketProvider = ({ children }) => {
     // Connection management
     disconnect,
     reconnect,
+
+    // Global notifications
+    globalNotification,
+    showGlobalNotification,
+    hideGlobalNotification,
   };
 
   return (

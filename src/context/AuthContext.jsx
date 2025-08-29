@@ -20,6 +20,9 @@ export const AuthProvider = ({ children }) => {
   const [participantAdverts, setParticipantAdverts] = useState([]);
   const [currentViewingAdvertId, setCurrentViewingAdvertId] = useState(null);
 
+  // Friend request viewing state
+  const [isViewingFriendRequests, setIsViewingFriendRequests] = useState(false);
+
   // Error message translation function
   const translateMessage = (message) => {
     const translations = {
@@ -426,6 +429,43 @@ export const AuthProvider = ({ children }) => {
     console.log(`User now viewing advert: ${advertId}`);
   };
 
+  // Friend request viewing state management
+  const setCurrentlyViewingFriendRequests = (isViewing) => {
+    setIsViewingFriendRequests(isViewing);
+
+    // When user starts viewing pending friend requests, mark all as seen
+    if (isViewing && user?.friendRequests) {
+      markAllFriendRequestsAsSeen();
+    }
+  };
+
+  // Calculate unseen friend requests count
+  const getUnseenFriendRequestsCount = () => {
+    if (!user?.friendRequests) return 0;
+
+    return user.friendRequests.filter((request) => !request.seen).length;
+  };
+
+  // Mark all friend requests as seen (when user views the pending tab)
+  const markAllFriendRequestsAsSeen = async () => {
+    if (!user?.friendRequests || user.friendRequests.length === 0) return;
+
+    try {
+      // Update local state immediately
+      setUser((prevUser) => ({
+        ...prevUser,
+        friendRequests: prevUser.friendRequests.map((request) => ({
+          ...request,
+          seen: true,
+        })),
+      }));
+
+      console.log("All friend requests marked as seen");
+    } catch (error) {
+      console.error("Error marking friend requests as seen:", error);
+    }
+  };
+
   // Add unseen message for an advert (called when newMessage received via WebSocket)
   const addUnseenMessageForAdvert = (advertId) => {
     // Only increment if user is not currently viewing this specific advert
@@ -453,6 +493,178 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Friend request management functions
+  const addOutgoingFriendRequest = (recipientUser) => {
+    if (!user || !recipientUser) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if request already exists
+      const exists = prevUser.selfFriendRequests?.some(
+        (req) => req._id === recipientUser._id
+      );
+      if (exists) {
+        console.log(
+          "Outgoing friend request already exists for user:",
+          recipientUser.name
+        );
+        return prevUser;
+      }
+
+      console.log(
+        "Adding outgoing friend request to AuthContext for user:",
+        recipientUser.name
+      );
+      return {
+        ...prevUser,
+        selfFriendRequests: [
+          ...(prevUser.selfFriendRequests || []),
+          recipientUser,
+        ],
+      };
+    });
+  };
+
+  const addIncomingFriendRequest = (senderUser) => {
+    if (!user || !senderUser) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if request already exists
+      const exists = prevUser.friendRequests?.some(
+        (req) => req.user._id === senderUser._id
+      );
+      if (exists) {
+        console.log(
+          "Incoming friend request already exists from user:",
+          senderUser.name
+        );
+        return prevUser;
+      }
+
+      console.log(
+        "Adding incoming friend request to AuthContext from user:",
+        senderUser.name
+      );
+      const newFriendRequest = {
+        user: senderUser,
+        seen: false,
+      };
+
+      return {
+        ...prevUser,
+        friendRequests: [...(prevUser.friendRequests || []), newFriendRequest],
+      };
+    });
+  };
+
+  const removeOutgoingFriendRequest = (recipientUserId) => {
+    if (!user || !recipientUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Removing outgoing friend request from AuthContext for user:",
+        recipientUserId
+      );
+      return {
+        ...prevUser,
+        selfFriendRequests: (prevUser.selfFriendRequests || []).filter(
+          (req) => req._id !== recipientUserId
+        ),
+      };
+    });
+  };
+
+  const removeIncomingFriendRequest = (senderUserId) => {
+    if (!user || !senderUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Removing incoming friend request from AuthContext from user:",
+        senderUserId
+      );
+      return {
+        ...prevUser,
+        friendRequests: (prevUser.friendRequests || []).filter(
+          (req) => req.user._id !== senderUserId
+        ),
+      };
+    });
+  };
+
+  const acceptFriendRequest = (senderUserId) => {
+    if (!user || !senderUserId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Accepting friend request and removing from incoming requests for user:",
+        senderUserId
+      );
+
+      // Remove from incoming friend requests only
+      // Note: We don't add to friends array because according to the backend logic,
+      // only the sender gets added to our friends array, not vice versa
+      return {
+        ...prevUser,
+        friendRequests: (prevUser.friendRequests || []).filter(
+          (req) => req.user._id !== senderUserId
+        ),
+      };
+    });
+  };
+
+  const addFriend = (friendUser) => {
+    if (!user || !friendUser) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if friend already exists
+      const exists = prevUser.friends?.some(
+        (friend) => friend._id === friendUser._id
+      );
+      if (exists) {
+        console.log("User already in friends list:", friendUser.name);
+        return prevUser;
+      }
+
+      console.log("Adding user to friends list:", friendUser.name);
+      return {
+        ...prevUser,
+        friends: [...(prevUser.friends || []), friendUser],
+      };
+    });
+  };
+
+  const removeFriendRequest = (userId) => {
+    if (!user || !userId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Removing friend request (accepted/rejected) for user:",
+        userId
+      );
+
+      // Remove from selfFriendRequests (outgoing requests)
+      return {
+        ...prevUser,
+        selfFriendRequests: (prevUser.selfFriendRequests || []).filter(
+          (req) => req._id !== userId
+        ),
+      };
+    });
+  };
+
   const value = {
     // Core state
     user,
@@ -470,6 +682,21 @@ export const AuthProvider = ({ children }) => {
     clearUnseenMessagesForAdvert,
     setCurrentlyViewingAdvert,
     addUnseenMessageForAdvert,
+
+    // Friend request viewing and unseen management
+    isViewingFriendRequests,
+    setCurrentlyViewingFriendRequests,
+    getUnseenFriendRequestsCount,
+    markAllFriendRequestsAsSeen,
+
+    // Friend request management
+    addOutgoingFriendRequest,
+    addIncomingFriendRequest,
+    removeOutgoingFriendRequest,
+    removeIncomingFriendRequest,
+    acceptFriendRequest,
+    addFriend,
+    removeFriendRequest,
 
     // Actions
     checkAuth,

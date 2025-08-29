@@ -12,8 +12,12 @@ import UserFriends from "../components/user-profile/UserFriends";
 
 function UserProfilePage() {
   const { userId } = useParams();
-  const { isAuthenticated } = useAuth();
-  const { isUserOnline } = useWebSocket();
+  const { isAuthenticated, addOutgoingFriendRequest } = useAuth();
+  const {
+    isUserOnline,
+    listenForNotificationEvent,
+    removeNotificationEventListener,
+  } = useWebSocket();
   const [activeSection, setActiveSection] = useState("profile");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,6 +45,95 @@ function UserProfilePage() {
       ...notification,
       isVisible: false,
     });
+  };
+
+  // Error message translation function
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Backend error messages
+      "You have been banned, please get contact with our customer service.":
+        "Hesabınız askıya alınmıştır. Müşteri hizmetleri ile iletişime geçin.",
+      "User couldn't found.": "Kullanıcı bulunamadı.",
+      "User not found.": "Kullanıcı bulunamadı.",
+      "Please provide required data.": "Gerekli bilgileri girin.",
+      "Please provide user credentials.": "Kullanıcı bilgilerini sağlayın.",
+
+      // Friend request specific errors
+      "This user has been banned.": "Bu kullanıcı yasaklanmıştır.",
+      "Users cannot send friend requests for themselves.":
+        "Kendinize arkadaşlık isteği gönderemezsiniz.",
+      "You have already sent a friend request for this user.":
+        "Bu kullanıcıya zaten arkadaşlık isteği gönderdiniz.",
+      "You are already friends with this user.":
+        "Bu kullanıcıyla zaten arkadaşsınız.",
+      "You have been banned by this user":
+        "Bu kullanıcı tarafından engellendiniz.",
+      "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Yetkisiz erişim.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  };
+
+  // Handle send friend request
+  const handleSendFriendRequest = async (targetUserId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/sendFriendRequest/${targetUserId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Friend request failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request sent successfully:", data);
+
+      // Update AuthContext with the response data (same as other components)
+      // The HTTP response contains { user: sendFriendRequest } which is the recipient user data
+      if (data && data.user) {
+        addOutgoingFriendRequest(data.user);
+      }
+
+      showNotification("Arkadaşlık isteği gönderildi!", "success");
+    } catch (error) {
+      console.error("Friend request error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
+  // Handle send message (placeholder)
+  const handleSendMessage = async (targetUserId) => {
+    // TODO: Implement DM functionality
+    showNotification("Mesaj özelliği henüz aktif değil.", "info");
+  };
+
+  // Handle block user (placeholder)
+  const handleBlockUser = async (targetUserId) => {
+    // TODO: Implement block user functionality
+    showNotification("Engelleme özelliği henüz aktif değil.", "info");
   };
 
   // Fetch user data from backend
@@ -291,6 +384,37 @@ function UserProfilePage() {
     }
   }, [userId]);
 
+  // Set up WebSocket listener for friend requests
+  useEffect(() => {
+    if (isAuthenticated && listenForNotificationEvent) {
+      console.log("Setting up friendRequest listener for UserProfilePage");
+
+      const handleFriendRequest = (data) => {
+        console.log("Received friendRequest event in UserProfilePage:", data);
+
+        if (data && data.user) {
+          const requesterName = data.user.name || "Bir kullanıcı";
+          showNotification(
+            `${requesterName} size arkadaşlık isteği gönderdi!`,
+            "info"
+          );
+        }
+      };
+
+      // Listen for friend request events
+      const cleanup = listenForNotificationEvent(
+        "friendRequest",
+        handleFriendRequest
+      );
+
+      // Cleanup on unmount
+      return () => {
+        console.log("Cleaning up friendRequest listener in UserProfilePage");
+        if (cleanup) cleanup();
+      };
+    }
+  }, [isAuthenticated, listenForNotificationEvent, showNotification]);
+
   // Loading state
   if (loading) {
     return (
@@ -369,7 +493,14 @@ function UserProfilePage() {
 
     switch (activeSection) {
       case "profile":
-        return <UserProfileMain user={currentUserData} />;
+        return (
+          <UserProfileMain
+            user={currentUserData}
+            onSendFriendRequest={handleSendFriendRequest}
+            onSendMessage={handleSendMessage}
+            onBlockUser={handleBlockUser}
+          />
+        );
       case "listings":
         return <UserListings user={currentUserData} />;
       case "pitches":
@@ -377,7 +508,14 @@ function UserProfilePage() {
       case "friends":
         return <UserFriends user={currentUserData} />;
       default:
-        return <UserProfileMain user={currentUserData} />;
+        return (
+          <UserProfileMain
+            user={currentUserData}
+            onSendFriendRequest={handleSendFriendRequest}
+            onSendMessage={handleSendMessage}
+            onBlockUser={handleBlockUser}
+          />
+        );
     }
   };
 

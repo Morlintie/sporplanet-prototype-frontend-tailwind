@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useWebSocket } from "../../context/WebSocketContext";
 
-function UserProfileMain({ user }) {
+function UserProfileMain({
+  user,
+  onSendFriendRequest,
+  onSendMessage,
+  onBlockUser,
+}) {
   const { isUserOnline } = useWebSocket();
   const [showAllPitches, setShowAllPitches] = useState(false);
 
@@ -121,7 +126,13 @@ function UserProfileMain({ user }) {
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 mt-4 lg:mt-0 items-center">
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                    <button
+                      onClick={() =>
+                        onSendFriendRequest && onSendFriendRequest(user._id)
+                      }
+                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                      tabIndex="0"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -137,7 +148,11 @@ function UserProfileMain({ user }) {
                       </svg>
                       İstek Yolla
                     </button>
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => onSendMessage && onSendMessage(user._id)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                      tabIndex="0"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -157,8 +172,10 @@ function UserProfileMain({ user }) {
 
                   {/* Block User Icon - Tiny and Subtle */}
                   <button
+                    onClick={() => onBlockUser && onBlockUser(user._id)}
                     className="bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-full transition-colors group"
                     title="Kullanıcıyı Engelle"
+                    tabIndex="0"
                   >
                     <svg
                       className="w-3 h-3"

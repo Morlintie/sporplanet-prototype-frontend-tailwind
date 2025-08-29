@@ -7,7 +7,8 @@ import AuthRequiredPopup from "../shared/AuthRequiredPopup";
 function AnimatedProfileSidebar() {
   const { isSidebarOpen, closeSidebar, activeSection, setSection } =
     useProfileSidebar();
-  const { isAuthenticated, getTotalUnseenCount } = useAuth();
+  const { isAuthenticated, getTotalUnseenCount, getUnseenFriendRequestsCount } =
+    useAuth();
   const navigate = useNavigate();
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [communityDropdownOpen, setCommunityDropdownOpen] = useState(false);
@@ -372,6 +373,15 @@ function AnimatedProfileSidebar() {
                         </span>
                       )}
 
+                    {/* Show unseen friend request count for Topluluk */}
+                    {item.id === "community" &&
+                      isAuthenticated &&
+                      getUnseenFriendRequestsCount() > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                          {getUnseenFriendRequestsCount()}
+                        </span>
+                      )}
+
                     {item.hasDropdown && (
                       <svg
                         className={`w-4 h-4 transition-transform ${
@@ -422,6 +432,13 @@ function AnimatedProfileSidebar() {
                         />
                       </svg>
                       <span>Arkadaşlarım</span>
+                      {/* Show unseen friend request count badge */}
+                      {isAuthenticated &&
+                        getUnseenFriendRequestsCount() > 0 && (
+                          <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center ml-2">
+                            {getUnseenFriendRequestsCount()}
+                          </span>
+                        )}
                     </button>
                     <button
                       onClick={() => {

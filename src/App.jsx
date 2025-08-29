@@ -16,6 +16,7 @@ import AdvertDetailPage from "./pages/AdvertDetailPage";
 import PrivateInvitePage from "./pages/PrivateInvitePage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 import ArchivedUserPopup from "./components/shared/ArchivedUserPopup";
+import GlobalNotification from "./components/shared/GlobalNotification";
 
 function AppContent() {
   const location = useLocation();
@@ -60,6 +61,7 @@ function AppContent() {
       </Routes>
       <AnimatedProfileSidebar />
       <ArchivedUserPopup />
+      <GlobalNotification />
     </div>
   );
 }
