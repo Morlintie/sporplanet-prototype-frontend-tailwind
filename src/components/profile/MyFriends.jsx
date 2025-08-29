@@ -15,6 +15,8 @@ function MyFriends({ user }) {
     addFriend,
     removeFriendRequest,
     setCurrentlyViewingFriendRequests,
+    followerCount,
+    incrementFollowerCount,
   } = useAuth();
   const { isUserOnline } = useWebSocket();
   const navigate = useNavigate();
@@ -309,6 +311,10 @@ function MyFriends({ user }) {
       // The HTTP response contains { userId: id, accepted: true }
       if (data && data.userId && data.accepted === true) {
         acceptFriendRequest(data.userId);
+
+        // Increment follower count since user accepted someone's friend request
+        incrementFollowerCount();
+
         showNotification("Arkadaşlık isteği kabul edildi!", "success");
       } else {
         console.log("Unexpected response data:", data);
@@ -483,18 +489,32 @@ function MyFriends({ user }) {
 
             {/* Stats */}
             <div className="flex space-x-8">
-              <div className="text-center">
+              <button
+                onClick={() => navigate("/followers")}
+                className="text-center hover:bg-gray-50 rounded-lg p-2 transition-colors cursor-pointer"
+                tabIndex="0"
+                aria-label="Takipçilerim sayfasına git"
+              >
                 <div className="text-2xl font-bold text-gray-900">
-                  {user.friendRequests?.length || 0}
+                  {followerCount || 0}
                 </div>
-                <div className="text-sm text-gray-600">Takipçilerim</div>
-              </div>
-              <div className="text-center">
+                <div className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  Takipçilerim
+                </div>
+              </button>
+              <button
+                onClick={() => navigate("/following")}
+                className="text-center hover:bg-gray-50 rounded-lg p-2 transition-colors cursor-pointer"
+                tabIndex="0"
+                aria-label="Takip ettiklerim sayfasına git"
+              >
                 <div className="text-2xl font-bold text-gray-900">
                   {user.friends?.length || 0}
                 </div>
-                <div className="text-sm text-gray-600">Takip Ettiklerim</div>
-              </div>
+                <div className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  Takip Ettiklerim
+                </div>
+              </button>
             </div>
           </div>
         </div>

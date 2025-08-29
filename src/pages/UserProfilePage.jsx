@@ -12,7 +12,13 @@ import UserFriends from "../components/user-profile/UserFriends";
 
 function UserProfilePage() {
   const { userId } = useParams();
-  const { isAuthenticated, addOutgoingFriendRequest } = useAuth();
+  const {
+    isAuthenticated,
+    addOutgoingFriendRequest,
+    removeOutgoingFriendRequest,
+    removeFriend,
+    user,
+  } = useAuth();
   const {
     isUserOnline,
     listenForNotificationEvent,
@@ -75,6 +81,11 @@ function UserProfilePage() {
         "Bu kullanıcı tarafından engellendiniz.",
       "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
 
+      // Unfriend specific errors
+      "You are not friends with that user.":
+        "Bu kullanıcıyla arkadaş değilsiniz.",
+      "Unfriend failed": "Arkadaşlıktan çıkarma başarısız.",
+
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
       "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
@@ -85,6 +96,20 @@ function UserProfilePage() {
       translations[message] ||
       "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
     );
+  };
+
+  // Check if current user has sent a friend request to the viewed user
+  const hasPendingRequest = (targetUserId) => {
+    if (!user?.selfFriendRequests || !targetUserId) return false;
+    return user.selfFriendRequests.some(
+      (request) => request._id === targetUserId
+    );
+  };
+
+  // Check if current user is friends with the viewed user
+  const isFriend = (targetUserId) => {
+    if (!user?.friends || !targetUserId) return false;
+    return user.friends.some((friend) => friend._id === targetUserId);
   };
 
   // Handle send friend request
@@ -124,10 +149,86 @@ function UserProfilePage() {
     }
   };
 
+  // Handle revoke friend request (same as MyFriends.jsx)
+  const handleRevokeFriendRequest = async (targetUserId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/revokeFriendRequest/${targetUserId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Request revoke failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request revoked successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id } which is the user we revoked the request from
+      if (data && data.userId) {
+        removeOutgoingFriendRequest(data.userId);
+        showNotification("Arkadaşlık isteği geri çekildi!", "success");
+      } else {
+        console.log("No userId in response:", data);
+      }
+    } catch (error) {
+      console.error("Friend request revoke error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
   // Handle send message (placeholder)
   const handleSendMessage = async (targetUserId) => {
     // TODO: Implement DM functionality
     showNotification("Mesaj özelliği henüz aktif değil.", "info");
+  };
+
+  // Handle unfriend user
+  const handleUnfriend = async (targetUserId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/removeFromFriends/${targetUserId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Unfriend failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("User unfriended successfully:", data);
+
+      // Update AuthContext with the response data
+      // The HTTP response contains { userId: id } which is the user we removed from friends
+      if (data && data.userId) {
+        removeFriend(data.userId);
+        showNotification("Arkadaşlıktan çıkarıldı!", "success");
+      } else {
+        console.log("No userId in response:", data);
+      }
+    } catch (error) {
+      console.error("Unfriend error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
   };
 
   // Handle block user (placeholder)
@@ -384,10 +485,10 @@ function UserProfilePage() {
     }
   }, [userId]);
 
-  // Set up WebSocket listener for friend requests
+  // Set up WebSocket listeners for friend request events
   useEffect(() => {
     if (isAuthenticated && listenForNotificationEvent) {
-      console.log("Setting up friendRequest listener for UserProfilePage");
+      console.log("Setting up WebSocket listeners for UserProfilePage");
 
       const handleFriendRequest = (data) => {
         console.log("Received friendRequest event in UserProfilePage:", data);
@@ -401,16 +502,54 @@ function UserProfilePage() {
         }
       };
 
+      const handleFriendRequestRevoked = (data) => {
+        console.log(
+          "Received friendRequestRevoked event in UserProfilePage:",
+          data
+        );
+
+        if (data && data.userId) {
+          // Update AuthContext to remove the revoked incoming friend request
+          // This is handled globally in WebSocketContext, but we can show a local notification
+          showNotification("Arkadaşlık isteği geri çekildi.", "info");
+        }
+      };
+
+      const handleFriendRequestAccepted = (data) => {
+        console.log(
+          "Received friendRequestAccepted event in UserProfilePage:",
+          data
+        );
+
+        if (data && data.userId) {
+          // When our friend request gets accepted, the user becomes our friend
+          // AuthContext is updated globally, but we can show a local notification
+          showNotification("Arkadaşlık isteği kabul edildi!", "success");
+        }
+      };
+
       // Listen for friend request events
-      const cleanup = listenForNotificationEvent(
+      const cleanupFriendRequest = listenForNotificationEvent(
         "friendRequest",
         handleFriendRequest
       );
 
+      const cleanupFriendRequestRevoked = listenForNotificationEvent(
+        "friendRequestRevoked",
+        handleFriendRequestRevoked
+      );
+
+      const cleanupFriendRequestAccepted = listenForNotificationEvent(
+        "friendRequestAccepted",
+        handleFriendRequestAccepted
+      );
+
       // Cleanup on unmount
       return () => {
-        console.log("Cleaning up friendRequest listener in UserProfilePage");
-        if (cleanup) cleanup();
+        console.log("Cleaning up WebSocket listeners in UserProfilePage");
+        if (cleanupFriendRequest) cleanupFriendRequest();
+        if (cleanupFriendRequestRevoked) cleanupFriendRequestRevoked();
+        if (cleanupFriendRequestAccepted) cleanupFriendRequestAccepted();
       };
     }
   }, [isAuthenticated, listenForNotificationEvent, showNotification]);
@@ -497,8 +636,12 @@ function UserProfilePage() {
           <UserProfileMain
             user={currentUserData}
             onSendFriendRequest={handleSendFriendRequest}
+            onRevokeFriendRequest={handleRevokeFriendRequest}
+            onUnfriend={handleUnfriend}
             onSendMessage={handleSendMessage}
             onBlockUser={handleBlockUser}
+            hasPendingRequest={hasPendingRequest(currentUserData._id)}
+            isFriend={isFriend(currentUserData._id)}
           />
         );
       case "listings":
@@ -512,8 +655,12 @@ function UserProfilePage() {
           <UserProfileMain
             user={currentUserData}
             onSendFriendRequest={handleSendFriendRequest}
+            onRevokeFriendRequest={handleRevokeFriendRequest}
+            onUnfriend={handleUnfriend}
             onSendMessage={handleSendMessage}
             onBlockUser={handleBlockUser}
+            hasPendingRequest={hasPendingRequest(currentUserData._id)}
+            isFriend={isFriend(currentUserData._id)}
           />
         );
     }

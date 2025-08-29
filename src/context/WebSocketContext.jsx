@@ -28,7 +28,8 @@ export const WebSocketProvider = ({ children }) => {
     removeIncomingFriendRequest,
     addFriend,
     removeFriendRequest,
-    markNewFriendRequestAsSeen,
+    removeFromFriendsList,
+    removeFriend,
   } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -331,9 +332,6 @@ export const WebSocketProvider = ({ children }) => {
               `${senderName} arkadaşlık isteği gönderdi`,
               "info"
             );
-
-            // If user is currently viewing friend requests, mark the new request as seen on backend
-            markNewFriendRequestAsSeen();
           }
         });
 
@@ -391,6 +389,42 @@ export const WebSocketProvider = ({ children }) => {
 
             // Update state: Just remove from selfFriendRequests, don't add to friends
             removeFriendRequest(data.userId);
+          }
+        });
+
+        notificationSocketInstance.on("removedFromFriends", (data) => {
+          console.log("Received global removedFromFriends event:", data);
+
+          if (data && data.userId) {
+            // Someone removed us from their friends list
+            // We need to decrement our follower count
+            removeFromFriendsList(data.userId);
+
+            // No notification shown to the user who was removed
+            // The unfriending happens silently for the removed user
+          }
+        });
+
+        notificationSocketInstance.on("removedFromFollowers", (data) => {
+          console.log("Received global removedFromFollowers event:", data);
+
+          if (data && data.userId) {
+            // Someone removed us from their followers list
+            // This means we need to remove them from our friends list
+            // (since in this system, being removed from followers means losing the friendship)
+            removeFriend(data.userId);
+
+            // Find the user who removed us (if we have their info)
+            const removerUser = user?.friends?.find(
+              (friend) => friend._id === data.userId
+            );
+            const removerName = removerUser?.name || "Bir kullanıcı";
+
+            // Show global notification
+            showGlobalNotification(
+              `${removerName} sizi takipçilerinden çıkardı`,
+              "info"
+            );
           }
         });
       } catch (error) {
@@ -460,12 +494,12 @@ export const WebSocketProvider = ({ children }) => {
   }, [
     isAuthenticated,
     user?._id,
-    user?.selfFriendRequests,
     addIncomingFriendRequest,
     removeIncomingFriendRequest,
     addFriend,
     removeFriendRequest,
-    markNewFriendRequestAsSeen,
+    removeFromFriendsList,
+    removeFriend,
   ]);
 
   // Auto-join advert chat rooms when chat connection is established and user is authenticated

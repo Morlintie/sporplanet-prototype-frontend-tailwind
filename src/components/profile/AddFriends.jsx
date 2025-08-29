@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useWebSocket } from "../../context/WebSocketContext";
 import Notification from "../shared/Notification";
 
 function AddFriends({ user }) {
   const navigate = useNavigate();
-  const { getProfilePictureUrl, addOutgoingFriendRequest } = useAuth();
+  const {
+    getProfilePictureUrl,
+    addOutgoingFriendRequest,
+    removeOutgoingFriendRequest,
+    removeFriend,
+    user: currentUser,
+  } = useAuth();
+  const { listenForNotificationEvent } = useWebSocket();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -69,6 +77,11 @@ function AddFriends({ user }) {
       "You have been banned by this user":
         "Bu kullanıcı tarafından engellendiniz.",
       "You have banned that user": "Bu kullanıcıyı engellemişsiniz.",
+
+      // Unfriend specific errors
+      "You are not friends with that user.":
+        "Bu kullanıcıyla arkadaş değilsiniz.",
+      "Unfriend failed": "Arkadaşlıktan çıkarma başarısız.",
 
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
@@ -144,9 +157,10 @@ function AddFriends({ user }) {
         friends: userData.friends,
         // Check if this user is already a friend or has pending request
         isFollowing:
-          user?.friends?.some((friend) => friend._id === userData._id) || false,
+          currentUser?.friends?.some((friend) => friend._id === userData._id) ||
+          false,
         isPending:
-          user?.selfFriendRequests?.some(
+          currentUser?.selfFriendRequests?.some(
             (request) => request._id === userData._id
           ) || false,
         mutualFriends:
@@ -243,6 +257,89 @@ function AddFriends({ user }) {
     }
   };
 
+  const handleRevokeRequest = async (userId) => {
+    try {
+      const response = await fetch(
+        `/api/v1/user/revokeFriendRequest/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Request revoke failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("Friend request revoked successfully:", data);
+
+      // Update AuthContext with the response data
+      if (data && data.userId) {
+        removeOutgoingFriendRequest(data.userId);
+      }
+
+      // Update the UI optimistically for search results
+      const updatedResults = searchResults.map((searchUser) => {
+        if (searchUser._id === userId) {
+          return { ...searchUser, isPending: false };
+        }
+        return searchUser;
+      });
+      setSearchResults(updatedResults);
+      showNotification("Arkadaşlık isteği geri çekildi!", "success");
+    } catch (error) {
+      console.error("Friend request revoke error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
+  const handleUnfriend = async (userId) => {
+    try {
+      const response = await fetch(`/api/v1/user/removeFromFriends/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Unfriend failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("User unfriended successfully:", data);
+
+      // Update AuthContext with the response data
+      if (data && data.userId) {
+        removeFriend(data.userId);
+      }
+
+      // Update the UI optimistically for search results
+      const updatedResults = searchResults.map((searchUser) => {
+        if (searchUser._id === userId) {
+          return { ...searchUser, isFollowing: false };
+        }
+        return searchUser;
+      });
+      setSearchResults(updatedResults);
+      showNotification("Arkadaşlıktan çıkarıldı!", "success");
+    } catch (error) {
+      console.error("Unfriend error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
+  };
+
   const handleUnfollow = async (userId) => {
     // TODO: Implement real unfollow API
     // For now, just update the UI optimistically
@@ -261,6 +358,114 @@ function AddFriends({ user }) {
       handleSearch(1);
     }
   };
+
+  // WebSocket listeners for real-time updates
+  useEffect(() => {
+    if (listenForNotificationEvent) {
+      console.log("Setting up WebSocket listeners for AddFriends");
+
+      const handleFriendRequestRevoked = (data) => {
+        console.log("Received friendRequestRevoked event in AddFriends:", data);
+
+        if (data && data.userId) {
+          // Update search results to reflect the revoked request
+          setSearchResults((prevResults) =>
+            prevResults.map((searchUser) => {
+              if (searchUser._id === data.userId) {
+                return { ...searchUser, isPending: false };
+              }
+              return searchUser;
+            })
+          );
+        }
+      };
+
+      const handleFriendRequestAccepted = (data) => {
+        console.log(
+          "Received friendRequestAccepted event in AddFriends:",
+          data
+        );
+
+        if (data && data.userId) {
+          // Update search results to reflect the accepted request
+          setSearchResults((prevResults) =>
+            prevResults.map((searchUser) => {
+              if (searchUser._id === data.userId) {
+                return { ...searchUser, isPending: false, isFollowing: true };
+              }
+              return searchUser;
+            })
+          );
+        }
+      };
+
+      const handleFriendRequestRejected = (data) => {
+        console.log(
+          "Received friendRequestRejected event in AddFriends:",
+          data
+        );
+
+        if (data && data.userId) {
+          // Update search results to reflect the rejected request
+          setSearchResults((prevResults) =>
+            prevResults.map((searchUser) => {
+              if (searchUser._id === data.userId) {
+                return { ...searchUser, isPending: false };
+              }
+              return searchUser;
+            })
+          );
+        }
+      };
+
+      const handleRemovedFromFriends = (data) => {
+        console.log("Received removedFromFriends event in AddFriends:", data);
+
+        if (data && data.userId) {
+          // Someone removed us from their friends list
+          // Update search results to reflect we're no longer friends
+          setSearchResults((prevResults) =>
+            prevResults.map((searchUser) => {
+              if (searchUser._id === data.userId) {
+                return { ...searchUser, isFollowing: false };
+              }
+              return searchUser;
+            })
+          );
+        }
+      };
+
+      // Set up listeners
+      const cleanupRevoked = listenForNotificationEvent(
+        "friendRequestRevoked",
+        handleFriendRequestRevoked
+      );
+
+      const cleanupAccepted = listenForNotificationEvent(
+        "friendRequestAccepted",
+        handleFriendRequestAccepted
+      );
+
+      const cleanupRejected = listenForNotificationEvent(
+        "friendRequestRejected",
+        handleFriendRequestRejected
+      );
+
+      const cleanupRemovedFromFriends = listenForNotificationEvent(
+        "removedFromFriends",
+        handleRemovedFromFriends
+      );
+
+      // Cleanup on unmount
+      return () => {
+        console.log("Cleaning up WebSocket listeners in AddFriends");
+        if (cleanupRevoked) cleanupRevoked();
+        if (cleanupAccepted) cleanupAccepted();
+        if (cleanupRejected) cleanupRejected();
+        if (cleanupRemovedFromFriends) cleanupRemovedFromFriends();
+      };
+    }
+  }, [listenForNotificationEvent]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -408,18 +613,19 @@ function AddFriends({ user }) {
                   <div onClick={(e) => e.stopPropagation()}>
                     {foundUser.isFollowing ? (
                       <button
-                        onClick={() => handleUnfollow(foundUser._id)}
+                        onClick={() => handleUnfriend(foundUser._id)}
                         className="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-md transition-colors cursor-pointer text-sm"
                         tabIndex="0"
                       >
-                        Arkadaş
+                        Arkadaşlıktan Çıkar
                       </button>
                     ) : foundUser.isPending ? (
                       <button
-                        disabled
-                        className="bg-yellow-500 text-white font-semibold px-4 py-2 rounded-md cursor-not-allowed text-sm"
+                        onClick={() => handleRevokeRequest(foundUser._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md transition-colors cursor-pointer text-sm"
+                        tabIndex="0"
                       >
-                        İstek Gönderildi
+                        İsteği Geri Çek
                       </button>
                     ) : (
                       <button

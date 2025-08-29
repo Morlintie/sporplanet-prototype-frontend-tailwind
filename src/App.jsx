@@ -12,6 +12,8 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import GoogleFailure from "./pages/auth/GoogleFailure";
 import ProfilePage from "./pages/ProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
+import FollowersPage from "./pages/FollowersPage";
+import FollowingPage from "./pages/FollowingPage";
 import AdvertDetailPage from "./pages/AdvertDetailPage";
 import PrivateInvitePage from "./pages/PrivateInvitePage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
@@ -38,6 +40,8 @@ function AppContent() {
         <Route path="/private-invite" element={<PrivateInvitePage />} />
         <Route path="/tournaments" element={<TournamentsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/followers" element={<FollowersPage />} />
+        <Route path="/following" element={<FollowingPage />} />
         <Route path="/user/:userId" element={<UserProfilePage />} />
         <Route path="/auth/google-failure" element={<GoogleFailure />} />
         <Route path="/auth/login" element={<Login />} />
