@@ -1,161 +1,79 @@
-import { useState } from "react";
-
 function MyTournaments({ user }) {
-  const [selectedTournament, setSelectedTournament] = useState("all");
-
-  // Mock tournament data
-  const tournaments = [
-    {
-      id: 1,
-      name: "İstanbul Ligi 2025",
-      teamRanking: 3,
-      matchesWon: 8,
-      matchesLost: 2,
-      goalsScored: 25,
-      goalsConceded: 12,
-      yellowCards: 5,
-      redCards: 0,
-      personalGoals: 12,
-      personalAssists: 8,
-      personalYellowCards: 2,
-      personalRedCards: 0,
-    },
-    {
-      id: 2,
-      name: "Kadıköy Kupası",
-      teamRanking: 1,
-      matchesWon: 5,
-      matchesLost: 0,
-      goalsScored: 18,
-      goalsConceded: 5,
-      yellowCards: 3,
-      redCards: 0,
-      personalGoals: 7,
-      personalAssists: 4,
-      personalYellowCards: 1,
-      personalRedCards: 0,
-    },
-  ];
-
-  const selectedTournamentData =
-    tournaments.find((t) => t.id === parseInt(selectedTournament)) ||
-    tournaments[0];
-
   return (
-    <div className="bg-white rounded-lg shadow-md p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
-        Turnuvalarım
-      </h1>
-
-      {/* Tournament Selection */}
-      <div className="mb-8">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Turnuva Seçin
-        </label>
-        <select
-          value={selectedTournament}
-          onChange={(e) => setSelectedTournament(e.target.value)}
-          className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-        >
-          <option value="all">Tüm Turnuvalar</option>
-          {tournaments.map((tournament) => (
-            <option key={tournament.id} value={tournament.id}>
-              {tournament.name}
-            </option>
-          ))}
-        </select>
+    <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl shadow-lg p-8 sm:p-12">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+            Turnuvalarım
+          </span>
+        </h1>
+        <p className="text-lg text-gray-600">
+          Turnuva geçmişin ve istatistiklerin burada görüntülenecek
+        </p>
       </div>
 
-      {/* Team Statistics */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Takım İstatistikleri
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">
-              {selectedTournamentData.teamRanking}
-            </div>
-            <div className="text-sm text-gray-600">Takım Sıralaması</div>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
-              {selectedTournamentData.matchesWon}
-            </div>
-            <div className="text-sm text-gray-600">Kazanılan Maç</div>
-          </div>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">
-              {selectedTournamentData.matchesLost}
-            </div>
-            <div className="text-sm text-gray-600">Kaybedilen Maç</div>
-          </div>
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">
-              {selectedTournamentData.goalsScored}
-            </div>
-            <div className="text-sm text-gray-600">Atılan Gol</div>
-          </div>
+      {/* Coming Soon Section */}
+      <div className="text-center">
+        {/* Icon */}
+        <div className="w-24 h-24 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-8">
+          <svg className="w-12 h-12 text-white animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+          </svg>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          <div className="bg-orange-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">
-              {selectedTournamentData.goalsConceded}
-            </div>
-            <div className="text-sm text-gray-600">Yenen Gol</div>
-          </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">
-              {selectedTournamentData.yellowCards}
-            </div>
-            <div className="text-sm text-gray-600">Sarı Kart</div>
-          </div>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">
-              {selectedTournamentData.redCards}
-            </div>
-            <div className="text-sm text-gray-600">Kırmızı Kart</div>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-gray-600">
-              {selectedTournamentData.matchesWon +
-                selectedTournamentData.matchesLost}
-            </div>
-            <div className="text-sm text-gray-600">Toplam Maç</div>
-          </div>
+        {/* Coming Soon Badge */}
+        <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full text-lg font-semibold mb-8 shadow-lg">
+          <svg className="w-6 h-6 mr-2 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+          </svg>
+          Çok Yakında
         </div>
-      </div>
 
-      {/* Personal Statistics */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Kişisel İstatistikler
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-green-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
-              {selectedTournamentData.personalGoals}
+        {/* Description */}
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Turnuva İstatistiklerin Hazırlanıyor
+          </h2>
+          <p className="text-gray-600 text-lg leading-relaxed mb-8">
+            Yakında burada turnuva geçmişin, takım ve kişisel istatistiklerin, 
+            kazandığın ödüller ve başarı rozetlerin görüntülenecek.
+          </p>
+        </div>
+
+        {/* Feature Preview Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {/* Feature 1 */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+              </svg>
             </div>
-            <div className="text-sm text-gray-600">Attığım Gol</div>
+            <h3 className="font-semibold text-gray-900 mb-2">Turnuva Geçmişi</h3>
+            <p className="text-sm text-gray-600">Katıldığın tüm turnuvaların listesi</p>
           </div>
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">
-              {selectedTournamentData.personalAssists}
+
+          {/* Feature 2 */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+              </svg>
             </div>
-            <div className="text-sm text-gray-600">Asist</div>
+            <h3 className="font-semibold text-gray-900 mb-2">Kişisel İstatistikler</h3>
+            <p className="text-sm text-gray-600">Gol, asist ve kart istatistiklerin</p>
           </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">
-              {selectedTournamentData.personalYellowCards}
+
+          {/* Feature 3 */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" clipRule="evenodd" />
+              </svg>
             </div>
-            <div className="text-sm text-gray-600">Sarı Kart</div>
-          </div>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">
-              {selectedTournamentData.personalRedCards}
-            </div>
-            <div className="text-sm text-gray-600">Kırmızı Kart</div>
+            <h3 className="font-semibold text-gray-900 mb-2">Başarı Rozetleri</h3>
+            <p className="text-sm text-gray-600">Kazandığın ödüller ve rozetler</p>
           </div>
         </div>
       </div>

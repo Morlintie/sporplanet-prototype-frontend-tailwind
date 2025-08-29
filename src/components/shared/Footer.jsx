@@ -87,86 +87,44 @@ function Footer() {
     { name: "Profil", href: "/profile", icon: "👤" }
   ];
 
-  const companyLinks = [
-    { name: "Hakkımızda", href: "/about" },
-    { name: "Kariyer", href: "/careers" },
-    { name: "Blog", href: "/blog" },
-    { name: "Basın Kiti", href: "/press" },
-    { name: "Yatırımcılar", href: "/investors" }
-  ];
+
 
   const supportLinks = [
+    { name: "Hakkımızda", href: "/about" },
     { name: "Yardım Merkezi", href: "/help" },
-    { name: "İletişim", href: "/contact" },
-    { name: "SSS", href: "/faq" },
-    { name: "Canlı Destek", href: "/live-support" },
-    { name: "Durum Sayfası", href: "/status" }
+    { name: "İletişim", href: "/contact" }
   ];
 
   const legalLinks = [
     { name: "Gizlilik Politikası", href: "/privacy" },
     { name: "Kullanım Şartları", href: "/terms" },
-    { name: "Çerez Politikası", href: "/cookies" },
-    { name: "KVKK", href: "/kvkk" },
-    { name: "Güvenlik", href: "/security" }
+    { name: "KVKK", href: "/kvkk" }
   ];
 
 
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <svg className="w-full h-full" viewBox="0 0 60 60" fill="none">
-          <defs>
-            <pattern id="footerPattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <circle cx="30" cy="30" r="2" fill="currentColor" />
-              <circle cx="10" cy="10" r="1" fill="currentColor" />
-              <circle cx="50" cy="10" r="1" fill="currentColor" />
-              <circle cx="10" cy="50" r="1" fill="currentColor" />
-              <circle cx="50" cy="50" r="1" fill="currentColor" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#footerPattern)" />
-        </svg>
-      </div>
-
-      {/* Floating Football Elements */}
-      <div className="absolute top-10 left-10 w-16 h-16 opacity-10 animate-bounce" style={{ animationDuration: "3s" }}>
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-green-400">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-        </svg>
-      </div>
-      <div className="absolute top-1/4 right-20 w-12 h-12 opacity-10 animate-pulse" style={{ animationDelay: "1s" }}>
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-blue-400">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </div>
-      <div className="absolute bottom-20 left-1/4 w-10 h-10 opacity-10 animate-spin" style={{ animationDuration: "8s" }}>
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-yellow-400">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-        </svg>
-      </div>
+    <footer className="bg-gray-900 text-white">
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="py-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Logo and Description */}
             <div>
               <button
                 onClick={handleLogoClick}
-                className="group flex items-center mb-4 hover:opacity-80 transition-all duration-300 cursor-pointer"
+                className="flex items-center mb-3 hover:opacity-80 transition-opacity cursor-pointer"
                 tabIndex="0"
                 aria-label="Ana sayfaya git"
               >
-                <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-2 rounded-lg mr-2 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="bg-green-600 p-2 rounded-lg mr-2">
                   <img
                     src="https://res.cloudinary.com/dppjlhdth/image/upload/v1748956267/White_SporPlanet_Logo_yauoso.png"
                     alt="SporPlanet Logo"
                     className="w-6 h-6 object-contain"
                   />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                <span className="text-xl font-bold text-white">
                   SporPlanet
                 </span>
               </button>
@@ -178,8 +136,8 @@ function Footer() {
 
             {/* Quick Links */}
             <div>
-              <h3 className="text-sm font-semibold mb-4 text-green-400">Hızlı Erişim</h3>
-              <ul className="space-y-2">
+              <h3 className="text-sm font-semibold mb-3 text-green-400">Hızlı Erişim</h3>
+              <ul className="space-y-1.5">
                 {quickLinks.map((link) => (
                   <li key={link.name}>
                     <button
@@ -195,9 +153,9 @@ function Footer() {
 
             {/* Support Links */}
             <div>
-              <h3 className="text-sm font-semibold mb-4 text-green-400">Destek</h3>
-              <ul className="space-y-2">
-                {supportLinks.slice(0, 4).map((link) => (
+              <h3 className="text-sm font-semibold mb-3 text-green-400">Destek</h3>
+              <ul className="space-y-1.5">
+                {supportLinks.map((link) => (
                   <li key={link.name}>
                     <button
                       onClick={() => handleNavClick(link.href)}
@@ -212,9 +170,9 @@ function Footer() {
 
             {/* Legal Links */}
             <div>
-              <h3 className="text-sm font-semibold mb-4 text-green-400">Yasal</h3>
-              <ul className="space-y-2">
-                {legalLinks.slice(0, 4).map((link) => (
+              <h3 className="text-sm font-semibold mb-3 text-green-400">Yasal</h3>
+              <ul className="space-y-1.5">
+                {legalLinks.map((link) => (
                   <li key={link.name}>
                     <button
                       onClick={() => handleNavClick(link.href)}
@@ -230,19 +188,19 @@ function Footer() {
         </div>
 
         {/* Simple Bottom Bar - Social Media & Copyright */}
-        <div className="border-t border-gray-700/50 py-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="border-t border-gray-700/50 py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
             <p className="text-gray-400 text-sm">
               © {new Date().getFullYear()} SporPlanet. Tüm hakları saklıdır.
             </p>
             
             {/* Social Media Links */}
-            <div className="flex space-x-3">
+            <div className="flex space-x-2">
               {socialLinks.map((social) => (
                 <button
                   key={social.name}
                   onClick={() => handleNavClick(social.href)}
-                  className={`p-2 bg-gray-800 rounded-full text-gray-400 transition-all duration-300 hover:scale-110 ${social.color}`}
+                  className={`p-2 bg-gray-800 rounded-full text-gray-400 hover:text-white transition-colors ${social.color}`}
                   aria-label={social.name}
                   title={social.name}
                 >
@@ -254,16 +212,7 @@ function Footer() {
         </div>
       </div>
 
-      {/* Scroll to Top Button */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 p-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-50 group"
-        aria-label="Yukarı çık"
-      >
-        <svg className="w-5 h-5 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-      </button>
+
     </footer>
   );
 }

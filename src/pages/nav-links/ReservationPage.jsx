@@ -42,12 +42,30 @@ function ReservationPage() {
   const [isNearbySearch, setIsNearbySearch] = useState(false);
   const [currentCoordinates, setCurrentCoordinates] = useState(null);
 
-  // Transform dummy data to pitch format
+  // Transform backend data to pitch format
   const transformDummyDataToPitch = (item) => {
-    const address = item.location?.address;
-    const location = address
-      ? `${address.district}, ${address.city}`
-      : "Lokasyon bilgisi yok";
+    // Handle different address structures from backend
+    const getLocationData = () => {
+      // Try different address field structures
+      const address = item.address || item.location?.address || item.location;
+      
+      if (!address) return { location: "Lokasyon bilgisi yok", city: "Bilinmeyen Şehir", district: "Bilinmeyen İlçe" };
+      
+      // Build location string
+      const locationParts = [];
+      if (address.district) locationParts.push(address.district);
+      if (address.city) locationParts.push(address.city);
+      
+      const location = locationParts.length > 0 ? locationParts.join(", ") : "Lokasyon bilgisi yok";
+      
+      return {
+        location,
+        city: address.city || "Bilinmeyen Şehir",
+        district: address.district || "Bilinmeyen İlçe"
+      };
+    };
+
+    const locationData = getLocationData();
 
     // Generate features based on facilities
     const features = [];
@@ -103,15 +121,92 @@ function ReservationPage() {
         .sort();
     };
 
+    // Handle price from backend properly
+    const getPriceData = () => {
+      // Try different price field structures from backend
+      let price = 0;
+      let nightPrice = 0;
+
+      // Check pricePerHour field (like HomePage)
+      if (item.pricePerHour) {
+        if (typeof item.pricePerHour === 'object' && item.pricePerHour.amount) {
+          price = item.pricePerHour.amount;
+        } else if (typeof item.pricePerHour === 'number' || typeof item.pricePerHour === 'string') {
+          price = parseFloat(item.pricePerHour) || 0;
+        }
+      }
+      // Check pricing.hourlyRate field (existing logic)
+      else if (item.pricing?.hourlyRate) {
+        // If it's in kuruş (large number), convert to TL
+        const hourlyRate = item.pricing.hourlyRate;
+        price = hourlyRate > 1000 ? Math.round(hourlyRate / 100) : hourlyRate;
+      }
+      // Check price field
+      else if (item.price) {
+        if (typeof item.price === 'object' && item.price.amount) {
+          price = item.price.amount;
+        } else if (typeof item.price === 'number' || typeof item.price === 'string') {
+          price = parseFloat(item.price) || 0;
+        }
+      }
+      // Check cost field
+      else if (item.cost) {
+        price = parseFloat(item.cost) || 0;
+      }
+
+      // Handle night price
+      if (item.pricing?.nightHourlyRate) {
+        const nightHourlyRate = item.pricing.nightHourlyRate;
+        nightPrice = nightHourlyRate > 1000 ? Math.round(nightHourlyRate / 100) : nightHourlyRate;
+      } else {
+        // Default night price is 20% more than day price
+        nightPrice = Math.round(price * 1.2);
+      }
+
+      return { price: price || 0, nightPrice: nightPrice || 0 };
+    };
+
+    const priceData = getPriceData();
+
+    // Handle image from backend
+    const getImageUrl = () => {
+      // Try different image field structures
+      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        return item.images[0];
+      }
+      if (item.image && Array.isArray(item.image) && item.image.length > 0) {
+        return item.image[0];
+      }
+      if (item.images && typeof item.images === 'string') {
+        return item.images;
+      }
+      if (item.image && typeof item.image === 'string') {
+        return item.image;
+      }
+      if (item.media?.images?.find((img) => img.isPrimary)?.url) {
+        return item.media.images.find((img) => img.isPrimary).url;
+      }
+      if (item.media?.images?.[0]?.url) {
+        return item.media.images[0].url;
+      }
+      if (item.photos && Array.isArray(item.photos) && item.photos.length > 0) {
+        return item.photos[0];
+      }
+      if (item.imageUrl) {
+        return item.imageUrl;
+      }
+      return null;
+    };
+
     return {
-      id: item._id || item.company, // Use _id from backend, fallback to company for compatibility
+      id: item._id || item.id || item.company, // Use _id or id from backend, fallback to company for compatibility
       name: item.name || "İsimsiz Saha",
       description: item.description || "",
-      location,
-      city: address?.city || "Bilinmeyen Şehir",
-      district: address?.district || "Bilinmeyen İlçe",
-      price: Math.round((item.pricing?.hourlyRate || 50000) / 100), // Convert kuruş to TL
-      nightPrice: Math.round((item.pricing?.nightHourlyRate || 60000) / 100),
+      location: locationData.location,
+      city: locationData.city,
+      district: locationData.district,
+      price: priceData.price,
+      nightPrice: priceData.nightPrice,
       // Use only real backend rating data - no fallbacks, no dummy data
       rating: item.rating?.averageRating ?? null,
       totalReviews: item.rating?.totalReviews ?? null,
@@ -123,9 +218,7 @@ function ReservationPage() {
       hasLighting: item.specifications?.hasLighting || false,
       cameraSystem: item.facilities?.camera || false,
       shoeRental: item.facilities?.shoeRenting || false,
-      image:
-        item.media?.images?.find((img) => img.isPrimary)?.url ||
-        item.media?.images?.[0]?.url,
+      image: getImageUrl(),
       features,
       facilities: item.facilities || {},
       status: item.status || "active",
@@ -343,6 +436,9 @@ function ReservationPage() {
     sortValue = null,
     filterOverrides = {}
   ) => {
+    console.log("🔄 [RESERVATION] Starting to fetch pitches from API...");
+    console.log("🔄 [RESERVATION] Parameters:", { page, sortValue, filterOverrides });
+    
     setLoading(true);
     setError("");
 
@@ -353,8 +449,12 @@ function ReservationPage() {
         filterOverrides
       );
       const requestBody = buildFilterRequestBody(filterOverrides);
+      
+      const fullUrl = `http://localhost:5000/api/v1/pitch/getAll?${queryParams}`;
+      console.log("🔄 [RESERVATION] API URL:", fullUrl);
+      console.log("🔄 [RESERVATION] Request body:", requestBody);
 
-      const response = await fetch(`/api/v1/pitch/getAll?${queryParams}`, {
+      const response = await fetch(fullUrl, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -372,6 +472,7 @@ function ReservationPage() {
             errorMessage = errorData.msg;
           }
         } catch (parseError) {
+          console.error("Error parsing error response:", parseError);
           // If can't parse error response, use status-based messages
           if (response.status === 404) {
             errorMessage = "No pitch found.";
@@ -380,9 +481,12 @@ function ReservationPage() {
               "You have been banned, please get contact with our customer service.";
           } else if (response.status >= 500) {
             errorMessage = "Server Error";
+          } else {
+            errorMessage = `Backend error: ${response.status}`;
           }
         }
 
+        console.error("Pitch fetch error:", errorMessage);
         throw new Error(errorMessage);
       }
 
@@ -407,10 +511,46 @@ function ReservationPage() {
           } inactive filtered out)`
         );
 
+        // Debug: Log raw data for first few pitches
+        if (activePitches.length > 0) {
+          console.log("🔍 [RESERVATION] Sample pitch data from backend:", activePitches[0]);
+          console.log("🔍 [RESERVATION] ALL FIELDS:", Object.keys(activePitches[0] || {}));
+          console.log("🔍 [RESERVATION] Address field:", activePitches[0]?.address);
+          console.log("🔍 [RESERVATION] Location field:", activePitches[0]?.location);
+          console.log("🔍 [RESERVATION] Price fields:", {
+            pricePerHour: activePitches[0]?.pricePerHour,
+            pricing: activePitches[0]?.pricing,
+            price: activePitches[0]?.price,
+            cost: activePitches[0]?.cost
+          });
+          // Log the actual content of price fields
+          if (activePitches[0]?.pricing) {
+            console.log("🔍 [RESERVATION] Pricing object content:", JSON.stringify(activePitches[0].pricing, null, 2));
+          }
+          if (activePitches[0]?.pricePerHour) {
+            console.log("🔍 [RESERVATION] PricePerHour object content:", JSON.stringify(activePitches[0].pricePerHour, null, 2));
+          }
+          console.log("🔍 [RESERVATION] Image fields:", {
+            images: activePitches[0]?.images,
+            image: activePitches[0]?.image,
+            media: activePitches[0]?.media,
+            photos: activePitches[0]?.photos,
+            imageUrl: activePitches[0]?.imageUrl
+          });
+        }
+
         const transformedPitches = activePitches.map(transformDummyDataToPitch);
         console.log(
-          `Loaded ${transformedPitches.length} pitches from backend (page ${page})`
+          `✅ [RESERVATION] Loaded ${transformedPitches.length} pitches from backend (page ${page})`
         );
+
+        // Debug: Log transformed data for first pitch
+        if (transformedPitches.length > 0) {
+          console.log("🔍 [RESERVATION] Sample transformed pitch data:", transformedPitches[0]);
+          console.log("🔍 [RESERVATION] Transformed price:", transformedPitches[0]?.price);
+          console.log("🔍 [RESERVATION] Transformed location:", transformedPitches[0]?.location);
+          console.log("🔍 [RESERVATION] Transformed image:", transformedPitches[0]?.image);
+        }
 
         // Update pagination data from backend
         setTotalCount(data.totalCount || 0);
@@ -420,6 +560,7 @@ function ReservationPage() {
         setFilteredPitches(transformedPitches);
         setCurrentPage(page);
       } else {
+        console.error("Invalid data structure received:", data);
         throw new Error("No pitch found.");
       }
     } catch (error) {
@@ -446,7 +587,7 @@ function ReservationPage() {
     setError("");
 
     try {
-      const response = await fetch(`/api/v1/pitch/surrounding`, {
+      const response = await fetch(`http://localhost:5000/api/v1/pitch/surrounding`, {
         method: "POST",
         credentials: "include",
         headers: {

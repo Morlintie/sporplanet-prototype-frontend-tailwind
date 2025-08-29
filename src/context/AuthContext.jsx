@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [followerCount, setFollowerCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [error, setError] = useState(null);
   const [showArchivedUserPopup, setShowArchivedUserPopup] = useState(false);
   const [unseenMessages, setUnseenMessages] = useState({});
@@ -185,7 +186,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout function
-  const logout = async () => {
+  const logout = async (showLoadingScreen = false) => {
+    if (showLoadingScreen) {
+      setIsLoggingOut(true);
+      // Show loading screen for 2 seconds before actual logout
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+    
     try {
       // Call logout endpoint to clear server-side tokens and cookies
       const response = await fetch("/api/v1/auth/logout", {
@@ -214,8 +221,10 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setError(null);
       setLoading(false);
+      setIsLoggingOut(false);
       setUnseenMessages({});
       setParticipantAdverts([]);
+      setCurrentViewingAdvertId(null);
 
       console.log("User authentication state cleared");
     }
@@ -684,6 +693,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
   // Friend request management functions
   const addOutgoingFriendRequest = (recipientUser) => {
     if (!user || !recipientUser) return;
@@ -854,6 +864,7 @@ export const AuthProvider = ({ children }) => {
         ),
       };
     });
+
   }, []);
 
   const value = {
@@ -862,6 +873,7 @@ export const AuthProvider = ({ children }) => {
     followerCount,
     isAuthenticated,
     loading,
+    isLoggingOut,
     error,
     showArchivedUserPopup,
 

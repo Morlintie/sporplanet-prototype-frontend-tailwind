@@ -472,7 +472,7 @@ function Invitations({ user }) {
               key={invitation._id}
               className="relative border-2 border-gray-200 rounded-lg p-4 sm:p-4 md:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden"
               style={{
-                backgroundImage: 'url(https://res.cloudinary.com/dyepiphy8/image/upload/v1755552705/ChatGPT_Image_Aug_19_2025_12_30_47_AM_ue5sga.png)',
+                backgroundImage: 'url(/images/mesajlaşma.png)',
                 backgroundSize: '100% 100%',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat'

@@ -44,9 +44,9 @@ function Header() {
   };
 
   const handleLogout = async () => {
-    await logout();
+    await logout(true); // Pass true to show loading screen
     window.scrollTo(0, 0);
-    navigate("/auth/login");
+    navigate("/");
   };
 
   // Generate initials from user name

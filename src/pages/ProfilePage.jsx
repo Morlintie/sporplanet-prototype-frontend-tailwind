@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useProfileSidebar } from "../context/ProfileSidebarContext";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/shared/Header";
@@ -18,13 +19,33 @@ import AddFriends from "../components/profile/AddFriends";
 import BlockedUsers from "../components/profile/BlockedUsers";
 
 function ProfilePage() {
+  const navigate = useNavigate();
   const { activeSection } = useProfileSidebar();
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading, isAuthenticated, isLoggingOut } = useAuth();
 
   // Scroll to top when component mounts or activeSection changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [activeSection]);
+
+  // Redirect to home when not authenticated and not logging out
+  useEffect(() => {
+    if (!loading && !isAuthenticated && !user && !isLoggingOut) {
+      navigate("/");
+    }
+  }, [isAuthenticated, user, loading, isLoggingOut, navigate]);
+
+  // Logout state
+  if (isLoggingOut) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-16">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Çıkış yapılıyor...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Loading state
   if (loading) {
@@ -38,26 +59,11 @@ function ProfilePage() {
     );
   }
 
-  // Not authenticated state
+  // Not authenticated state - redirect to home instead of showing login prompt
   if (!isAuthenticated || !user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-16">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Giriş Yapmanız Gerekiyor
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Profilinizi görüntülemek için lütfen giriş yapın.
-          </p>
-          <button
-            onClick={() => (window.location.href = "/login")}
-            className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors"
-          >
-            Giriş Yap
-          </button>
-        </div>
-      </div>
-    );
+    // Redirect to home page instead of showing login screen
+    navigate("/");
+    return null;
   }
 
   const renderMainContent = () => {

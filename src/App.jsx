@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ProfileSidebarProvider } from "./context/ProfileSidebarContext";
 import HomePage from "./pages/HomePage";
@@ -16,6 +16,14 @@ import FollowersPage from "./pages/FollowersPage";
 import FollowingPage from "./pages/FollowingPage";
 import AdvertDetailPage from "./pages/AdvertDetailPage";
 import PrivateInvitePage from "./pages/PrivateInvitePage";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import TermsOfService from "./pages/legal/TermsOfService";
+
+import KVKK from "./pages/legal/KVKK";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+
+import HelpPage from "./pages/HelpPage";
 import AnimatedProfileSidebar from "./components/profile/AnimatedProfileSidebar";
 import ArchivedUserPopup from "./components/shared/ArchivedUserPopup";
 import GlobalNotification from "./components/shared/GlobalNotification";
@@ -47,6 +55,15 @@ function AppContent() {
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+
+        <Route path="/kvkk" element={<KVKK />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/faq" element={<Navigate to="/#faq-section" replace />} />
         <Route
           path="*"
           element={

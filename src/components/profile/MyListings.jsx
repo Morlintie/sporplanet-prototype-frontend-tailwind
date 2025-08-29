@@ -60,15 +60,43 @@ function MyListings({ user }) {
     };
   };
 
+  // Helper function to get time range
+  const getTimeRange = (advert) => {
+    const startTime = new Date(advert.startsAt);
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Add 1 hour
+    
+    const startTimeStr = startTime.toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    
+    const endTimeStr = endTime.toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    
+    return `${startTimeStr} - ${endTimeStr}`;
+  };
+
   // Helper function to get pitch name
   const getPitchName = (advert) => {
+    // Check for booking pitch name (for reservations made through the app)
+    if (advert.booking && advert.booking.pitch && advert.booking.pitch.name) {
+      return advert.booking.pitch.name;
+    }
+    // Check for custom pitch (for manual entries)
     if (advert.customPitch && advert.customPitch.name) {
       return advert.customPitch.name;
     }
+    // Check for direct pitch object
     if (advert.pitch && typeof advert.pitch === "object" && advert.pitch.name) {
       return advert.pitch.name;
     }
-    return "Saha Bilgisi Yok"; // In real app, you'd fetch pitch details by ID
+    // Fallback to the name field if available
+    if (advert.name) {
+      return advert.name;
+    }
+    return "Saha Bilgisi Yok";
   };
 
   // Helper function to get address
@@ -162,10 +190,11 @@ function MyListings({ user }) {
     waitingRequests: currentUser?.advertWaitingList?.length || 0,
   };
 
-  // Handle navigation to advert detail
+  // Handle navigation to advert detail - force page refresh
   const handleViewDetails = (advertId) => {
-    window.scrollTo(0, 0);
-    navigate(`/advert-detail/${advertId}`);
+    console.log("Navigating to advert with page refresh:", advertId, "Unseen count:", unseenMessages[advertId] || 0);
+    // Force page refresh for reliable navigation
+    window.location.href = `/advert-detail/${advertId}`;
   };
 
   // Loading state - check if user data is available
@@ -192,18 +221,18 @@ function MyListings({ user }) {
             setActiveSection("myAdverts");
             setCurrentPage(1);
           }}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+          className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center ${
             activeSection === "myAdverts"
-              ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg transform scale-105"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-green-600 text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
-          İlanlarım
+          <span>İlanlarım</span>
           <span
-            className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ml-2 ${
               activeSection === "myAdverts"
-                ? "bg-white text-green-600"
-                : "bg-green-500 text-white"
+                ? "bg-green-100 text-green-600"
+                : "bg-gray-200 text-gray-600"
             }`}
           >
             {sectionCounts.myAdverts}
@@ -215,18 +244,18 @@ function MyListings({ user }) {
             setActiveSection("joinedAdverts");
             setCurrentPage(1);
           }}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+          className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center ${
             activeSection === "joinedAdverts"
-              ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transform scale-105"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
-          Katıldığım İlanlar
+          <span>Katıldığım İlanlar</span>
           <span
-            className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ml-2 ${
               activeSection === "joinedAdverts"
-                ? "bg-white text-blue-600"
-                : "bg-blue-500 text-white"
+                ? "bg-blue-100 text-blue-600"
+                : "bg-gray-200 text-gray-600"
             }`}
           >
             {sectionCounts.joinedAdverts}
@@ -238,18 +267,18 @@ function MyListings({ user }) {
             setActiveSection("waitingRequests");
             setCurrentPage(1);
           }}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+          className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center ${
             activeSection === "waitingRequests"
-              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg transform scale-105"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-orange-600 text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
-          Bekleyenler ve İstekler
+          <span>Bekleyenler ve İstekler</span>
           <span
-            className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs ml-2 ${
               activeSection === "waitingRequests"
-                ? "bg-white text-orange-600"
-                : "bg-orange-500 text-white"
+                ? "bg-orange-100 text-orange-600"
+                : "bg-gray-200 text-gray-600"
             }`}
           >
             {sectionCounts.waitingRequests}
@@ -279,8 +308,8 @@ function MyListings({ user }) {
           // Determine background image based on advert type
           const isRivalryTeam = isRivalryMatch(advert);
           const backgroundImage = isRivalryTeam
-            ? "linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(https://res.cloudinary.com/dyepiphy8/image/upload/v1755089552/ChatGPT_Image_Aug_13_2025_03_32_46_PM_o6yrq8.png)"
-            : "linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(https://res.cloudinary.com/dyepiphy8/image/upload/v1755090617/20250813_1607_Anonim_Futbolcunun_Pozu_simple_compose_01k2hrk1akf9b89nqc967haa0x_pan6au.png)";
+            ? "linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/images/takım.png')"
+            : "linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/images/oyuncu.png')";
 
           return (
             <div
@@ -439,10 +468,7 @@ function MyListings({ user }) {
                     />
                   </svg>
                   <span className="truncate">
-                    {new Date(advert.startsAt).toLocaleTimeString("tr-TR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {getTimeRange(advert)}
                   </span>
                 </div>
 
