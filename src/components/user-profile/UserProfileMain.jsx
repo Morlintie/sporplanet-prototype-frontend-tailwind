@@ -10,6 +10,7 @@ function UserProfileMain({
   onBlockUser,
   hasPendingRequest,
   isFriend,
+  isBlocked,
 }) {
   const { isUserOnline } = useWebSocket();
   const [showAllPitches, setShowAllPitches] = useState(false);
@@ -224,8 +225,17 @@ function UserProfileMain({
                   {/* Block User Icon - Tiny and Subtle */}
                   <button
                     onClick={() => onBlockUser && onBlockUser(user._id)}
-                    className="bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-full transition-colors group"
-                    title="Kullanıcıyı Engelle"
+                    disabled={isBlocked}
+                    className={`p-2 rounded-full transition-colors group ${
+                      isBlocked
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-red-500/80 hover:bg-red-600 text-white"
+                    }`}
+                    title={
+                      isBlocked
+                        ? "Kullanıcı Zaten Engellenmiş"
+                        : "Kullanıcıyı Engelle"
+                    }
                     tabIndex="0"
                   >
                     <svg

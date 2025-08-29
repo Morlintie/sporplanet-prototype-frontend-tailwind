@@ -18,6 +18,10 @@ function UserProfilePage() {
     removeOutgoingFriendRequest,
     removeFriend,
     user,
+    updateUser,
+    applyBlockingLogic,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
   } = useAuth();
   const {
     isUserOnline,
@@ -86,6 +90,11 @@ function UserProfilePage() {
         "Bu kullanıcıyla arkadaş değilsiniz.",
       "Unfriend failed": "Arkadaşlıktan çıkarma başarısız.",
 
+      // Block specific errors
+      "User is already banned": "Bu kullanıcı zaten engellenmiş.",
+      "Block user failed": "Kullanıcı engelleme başarısız.",
+      "User not found.": "Kullanıcı bulunamadı.",
+
       // Generic errors
       "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
       "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
@@ -110,6 +119,19 @@ function UserProfilePage() {
   const isFriend = (targetUserId) => {
     if (!user?.friends || !targetUserId) return false;
     return user.friends.some((friend) => friend._id === targetUserId);
+  };
+
+  // Check if user should be blocked from viewing this profile
+  const isBlocked = (targetUserId) => {
+    if (!targetUserId || !user) return false;
+
+    // Check if current user has blocked the target user
+    const hasBlockedUser = isUserBlockedByMe(targetUserId);
+
+    // Check if current user has been blocked by the target user (we'll get this from API response)
+    // This check will be handled in fetchUserData where we get the target user's bannedProfiles
+
+    return hasBlockedUser;
   };
 
   // Handle send friend request
@@ -231,10 +253,50 @@ function UserProfilePage() {
     }
   };
 
-  // Handle block user (placeholder)
+  // Handle block user
   const handleBlockUser = async (targetUserId) => {
-    // TODO: Implement block user functionality
-    showNotification("Engelleme özelliği henüz aktif değil.", "info");
+    try {
+      const response = await fetch(`/api/v1/user/banProfile/${targetUserId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.msg || errorData.message || "Block user failed"
+        );
+      }
+
+      const data = await response.json();
+      console.log("User blocked successfully:", data);
+
+      // Update AuthContext with the blocked user data
+      // The HTTP response contains { user: foreignUser } which is the blocked user data
+      if (data && data.user) {
+        // Add the blocked user to our bannedProfiles
+        const updatedUser = {
+          ...user,
+          bannedProfiles: [...(user?.bannedProfiles || []), data.user],
+        };
+        updateUser(updatedUser);
+
+        showNotification("Kullanıcı başarıyla engellendi!", "success");
+
+        // Redirect to home page since the user is now blocked
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
+      } else {
+        console.log("No user data in response:", data);
+      }
+    } catch (error) {
+      console.error("Block user error:", error);
+      showNotification(translateMessage(error.message), "error");
+    }
   };
 
   // Fetch user data from backend
@@ -277,7 +339,9 @@ function UserProfilePage() {
         throw new Error(errorMessage);
       }
 
-      setUserData(data.user);
+      // Apply blocking logic to the user data
+      const filteredUserData = applyBlockingLogic(data.user);
+      setUserData(filteredUserData);
     } catch (err) {
       console.error("Error fetching user data:", err);
       setError(err.message);
@@ -528,6 +592,46 @@ function UserProfilePage() {
         }
       };
 
+      const handleUserBanned = (data) => {
+        console.log("Received userBanned event in UserProfilePage:", data);
+
+        if (data && data.user) {
+          // We've been blocked by the user we're currently viewing
+          // The data.user contains the info of the user who blocked us
+          if (data.user._id === userId) {
+            showNotification(
+              "Bu kullanıcı tarafından engellendiniz.",
+              "warning"
+            );
+
+            // Redirect to home page since we can no longer access this profile
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000);
+          }
+        }
+      };
+
+      const handleUserUnbanned = (data) => {
+        console.log("Received userUnbanned event in UserProfilePage:", data);
+
+        if (data && data.userId) {
+          // We've been unblocked by the user whose userId is provided
+          // The data.userId contains the _id of the user who unblocked us
+          if (data.userId === userId) {
+            showNotification(
+              "Bu kullanıcı tarafından engel kaldırıldı. Profili görüntüleyebilirsiniz.",
+              "success"
+            );
+
+            // Refresh the page to allow access to the profile
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          }
+        }
+      };
+
       // Listen for friend request events
       const cleanupFriendRequest = listenForNotificationEvent(
         "friendRequest",
@@ -544,12 +648,24 @@ function UserProfilePage() {
         handleFriendRequestAccepted
       );
 
+      const cleanupUserBanned = listenForNotificationEvent(
+        "userBanned",
+        handleUserBanned
+      );
+
+      const cleanupUserUnbanned = listenForNotificationEvent(
+        "userUnbanned",
+        handleUserUnbanned
+      );
+
       // Cleanup on unmount
       return () => {
         console.log("Cleaning up WebSocket listeners in UserProfilePage");
         if (cleanupFriendRequest) cleanupFriendRequest();
         if (cleanupFriendRequestRevoked) cleanupFriendRequestRevoked();
         if (cleanupFriendRequestAccepted) cleanupFriendRequestAccepted();
+        if (cleanupUserBanned) cleanupUserBanned();
+        if (cleanupUserUnbanned) cleanupUserUnbanned();
       };
     }
   }, [isAuthenticated, listenForNotificationEvent, showNotification]);
@@ -642,6 +758,7 @@ function UserProfilePage() {
             onBlockUser={handleBlockUser}
             hasPendingRequest={hasPendingRequest(currentUserData._id)}
             isFriend={isFriend(currentUserData._id)}
+            isBlocked={isBlocked(currentUserData._id)}
           />
         );
       case "listings":
@@ -661,6 +778,7 @@ function UserProfilePage() {
             onBlockUser={handleBlockUser}
             hasPendingRequest={hasPendingRequest(currentUserData._id)}
             isFriend={isFriend(currentUserData._id)}
+            isBlocked={isBlocked(currentUserData._id)}
           />
         );
     }

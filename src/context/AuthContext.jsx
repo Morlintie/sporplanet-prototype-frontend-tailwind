@@ -394,6 +394,66 @@ export const AuthProvider = ({ children }) => {
     return user?.bannedProfiles || [];
   };
 
+  // Remove a user from bannedProfiles
+  const removeFromBannedProfiles = (userId) => {
+    if (!user || !userId) return;
+
+    const updatedUser = {
+      ...user,
+      bannedProfiles: user.bannedProfiles.filter(
+        (bannedProfile) => (bannedProfile._id || bannedProfile) !== userId
+      ),
+    };
+    setUser(updatedUser);
+  };
+
+  // Helper functions for blocking logic
+  const isUserBlockedByMe = (userId) => {
+    if (!user?.bannedProfiles || !userId) return false;
+    return user.bannedProfiles.some(
+      (bannedProfile) =>
+        bannedProfile._id === userId || bannedProfile === userId
+    );
+  };
+
+  const isCurrentUserBlockedBy = (targetUserBannedProfiles) => {
+    if (!targetUserBannedProfiles || !user?._id) return false;
+    return targetUserBannedProfiles.some(
+      (bannedProfile) =>
+        bannedProfile._id === user._id || bannedProfile === user._id
+    );
+  };
+
+  const applyBlockingLogic = (userData) => {
+    if (!userData) return userData;
+
+    // Check if current user is blocked by this user
+    const isCurrentUserBlocked = isCurrentUserBlockedBy(
+      userData.bannedProfiles
+    );
+    // Check if we have blocked this user
+    const isUserBlockedByCurrentUser = isUserBlockedByMe(userData._id);
+
+    // If there's any blocking, return only basic info
+    if (isCurrentUserBlocked || isUserBlockedByCurrentUser) {
+      return {
+        _id: userData._id,
+        name: userData.name,
+        email: userData.email,
+        bannedProfiles: userData.bannedProfiles, // Keep this for blocking logic checks
+        // Remove all other sensitive data
+      };
+    }
+
+    // No blocking, return full data
+    return userData;
+  };
+
+  // Filter user data in lists for blocking
+  const getFilteredUserData = (userData) => {
+    return applyBlockingLogic(userData);
+  };
+
   // Helper function to get profile picture URL (handles both string and object formats)
   const getProfilePictureUrl = (profilePicture) => {
     if (!profilePicture) return null;
@@ -869,6 +929,13 @@ export const AuthProvider = ({ children }) => {
     getBannedProfiles,
     getProfilePictureUrl,
     getUserProfilePictureUrl,
+
+    // Blocking logic helpers
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
+    applyBlockingLogic,
+    getFilteredUserData,
+    removeFromBannedProfiles,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
