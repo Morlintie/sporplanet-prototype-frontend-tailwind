@@ -17,8 +17,10 @@ function MyFriends({ user }) {
     setCurrentlyViewingFriendRequests,
     followerCount,
     incrementFollowerCount,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
   } = useAuth();
-  const { isUserOnline } = useWebSocket();
+  const { isUserOnline, listenForNotificationEvent } = useWebSocket();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("online");
   const [searchTerm, setSearchTerm] = useState("");
@@ -130,30 +132,141 @@ function MyFriends({ user }) {
     };
   }, [activeTab, setCurrentlyViewingFriendRequests]);
 
-  // WebSocket listeners are now handled globally in WebSocketContext
-  // No local listeners needed here anymore
+  // WebSocket listeners for real-time updates in MyFriends component
+  useEffect(() => {
+    if (listenForNotificationEvent) {
+      console.log("Setting up WebSocket listeners for MyFriends");
+
+      // Listen for when someone accepts our friend request
+      const handleFriendRequestAccepted = (data) => {
+        console.log("Received friendRequestAccepted event in MyFriends:", data);
+
+        if (data && data.userId) {
+          // data.userId is the user who ACCEPTED our friend request
+          // This will be handled globally by WebSocketContext, but we can add local logging
+          console.log("Friend request accepted by user:", data.userId);
+        }
+      };
+
+      // Listen for when someone rejects our friend request
+      const handleFriendRequestRejected = (data) => {
+        console.log("Received friendRequestRejected event in MyFriends:", data);
+
+        if (data && data.userId) {
+          // data.userId is the user who REJECTED our friend request
+          // This will be handled globally by WebSocketContext, but we can add local logging
+          console.log("Friend request rejected by user:", data.userId);
+        }
+      };
+
+      // Listen for when someone revokes their friend request to us
+      const handleFriendRequestRevoked = (data) => {
+        console.log("Received friendRequestRevoked event in MyFriends:", data);
+
+        if (data && data.userId) {
+          // data.userId is the user who REVOKED their friend request to us
+          console.log("Friend request revoked by user:", data.userId);
+        }
+      };
+
+      // Listen for new friend requests
+      const handleFriendRequest = (data) => {
+        console.log("Received friendRequest event in MyFriends:", data);
+
+        if (data && data.user) {
+          console.log("New friend request from user:", data.user.name);
+        }
+      };
+
+      // Set up listeners
+      const cleanupAccepted = listenForNotificationEvent(
+        "friendRequestAccepted",
+        handleFriendRequestAccepted
+      );
+
+      const cleanupRejected = listenForNotificationEvent(
+        "friendRequestRejected",
+        handleFriendRequestRejected
+      );
+
+      const cleanupRevoked = listenForNotificationEvent(
+        "friendRequestRevoked",
+        handleFriendRequestRevoked
+      );
+
+      const cleanupNewRequest = listenForNotificationEvent(
+        "friendRequest",
+        handleFriendRequest
+      );
+
+      // Cleanup on unmount
+      return () => {
+        console.log("Cleaning up WebSocket listeners in MyFriends");
+        if (cleanupAccepted) cleanupAccepted();
+        if (cleanupRejected) cleanupRejected();
+        if (cleanupRevoked) cleanupRevoked();
+        if (cleanupNewRequest) cleanupNewRequest();
+      };
+    }
+  }, [listenForNotificationEvent]);
+
+  // Helper function to filter user data for blocking
+  const filterUserDataForBlocking = (userData) => {
+    if (!userData) return userData;
+
+    // Check if current user has blocked this user
+    const currentUserBlockedThisUser = isUserBlockedByMe(userData._id);
+
+    // Check if this user has blocked current user (pass the bannedProfiles array)
+    const thisUserBlockedCurrentUser = isCurrentUserBlockedBy(
+      userData.bannedProfiles
+    );
+
+    if (currentUserBlockedThisUser || thisUserBlockedCurrentUser) {
+      // Return only basic info for blocked users
+      return {
+        _id: userData._id,
+        name: userData.name,
+        email: userData.email,
+      };
+    }
+
+    return userData;
+  };
 
   // Process friends data with real-time online status
   const friends = useMemo(() => {
     if (!user?.friends) return [];
 
-    return user.friends.map((friend) => ({
-      _id: friend._id,
-      name: friend.name,
-      email: friend.email,
-      avatar: getProfilePictureUrl(friend.profilePicture),
-      status: isUserOnline(friend._id) ? "online" : "offline",
-      activity: isUserOnline(friend._id) ? "Aktif" : null,
-      lastSeen: !isUserOnline(friend._id) ? "Son çevrimiçi bilinmiyor" : null,
-      school: friend.school,
-      age: friend.age,
-      location: friend.location,
-      goalKeeper: friend.goalKeeper,
-      role: friend.role,
-      createdAt: friend.createdAt,
-      updatedAt: friend.updatedAt,
-    }));
-  }, [user?.friends, isUserOnline, getProfilePictureUrl]);
+    return user.friends.map((friend) => {
+      const filteredFriend = filterUserDataForBlocking(friend);
+
+      return {
+        _id: filteredFriend._id,
+        name: filteredFriend.name,
+        email: filteredFriend.email,
+        avatar: getProfilePictureUrl(filteredFriend.profilePicture),
+        status: isUserOnline(filteredFriend._id) ? "online" : "offline",
+        activity: isUserOnline(filteredFriend._id) ? "Aktif" : null,
+        lastSeen: !isUserOnline(filteredFriend._id)
+          ? "Son çevrimiçi bilinmiyor"
+          : null,
+        school: filteredFriend.school,
+        age: filteredFriend.age,
+        location: filteredFriend.location,
+        goalKeeper: filteredFriend.goalKeeper,
+        role: filteredFriend.role,
+        createdAt: filteredFriend.createdAt,
+        updatedAt: filteredFriend.updatedAt,
+      };
+    });
+  }, [
+    user?.friends,
+    isUserOnline,
+    getProfilePictureUrl,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
+  ]);
 
   // Process outgoing friend requests (selfFriendRequests - requests we sent)
   const outgoingRequests = useMemo(() => {
@@ -161,49 +274,67 @@ function MyFriends({ user }) {
       return [];
     }
 
-    const processed = user.selfFriendRequests.map((request) => ({
-      _id: request._id,
-      name: request.name,
-      email: request.email,
-      avatar: getProfilePictureUrl(request.profilePicture),
-      status: "outgoing",
-      type: "outgoing",
-      activity: null,
-      lastSeen: null,
-      school: request.school,
-      age: request.age,
-      location: request.location,
-      goalKeeper: request.goalKeeper,
-      role: request.role,
-      createdAt: request.createdAt,
-      updatedAt: request.updatedAt,
-    }));
+    const processed = user.selfFriendRequests.map((request) => {
+      const filteredRequest = filterUserDataForBlocking(request);
+
+      return {
+        _id: filteredRequest._id,
+        name: filteredRequest.name,
+        email: filteredRequest.email,
+        avatar: getProfilePictureUrl(filteredRequest.profilePicture),
+        status: "outgoing",
+        type: "outgoing",
+        activity: null,
+        lastSeen: null,
+        school: filteredRequest.school,
+        age: filteredRequest.age,
+        location: filteredRequest.location,
+        goalKeeper: filteredRequest.goalKeeper,
+        role: filteredRequest.role,
+        createdAt: filteredRequest.createdAt,
+        updatedAt: filteredRequest.updatedAt,
+      };
+    });
     return processed;
-  }, [user?.selfFriendRequests, getProfilePictureUrl]);
+  }, [
+    user?.selfFriendRequests,
+    getProfilePictureUrl,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
+  ]);
 
   // Process incoming friend requests (friendRequests - requests sent to us)
   const incomingRequests = useMemo(() => {
     if (!user?.friendRequests || user.friendRequests.length === 0) return [];
 
-    return user.friendRequests.map((request) => ({
-      _id: request.user._id,
-      name: request.user.name,
-      email: request.user.email,
-      avatar: getProfilePictureUrl(request.user.profilePicture),
-      status: "incoming",
-      type: "incoming",
-      activity: null,
-      lastSeen: null,
-      school: request.user.school,
-      age: request.user.age,
-      location: request.user.location,
-      goalKeeper: request.user.goalKeeper,
-      role: request.user.role,
-      seen: request.seen,
-      createdAt: request.user.createdAt,
-      updatedAt: request.user.updatedAt,
-    }));
-  }, [user?.friendRequests, getProfilePictureUrl]);
+    return user.friendRequests.map((request) => {
+      const filteredUser = filterUserDataForBlocking(request.user);
+
+      return {
+        _id: filteredUser._id,
+        name: filteredUser.name,
+        email: filteredUser.email,
+        avatar: getProfilePictureUrl(filteredUser.profilePicture),
+        status: "incoming",
+        type: "incoming",
+        activity: null,
+        lastSeen: null,
+        school: filteredUser.school,
+        age: filteredUser.age,
+        location: filteredUser.location,
+        goalKeeper: filteredUser.goalKeeper,
+        role: filteredUser.role,
+        seen: request.seen,
+        createdAt: filteredUser.createdAt,
+        updatedAt: filteredUser.updatedAt,
+      };
+    });
+  }, [
+    user?.friendRequests,
+    getProfilePictureUrl,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
+  ]);
 
   // Combine all pending requests
   const allPendingRequests = useMemo(() => {
@@ -280,9 +411,11 @@ function MyFriends({ user }) {
     navigate(`/user/${userId}`);
   };
 
-  // Placeholder action handlers (will be implemented later)
+  // Handle accept friend request
   const handleAcceptRequest = async (userId) => {
     try {
+      console.log("Accepting friend request from user:", userId);
+
       const response = await fetch(
         `/api/v1/user/replyFriendRequest/${userId}`,
         {
@@ -309,8 +442,27 @@ function MyFriends({ user }) {
 
       // Update AuthContext with the response data
       // The HTTP response contains { userId: id, accepted: true }
+      // Where userId is the ID of the user whose friend request we accepted
       if (data && data.userId && data.accepted === true) {
+        console.log(
+          "HTTP response - accepting friend request for user:",
+          data.userId
+        );
+
+        // Find the user data before removing from incoming requests
+        const acceptedUser = user?.friendRequests?.find(
+          (request) => request.user._id === data.userId
+        );
+
+        console.log("Found accepted user in incoming requests:", acceptedUser);
+
+        // Remove from incoming requests (acceptFriendRequest only removes, doesn't add to friends)
         acceptFriendRequest(data.userId);
+
+        // Add the accepted user to our friends list
+        if (acceptedUser && acceptedUser.user) {
+          addFriend(acceptedUser.user);
+        }
 
         // Increment follower count since user accepted someone's friend request
         incrementFollowerCount();

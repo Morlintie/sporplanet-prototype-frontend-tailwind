@@ -30,6 +30,8 @@ export const WebSocketProvider = ({ children }) => {
     removeFriendRequest,
     removeFromFriendsList,
     removeFriend,
+    incrementUnseenInvitationsCount,
+    isCurrentlyViewingIncomingCurrentInvitations,
   } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -348,10 +350,19 @@ export const WebSocketProvider = ({ children }) => {
           console.log("Received global friendRequestAccepted event:", data);
 
           if (data && data.userId) {
-            // Find the user who accepted our request
+            // The data.userId is the _id of the user who ACCEPTED our friend request
+            // We need to find this user in our selfFriendRequests (outgoing requests)
             const acceptedUser = user?.selfFriendRequests?.find(
               (req) => req._id === data.userId
             );
+
+            console.log("Looking for accepted user with ID:", data.userId);
+            console.log(
+              "Current selfFriendRequests:",
+              user?.selfFriendRequests
+            );
+            console.log("Found accepted user:", acceptedUser);
+
             const acceptedUserName =
               acceptedUser?.name || "Bilinmeyen kullanıcı";
 
@@ -427,6 +438,46 @@ export const WebSocketProvider = ({ children }) => {
             );
           }
         });
+
+        notificationSocketInstance.on("newInvite", (data) => {
+          console.log("Received global newInvite event:", data);
+
+          if (data && data.invite) {
+            const invitation = data.invite;
+            const senderName =
+              invitation.sender?.name || "Bilinmeyen kullanıcı";
+            const advertName = invitation.advert?.name || "bir ilana";
+
+            // Show global notification
+            showGlobalNotification(
+              `${senderName} sizi ${advertName} ilanına davet etti`,
+              "info"
+            );
+
+            console.log(
+              "New invitation received from:",
+              senderName,
+              "for advert:",
+              advertName
+            );
+
+            // Real-time unseen count increment logic
+            // Only increment if user is NOT currently viewing "Gelen Davetler" "Güncel"
+            const isViewingIncomingCurrent =
+              isCurrentlyViewingIncomingCurrentInvitations();
+
+            if (isViewingIncomingCurrent) {
+              console.log(
+                "🔔 UNSEEN COUNT: User is viewing 'Gelen Davetler' 'Güncel', invitation will be seen immediately - no increment needed"
+              );
+            } else {
+              console.log(
+                "🔔 UNSEEN COUNT: User is NOT viewing 'Gelen Davetler' 'Güncel', incrementing unseen count by +1"
+              );
+              incrementUnseenInvitationsCount();
+            }
+          }
+        });
       } catch (error) {
         console.error("Error creating WebSocket connection:", error);
         setConnectionError(`WebSocket oluşturma hatası: ${error.message}`);
@@ -500,6 +551,8 @@ export const WebSocketProvider = ({ children }) => {
     removeFriendRequest,
     removeFromFriendsList,
     removeFriend,
+    incrementUnseenInvitationsCount,
+    isCurrentlyViewingIncomingCurrentInvitations,
   ]);
 
   // Auto-join advert chat rooms when chat connection is established and user is authenticated
@@ -733,6 +786,39 @@ export const WebSocketProvider = ({ children }) => {
     }
   }, [chatSocket, isChatConnected, user, emitChatEvent]);
 
+  // Manual function to join a single advert chat room (for invitation acceptance)
+  const joinSingleAdvertChatRoom = useCallback(
+    (advertId) => {
+      if (chatSocket && isChatConnected && user && user._id && advertId) {
+        console.log(
+          `🚀 INVITATION ACCEPTANCE: Joining single chat room: ${advertId} for user: ${user._id}`
+        );
+
+        // Use joinRoom event as specified in backend requirements
+        emitChatEvent("joinRoom", {
+          roomId: advertId,
+          userId: user._id,
+        });
+
+        console.log(
+          `🚀 INVITATION ACCEPTANCE: joinRoom event emitted for user ${user._id} in advert ${advertId}`
+        );
+      } else {
+        console.warn(
+          "🚀 INVITATION ACCEPTANCE: Cannot join single advert chat room",
+          {
+            chatSocket: !!chatSocket,
+            isChatConnected,
+            user: !!user,
+            userId: user?._id,
+            advertId,
+          }
+        );
+      }
+    },
+    [chatSocket, isChatConnected, user, emitChatEvent]
+  );
+
   // Remove event listener
   const removeEventListener = (eventName, callback) => {
     if (socket) {
@@ -798,6 +884,7 @@ export const WebSocketProvider = ({ children }) => {
     emitChatEvent,
     listenForChatEvent,
     joinAdvertChatRooms,
+    joinSingleAdvertChatRoom,
 
     // Connection management
     disconnect,

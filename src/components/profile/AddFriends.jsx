@@ -12,6 +12,8 @@ function AddFriends({ user }) {
     removeOutgoingFriendRequest,
     removeFriend,
     user: currentUser,
+    isUserBlockedByMe,
+    isCurrentUserBlockedBy,
   } = useAuth();
   const { listenForNotificationEvent } = useWebSocket();
 
@@ -95,6 +97,30 @@ function AddFriends({ user }) {
     );
   };
 
+  // Helper function to filter user data for blocking
+  const filterUserDataForBlocking = (userData) => {
+    if (!userData) return userData;
+
+    // Check if current user has blocked this user
+    const currentUserBlockedThisUser = isUserBlockedByMe(userData._id);
+
+    // Check if this user has blocked current user (pass the bannedProfiles array)
+    const thisUserBlockedCurrentUser = isCurrentUserBlockedBy(
+      userData.bannedProfiles
+    );
+
+    if (currentUserBlockedThisUser || thisUserBlockedCurrentUser) {
+      // Return only basic info for blocked users
+      return {
+        _id: userData._id,
+        name: userData.name,
+        email: userData.email,
+      };
+    }
+
+    return userData;
+  };
+
   const getInitials = (name) => {
     if (!name) return "?";
     const nameParts = name.split(" ").filter((part) => part.length > 0);
@@ -140,36 +166,49 @@ function AddFriends({ user }) {
       console.log("Search results received:", data);
 
       // Process the user data from backend
-      const processedUsers = data.users.map((userData) => ({
-        _id: userData._id,
-        name: userData.name,
-        email: userData.email,
-        avatar: getProfilePictureUrl(userData.profilePicture),
-        role: userData.role,
-        school: userData.school,
-        age: userData.age,
-        location: userData.location,
-        goalKeeper: userData.goalKeeper,
-        preferredPosition: userData.preferredPosition,
-        jerseyNumber: userData.jerseyNumber,
-        preferredFoot: userData.preferredFoot,
-        student: userData.student,
-        friends: userData.friends,
-        // Check if this user is already a friend or has pending request
-        isFollowing:
-          currentUser?.friends?.some((friend) => friend._id === userData._id) ||
-          false,
-        isPending:
-          currentUser?.selfFriendRequests?.some(
-            (request) => request._id === userData._id
-          ) || false,
-        mutualFriends:
-          userData.friends?.filter((friendId) =>
-            user?.friends?.some((userFriend) => userFriend._id === friendId)
-          ).length || 0,
-        createdAt: userData.createdAt,
-        updatedAt: userData.updatedAt,
-      }));
+      const processedUsers = data.users.map((userData) => {
+        const filteredUser = filterUserDataForBlocking(userData);
+
+        // Calculate relationship status only if user is not blocked
+        const isBlocked =
+          isUserBlockedByMe(userData._id) ||
+          isCurrentUserBlockedBy(userData.bannedProfiles);
+
+        return {
+          _id: filteredUser._id,
+          name: filteredUser.name,
+          email: filteredUser.email,
+          avatar: getProfilePictureUrl(filteredUser.profilePicture),
+          role: filteredUser.role,
+          school: filteredUser.school,
+          age: filteredUser.age,
+          location: filteredUser.location,
+          goalKeeper: filteredUser.goalKeeper,
+          preferredPosition: filteredUser.preferredPosition,
+          jerseyNumber: filteredUser.jerseyNumber,
+          preferredFoot: filteredUser.preferredFoot,
+          student: filteredUser.student,
+          friends: filteredUser.friends,
+          // Check if this user is already a friend or has pending request (only if not blocked)
+          isFollowing: !isBlocked
+            ? currentUser?.friends?.some(
+                (friend) => friend._id === userData._id
+              ) || false
+            : false,
+          isPending: !isBlocked
+            ? currentUser?.selfFriendRequests?.some(
+                (request) => request._id === userData._id
+              ) || false
+            : false,
+          mutualFriends: !isBlocked
+            ? userData.friends?.filter((friendId) =>
+                user?.friends?.some((userFriend) => userFriend._id === friendId)
+              ).length || 0
+            : 0,
+          createdAt: filteredUser.createdAt,
+          updatedAt: filteredUser.updatedAt,
+        };
+      });
 
       setSearchResults(processedUsers);
       setTotalCount(data.totalCount);
@@ -387,6 +426,7 @@ function AddFriends({ user }) {
         );
 
         if (data && data.userId) {
+          // data.userId is the ID of the user who ACCEPTED our friend request
           // Update search results to reflect the accepted request
           setSearchResults((prevResults) =>
             prevResults.map((searchUser) => {

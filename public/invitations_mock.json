@@ -1,0 +1,1317 @@
+[
+  {
+    "_id": "66f0aa01a1b2c3d4e5f60001",
+    "advert": {
+      "_id": "66f0bb11a1b2c3d4e5f600a1",
+      "name": "Moda Arena Evening Match",
+      "startsAt": "2025-09-01T18:30:00.000Z",
+      "pitch": {
+        "_id": "66f0cc21a1b2c3d4e5f600p1",
+        "name": "Moda Arena",
+        "description": "Mid-size artificial turf with LED lighting.",
+        "location": {
+          "address": {
+            "street": "Bahariye Cd.",
+            "neighborhood": "Moda",
+            "city": "İstanbul",
+            "district": "Kadıköy",
+            "postalCode": "34710",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.025112, 40.983421]
+        },
+        "specifications": {
+          "dimensions": { "length": 55, "width": 35 },
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 30 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": false,
+          "shoeRenting": false,
+          "camera": true,
+          "otherAmenities": ["wifi", "cafe"]
+        },
+        "pricing": {
+          "hourlyRate": 700,
+          "nightHourlyRate": 900,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.2,
+          "weekendMultiplier": 1.3
+        },
+        "media": {
+          "images": [
+            {
+              "url": "https://picsum.photos/seed/moda-arena/600/400",
+              "caption": "Main field",
+              "public_id": "img_moda_arena_1",
+              "isPrimary": true,
+              "size": 350000
+            }
+          ],
+          "videos": []
+        },
+        "contact": {
+          "phone": "+905555555555",
+          "email": "contact@modaarena.tr",
+          "website": "https://modaarena.tr",
+          "socialMedia": {
+            "instagram": "modaarena",
+            "facebook": "modaarena",
+            "twitter": "modaarena"
+          }
+        },
+        "rating": { "averageRating": 4.6, "totalReviews": 128 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 2,
+      "goalKeepersNeeded": 0,
+      "notes": "Bring dark kits.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-20T09:00:00.000Z",
+        "createdAt": "2025-08-20T09:00:00.000Z"
+      },
+      "level": "intermediate",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c001",
+        "name": "mehmety",
+        "email": "mehmet@example.com",
+        "profilePicture": {
+          "name": "mehmet_pp.jpg",
+          "url": "https://picsum.photos/seed/mehmet/200"
+        },
+        "role": "user",
+        "school": "Marmara University",
+        "age": 28,
+        "phoneNumber": "+905312345678",
+        "preferredPosition": "cm",
+        "preferredFoot": "right",
+        "jerseyNumber": 8
+      },
+      "createdAt": "2025-08-28T14:20:00.000Z",
+      "updatedAt": "2025-08-28T15:00:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s001",
+      "name": "selint",
+      "email": "selin@example.com",
+      "profilePicture": {
+        "name": "selin_pp.jpg",
+        "url": "https://picsum.photos/seed/selin/200"
+      },
+      "role": "user",
+      "school": "Boğaziçi University",
+      "age": 24,
+      "phoneNumber": "+905301112233",
+      "preferredPosition": "lw",
+      "preferredFoot": "left",
+      "jerseyNumber": 11
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Akşam maçı için eksik var, gelir misin?",
+    "status": "pending",
+    "seen": false,
+    "respondedAt": null,
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-29T19:12:00.000Z",
+    "updatedAt": "2025-08-29T19:12:00.000Z"
+  },
+  {
+    "_id": "66f0aa02a1b2c3d4e5f60002",
+    "advert": {
+      "_id": "66f0bb12a1b2c3d4e5f600a2",
+      "name": "BJK Çilekli Morning Kickoff",
+      "startsAt": "2025-09-02T07:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc22a1b2c3d4e5f600p2",
+        "name": "BJK Çilekli",
+        "description": "Natural grass training pitch.",
+        "location": {
+          "address": {
+            "street": "Barbaros Blv.",
+            "neighborhood": "Çilekli",
+            "city": "İstanbul",
+            "district": "Beşiktaş",
+            "postalCode": "34353",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.012345, 41.04891]
+        },
+        "specifications": {
+          "dimensions": { "length": 100, "width": 60 },
+          "surfaceType": "natural_grass",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 200 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false,
+          "otherAmenities": ["cafe"]
+        },
+        "pricing": {
+          "hourlyRate": 1200,
+          "nightHourlyRate": 1500,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.2
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555000111",
+          "email": "info@bjk-cilekli.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.8, "totalReviews": 320 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 1,
+      "goalKeepersNeeded": 1,
+      "notes": "Kaleci öncelikli.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-20T10:00:00.000Z",
+        "createdAt": "2025-08-20T10:00:00.000Z"
+      },
+      "level": "advanced",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c002",
+        "name": "muratk",
+        "email": "murat@example.com",
+        "profilePicture": {
+          "name": "murat_pp.jpg",
+          "url": "https://picsum.photos/seed/murat/200"
+        },
+        "role": "companyOwner",
+        "school": "YTU",
+        "age": 31,
+        "phoneNumber": "+905301234567",
+        "preferredPosition": "gk",
+        "preferredFoot": "right",
+        "jerseyNumber": 1
+      },
+      "createdAt": "2025-08-28T08:00:00.000Z",
+      "updatedAt": "2025-08-28T08:40:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s002",
+      "name": "elif_y",
+      "email": "elif@example.com",
+      "profilePicture": {
+        "name": "elif_pp.jpg",
+        "url": "https://picsum.photos/seed/elif/200"
+      },
+      "role": "user",
+      "school": "İstanbul Üniversitesi",
+      "age": 26,
+      "phoneNumber": "+905306661234",
+      "preferredPosition": "rb",
+      "preferredFoot": "both",
+      "jerseyNumber": 2
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "goalkeeper",
+    "message": "Sabah 7'de kaleci lazım.",
+    "status": "accepted",
+    "seen": true,
+    "respondedAt": "2025-08-29T07:45:00.000Z",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-28T20:10:00.000Z",
+    "updatedAt": "2025-08-29T07:45:00.000Z"
+  },
+  {
+    "_id": "66f0aa03a1b2c3d4e5f60003",
+    "advert": {
+      "_id": "66f0bb13a1b2c3d4e5f600a3",
+      "name": "Üsküdar Night Five-a-side",
+      "startsAt": "2025-09-03T21:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc23a1b2c3d4e5f600p3",
+        "name": "Kuzguncuk Halı Saha",
+        "description": "Small indoor court with ventilation.",
+        "location": {
+          "address": {
+            "street": "İcadiye Cd.",
+            "neighborhood": "Kuzguncuk",
+            "city": "İstanbul",
+            "district": "Üsküdar",
+            "postalCode": "34674",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.04123, 41.03412]
+        },
+        "specifications": {
+          "dimensions": { "length": 40, "width": 20 },
+          "surfaceType": "indoor_court",
+          "isIndoor": true,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 10, "spectators": 15 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": false,
+          "parking": false,
+          "shoeRenting": true,
+          "camera": false,
+          "otherAmenities": []
+        },
+        "pricing": {
+          "hourlyRate": 500,
+          "nightHourlyRate": 650,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.1
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555222333",
+          "email": "info@kuzguncukhs.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.1, "totalReviews": 54 },
+        "refundAllowed": false,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 3,
+      "goalKeepersNeeded": 0,
+      "notes": "",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-15T09:00:00.000Z",
+        "createdAt": "2025-08-15T09:00:00.000Z"
+      },
+      "level": "beginner",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c003",
+        "name": "zeynep_d",
+        "email": "zeynep@example.com",
+        "profilePicture": {
+          "name": "zeynep_pp.jpg",
+          "url": "https://picsum.photos/seed/zeynep/200"
+        },
+        "role": "admin",
+        "school": "İstanbul Üniversitesi",
+        "age": 29,
+        "phoneNumber": "+905307771234",
+        "preferredPosition": "lw",
+        "preferredFoot": "left",
+        "jerseyNumber": 7
+      },
+      "createdAt": "2025-08-20T16:00:00.000Z",
+      "updatedAt": "2025-08-25T10:00:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s003",
+      "name": "burak_d",
+      "email": "burak@example.com",
+      "profilePicture": {
+        "name": "burak_pp.jpg",
+        "url": "https://picsum.photos/seed/burak/200"
+      },
+      "role": "user",
+      "school": "Galatasaray Üniversitesi",
+      "age": 25,
+      "phoneNumber": "+905304445556",
+      "preferredPosition": "rb",
+      "preferredFoot": "right",
+      "jerseyNumber": 2
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "5’e 5 gece maçı, katılır mısın?",
+    "status": "declined",
+    "seen": true,
+    "respondedAt": "2025-08-29T12:00:00.000Z",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-27T18:00:00.000Z",
+    "updatedAt": "2025-08-29T12:00:00.000Z"
+  },
+  {
+    "_id": "66f0aa04a1b2c3d4e5f60004",
+    "advert": {
+      "_id": "66f0bb14a1b2c3d4e5f600a4",
+      "name": "Şişli Lunchtime Kickabout",
+      "startsAt": "2025-09-04T12:30:00.000Z",
+      "pitch": {
+        "_id": "66f0cc24a1b2c3d4e5f600p4",
+        "name": "Bomonti City Turf",
+        "description": "Compact turf with cafe.",
+        "location": {
+          "address": {
+            "street": "Cumhuriyet Cd.",
+            "neighborhood": "Bomonti",
+            "city": "İstanbul",
+            "district": "Şişli",
+            "postalCode": "34381",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [28.98555, 41.06123]
+        },
+        "specifications": {
+          "dimensions": { "length": 45, "width": 25 },
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 20 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": true,
+          "otherAmenities": ["cafe"]
+        },
+        "pricing": {
+          "hourlyRate": 650,
+          "nightHourlyRate": 800,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.1,
+          "weekendMultiplier": 1.2
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555444333",
+          "email": "hello@bomonti.turf",
+          "website": "https://bomontiturf.tr",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.3, "totalReviews": 78 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 2,
+      "goalKeepersNeeded": 0,
+      "notes": "Öğle arası hızlı oyun.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-22T08:00:00.000Z",
+        "createdAt": "2025-08-22T08:00:00.000Z"
+      },
+      "level": "intermediate",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c004",
+        "name": "ahmet_c",
+        "email": "ahmet@example.com",
+        "profilePicture": {
+          "name": "ahmet_pp.jpg",
+          "url": "https://picsum.photos/seed/ahmet/200"
+        },
+        "role": "user",
+        "school": "Mimar Sinan",
+        "age": 30,
+        "phoneNumber": "+905301110000",
+        "preferredPosition": "cb",
+        "preferredFoot": "right",
+        "jerseyNumber": 4
+      },
+      "createdAt": "2025-08-26T11:00:00.000Z",
+      "updatedAt": "2025-08-26T11:15:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s004",
+      "name": "gizem_oz",
+      "email": "gizem@example.com",
+      "profilePicture": {
+        "name": "gizem_pp.jpg",
+        "url": "https://picsum.photos/seed/gizem/200"
+      },
+      "role": "user",
+      "school": "İstanbul Arel",
+      "age": 23,
+      "phoneNumber": "+905304440001",
+      "preferredPosition": "rw",
+      "preferredFoot": "right",
+      "jerseyNumber": 10
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Öğle maçı için eksik var.",
+    "status": "accepted",
+    "seen": true,
+    "respondedAt": "2025-08-28T12:05:00.000Z",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-26T11:30:00.000Z",
+    "updatedAt": "2025-08-28T12:05:00.000Z"
+  },
+  {
+    "_id": "66f0aa05a1b2c3d4e5f60005",
+    "advert": {
+      "_id": "66f0bb15a1b2c3d4e5f600a5",
+      "name": "Sarıyer Weekend Match",
+      "startsAt": "2025-09-06T16:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc25a1b2c3d4e5f600p5",
+        "name": "Tarabya Park Turf",
+        "description": "Coastal turf, windy conditions possible.",
+        "location": {
+          "address": {
+            "street": "Tarabya Yolu",
+            "neighborhood": "Tarabya",
+            "city": "İstanbul",
+            "district": "Sarıyer",
+            "postalCode": "34457",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.05331, 41.12345]
+        },
+        "specifications": {
+          "dimensions": { "length": 60, "width": 40 },
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 40 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": false,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false,
+          "otherAmenities": []
+        },
+        "pricing": {
+          "hourlyRate": 800,
+          "nightHourlyRate": 950,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.3,
+          "weekendMultiplier": 1.3
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555666777",
+          "email": "hello@tarabyapark.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.2, "totalReviews": 60 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 1,
+      "goalKeepersNeeded": 0,
+      "notes": "Ekip güçlü.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-21T08:00:00.000Z",
+        "createdAt": "2025-08-21T08:00:00.000Z"
+      },
+      "level": "pro",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c005",
+        "name": "caglar_t",
+        "email": "caglar@example.com",
+        "profilePicture": {
+          "name": "caglar_pp.jpg",
+          "url": "https://picsum.photos/seed/caglar/200"
+        },
+        "role": "user",
+        "school": "Yeditepe Üniversitesi",
+        "age": 27,
+        "phoneNumber": "+905307770000",
+        "preferredPosition": "dm",
+        "preferredFoot": "right",
+        "jerseyNumber": 6
+      },
+      "createdAt": "2025-08-24T10:00:00.000Z",
+      "updatedAt": "2025-08-24T10:05:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s005",
+      "name": "onur_ak",
+      "email": "onur@example.com",
+      "profilePicture": {
+        "name": "onur_pp.jpg",
+        "url": "https://picsum.photos/seed/onur/200"
+      },
+      "role": "user",
+      "school": "İstanbul Bilgi",
+      "age": 32,
+      "phoneNumber": "+905303333222",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 10
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Hafta sonu kalite maç.",
+    "status": "pending",
+    "seen": false,
+    "respondedAt": null,
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-29T12:30:00.000Z",
+    "updatedAt": "2025-08-29T12:30:00.000Z"
+  },
+  {
+    "_id": "66f0aa06a1b2c3d4e5f60006",
+    "advert": {
+      "_id": "66f0bb16a1b2c3d4e5f600a6",
+      "name": "Kadıköy Rivalry Match",
+      "startsAt": "2025-09-07T19:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc26a1b2c3d4e5f600p6",
+        "name": "Fikirtepe Sports",
+        "description": "Large turf with stands.",
+        "location": {
+          "address": {
+            "street": "Mandıra Cd.",
+            "neighborhood": "Fikirtepe",
+            "city": "İstanbul",
+            "district": "Kadıköy",
+            "postalCode": "34720",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.0688, 40.9999]
+        },
+        "specifications": {
+          "dimensions": { "length": 90, "width": 55 },
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 80 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": true,
+          "otherAmenities": ["shop"]
+        },
+        "pricing": {
+          "hourlyRate": 900,
+          "nightHourlyRate": 1200,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.5,
+          "weekendMultiplier": 1.2
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555111222",
+          "email": "contact@fikirtepesports.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.7, "totalReviews": 210 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 2,
+      "goalKeepersNeeded": 0,
+      "notes": "Rövanş maçı.",
+      "status": "open",
+      "isRivalry": {
+        "status": true,
+        "agreed": true,
+        "updatedAt": "2025-08-27T12:00:00.000Z",
+        "createdAt": "2025-08-27T12:00:00.000Z"
+      },
+      "level": "professional",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c006",
+        "name": "selin_k",
+        "email": "selink@example.com",
+        "profilePicture": {
+          "name": "selink_pp.jpg",
+          "url": "https://picsum.photos/seed/selink/200"
+        },
+        "role": "user",
+        "school": "Koç Üniversitesi",
+        "age": 27,
+        "phoneNumber": "+905307770101",
+        "preferredPosition": "rw",
+        "preferredFoot": "right",
+        "jerseyNumber": 17
+      },
+      "createdAt": "2025-08-27T12:05:00.000Z",
+      "updatedAt": "2025-08-27T12:10:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s006",
+      "name": "deniz_t",
+      "email": "deniz@example.com",
+      "profilePicture": {
+        "name": "deniz_pp.jpg",
+        "url": "https://picsum.photos/seed/deniz/200"
+      },
+      "role": "user",
+      "school": "İstanbul Medipol",
+      "age": 21,
+      "phoneNumber": "+905305551234",
+      "preferredPosition": "cm",
+      "preferredFoot": "both",
+      "jerseyNumber": 14
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Rövanş için seni de bekliyoruz.",
+    "status": "pending",
+    "seen": true,
+    "respondedAt": null,
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-29T10:00:00.000Z",
+    "updatedAt": "2025-08-29T10:15:00.000Z"
+  },
+  {
+    "_id": "66f0aa07a1b2c3d4e5f60007",
+    "advert": {
+      "_id": "66f0bb17a1b2c3d4e5f600a7",
+      "name": "Bakırköy Afterwork Game",
+      "startsAt": "2025-09-01T19:15:00.000Z",
+      "pitch": {
+        "_id": "66f0cc27a1b2c3d4e5f600p7",
+        "name": "Ataköy Spor Kompleksi",
+        "description": "Indoor court, parquet-style.",
+        "location": {
+          "address": {
+            "street": "Ataköy 7-8-9-10",
+            "neighborhood": "Ataköy",
+            "city": "İstanbul",
+            "district": "Bakırköy",
+            "postalCode": "34158",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [28.8532, 40.9789]
+        },
+        "specifications": {
+          "dimensions": { "length": 42, "width": 22 },
+          "surfaceType": "indoor_court",
+          "isIndoor": true,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 10, "spectators": 50 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false,
+          "otherAmenities": ["wifi"]
+        },
+        "pricing": {
+          "hourlyRate": 600,
+          "nightHourlyRate": 700,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.1
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555909090",
+          "email": "atakoy@spor.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.0, "totalReviews": 33 },
+        "refundAllowed": false,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 2,
+      "goalKeepersNeeded": 1,
+      "notes": "Ofis sonrası keyif.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-18T08:00:00.000Z",
+        "createdAt": "2025-08-18T08:00:00.000Z"
+      },
+      "level": "beginner",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c007",
+        "name": "pelin_a",
+        "email": "pelin@example.com",
+        "profilePicture": {
+          "name": "pelin_pp.jpg",
+          "url": "https://picsum.photos/seed/pelin/200"
+        },
+        "role": "user",
+        "school": "İstanbul Ticaret",
+        "age": 23,
+        "phoneNumber": "+905309991111",
+        "preferredPosition": "lb",
+        "preferredFoot": "left",
+        "jerseyNumber": 3
+      },
+      "createdAt": "2025-08-18T08:30:00.000Z",
+      "updatedAt": "2025-08-18T08:35:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s007",
+      "name": "arda_g",
+      "email": "arda@example.com",
+      "profilePicture": {
+        "name": "arda_pp.jpg",
+        "url": "https://picsum.photos/seed/arda/200"
+      },
+      "role": "user",
+      "school": "Haliç Üniversitesi",
+      "age": 20,
+      "phoneNumber": "+905306669999",
+      "preferredPosition": "rw",
+      "preferredFoot": "right",
+      "jerseyNumber": 17
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "goalkeeper",
+    "message": "Kaleci açığı var, katılır mısın?",
+    "status": "cancelled",
+    "seen": true,
+    "respondedAt": "2025-08-28T17:20:00.000Z",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-28T16:40:00.000Z",
+    "updatedAt": "2025-08-28T17:20:00.000Z"
+  },
+  {
+    "_id": "66f0aa08a1b2c3d4e5f60008",
+    "advert": {
+      "_id": "66f0bb18a1b2c3d4e5f600a8",
+      "name": "Beşiktaş Late Session",
+      "startsAt": "2025-09-08T22:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc28a1b2c3d4e5f600p8",
+        "name": "Akatlar Field",
+        "description": "Quiet late-night slot.",
+        "location": {
+          "address": {
+            "street": "Akatlar Mh.",
+            "neighborhood": "Akatlar",
+            "city": "İstanbul",
+            "district": "Beşiktaş",
+            "postalCode": "34335",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.0188, 41.086]
+        },
+        "specifications": {
+          "dimensions": { "length": 58, "width": 36 },
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 25 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": false,
+          "shoeRenting": false,
+          "camera": false,
+          "otherAmenities": ["locker"]
+        },
+        "pricing": {
+          "hourlyRate": 720,
+          "nightHourlyRate": 880,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.1
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555444111",
+          "email": "info@akatlarfield.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.4, "totalReviews": 95 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 1,
+      "goalKeepersNeeded": 0,
+      "notes": "",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-12T08:00:00.000Z",
+        "createdAt": "2025-08-12T08:00:00.000Z"
+      },
+      "level": "advanced",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c008",
+        "name": "baris_u",
+        "email": "baris@example.com",
+        "profilePicture": {
+          "name": "baris_pp.jpg",
+          "url": "https://picsum.photos/seed/baris/200"
+        },
+        "role": "user",
+        "school": "Beykent",
+        "age": 34,
+        "phoneNumber": "+905309990202",
+        "preferredPosition": "st",
+        "preferredFoot": "left",
+        "jerseyNumber": 20
+      },
+      "createdAt": "2025-08-12T09:00:00.000Z",
+      "updatedAt": "2025-08-12T09:02:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s008",
+      "name": "tugba_k",
+      "email": "tugba@example.com",
+      "profilePicture": {
+        "name": "tugba_pp.jpg",
+        "url": "https://picsum.photos/seed/tugba/200"
+      },
+      "role": "user",
+      "school": "Bahçeşehir Üni.",
+      "age": 27,
+      "phoneNumber": "+905305550505",
+      "preferredPosition": "cm",
+      "preferredFoot": "right",
+      "jerseyNumber": 5
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Geç saat maçı, uygun musun?",
+    "status": "expired",
+    "seen": false,
+    "respondedAt": null,
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-10T22:10:00.000Z",
+    "updatedAt": "2025-08-17T22:10:00.000Z"
+  },
+  {
+    "_id": "66f0aa09a1b2c3d4e5f60009",
+    "advert": {
+      "_id": "66f0bb19a1b2c3d4e5f600a9",
+      "name": "Ümraniye Training",
+      "startsAt": "2025-09-05T18:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc29a1b2c3d4e5f600p9",
+        "name": "Ümraniye Spor Tesisi",
+        "description": "Training-oriented facility.",
+        "location": {
+          "address": {
+            "street": "Şile Yolu",
+            "neighborhood": "Ümraniye",
+            "city": "İstanbul",
+            "district": "Ümraniye",
+            "postalCode": "34766",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.135, 41.028]
+        },
+        "specifications": {
+          "dimensions": { "length": 70, "width": 45 },
+          "surfaceType": "natural_grass",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 14, "spectators": 120 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": true,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false,
+          "otherAmenities": []
+        },
+        "pricing": {
+          "hourlyRate": 1000,
+          "nightHourlyRate": 1300,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.2,
+          "weekendMultiplier": 1.1
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555220220",
+          "email": "info@umraniyespor.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 4.5, "totalReviews": 145 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 2,
+      "goalKeepersNeeded": 0,
+      "notes": "Hafif tempo.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-05T08:00:00.000Z",
+        "createdAt": "2025-08-05T08:00:00.000Z"
+      },
+      "level": "intermediate",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c009",
+        "name": "kaan_s",
+        "email": "kaan@example.com",
+        "profilePicture": {
+          "name": "kaan_pp.jpg",
+          "url": "https://picsum.photos/seed/kaan/200"
+        },
+        "role": "user",
+        "school": "İstanbul Kültür",
+        "age": 28,
+        "phoneNumber": "+905301225599",
+        "preferredPosition": "cm",
+        "preferredFoot": "right",
+        "jerseyNumber": 18
+      },
+      "createdAt": "2025-08-05T09:00:00.000Z",
+      "updatedAt": "2025-08-05T09:05:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s009",
+      "name": "melisa_k",
+      "email": "melisa@example.com",
+      "profilePicture": {
+        "name": "melisa_pp.jpg",
+        "url": "https://picsum.photos/seed/melisa/200"
+      },
+      "role": "user",
+      "school": "İstanbul Sabahattin Zaim",
+      "age": 22,
+      "phoneNumber": "+905304440303",
+      "preferredPosition": "lw",
+      "preferredFoot": "left",
+      "jerseyNumber": 19
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Antrenman ağırlıklı maç.",
+    "status": "accepted",
+    "seen": true,
+    "respondedAt": "2025-08-29T09:30:00.000Z",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-28T09:15:00.000Z",
+    "updatedAt": "2025-08-29T09:30:00.000Z"
+  },
+  {
+    "_id": "66f0aa0aa1b2c3d4e5f6000a",
+    "advert": {
+      "_id": "66f0bb1aa1b2c3d4e5f600aa",
+      "name": "Şile Friendly",
+      "startsAt": "2025-09-10T17:00:00.000Z",
+      "pitch": {
+        "_id": "66f0cc2aa1b2c3d4e5f600pa",
+        "name": "Şile Halı Saha",
+        "description": "Forest-side court.",
+        "location": {
+          "address": {
+            "street": "Ağva Yolu",
+            "neighborhood": "Merkez",
+            "city": "İstanbul",
+            "district": "Şile",
+            "postalCode": "34980",
+            "country": "Turkey"
+          },
+          "type": "Point",
+          "coordinates": [29.607, 41.175]
+        },
+        "specifications": {
+          "dimensions": { "length": 55, "width": 35 },
+          "surfaceType": "artificial_turf",
+          "isIndoor": false,
+          "hasLighting": true,
+          "recommendedCapacity": { "players": 12, "spectators": 20 }
+        },
+        "facilities": {
+          "changingRooms": true,
+          "showers": false,
+          "parking": true,
+          "shoeRenting": false,
+          "camera": false,
+          "otherAmenities": []
+        },
+        "pricing": {
+          "hourlyRate": 550,
+          "nightHourlyRate": 650,
+          "currency": "TRY",
+          "specialDayMultiplier": 1.0,
+          "weekendMultiplier": 1.1
+        },
+        "media": { "images": [], "videos": [] },
+        "contact": {
+          "phone": "+905555333222",
+          "email": "info@silefield.tr",
+          "website": "",
+          "socialMedia": {}
+        },
+        "rating": { "averageRating": 3.9, "totalReviews": 22 },
+        "refundAllowed": true,
+        "status": "active",
+        "middlemanShare": 0
+      },
+      "customPitch": null,
+      "address": null,
+      "playersNeeded": 2,
+      "goalKeepersNeeded": 0,
+      "notes": "Doğa içinde maç.",
+      "status": "open",
+      "isRivalry": {
+        "status": false,
+        "agreed": false,
+        "updatedAt": "2025-08-03T08:00:00.000Z",
+        "createdAt": "2025-08-03T08:00:00.000Z"
+      },
+      "level": "beginner",
+      "createdBy": {
+        "_id": "66f0d111a1b2c3d4e5f6c00a",
+        "name": "berk_u",
+        "email": "berk@example.com",
+        "profilePicture": {
+          "name": "berk_pp.jpg",
+          "url": "https://picsum.photos/seed/berk/200"
+        },
+        "role": "user",
+        "school": "İstanbul Üniversitesi",
+        "age": 20,
+        "phoneNumber": "+905301230000",
+        "preferredPosition": "rwb",
+        "preferredFoot": "right",
+        "jerseyNumber": 22
+      },
+      "createdAt": "2025-08-03T09:00:00.000Z",
+      "updatedAt": "2025-08-03T09:02:00.000Z"
+    },
+    "sender": {
+      "_id": "66f0d211a1b2c3d4e5f6s00a",
+      "name": "irem_s",
+      "email": "irem@example.com",
+      "profilePicture": {
+        "name": "irem_pp.jpg",
+        "url": "https://picsum.photos/seed/irem/200"
+      },
+      "role": "user",
+      "school": "İstanbul Yeni Yüzyıl",
+      "age": 23,
+      "phoneNumber": "+905305550606",
+      "preferredPosition": "dm",
+      "preferredFoot": "left",
+      "jerseyNumber": 6
+    },
+    "recipient": {
+      "_id": "66f0d311a1b2c3d4e5f6r001",
+      "name": "aytug",
+      "email": "aytug@example.com",
+      "profilePicture": {
+        "name": "aytug_pp.jpg",
+        "url": "https://picsum.photos/seed/aytug/200"
+      },
+      "role": "user",
+      "school": "İTÜ",
+      "age": 22,
+      "phoneNumber": "+905309998877",
+      "preferredPosition": "st",
+      "preferredFoot": "right",
+      "jerseyNumber": 9
+    },
+    "role": "player",
+    "message": "Şile’de dostluk maçı.",
+    "status": "pending",
+    "seen": false,
+    "respondedAt": null,
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-29T13:30:00.000Z",
+    "updatedAt": "2025-08-29T13:30:00.000Z"
+  }
+]
