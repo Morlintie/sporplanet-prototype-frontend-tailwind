@@ -31,7 +31,7 @@ export const WebSocketProvider = ({ children }) => {
     removeFromFriendsList,
     removeFriend,
     incrementUnseenInvitationsCount,
-    isCurrentlyViewingIncomingInvitations,
+    isCurrentlyViewingIncomingCurrentInvitations,
   } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -464,15 +464,15 @@ export const WebSocketProvider = ({ children }) => {
             // Real-time unseen count increment logic
             // Only increment if user is NOT currently viewing "Gelen Davetler" "Güncel"
             const isViewingIncomingCurrent =
-              isCurrentlyViewingIncomingInvitations();
+              isCurrentlyViewingIncomingCurrentInvitations();
 
             if (isViewingIncomingCurrent) {
               console.log(
-                "🔔 UNSEEN COUNT: User is viewing incoming invitations, invitation marked as seen"
+                "🔔 UNSEEN COUNT: User is viewing 'Gelen Davetler' 'Güncel', invitation will be seen immediately - no increment needed"
               );
             } else {
               console.log(
-                "🔔 UNSEEN COUNT: User is NOT viewing incoming invitations, incrementing unseen count"
+                "🔔 UNSEEN COUNT: User is NOT viewing 'Gelen Davetler' 'Güncel', incrementing unseen count by +1"
               );
               incrementUnseenInvitationsCount();
             }
@@ -551,6 +551,8 @@ export const WebSocketProvider = ({ children }) => {
     removeFriendRequest,
     removeFromFriendsList,
     removeFriend,
+    incrementUnseenInvitationsCount,
+    isCurrentlyViewingIncomingCurrentInvitations,
   ]);
 
   // Auto-join advert chat rooms when chat connection is established and user is authenticated

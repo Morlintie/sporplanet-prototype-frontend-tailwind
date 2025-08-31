@@ -31,6 +31,15 @@ export const AuthProvider = ({ children }) => {
   // Friend request viewing state
   const [isViewingFriendRequests, setIsViewingFriendRequests] = useState(false);
 
+  // Unseen invitations state
+  const [unseenInvitationsCount, setUnseenInvitationsCount] = useState(0);
+
+  // Track if user is currently viewing "Gelen Davetler" "Güncel" for real-time unseen count updates
+  const [
+    isViewingIncomingCurrentInvitations,
+    setIsViewingIncomingCurrentInvitations,
+  ] = useState(false);
+
   // Error message translation function
   const translateMessage = (message) => {
     const translations = {
@@ -64,6 +73,84 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
+  // Fetch unseen invitations count from backend
+  const fetchUnseenInvitationsCount = async () => {
+    try {
+      console.log("Fetching unseen invitations count...");
+
+      const response = await fetch("/api/v1/invitation/unseen", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const unseenInvites = data.unseenInvites || [];
+
+        // Count the unseen invitations
+        // New data structure: [{_id: id, status: status}, {_id: id, status: status}, ...]
+        const unseenCount = unseenInvites.length;
+
+        setUnseenInvitationsCount(unseenCount);
+        console.log("Unseen invitations count fetched:", unseenCount);
+        console.log(
+          "Unseen invitations details:",
+          unseenInvites.map((inv) => ({ id: inv._id, status: inv.status }))
+        );
+      } else {
+        // Handle error cases gracefully (don't show error to user)
+        let errorMessage = "Failed to fetch unseen invitations count";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Geçersiz istek";
+              break;
+            case 401:
+              errorMessage = "Yetki hatası";
+              break;
+            case 403:
+              errorMessage = "Bu işlemi yapma yetkiniz yok";
+              break;
+            case 404:
+              errorMessage = "Davet bilgileri bulunamadı";
+              break;
+            case 429:
+              errorMessage = "Çok fazla istek";
+              break;
+            case 500:
+              errorMessage = "Sunucu hatası";
+              break;
+            default:
+              errorMessage = `Sunucu hatası: ${response.status}`;
+          }
+        }
+
+        console.warn("Failed to fetch unseen invitations count:", errorMessage);
+        setUnseenInvitationsCount(0);
+      }
+    } catch (error) {
+      console.error("Error fetching unseen invitations count:", error);
+
+      // Handle network errors
+      let errorMessage = "Ağ hatası oluştu";
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        errorMessage =
+          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.";
+      }
+
+      console.warn("Network error fetching unseen invitations:", errorMessage);
+      setUnseenInvitationsCount(0);
+    }
+  };
+
   // Fetch unseen messages for authenticated user
   const fetchUnseenMessages = async () => {
     try {
@@ -87,7 +174,6 @@ export const AuthProvider = ({ children }) => {
         // Don't show error to user for this, just log it
         setUnseenMessages({});
         setParticipantAdverts([]);
-        setUnseenInvitationsCount(0);
       }
     } catch (error) {
       console.error("Error fetching unseen messages:", error);
@@ -229,8 +315,8 @@ export const AuthProvider = ({ children }) => {
       setIsLoggingOut(false);
       setUnseenMessages({});
       setParticipantAdverts([]);
-      setUnseenInvitationsCount(0);
       setCurrentViewingAdvertId(null);
+      setUnseenInvitationsCount(0);
 
       console.log("User authentication state cleared");
     }
@@ -543,85 +629,7 @@ export const AuthProvider = ({ children }) => {
     return user.friendRequests.filter((request) => !request.seen).length;
   };
 
-  // State for invitation counts
-  const [unseenInvitationsCount, setUnseenInvitationsCount] = useState(0);
-
-  // Track if user is currently viewing incoming invitations (to mark new ones as seen)
-  const [isViewingIncomingInvitations, setIsViewingIncomingInvitations] =
-    useState(false);
-
-  // Fetch unseen invitations count from the backend
-  const fetchUnseenInvitationsCount = async () => {
-    try {
-      const response = await fetch("/api/v1/invitation/unseen", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const unseenInvites = data.unseenInvites || [];
-
-        // Count the unseen invitations
-        const unseenCount = unseenInvites.length;
-
-        setUnseenInvitationsCount(unseenCount);
-        console.log("Unseen invitations count fetched:", unseenCount);
-      } else {
-        // Handle error cases gracefully
-        let errorMessage = "Failed to fetch unseen invitations count";
-
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.msg || errorData.message || errorMessage;
-        } catch {
-          // If we can't parse the error response, use status-based messages
-          switch (response.status) {
-            case 400:
-              errorMessage = "Geçersiz istek";
-              break;
-            case 401:
-              errorMessage = "Yetki hatası";
-              break;
-            case 403:
-              errorMessage = "Bu işlemi yapma yetkiniz yok";
-              break;
-            case 404:
-              errorMessage = "Davet bilgileri bulunamadı";
-              break;
-            case 429:
-              errorMessage = "Çok fazla istek";
-              break;
-            case 500:
-              errorMessage = "Sunucu hatası";
-              break;
-            default:
-              errorMessage = `Sunucu hatası: ${response.status}`;
-          }
-        }
-
-        console.warn("Failed to fetch unseen invitations count:", errorMessage);
-        setUnseenInvitationsCount(0);
-      }
-    } catch (error) {
-      console.error("Error fetching unseen invitations count:", error);
-
-      // Handle network errors
-      let errorMessage = "Ağ hatası oluştu";
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
-        errorMessage =
-          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.";
-      }
-
-      console.warn("Network error fetching unseen invitations:", errorMessage);
-      setUnseenInvitationsCount(0);
-    }
-  };
-
-  // Calculate unseen invitations count (getter function)
+  // Get unseen invitations count
   const getUnseenInvitationsCount = () => {
     return unseenInvitationsCount;
   };
@@ -634,29 +642,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Increment unseen invitations count (when new invitation received via WebSocket)
+  const incrementUnseenInvitationsCount = () => {
+    setUnseenInvitationsCount((prevCount) => prevCount + 1);
+    console.log("Unseen invitations count incremented by 1");
+  };
+
   // Decrement unseen invitations count (when user accepts/declines invitation)
   const decrementUnseenInvitationsCount = () => {
     setUnseenInvitationsCount((prevCount) => Math.max(0, prevCount - 1));
     console.log("Unseen invitations count decremented by 1");
   };
 
-  // Increment unseen invitations count (when new invitation received)
-  const incrementUnseenInvitationsCount = () => {
-    setUnseenInvitationsCount((prevCount) => prevCount + 1);
-    console.log("Unseen invitations count incremented by 1");
-  };
-
   // Set user's current invitation viewing state (for real-time unseen count updates)
-  const setCurrentlyViewingIncomingInvitations = (isViewing) => {
-    setIsViewingIncomingInvitations(isViewing);
+  const setCurrentlyViewingIncomingCurrentInvitations = (isViewing) => {
+    setIsViewingIncomingCurrentInvitations(isViewing);
     console.log(
-      `User ${isViewing ? "started" : "stopped"} viewing incoming invitations`
+      `User ${
+        isViewing ? "started" : "stopped"
+      } viewing "Gelen Davetler" "Güncel"`
     );
   };
 
-  // Check if user is currently viewing incoming invitations
-  const isCurrentlyViewingIncomingInvitations = () => {
-    return isViewingIncomingInvitations;
+  // Check if user is currently viewing "Gelen Davetler" "Güncel"
+  const isCurrentlyViewingIncomingCurrentInvitations = () => {
+    return isViewingIncomingCurrentInvitations;
   };
 
   // Update follower count (+1 when user accepts someone's friend request)
@@ -1048,10 +1058,10 @@ export const AuthProvider = ({ children }) => {
     // Invitation unseen management
     getUnseenInvitationsCount,
     refreshUnseenInvitationsCount,
-    decrementUnseenInvitationsCount,
     incrementUnseenInvitationsCount,
-    setCurrentlyViewingIncomingInvitations,
-    isCurrentlyViewingIncomingInvitations,
+    decrementUnseenInvitationsCount,
+    setCurrentlyViewingIncomingCurrentInvitations,
+    isCurrentlyViewingIncomingCurrentInvitations,
 
     // Follower count management
     incrementFollowerCount,

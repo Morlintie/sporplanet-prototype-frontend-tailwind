@@ -20,10 +20,10 @@ function Invitations({ user }) {
     user: authUser,
     getProfilePictureUrl,
     addAdvertParticipation,
-    refreshUnseenInvitationsCount,
-    decrementUnseenInvitationsCount,
-    setCurrentlyViewingIncomingInvitations,
     getUnseenInvitationsCount,
+    decrementUnseenInvitationsCount,
+    setCurrentlyViewingIncomingCurrentInvitations,
+    refreshUnseenInvitationsCount,
   } = useAuth();
   const {
     listenForNotificationEvent,
@@ -58,12 +58,6 @@ function Invitations({ user }) {
     });
   };
 
-  // Calculate unseen count for current section and filter
-  const calculateCurrentUnseenCount = (invitationsData) => {
-    return invitationsData.filter((invitation) => invitation.seen === false)
-      .length;
-  };
-
   // Mark invitations as seen in the database
   const markInvitationsAsSeen = async (statuses) => {
     try {
@@ -84,8 +78,11 @@ function Invitations({ user }) {
         const data = await response.json();
         console.log("Invitations marked as seen successfully:", data.message);
 
-        // Refresh global unseen count after marking as seen
-        refreshUnseenInvitationsCount();
+        // Refresh unseen invitations count from backend after marking as seen
+        console.log(
+          "Refreshing unseen invitations count after marking as seen..."
+        );
+        await refreshUnseenInvitationsCount();
       } else {
         // Handle error cases gracefully (don't show to user)
         let errorMessage = "Failed to mark invitations as seen";
@@ -373,15 +370,6 @@ function Invitations({ user }) {
           // Incoming invitations: No pagination, always replace all data
           setInvitations(processedInvitations);
 
-          // Calculate and update unseen count for incoming invitations
-          const unseenCount = calculateCurrentUnseenCount(processedInvitations);
-
-          // If viewing "Gelen Davetler" "Güncel", refresh global unseen count
-          // since user is now seeing all pending invitations
-          if (activeFilter === "current") {
-            refreshUnseenInvitationsCount();
-          }
-
           // Update pagination with simple total count (no pagination)
           setPagination((prev) => ({
             ...prev,
@@ -395,10 +383,6 @@ function Invitations({ user }) {
           if (pagination.page === 1) {
             // First page - replace all data
             setInvitations(processedInvitations);
-
-            // Calculate and update unseen count for sent invitations
-            const unseenCount =
-              calculateCurrentUnseenCount(processedInvitations);
           } else {
             // Subsequent pages - append to existing data
             setInvitations((prevInvitations) => {
@@ -406,10 +390,6 @@ function Invitations({ user }) {
                 ...prevInvitations,
                 ...processedInvitations,
               ];
-
-              // Recalculate unseen count with all data
-              const unseenCount =
-                calculateCurrentUnseenCount(updatedInvitations);
 
               return updatedInvitations;
             });
@@ -537,14 +517,29 @@ function Invitations({ user }) {
               console.log(
                 "🔔 MARK SEEN: User is viewing incoming current, marking new invitation as seen"
               );
-              markInvitationsAsSeen(["pending"]);
-            } else {
-              // User is NOT viewing "Gelen Davetler" "Güncel" - just increment unseen count by +1
               console.log(
-                "🔔 UNSEEN COUNT: User not viewing incoming current, incrementing unseen count by +1"
+                "🔔 MARK SEEN: New invitation status:",
+                newInvitation.status
               );
-              // Note: The global increment will be handled by WebSocketContext
-              // We don't need to do anything here locally since the user is not viewing the relevant section
+
+              // Only mark as seen if the new invitation status matches the current filter
+              // Since user is viewing "Güncel", only mark "pending" invitations as seen
+              if (newInvitation.status === "pending") {
+                console.log(
+                  "🔔 MARK SEEN: New invitation is pending, marking as seen"
+                );
+                markInvitationsAsSeen(["pending"]);
+              } else {
+                console.log(
+                  "🔔 MARK SEEN: New invitation is not pending, skipping mark as seen"
+                );
+              }
+            } else {
+              // User is NOT viewing "Gelen Davetler" "Güncel" - do nothing with unseen count
+              console.log(
+                "🔔 NEW INVITE: User not viewing incoming current, no local action needed"
+              );
+              // Note: No unseen count logic here - handled elsewhere
             }
           }
         }
@@ -788,9 +783,6 @@ function Invitations({ user }) {
             (inv) => inv._id !== invitationId
           );
 
-          // Update unseen count
-          const unseenCount = calculateCurrentUnseenCount(updatedInvitations);
-
           return updatedInvitations;
         });
         // Update pagination count
@@ -811,16 +803,25 @@ function Invitations({ user }) {
               : inv
           );
 
-          // Update unseen count
-          const unseenCount = calculateCurrentUnseenCount(updatedInvitations);
-
           return updatedInvitations;
         });
       }
 
-      // Refresh global unseen invitations count (for sidebar badge)
+      // Decrement unseen invitations count only if this invitation was actually unseen
+      // Only decrement for incoming invitations that are pending (current section)
       if (activeSection === "incoming") {
-        decrementUnseenInvitationsCount();
+        // Find the invitation to check its seen status
+        const invitation = invitations.find((inv) => inv._id === invitationId);
+        if (invitation && !invitation.seen) {
+          console.log(
+            "🔔 UNSEEN COUNT: Decrementing count for unseen invitation acceptance"
+          );
+          decrementUnseenInvitationsCount();
+        } else {
+          console.log(
+            "🔔 UNSEEN COUNT: Invitation was already seen, not decrementing count"
+          );
+        }
       }
 
       // Success notification will be shown on the advert detail page
@@ -1025,9 +1026,6 @@ function Invitations({ user }) {
             (inv) => inv._id !== invitationId
           );
 
-          // Update unseen count
-          const unseenCount = calculateCurrentUnseenCount(updatedInvitations);
-
           return updatedInvitations;
         });
         // Update pagination count
@@ -1048,16 +1046,25 @@ function Invitations({ user }) {
               : inv
           );
 
-          // Update unseen count
-          const unseenCount = calculateCurrentUnseenCount(updatedInvitations);
-
           return updatedInvitations;
         });
       }
 
-      // Refresh global unseen invitations count (for sidebar badge)
+      // Decrement unseen invitations count only if this invitation was actually unseen
+      // Only decrement for incoming invitations that are pending (current section)
       if (activeSection === "incoming") {
-        decrementUnseenInvitationsCount();
+        // Find the invitation to check its seen status
+        const invitation = invitations.find((inv) => inv._id === invitationId);
+        if (invitation && !invitation.seen) {
+          console.log(
+            "🔔 UNSEEN COUNT: Decrementing count for unseen invitation decline"
+          );
+          decrementUnseenInvitationsCount();
+        } else {
+          console.log(
+            "🔔 UNSEEN COUNT: Invitation was already seen, not decrementing count"
+          );
+        }
       }
 
       // Show success notification
@@ -1087,7 +1094,7 @@ function Invitations({ user }) {
   // Use backend pagination
   const paginatedInvitations = filteredInvitations;
 
-  // Reset pagination and unseen count when filter or section changes
+  // Reset pagination when filter or section changes
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
   }, [activeFilter, activeSection]);
@@ -1097,13 +1104,17 @@ function Invitations({ user }) {
     const isViewingIncomingCurrent =
       activeSection === "incoming" && activeFilter === "current";
 
-    setCurrentlyViewingIncomingInvitations(isViewingIncomingCurrent);
+    setCurrentlyViewingIncomingCurrentInvitations(isViewingIncomingCurrent);
 
     // Cleanup when component unmounts
     return () => {
-      setCurrentlyViewingIncomingInvitations(false);
+      setCurrentlyViewingIncomingCurrentInvitations(false);
     };
-  }, [activeSection, activeFilter, setCurrentlyViewingIncomingInvitations]);
+  }, [
+    activeSection,
+    activeFilter,
+    setCurrentlyViewingIncomingCurrentInvitations,
+  ]);
 
   // Mark invitations as seen when user views "Gelen Davetler" sections
   useEffect(() => {
@@ -1120,7 +1131,10 @@ function Invitations({ user }) {
       }
 
       if (statuses.length > 0) {
-        console.log(`Marking ${activeFilter} invitations as seen...`);
+        console.log(
+          `Marking ${activeFilter} invitations as seen for section: ${activeSection}`
+        );
+        console.log("Statuses to mark as seen:", statuses);
         markInvitationsAsSeen(statuses);
       }
     }
@@ -1255,7 +1269,7 @@ function Invitations({ user }) {
             />
           </svg>
           <span>Gelen Davetler</span>
-          {/* Show unseen count badge for incoming invitations when not viewing that section */}
+          {/* Show unseen invitations count badge when not viewing incoming section */}
           {activeSection !== "incoming" && getUnseenInvitationsCount() > 0 && (
             <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center ml-2">
               {getUnseenInvitationsCount()}
