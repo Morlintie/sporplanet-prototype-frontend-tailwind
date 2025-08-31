@@ -7,8 +7,12 @@ import AuthRequiredPopup from "../shared/AuthRequiredPopup";
 function AnimatedProfileSidebar() {
   const { isSidebarOpen, closeSidebar, activeSection, setSection } =
     useProfileSidebar();
-  const { isAuthenticated, getTotalUnseenCount, getUnseenFriendRequestsCount } =
-    useAuth();
+  const {
+    isAuthenticated,
+    getTotalUnseenCount,
+    getUnseenFriendRequestsCount,
+    getUnseenInvitationsCount,
+  } = useAuth();
   const navigate = useNavigate();
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [communityDropdownOpen, setCommunityDropdownOpen] = useState(false);
@@ -379,6 +383,15 @@ function AnimatedProfileSidebar() {
                       getUnseenFriendRequestsCount() > 0 && (
                         <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
                           {getUnseenFriendRequestsCount()}
+                        </span>
+                      )}
+
+                    {/* Show unseen invitations count for Davetlerim */}
+                    {item.id === "invitations" &&
+                      isAuthenticated &&
+                      getUnseenInvitationsCount() > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                          {getUnseenInvitationsCount()}
                         </span>
                       )}
 

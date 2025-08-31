@@ -56,8 +56,6 @@ function AdvertDetailPage() {
   const [editingText, setEditingText] = useState(""); // Text content for editing
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false); // Control message area scrolling
 
-
-
   // Helper function to check if current user is a participant of the advert
   const isUserParticipant = (advertData, currentUser) => {
     if (!advertData || !currentUser) {
@@ -130,6 +128,47 @@ function AdvertDetailPage() {
     );
 
     return processedMessage;
+  };
+
+  // Turkish error message translation function for invitations
+  const translateMessage = (message) => {
+    const translations = {
+      // Network errors
+      "Failed to fetch":
+        "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+      "Network Error": "Ağ hatası oluştu. Lütfen tekrar deneyin.",
+
+      // Invitation-specific errors
+      "Please provide all required data": "Gerekli bilgileri girin.",
+      "Recipients must be an array": "Alıcı listesi geçersiz.",
+      "Recipients array must not be empty": "En az bir alıcı seçmelisiniz.",
+      "Advert not found or is not open for invitations":
+        "İlan bulunamadı veya davet kabul etmiyor.",
+      "One of the recipients is already a participant of this advert":
+        "Seçtiğiniz kişilerden biri zaten bu ilana katılmış.",
+      "One of the recipients is already on the waiting list of this advert":
+        "Seçtiğiniz kişilerden biri zaten bekleme listesinde.",
+      "You are not an admin of this advert": "Bu ilanın yöneticisi değilsiniz.",
+      "You have banned one of the recipients":
+        "Davet ettiğiniz kişilerden birini engellemişsiniz.",
+      "One of the recipients has blocked you.":
+        "Davet ettiğiniz kişilerden biri sizi engellemiş.",
+      "User not found": "Kullanıcı bulunamadı.",
+
+      // 409 specific error for duplicate invitations
+      "Davet göndermeye çalıştığınız arkadaşlarınızdan en az birine bu ilan için zaten davet gönderdiniz":
+        "Davet göndermeye çalıştığınız arkadaşlarınızdan en az birine bu ilan için zaten davet gönderdiniz",
+
+      // Generic errors
+      "Something went wrong": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "Server Error": "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+      Unauthorized: "Yetkisiz erişim.",
+    };
+
+    return (
+      translations[message] ||
+      "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+    );
   };
 
   // Turkish error message translation
@@ -349,7 +388,10 @@ function AdvertDetailPage() {
         setError(null);
 
         // Fetch advert data from backend API
-        console.log("AdvertDetailPage: Fetching advert from API:", `/api/v1/advert/${advertId}`);
+        console.log(
+          "AdvertDetailPage: Fetching advert from API:",
+          `/api/v1/advert/${advertId}`
+        );
         const advertResponse = await fetch(`/api/v1/advert/${advertId}`, {
           method: "GET",
           credentials: "include",
@@ -357,8 +399,11 @@ function AdvertDetailPage() {
             "Content-Type": "application/json",
           },
         });
-        
-        console.log("AdvertDetailPage: Advert API response status:", advertResponse.status);
+
+        console.log(
+          "AdvertDetailPage: Advert API response status:",
+          advertResponse.status
+        );
 
         if (!advertResponse.ok) {
           let errorMessage = "Failed to fetch advert";
@@ -403,7 +448,10 @@ function AdvertDetailPage() {
         const foundAdvert = advertData.advert;
 
         if (!foundAdvert) {
-          console.error("AdvertDetailPage: No advert found in response:", advertData);
+          console.error(
+            "AdvertDetailPage: No advert found in response:",
+            advertData
+          );
           throw new Error("Advert not found");
         }
 
@@ -493,7 +541,7 @@ function AdvertDetailPage() {
     if (advertId) {
       fetchData();
     }
-  }, [advertId, isAuthenticated, user]);
+  }, [advertId, isAuthenticated, user?._id]);
 
   // Handle notification room join/leave for advert-specific notifications
   useEffect(() => {
@@ -1162,6 +1210,73 @@ function AdvertDetailPage() {
     }
   }, [isNotificationConnected, advertId, listenForNotificationEvent]);
 
+  // Listen for invitation-accepted WebSocket events (user accepted invitation to join advert)
+  useEffect(() => {
+    if (isNotificationConnected && advertId) {
+      console.log(
+        "Setting up invitation-accepted listener for advert:",
+        advertId
+      );
+
+      const cleanup = listenForNotificationEvent(
+        "invitation-accepted",
+        (data) => {
+          console.log("Received invitation-accepted event:", data);
+
+          if (data && data.user) {
+            // Update the advert state: add user to participants array
+            setAdvert((prevAdvert) => {
+              if (!prevAdvert) return prevAdvert;
+
+              // Check if user is already a participant to avoid duplicates
+              const isAlreadyParticipant =
+                prevAdvert.participants &&
+                prevAdvert.participants.some(
+                  (p) => p.user && p.user._id === data.user._id
+                );
+
+              if (isAlreadyParticipant) {
+                console.log("User already a participant, ignoring duplicate");
+                return prevAdvert;
+              }
+
+              // Add the new user to participants array
+              const updatedParticipants = [
+                ...(prevAdvert.participants || []),
+                {
+                  user: data.user,
+                  joinedAt: new Date().toISOString(),
+                },
+              ];
+
+              const updatedAdvert = {
+                ...prevAdvert,
+                participants: updatedParticipants,
+              };
+
+              console.log(
+                "Updated advert with invitation-accepted participant:",
+                updatedAdvert
+              );
+              return updatedAdvert;
+            });
+
+            // Real room joining will be handled by main useEffect when advert state updates
+
+            // Show notification for invitation acceptance
+            showNotification(
+              `${data.user.name} daveti kabul etti ve ilana katıldı`,
+              "success"
+            );
+          }
+        }
+      );
+
+      // Cleanup function
+      return cleanup;
+    }
+  }, [isNotificationConnected, advertId, listenForNotificationEvent]);
+
   // Listen for advertStatusChanged WebSocket events (status toggle)
   useEffect(() => {
     if (isNotificationConnected && advertId) {
@@ -1373,7 +1488,7 @@ function AdvertDetailPage() {
       // Cleanup function
       return cleanup;
     }
-  }, [isChatConnected, advertId, listenForChatEvent, user]);
+  }, [isChatConnected, advertId, listenForChatEvent, user?._id]);
 
   // Listen for stopTypingInRoom WebSocket events (user stopped typing)
   useEffect(() => {
@@ -2550,7 +2665,7 @@ function AdvertDetailPage() {
   };
 
   // Handle sending invitations to friends
-  const handleSendInvitation = async (selectedFriendIds) => {
+  const handleSendInvitation = async (selectedFriendIds, message = "") => {
     // Check authentication first
     if (!isAuthenticated) {
       showAuthRequiredPopup(
@@ -2563,15 +2678,94 @@ function AdvertDetailPage() {
     try {
       console.log("Sending invitations to friends:", selectedFriendIds);
       console.log("For advert:", advertId);
+      console.log("With message:", message);
 
-      // TODO: Implement API call to send invitations
+      // Prepare request body
+      const requestBody = {
+        advert: advertId,
+        recipients: selectedFriendIds,
+        role: "player", // Default role - backend will ignore this
+        message: message.trim() || "", // Send empty string if no message
+      };
+
+      console.log("Sending invitation request:", requestBody);
+
+      // Send invitation request to backend
+      const response = await fetch("/api/v1/invitation", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Davet gönderilirken hata oluştu";
+
+        // Special handling for 409 status code first
+        if (response.status === 409) {
+          errorMessage =
+            "Davet göndermeye çalıştığınız arkadaşlarınızdan en az birine bu ilan için zaten davet gönderdiniz";
+        } else {
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.msg || errorData.message || errorMessage;
+          } catch {
+            // If we can't parse the error response, use status-based messages
+            switch (response.status) {
+              case 400:
+                errorMessage = "Geçersiz istek";
+                break;
+              case 401:
+                errorMessage = "Yetki hatası";
+                break;
+              case 403:
+                errorMessage = "Bu işlemi yapma yetkiniz yok";
+                break;
+              case 404:
+                errorMessage = "İlan bulunamadı";
+                break;
+              case 429:
+                errorMessage = "Çok fazla istek";
+                break;
+              case 500:
+                errorMessage = "Sunucu hatası";
+                break;
+              default:
+                errorMessage = `Sunucu hatası: ${response.status}`;
+            }
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Invitations sent successfully:", data);
+
+      // Show success notification
       showNotification(
-        `${selectedFriendIds.length} arkadaşınıza davet gönderilecek (UI tamamlandı - backend bağlantısı beklemede)`,
-        "info"
+        `${selectedFriendIds.length} arkadaşınıza davet başarıyla gönderildi${
+          message ? " (mesajınız ile birlikte)" : ""
+        }`,
+        "success"
       );
+
+      // Note: Real-time updates for sent invitations will be handled in Invitations.jsx
+      // via HTTP response data, and incoming invitations will be handled via WebSocket
     } catch (err) {
       console.error("Error sending invitations:", err);
-      showNotification("Davet gönderilirken hata oluştu", "error");
+
+      // Handle network errors
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        showNotification(
+          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.",
+          "error"
+        );
+      } else {
+        showNotification(translateMessage(err.message), "error");
+      }
     }
   };
 

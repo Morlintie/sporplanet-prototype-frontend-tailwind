@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import InvitationMessagePopup from "../../shared/InvitationMessagePopup";
 
 function PrivateLinkDropdown({
   advertId,
@@ -11,8 +12,9 @@ function PrivateLinkDropdown({
   const [showFriendsList, setShowFriendsList] = useState(false);
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showMessagePopup, setShowMessagePopup] = useState(false);
   const dropdownRef = useRef(null);
-  const { getUserFriends, user } = useAuth();
+  const { getUserFriends, user, getProfilePictureUrl } = useAuth();
 
   const friends = getUserFriends();
 
@@ -51,6 +53,7 @@ function PrivateLinkDropdown({
         setShowFriendsList(false);
         setSelectedFriends([]);
         setSearchTerm("");
+        setShowMessagePopup(false);
       }
     };
 
@@ -79,12 +82,28 @@ function PrivateLinkDropdown({
 
   const handleSendInvitations = () => {
     if (selectedFriends.length > 0) {
-      onSendInvitation(selectedFriends);
-      setIsOpen(false);
-      setShowFriendsList(false);
-      setSelectedFriends([]);
-      setSearchTerm("");
+      // Get full friend objects for the popup
+      const selectedFriendObjects = friends.filter((friend) =>
+        selectedFriends.includes(friend._id)
+      );
+      setShowMessagePopup(true);
     }
+  };
+
+  const handleSendInvitationsWithMessage = async (message) => {
+    // Call the original onSendInvitation function with selected friend IDs and message
+    await onSendInvitation(selectedFriends, message);
+
+    // Reset all states
+    setIsOpen(false);
+    setShowFriendsList(false);
+    setSelectedFriends([]);
+    setSearchTerm("");
+    setShowMessagePopup(false);
+  };
+
+  const handleCloseMessagePopup = () => {
+    setShowMessagePopup(false);
   };
 
   const handleBackToMain = () => {
@@ -229,7 +248,26 @@ function PrivateLinkDropdown({
                         />
                         <div className="flex items-center space-x-2 flex-1">
                           {/* Friend avatar */}
-                          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                          {getProfilePictureUrl(friend.profilePicture) ? (
+                            <img
+                              src={getProfilePictureUrl(friend.profilePicture)}
+                              alt={friend.name || "Profile"}
+                              className="w-8 h-8 rounded-full object-cover"
+                              onError={(e) => {
+                                // Fallback to initials if image fails to load
+                                e.target.style.display = "none";
+                                e.target.nextElementSibling.style.display =
+                                  "flex";
+                              }}
+                            />
+                          ) : null}
+                          <div
+                            className={`w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-semibold ${
+                              getProfilePictureUrl(friend.profilePicture)
+                                ? "hidden"
+                                : ""
+                            }`}
+                          >
                             {friend.name
                               ? friend.name.charAt(0).toUpperCase()
                               : "?"}
@@ -277,6 +315,16 @@ function PrivateLinkDropdown({
           )}
         </div>
       )}
+
+      {/* Invitation Message Popup */}
+      <InvitationMessagePopup
+        isVisible={showMessagePopup}
+        onClose={handleCloseMessagePopup}
+        onSend={handleSendInvitationsWithMessage}
+        selectedFriends={friends.filter((friend) =>
+          selectedFriends.includes(friend._id)
+        )}
+      />
     </div>
   );
 }
