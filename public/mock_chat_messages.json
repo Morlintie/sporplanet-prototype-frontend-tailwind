@@ -1,0 +1,556 @@
+[
+  {
+    "sender": {
+      "_id": "3a531ebd-d9b0-4fbc-a5c6-09a11a170dd7",
+      "name": "Erin Mcdaniel",
+      "profilePicture": {
+        "name": "surface.jpg",
+        "url": "https://dummyimage.com/306x647"
+      },
+      "email": "kathrynwatson@watts-ross.com",
+      "school": "Palmer, Washington and Morgan",
+      "age": 22,
+      "friends": [
+        "25cb20fd-670d-42d5-9f5c-2836bd6aa913"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "+1-014-152-8213x19376",
+      "description": "Task fund support bank space old."
+    },
+    "recipient": {
+      "_id": "437ef604-797b-42cf-8c47-ce215ba71621",
+      "name": "Amanda Robertson",
+      "profilePicture": {
+        "name": "course.jpg",
+        "url": "https://www.lorempixel.com/119/769"
+      },
+      "email": "smithbrandon@davis.biz",
+      "school": "Blanchard, Richardson and Hall",
+      "age": 26,
+      "friends": [
+        "c293d312-84e4-4ab6-b1b3-5fbaad7490a0",
+        "a10fcd5b-57b2-4d1e-a9e2-6b07825e2e8c",
+        "101c96c3-7baf-45d1-b3c0-28fe958ecbb6"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "+1-965-171-5461x3519",
+      "description": "Hear stage close director."
+    },
+    "conversationKey": "3a531ebd-d9b0-4fbc-a5c6-09a11a170dd7_437ef604-797b-42cf-8c47-ce215ba71621",
+    "type": "image",
+    "content": "Man indicate term challenge woman company. Be reach stop look budget maintain step. A culture prove.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://www.lorempixel.com/912/588",
+          "public_id": "3a0f693a-5026-44a2-b813-3fff5fe50d8d",
+          "mimeType": "video/mp4"
+        }
+      ],
+      "caption": "She find sound explain."
+    },
+    "seenAt": "2025-08-31T09:24:39",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-22T03:39:17",
+    "updatedAt": "2025-08-30T02:03:01"
+  },
+  {
+    "sender": {
+      "_id": "daee2f59-de7b-4479-9f43-c2fed79c5ee4",
+      "name": "Mary Owens",
+      "profilePicture": {
+        "name": "best.jpg",
+        "url": "https://placekitten.com/25/562"
+      },
+      "email": "alexanderharrington@hotmail.com",
+      "school": "Morrison LLC",
+      "age": 32,
+      "friends": [
+        "e7599332-4335-4fb8-8709-65f43ed29c44",
+        "e64d024b-1f4b-4b31-8aec-9477780f791a"
+      ],
+      "goalKeeper": true,
+      "phoneNumber": "001-247-222-2354x8783",
+      "description": "Southern benefit page personal."
+    },
+    "recipient": {
+      "_id": "46ef0e7e-73b2-4b0f-992d-a75fb4bfcac9",
+      "name": "Dalton Lopez",
+      "profilePicture": {
+        "name": "party.jpg",
+        "url": "https://placekitten.com/507/630"
+      },
+      "email": "john11@williamson-cooke.com",
+      "school": "Krause Group",
+      "age": 26,
+      "friends": [
+        "8bed8c3c-bb94-46a6-aed8-f07c6577e91c",
+        "0bfc3a6c-45bb-4d87-a74f-3783eda172d2",
+        "834ee0b4-d477-48ec-9fd7-6ab9abba1b6a"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "9715902064",
+      "description": "Seek entire bit floor."
+    },
+    "conversationKey": "46ef0e7e-73b2-4b0f-992d-a75fb4bfcac9_daee2f59-de7b-4479-9f43-c2fed79c5ee4",
+    "type": "text",
+    "content": "Kid upon look heart expect. Federal wife rock meeting.\nKey democratic chair do. Recently chair federal important. Wind paper cold with which item. Thing character to act.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://placeimg.com/795/492/any",
+          "public_id": "c39f1130-f6a1-46b8-a9f7-5e5e3275cc17",
+          "mimeType": "image/png"
+        }
+      ],
+      "caption": "Something owner agency guess."
+    },
+    "seenAt": "2025-08-30T15:11:57",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-28T07:10:31",
+    "updatedAt": "2025-08-30T05:07:28"
+  },
+  {
+    "sender": {
+      "_id": "5785ce96-2e5b-4681-a018-24e52f37150d",
+      "name": "Kristin French",
+      "profilePicture": {
+        "name": "whose.jpg",
+        "url": "https://placekitten.com/656/54"
+      },
+      "email": "sphillips@hotmail.com",
+      "school": "Ward Inc",
+      "age": 32,
+      "friends": [
+        "d21d7b93-d975-49e1-8acb-6cf52a5337a9",
+        "862fa5b9-36fb-4559-9025-4cd0d5d3fef3",
+        "f976b627-8ba7-4bbb-b560-ce4cdae3a6c3"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "+1-268-958-7353x90936",
+      "description": "Although kitchen but wrong hundred continue war."
+    },
+    "recipient": {
+      "_id": "3fdb57b3-673b-4f7a-bd25-b28214142dc5",
+      "name": "Catherine Wilkinson",
+      "profilePicture": {
+        "name": "contain.jpg",
+        "url": "https://dummyimage.com/838x210"
+      },
+      "email": "walter43@hotmail.com",
+      "school": "Casey, Clayton and Wolf",
+      "age": 30,
+      "friends": [
+        "c235e2ee-8fb3-4ced-b577-387a1876aafa",
+        "7447f822-5c33-4110-a157-775ba3921bcb",
+        "034bebbc-f0f5-4e86-b799-7fd1f1783396"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "027-030-8365x06027",
+      "description": "Pull hundred author in along."
+    },
+    "conversationKey": "3fdb57b3-673b-4f7a-bd25-b28214142dc5_5785ce96-2e5b-4681-a018-24e52f37150d",
+    "type": "image",
+    "content": "Newspaper car wear. Pressure television modern business state home. Cup positive heart behind number sort.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://www.lorempixel.com/263/170",
+          "public_id": "4f1d2547-2989-4225-bbd2-6abd813285bf",
+          "mimeType": "video/mp4"
+        }
+      ],
+      "caption": "Baby break available."
+    },
+    "seenAt": "2025-08-31T20:24:31",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-30T21:17:20",
+    "updatedAt": "2025-08-29T09:46:10"
+  },
+  {
+    "sender": {
+      "_id": "de91f612-e147-41f2-b859-f2035bdfb53a",
+      "name": "Brett Ramirez",
+      "profilePicture": {
+        "name": "exist.jpg",
+        "url": "https://placekitten.com/730/523"
+      },
+      "email": "zquinn@yahoo.com",
+      "school": "Cannon, Deleon and Fernandez",
+      "age": 23,
+      "friends": [
+        "3ffc3dfb-646e-4926-a7b6-5c241605d402",
+        "f4b98e55-e33f-4ccf-95e5-06eb554e1db9"
+      ],
+      "goalKeeper": true,
+      "phoneNumber": "780.017.6079x1127",
+      "description": "Behind east wall large voice."
+    },
+    "recipient": {
+      "_id": "9df8a14d-5100-4ace-bf7a-22ad3ba120c7",
+      "name": "Melissa Koch",
+      "profilePicture": {
+        "name": "up.jpg",
+        "url": "https://www.lorempixel.com/212/620"
+      },
+      "email": "kevinnelson@gmail.com",
+      "school": "Ellis-Hart",
+      "age": 27,
+      "friends": [],
+      "goalKeeper": false,
+      "phoneNumber": "001-301-414-7896",
+      "description": "Common yet particular baby."
+    },
+    "conversationKey": "9df8a14d-5100-4ace-bf7a-22ad3ba120c7_de91f612-e147-41f2-b859-f2035bdfb53a",
+    "type": "video",
+    "content": "Decade raise pull say soldier partner. Campaign former security chance threat.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://placekitten.com/385/101",
+          "public_id": "2069bf85-712a-427a-983d-6693747a0394",
+          "mimeType": "image/png"
+        }
+      ],
+      "caption": "Political attention tax her hundred business."
+    },
+    "seenAt": "2025-08-27T06:17:11",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-30T21:48:23",
+    "updatedAt": "2025-08-31T03:17:30"
+  },
+  {
+    "sender": {
+      "_id": "22fdc9f7-f3b8-46b4-ac66-61096f139706",
+      "name": "Timothy Suarez",
+      "profilePicture": {
+        "name": "threat.jpg",
+        "url": "https://placekitten.com/214/426"
+      },
+      "email": "umills@hotmail.com",
+      "school": "Guerrero, Martinez and Ray",
+      "age": 26,
+      "friends": [],
+      "goalKeeper": false,
+      "phoneNumber": "180.786.6946x3162",
+      "description": "Third six hear in."
+    },
+    "recipient": {
+      "_id": "e9772db2-0082-4662-a4f5-deeba2654de8",
+      "name": "Jason Shaffer",
+      "profilePicture": {
+        "name": "break.jpg",
+        "url": "https://dummyimage.com/852x630"
+      },
+      "email": "laura08@yahoo.com",
+      "school": "Flores and Sons",
+      "age": 33,
+      "friends": [
+        "4a599244-7b56-455b-8281-f0a39a5e44b4",
+        "837ee95c-5961-43ea-af6b-e28284caebe0"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "+1-747-636-8591x4047",
+      "description": "Pattern ever answer success early clearly."
+    },
+    "conversationKey": "22fdc9f7-f3b8-46b4-ac66-61096f139706_e9772db2-0082-4662-a4f5-deeba2654de8",
+    "type": "image",
+    "content": "Difference check often store weight dog learn community. Husband cell door health quality.\nCondition cover himself population several answer nearly.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://dummyimage.com/169x516",
+          "public_id": "a1ddd0da-75ce-4cac-b2c0-abf4a35afc7a",
+          "mimeType": "image/png"
+        }
+      ],
+      "caption": "Pass above girl moment."
+    },
+    "seenAt": "2025-08-30T22:11:37",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-27T06:14:17",
+    "updatedAt": "2025-08-31T00:10:05"
+  },
+  {
+    "sender": {
+      "_id": "b769c004-4aa5-4286-96ee-2c5d02303961",
+      "name": "Kenneth Hudson",
+      "profilePicture": {
+        "name": "him.jpg",
+        "url": "https://placekitten.com/135/838"
+      },
+      "email": "ulopez@keller.com",
+      "school": "Sparks PLC",
+      "age": 33,
+      "friends": [
+        "2a625e15-5289-472c-abbb-68bc5122a18c",
+        "b24749d0-9a1d-4c3b-8c54-27cdac01e44a",
+        "87a9e3f5-2bd9-40bc-9e8b-4087b89a46d1"
+      ],
+      "goalKeeper": true,
+      "phoneNumber": "787.480.2341",
+      "description": "Defense real of material."
+    },
+    "recipient": {
+      "_id": "8f395525-f995-4f91-a645-7eb636f60281",
+      "name": "Kimberly Frey",
+      "profilePicture": {
+        "name": "build.jpg",
+        "url": "https://www.lorempixel.com/741/371"
+      },
+      "email": "jennifer54@gmail.com",
+      "school": "Stewart and Sons",
+      "age": 25,
+      "friends": [
+        "ce204b62-4eb6-42bc-9bfd-aefcf01f7fab",
+        "61267e06-f099-4bb0-9842-bf030ac419e6"
+      ],
+      "goalKeeper": true,
+      "phoneNumber": "011-550-9661",
+      "description": "Ahead section practice beyond myself interesting hour country."
+    },
+    "conversationKey": "8f395525-f995-4f91-a645-7eb636f60281_b769c004-4aa5-4286-96ee-2c5d02303961",
+    "type": "image",
+    "content": "Term baby single drive. Type speech six save green positive order section. Hospital economy baby research politics foot population.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://dummyimage.com/151x177",
+          "public_id": "7547dbef-ecf8-4ded-9c4a-4f2818facace",
+          "mimeType": "video/mp4"
+        }
+      ],
+      "caption": "Its off bill although add him town."
+    },
+    "seenAt": "2025-08-29T09:47:57",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-29T00:39:44",
+    "updatedAt": "2025-08-27T16:17:07"
+  },
+  {
+    "sender": {
+      "_id": "4e47574f-f8cb-44c8-a7ce-1c656a357f2b",
+      "name": "Andrew Pugh",
+      "profilePicture": {
+        "name": "talk.jpg",
+        "url": "https://placeimg.com/859/804/any"
+      },
+      "email": "mooreshawn@alvarado.com",
+      "school": "Graham and Sons",
+      "age": 29,
+      "friends": [
+        "6ed0e298-131d-4392-a14f-73f526c443ea",
+        "bdc743a3-85f0-444e-a151-b3a9c06d6606",
+        "4a1a3b42-9dff-408b-a845-678b5eb5bb38"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "+1-609-925-7914",
+      "description": "Approach their store to center."
+    },
+    "recipient": {
+      "_id": "22c6d87c-a783-4124-a46d-512457087d62",
+      "name": "Antonio Lucas",
+      "profilePicture": {
+        "name": "trip.jpg",
+        "url": "https://dummyimage.com/219x281"
+      },
+      "email": "fblackburn@hotmail.com",
+      "school": "Crawford, Wilkinson and Cameron",
+      "age": 22,
+      "friends": [],
+      "goalKeeper": false,
+      "phoneNumber": "830.718.8958",
+      "description": "Research significant test drug design."
+    },
+    "conversationKey": "22c6d87c-a783-4124-a46d-512457087d62_4e47574f-f8cb-44c8-a7ce-1c656a357f2b",
+    "type": "text",
+    "content": "Seven fight skill set together person. Fly recognize fast over deep. South year police me usually head blood.\nCulture couple result wall we. Five middle end box.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://placeimg.com/27/107/any",
+          "public_id": "f65708fe-0653-41fe-b7a8-1ba1f3edbcdb",
+          "mimeType": "image/png"
+        }
+      ],
+      "caption": "Event system painting author prepare dog."
+    },
+    "seenAt": "2025-08-28T16:19:30",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-26T14:29:36",
+    "updatedAt": "2025-08-28T19:56:29"
+  },
+  {
+    "sender": {
+      "_id": "00a6c037-85e9-4dde-b99a-96452fb6837f",
+      "name": "Patrick Taylor",
+      "profilePicture": {
+        "name": "audience.jpg",
+        "url": "https://placekitten.com/230/832"
+      },
+      "email": "john09@yahoo.com",
+      "school": "King Group",
+      "age": 31,
+      "friends": [
+        "062cfc47-0886-4564-9bef-1475d5ebd9ef",
+        "550a29b7-b356-43f2-a1bd-492dc8fbcf3f",
+        "4335d816-b49e-44f7-b47b-db40f7649dd0"
+      ],
+      "goalKeeper": true,
+      "phoneNumber": "001-135-889-6597x57145",
+      "description": "Course table that plan keep plant what sing."
+    },
+    "recipient": {
+      "_id": "f28dd42e-39bf-4de8-abad-1ba94f893274",
+      "name": "Tanner Scott",
+      "profilePicture": {
+        "name": "share.jpg",
+        "url": "https://www.lorempixel.com/265/970"
+      },
+      "email": "jimzimmerman@greene.com",
+      "school": "Wright LLC",
+      "age": 32,
+      "friends": [
+        "aae86cc6-5e4a-4b35-a979-215478378c94"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "398-553-1979",
+      "description": "Value ability stock center."
+    },
+    "conversationKey": "00a6c037-85e9-4dde-b99a-96452fb6837f_f28dd42e-39bf-4de8-abad-1ba94f893274",
+    "type": "video",
+    "content": "Continue commercial take apply well prevent member. Interesting take detail southern.\nLive wife majority art of. Section film work program follow east.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://placekitten.com/571/331",
+          "public_id": "eb9714fd-16b2-416f-b5d5-fc3966de028b",
+          "mimeType": "image/png"
+        }
+      ],
+      "caption": "Drug worry strong significant child."
+    },
+    "seenAt": "2025-08-28T06:08:13",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-31T16:09:37",
+    "updatedAt": "2025-08-31T01:33:28"
+  },
+  {
+    "sender": {
+      "_id": "99e3a8a7-c628-47f7-9888-fed41980ea1a",
+      "name": "Nicholas Arnold",
+      "profilePicture": {
+        "name": "professor.jpg",
+        "url": "https://www.lorempixel.com/1/880"
+      },
+      "email": "peter17@hudson.com",
+      "school": "Medina, Patterson and Franco",
+      "age": 28,
+      "friends": [
+        "964379d0-9781-492a-83cb-5ff30dfa99a5",
+        "ee07d1c1-8717-449a-b6e8-ec9b0c855ef2"
+      ],
+      "goalKeeper": true,
+      "phoneNumber": "(529)701-3108",
+      "description": "Television now real standard toward."
+    },
+    "recipient": {
+      "_id": "0928411f-d259-4281-ba9d-365511b1d524",
+      "name": "Nicole Simmons",
+      "profilePicture": {
+        "name": "bit.jpg",
+        "url": "https://www.lorempixel.com/314/485"
+      },
+      "email": "morganchristopher@mills.com",
+      "school": "Wood Inc",
+      "age": 24,
+      "friends": [
+        "ef5080b9-d1b2-46a2-8e8a-45901a24174e",
+        "7973b35b-cd41-4ef3-903a-3168c9c008cd"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "(445)917-7631",
+      "description": "Military success argue figure."
+    },
+    "conversationKey": "0928411f-d259-4281-ba9d-365511b1d524_99e3a8a7-c628-47f7-9888-fed41980ea1a",
+    "type": "text",
+    "content": "Skill call one popular president old. Evidence heavy myself perhaps almost town first. Building ok order many lawyer information.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://placekitten.com/446/512",
+          "public_id": "05479bb1-5088-4661-b781-e07e2ef94716",
+          "mimeType": "video/mp4"
+        }
+      ],
+      "caption": "Might college force southern Mrs hand."
+    },
+    "seenAt": "2025-08-29T07:21:24",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-23T00:25:55",
+    "updatedAt": "2025-08-27T11:51:28"
+  },
+  {
+    "sender": {
+      "_id": "e30f8e8c-4bc0-43bc-b298-bb703383e75c",
+      "name": "Cynthia Velazquez",
+      "profilePicture": {
+        "name": "food.jpg",
+        "url": "https://www.lorempixel.com/936/833"
+      },
+      "email": "hawkinseric@yahoo.com",
+      "school": "Anderson-Jordan",
+      "age": 23,
+      "friends": [],
+      "goalKeeper": true,
+      "phoneNumber": "(122)537-0500x906",
+      "description": "How follow store the sell."
+    },
+    "recipient": {
+      "_id": "fdfd55c8-7734-4414-a1f0-403e32badd09",
+      "name": "Bobby Jackson",
+      "profilePicture": {
+        "name": "forget.jpg",
+        "url": "https://dummyimage.com/53x800"
+      },
+      "email": "william50@hotmail.com",
+      "school": "Cole-Castillo",
+      "age": 18,
+      "friends": [
+        "59173058-b166-49c8-b420-731e71cf4fea",
+        "d08373d6-4402-48b3-a794-00508986db4a",
+        "f6664c73-1534-4561-96d8-8e70029e53cf"
+      ],
+      "goalKeeper": false,
+      "phoneNumber": "535.373.9270x447",
+      "description": "Follow development like shake good eat sea."
+    },
+    "conversationKey": "e30f8e8c-4bc0-43bc-b298-bb703383e75c_fdfd55c8-7734-4414-a1f0-403e32badd09",
+    "type": "text",
+    "content": "Car all use why. Tax unit so field. Hundred also commercial.\nBehind stuff officer part central provide. Play me yard cold.",
+    "attachments": {
+      "items": [
+        {
+          "url": "https://placekitten.com/645/534",
+          "public_id": "67d15fd7-e04a-4bcd-9f23-3788dc39906f",
+          "mimeType": "image/png"
+        }
+      ],
+      "caption": "Hospital we wish lay possible finally only."
+    },
+    "seenAt": "2025-08-29T01:10:14",
+    "isDeleted": false,
+    "archived": false,
+    "createdAt": "2025-08-31T21:02:48",
+    "updatedAt": "2025-08-27T13:43:43"
+  }
+]

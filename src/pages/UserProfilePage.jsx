@@ -209,10 +209,9 @@ function UserProfilePage() {
     }
   };
 
-  // Handle send message (placeholder)
+  // Handle send message - navigate to DM page
   const handleSendMessage = async (targetUserId) => {
-    // TODO: Implement DM functionality
-    showNotification("Mesaj özelliği henüz aktif değil.", "info");
+    navigate(`/messages/${targetUserId}`);
   };
 
   // Handle unfriend user
