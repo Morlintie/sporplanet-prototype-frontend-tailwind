@@ -867,7 +867,8 @@ function MyFriends({ user }) {
                         <button
                           className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                           onClick={(e) => {
-                            e.stopPropagation(); /* Add message functionality */
+                            e.stopPropagation();
+                            navigate(`/messages/${friend._id}`);
                           }}
                         >
                           <svg
@@ -961,7 +962,8 @@ function MyFriends({ user }) {
                       <button
                         className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                         onClick={(e) => {
-                          e.stopPropagation(); /* Add message functionality */
+                          e.stopPropagation();
+                          navigate(`/messages/${friend._id}`);
                         }}
                       >
                         <svg

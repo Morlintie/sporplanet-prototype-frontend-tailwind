@@ -28,6 +28,12 @@ export const AuthProvider = ({ children }) => {
   const [participantAdverts, setParticipantAdverts] = useState([]);
   const [currentViewingAdvertId, setCurrentViewingAdvertId] = useState(null);
 
+  // Direct messages unseen state
+  const [unseenDirectMessages, setUnseenDirectMessages] = useState({});
+  const [unseenDirectMessageSenders, setUnseenDirectMessageSenders] = useState(
+    []
+  );
+
   // Friend request viewing state
   const [isViewingFriendRequests, setIsViewingFriendRequests] = useState(false);
 
@@ -183,6 +189,80 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Fetch unseen direct messages for authenticated user
+  const fetchUnseenDirectMessages = async () => {
+    try {
+      console.log("Fetching unseen direct messages...");
+
+      const response = await fetch("/api/v1/chat/unseen", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Unseen direct messages fetched successfully:", data);
+        setUnseenDirectMessages(data.messages || {});
+        setUnseenDirectMessageSenders(data.senders || []);
+      } else {
+        // Handle error cases gracefully (don't show error to user)
+        let errorMessage = "Failed to fetch unseen direct messages";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Geçersiz istek";
+              break;
+            case 401:
+              errorMessage = "Yetki hatası";
+              break;
+            case 403:
+              errorMessage = "Bu işlemi yapma yetkiniz yok";
+              break;
+            case 404:
+              errorMessage = "Mesaj bilgileri bulunamadı";
+              break;
+            case 429:
+              errorMessage = "Çok fazla istek";
+              break;
+            case 500:
+              errorMessage = "Sunucu hatası";
+              break;
+            default:
+              errorMessage = `Sunucu hatası: ${response.status}`;
+          }
+        }
+
+        console.warn("Failed to fetch unseen direct messages:", errorMessage);
+        setUnseenDirectMessages({});
+        setUnseenDirectMessageSenders([]);
+      }
+    } catch (error) {
+      console.error("Error fetching unseen direct messages:", error);
+
+      // Handle network errors
+      let errorMessage = "Ağ hatası oluştu";
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        errorMessage =
+          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin.";
+      }
+
+      console.warn(
+        "Network error fetching unseen direct messages:",
+        errorMessage
+      );
+      setUnseenDirectMessages({});
+      setUnseenDirectMessageSenders([]);
+    }
+  };
+
   // Check user authentication status
   const checkAuth = async () => {
     setLoading(true);
@@ -202,6 +282,7 @@ export const AuthProvider = ({ children }) => {
         console.log("User authenticated successfully:", data);
 
         if (data.user) {
+          // Set user data and authentication state first
           setUser(data.user);
           setFollowerCount(data.followerCount || 0);
           setIsAuthenticated(true);
@@ -211,17 +292,23 @@ export const AuthProvider = ({ children }) => {
             setShowArchivedUserPopup(true);
           }
 
-          // Fetch unseen messages for authenticated user
-          await fetchUnseenMessages();
-
-          // Fetch unseen invitations count for authenticated user
-          await fetchUnseenInvitationsCount();
+          // Fetch unseen data in parallel without affecting user state
+          Promise.all([
+            fetchUnseenMessages(),
+            fetchUnseenDirectMessages(),
+            fetchUnseenInvitationsCount(),
+          ]).catch((error) => {
+            console.error("Error fetching unseen data:", error);
+            // Don't fail authentication if unseen data fetch fails
+          });
         } else {
           setUser(null);
           setFollowerCount(0);
           setIsAuthenticated(false);
           setUnseenMessages({});
           setParticipantAdverts([]);
+          setUnseenDirectMessages({});
+          setUnseenDirectMessageSenders([]);
           setUnseenInvitationsCount(0);
         }
       } else {
@@ -316,6 +403,8 @@ export const AuthProvider = ({ children }) => {
       setUnseenMessages({});
       setParticipantAdverts([]);
       setCurrentViewingAdvertId(null);
+      setUnseenDirectMessages({});
+      setUnseenDirectMessageSenders([]);
       setUnseenInvitationsCount(0);
 
       console.log("User authentication state cleared");
@@ -331,11 +420,15 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
     console.log("User logged in successfully:", userData);
 
-    // Fetch unseen messages after login
-    await fetchUnseenMessages();
-
-    // Fetch unseen invitations count after login
-    await fetchUnseenInvitationsCount();
+    // Fetch unseen data in parallel without affecting user state
+    Promise.all([
+      fetchUnseenMessages(),
+      fetchUnseenDirectMessages(),
+      fetchUnseenInvitationsCount(),
+    ]).catch((error) => {
+      console.error("Error fetching unseen data during login:", error);
+      // Don't fail login if unseen data fetch fails
+    });
   };
 
   // Update user data (for profile updates)
@@ -414,6 +507,8 @@ export const AuthProvider = ({ children }) => {
       setShowArchivedUserPopup(false);
       setUnseenMessages({});
       setParticipantAdverts([]);
+      setUnseenDirectMessages({});
+      setUnseenDirectMessageSenders([]);
       setUnseenInvitationsCount(0);
       console.log("User authentication state cleared");
     }
@@ -581,12 +676,28 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
+  // Calculate total unseen direct messages count
+  const getTotalUnseenDirectMessagesCount = () => {
+    return Object.values(unseenDirectMessages).reduce(
+      (total, count) => total + count,
+      0
+    );
+  };
+
   // Refresh unseen messages (can be called from components)
   const refreshUnseenMessages = async () => {
     if (isAuthenticated) {
       await fetchUnseenMessages();
     }
   };
+
+  // Refresh unseen direct messages (can be called from components)
+  const refreshUnseenDirectMessages = useCallback(async () => {
+    if (isAuthenticated) {
+      console.log("Refreshing unseen direct messages...");
+      await fetchUnseenDirectMessages();
+    }
+  }, [isAuthenticated]);
 
   // Clear unseen messages for a specific advert (when user visits advert page)
   const clearUnseenMessagesForAdvert = useCallback(
@@ -643,10 +754,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Increment unseen invitations count (when new invitation received via WebSocket)
-  const incrementUnseenInvitationsCount = () => {
+  const incrementUnseenInvitationsCount = useCallback(() => {
     setUnseenInvitationsCount((prevCount) => prevCount + 1);
     console.log("Unseen invitations count incremented by 1");
-  };
+  }, []);
 
   // Decrement unseen invitations count (when user accepts/declines invitation)
   const decrementUnseenInvitationsCount = () => {
@@ -665,9 +776,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Check if user is currently viewing "Gelen Davetler" "Güncel"
-  const isCurrentlyViewingIncomingCurrentInvitations = () => {
+  const isCurrentlyViewingIncomingCurrentInvitations = useCallback(() => {
     return isViewingIncomingCurrentInvitations;
-  };
+  }, [isViewingIncomingCurrentInvitations]);
 
   // Update follower count (+1 when user accepts someone's friend request)
   const incrementFollowerCount = () => {
@@ -805,64 +916,70 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Add unseen message for an advert (called when newMessage received via WebSocket)
-  const addUnseenMessageForAdvert = (advertId) => {
-    // Only increment if user is not currently viewing this specific advert
-    if (advertId && advertId !== currentViewingAdvertId) {
-      // Check if user is actually a participant of this advert
-      const isParticipant = participantAdverts.some(
-        (advert) => advert._id === advertId
-      );
+  const addUnseenMessageForAdvert = useCallback(
+    (advertId) => {
+      // Only increment if user is not currently viewing this specific advert
+      if (advertId && advertId !== currentViewingAdvertId) {
+        // Check if user is actually a participant of this advert
+        const isParticipant = participantAdverts.some(
+          (advert) => advert._id === advertId
+        );
 
-      if (isParticipant) {
-        setUnseenMessages((prev) => ({
-          ...prev,
-          [advertId]: (prev[advertId] || 0) + 1,
-        }));
-        console.log(`Added unseen message for advert: ${advertId}`);
-      } else {
+        if (isParticipant) {
+          setUnseenMessages((prev) => ({
+            ...prev,
+            [advertId]: (prev[advertId] || 0) + 1,
+          }));
+          console.log(`Added unseen message for advert: ${advertId}`);
+        } else {
+          console.log(
+            `User is not a participant of advert: ${advertId}, not adding unseen message`
+          );
+        }
+      } else if (advertId === currentViewingAdvertId) {
         console.log(
-          `User is not a participant of advert: ${advertId}, not adding unseen message`
+          `User is currently viewing advert: ${advertId}, not marking as unseen`
         );
       }
-    } else if (advertId === currentViewingAdvertId) {
-      console.log(
-        `User is currently viewing advert: ${advertId}, not marking as unseen`
-      );
-    }
-  };
+    },
+    [currentViewingAdvertId, participantAdverts]
+  );
 
   // Friend request management functions
-  const addOutgoingFriendRequest = (recipientUser) => {
-    if (!user || !recipientUser) return;
+  const addOutgoingFriendRequest = useCallback(
+    (recipientUser) => {
+      if (!user || !recipientUser) return;
 
-    setUser((prevUser) => {
-      if (!prevUser) return prevUser;
+      setUser((prevUser) => {
+        if (!prevUser) return prevUser;
 
-      // Check if request already exists
-      const exists = prevUser.selfFriendRequests?.some(
-        (req) => req._id === recipientUser._id
-      );
-      if (exists) {
+        // Check if request already exists
+        const exists = prevUser.selfFriendRequests?.some(
+          (req) => req._id === recipientUser._id
+        );
+        if (exists) {
+          console.log(
+            "Outgoing friend request already exists for user:",
+            recipientUser.name
+          );
+          return prevUser;
+        }
+
         console.log(
-          "Outgoing friend request already exists for user:",
+          "Adding outgoing friend request to AuthContext for user:",
           recipientUser.name
         );
-        return prevUser;
-      }
-
-      console.log(
-        "Adding outgoing friend request to AuthContext for user:",
-        recipientUser.name
-      );
-      return {
-        ...prevUser,
-        selfFriendRequests: [
-          ...(prevUser.selfFriendRequests || []),
-          recipientUser,
-        ],
-      };
-    });
-  };
+        return {
+          ...prevUser,
+          selfFriendRequests: [
+            ...(prevUser.selfFriendRequests || []),
+            recipientUser,
+          ],
+        };
+      });
+    },
+    [user]
+  );
 
   const addIncomingFriendRequest = useCallback((senderUser) => {
     if (!senderUser) return;
@@ -898,24 +1015,27 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  const removeOutgoingFriendRequest = (recipientUserId) => {
-    if (!user || !recipientUserId) return;
+  const removeOutgoingFriendRequest = useCallback(
+    (recipientUserId) => {
+      if (!user || !recipientUserId) return;
 
-    setUser((prevUser) => {
-      if (!prevUser) return prevUser;
+      setUser((prevUser) => {
+        if (!prevUser) return prevUser;
 
-      console.log(
-        "Removing outgoing friend request from AuthContext for user:",
-        recipientUserId
-      );
-      return {
-        ...prevUser,
-        selfFriendRequests: (prevUser.selfFriendRequests || []).filter(
-          (req) => req._id !== recipientUserId
-        ),
-      };
-    });
-  };
+        console.log(
+          "Removing outgoing friend request from AuthContext for user:",
+          recipientUserId
+        );
+        return {
+          ...prevUser,
+          selfFriendRequests: (prevUser.selfFriendRequests || []).filter(
+            (req) => req._id !== recipientUserId
+          ),
+        };
+      });
+    },
+    [user]
+  );
 
   const removeIncomingFriendRequest = useCallback((senderUserId) => {
     if (!senderUserId) return;
@@ -936,36 +1056,39 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  const acceptFriendRequest = (senderUserId) => {
-    if (!user || !senderUserId) return;
+  const acceptFriendRequest = useCallback(
+    (senderUserId) => {
+      if (!user || !senderUserId) return;
 
-    setUser((prevUser) => {
-      if (!prevUser) return prevUser;
+      setUser((prevUser) => {
+        if (!prevUser) return prevUser;
 
-      console.log(
-        "Accepting friend request - removing from incoming requests and adding to friends for user:",
-        senderUserId
-      );
+        console.log(
+          "Accepting friend request - removing from incoming requests and adding to friends for user:",
+          senderUserId
+        );
 
-      // Find the sender user data before removing from friendRequests
-      const senderUserData = prevUser.friendRequests?.find(
-        (req) => req.user._id === senderUserId
-      )?.user;
+        // Find the sender user data before removing from friendRequests
+        const senderUserData = prevUser.friendRequests?.find(
+          (req) => req.user._id === senderUserId
+        )?.user;
 
-      console.log("Found sender user data for acceptance:", senderUserData);
+        console.log("Found sender user data for acceptance:", senderUserData);
 
-      // Remove from incoming requests AND add to friends list
-      return {
-        ...prevUser,
-        friendRequests: (prevUser.friendRequests || []).filter(
-          (req) => req.user._id !== senderUserId
-        ),
-        friends: senderUserData
-          ? [...(prevUser.friends || []), senderUserData]
-          : prevUser.friends,
-      };
-    });
-  };
+        // Remove from incoming requests AND add to friends list
+        return {
+          ...prevUser,
+          friendRequests: (prevUser.friendRequests || []).filter(
+            (req) => req.user._id !== senderUserId
+          ),
+          friends: senderUserData
+            ? [...(prevUser.friends || []), senderUserData]
+            : prevUser.friends,
+        };
+      });
+    },
+    [user]
+  );
 
   const addFriend = useCallback((friendUser) => {
     if (!friendUser) return;
@@ -1057,6 +1180,12 @@ export const AuthProvider = ({ children }) => {
     clearUnseenMessagesForAdvert,
     setCurrentlyViewingAdvert,
     addUnseenMessageForAdvert,
+
+    // Unseen direct messages state
+    unseenDirectMessages,
+    unseenDirectMessageSenders,
+    getTotalUnseenDirectMessagesCount,
+    refreshUnseenDirectMessages,
 
     // Friend request viewing and unseen management
     isViewingFriendRequests,

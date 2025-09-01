@@ -32,6 +32,10 @@ export const WebSocketProvider = ({ children }) => {
     removeFriend,
     incrementUnseenInvitationsCount,
     isCurrentlyViewingIncomingCurrentInvitations,
+    refreshUnseenDirectMessages,
+    unseenDirectMessages,
+    unseenDirectMessageSenders,
+    applyBlockingLogic,
   } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -544,6 +548,7 @@ export const WebSocketProvider = ({ children }) => {
     removeFriend,
     incrementUnseenInvitationsCount,
     isCurrentlyViewingIncomingCurrentInvitations,
+    refreshUnseenDirectMessages,
   ]);
 
   // Auto-join advert chat rooms when chat connection is established and user is authenticated
@@ -617,6 +622,73 @@ export const WebSocketProvider = ({ children }) => {
       };
     }
   }, [isChatConnected, chatSocket, user?._id, addUnseenMessageForAdvert]);
+
+  // Global privateMessage listener for real-time unseen DM tracking
+  useEffect(() => {
+    if (
+      isChatConnected &&
+      chatSocket &&
+      user &&
+      user._id &&
+      refreshUnseenDirectMessages
+    ) {
+      console.log(
+        "Setting up global privateMessage listener for unseen DM tracking"
+      );
+
+      const handlePrivateMessage = (data) => {
+        console.log("Global privateMessage received:", data);
+
+        if (data && data.message) {
+          const message = data.message;
+
+          // Only count as unseen if message is NOT sent by current user
+          if (message.sender && message.sender._id !== user._id) {
+            console.log(
+              `Private message from ${message.sender._id}, not from current user ${user._id}, checking if should be marked unseen`
+            );
+
+            // Check if user is currently viewing this specific sender's DirectMessaging page
+            const currentPath = window.location.pathname;
+            const isViewingThisSenderChat =
+              currentPath === `/messages/${message.sender._id}`;
+
+            if (isViewingThisSenderChat) {
+              console.log(
+                `🔔 UNSEEN DM COUNT: User is currently viewing chat with ${message.sender._id}, message will be seen immediately - no increment needed`
+              );
+            } else {
+              console.log(
+                `🔔 UNSEEN DM COUNT: User is NOT viewing chat with ${message.sender._id}, refreshing unseen DM data`
+              );
+
+              // Show global notification about new message
+              const senderName = message.sender.name || "Bilinmeyen kullanıcı";
+              showGlobalNotification(
+                `${senderName} size bir mesaj gönderdi`,
+                "info"
+              );
+
+              // Refresh unseen direct messages to get updated counts
+              refreshUnseenDirectMessages();
+            }
+          } else {
+            console.log(
+              `Private message from current user ${user._id}, not marking as unseen`
+            );
+          }
+        }
+      };
+
+      chatSocket.on("privateMessage", handlePrivateMessage);
+
+      // Cleanup function
+      return () => {
+        console.log("Cleaning up global privateMessage listener");
+        chatSocket.off("privateMessage", handlePrivateMessage);
+      };
+    }
+  }, [isChatConnected, chatSocket, user?._id, refreshUnseenDirectMessages]);
 
   // Helper functions - memoized to prevent unnecessary re-renders
   const isUserOnline = useCallback(

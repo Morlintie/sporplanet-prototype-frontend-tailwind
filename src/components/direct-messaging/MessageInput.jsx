@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function MessageInput({
   targetUser,
@@ -6,9 +6,12 @@ function MessageInput({
   isChatConnected,
   onSendMessage,
   showNotification,
+  onStartTyping,
+  onStopTyping,
 }) {
   const [newMessage, setNewMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isCurrentlyTyping, setIsCurrentlyTyping] = useState(false);
   const fileInputRef = useRef(null);
 
   // Handle file selection for attachments
@@ -61,6 +64,27 @@ function MessageInput({
     setSelectedFiles((prev) => prev.filter((file) => file.id !== fileId));
   };
 
+  // Handle typing detection based on input field content
+  useEffect(() => {
+    const hasContent = newMessage.trim().length > 0;
+
+    if (hasContent && !isCurrentlyTyping) {
+      // User started typing (has content and wasn't typing before)
+      console.log("DirectMessaging: User started typing - input has content");
+      setIsCurrentlyTyping(true);
+      if (onStartTyping) {
+        onStartTyping();
+      }
+    } else if (!hasContent && isCurrentlyTyping) {
+      // User stopped typing (no content and was typing before)
+      console.log("DirectMessaging: User stopped typing - input is empty");
+      setIsCurrentlyTyping(false);
+      if (onStopTyping) {
+        onStopTyping();
+      }
+    }
+  }, [newMessage, isCurrentlyTyping, onStartTyping, onStopTyping]);
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,6 +104,14 @@ function MessageInput({
     // Clear form
     setNewMessage("");
     setSelectedFiles([]);
+
+    // Reset typing state since message is being sent
+    if (isCurrentlyTyping) {
+      setIsCurrentlyTyping(false);
+      if (onStopTyping) {
+        onStopTyping();
+      }
+    }
 
     // Call parent handler
     await onSendMessage({

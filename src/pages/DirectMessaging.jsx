@@ -16,9 +16,11 @@ function DirectMessaging() {
     user: currentUser,
     getProfilePictureUrl,
     isAuthenticated,
+    loading: authLoading,
   } = useAuth();
   const { emitChatEvent, listenForChatEvent, isChatConnected, isUserOnline } =
     useWebSocket();
+  const { refreshUnseenDirectMessages } = useAuth();
 
   // State management
   const [targetUser, setTargetUser] = useState(null);
@@ -29,6 +31,7 @@ function DirectMessaging() {
   const [editingMessageId, setEditingMessageId] = useState(null); // ID of message being edited
   const [editingText, setEditingText] = useState(""); // Text content for editing
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
+  const [isTypingUser, setIsTypingUser] = useState(null); // User ID who is currently typing
 
   // Notification state
   const [notification, setNotification] = useState({
@@ -91,6 +94,9 @@ function DirectMessaging() {
       "You cannot delete messages for the users that you blocked":
         "Engellediğiniz kullanıcılar için mesaj silemezsiniz",
       "User not found": "Kullanıcı bulunamadı",
+
+      // Mark messages as seen specific errors
+      "Please provide required data": "Gerekli bilgileri sağlayın",
     };
 
     return (
@@ -609,8 +615,117 @@ function DirectMessaging() {
     setEditingText(newText);
   };
 
+  // Handle typing events for private messages
+  const handleStartTyping = () => {
+    if (isChatConnected && userId && currentUser && currentUser._id) {
+      console.log(
+        `DirectMessaging: Emitting typingPrivate event for user ${currentUser._id} to ${userId}`
+      );
+      emitChatEvent("typingPrivate", {
+        userId: currentUser._id,
+        receiverId: userId,
+      });
+    }
+  };
+
+  const handleStopTyping = () => {
+    if (isChatConnected && userId && currentUser && currentUser._id) {
+      console.log(
+        `DirectMessaging: Emitting stopTypingPrivate event for user ${currentUser._id} to ${userId}`
+      );
+      emitChatEvent("stopTypingPrivate", {
+        userId: currentUser._id,
+        receiverId: userId,
+      });
+    }
+  };
+
+  // Mark messages as seen
+  const markMessagesAsSeen = async (senderUserId) => {
+    if (!senderUserId) {
+      console.log("No sender user ID provided for marking messages as seen");
+      return;
+    }
+
+    try {
+      console.log("Marking messages as seen for sender:", senderUserId);
+
+      const response = await fetch(`/api/v1/chat/mark/${senderUserId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = "Mesajlar okundu olarak işaretlenirken hata oluştu";
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.msg || errorData.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status-based messages
+          switch (response.status) {
+            case 400:
+              errorMessage = "Gerekli bilgileri sağlayın";
+              break;
+            case 401:
+              errorMessage = "Oturum süreniz dolmuş. Lütfen tekrar giriş yapın";
+              break;
+            case 403:
+              errorMessage =
+                "Bu mesajları okundu olarak işaretleme yetkiniz yok";
+              break;
+            case 404:
+              errorMessage = "Kullanıcı bulunamadı";
+              break;
+            case 429:
+              errorMessage = "Çok fazla istek. Lütfen biraz bekleyin";
+              break;
+            case 500:
+              errorMessage =
+                "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin";
+              break;
+            default:
+              errorMessage = `Sunucu hatası: ${response.status}`;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Messages marked as seen successfully:", data);
+
+      // Refresh unseen direct messages to update UI
+      await refreshUnseenDirectMessages();
+    } catch (err) {
+      console.error("Error marking messages as seen:", err);
+
+      // Enhanced error handling with Turkish messages
+      let errorMessage = "Mesajlar okundu olarak işaretlenirken hata oluştu";
+
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        errorMessage =
+          "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin";
+      } else if (err.message) {
+        errorMessage = translateMessage(err.message);
+      }
+
+      // Only show error notification for critical errors, not for minor issues
+      console.error("Mark as seen error:", errorMessage);
+      // Don't show notification to user as this is a background operation
+    }
+  };
+
   // Initialize chat when component mounts
   useEffect(() => {
+    // Don't redirect during auth loading
+    if (authLoading) {
+      return;
+    }
+
     if (!isAuthenticated) {
       navigate("/login");
       return;
@@ -630,7 +745,10 @@ function DirectMessaging() {
 
     fetchTargetUser(userId);
     fetchChatHistory(userId);
-  }, [userId, currentUser, isAuthenticated, navigate]);
+
+    // Mark messages as seen when entering this chat
+    markMessagesAsSeen(userId);
+  }, [userId, currentUser, isAuthenticated, authLoading, navigate]);
 
   // Set up WebSocket listeners for real-time messages
   useEffect(() => {
@@ -649,6 +767,9 @@ function DirectMessaging() {
             console.log("Adding received private message to chat:", message);
             setMessages((prev) => [...prev, message]);
             setShouldScrollToBottom(true);
+
+            // Mark this message as seen since user is currently viewing this chat
+            markMessagesAsSeen(userId);
           } else {
             console.log("Private message not from current chat user, ignoring");
           }
@@ -733,22 +854,69 @@ function DirectMessaging() {
         handleIndividualMessageDeleted
       );
 
+      // Listen for private typing events
+      const handleTypingInPrivate = (data) => {
+        console.log("Received typingInPrivate event:", data);
+
+        if (data && data.userId) {
+          // Only show typing indicator if it's from the user we're chatting with
+          if (data.userId === userId) {
+            console.log(`User ${data.userId} started typing in private chat`);
+            setIsTypingUser(data.userId);
+          } else {
+            console.log(
+              `Typing from different user ${data.userId}, ignoring (current chat: ${userId})`
+            );
+          }
+        }
+      };
+
+      const handleStopTypingInPrivate = (data) => {
+        console.log("Received stopTypingInPrivate event:", data);
+
+        if (data && data.userId) {
+          // Only remove typing indicator if it's from the user we're chatting with
+          if (data.userId === userId) {
+            console.log(`User ${data.userId} stopped typing in private chat`);
+            setIsTypingUser(null);
+          } else {
+            console.log(
+              `Stop typing from different user ${data.userId}, ignoring (current chat: ${userId})`
+            );
+          }
+        }
+      };
+
+      const cleanupTypingInPrivate = listenForChatEvent(
+        "typingInPrivate",
+        handleTypingInPrivate
+      );
+
+      const cleanupStopTypingInPrivate = listenForChatEvent(
+        "stopTypingInPrivate",
+        handleStopTypingInPrivate
+      );
+
       // Cleanup function
       return () => {
         cleanupPrivateMessage();
         cleanupPrivateMessageEdited();
         cleanupIndividualMessageDeleted();
+        cleanupTypingInPrivate();
+        cleanupStopTypingInPrivate();
       };
     }
   }, [isChatConnected, userId, listenForChatEvent]);
 
-  // Loading state
-  if (loading) {
+  // Loading state (both auth loading and component loading)
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-16">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Sohbet yükleniyor...</p>
+          <p className="mt-4 text-gray-600">
+            {authLoading ? "Kimlik doğrulanıyor..." : "Sohbet yükleniyor..."}
+          </p>
         </div>
       </div>
     );
@@ -806,6 +974,7 @@ function DirectMessaging() {
                 onCancelEdit={handleCancelEdit}
                 shouldScrollToBottom={shouldScrollToBottom}
                 showNotification={showNotification}
+                isTypingUser={isTypingUser}
               />
             </div>
           </div>
@@ -818,6 +987,8 @@ function DirectMessaging() {
           isChatConnected={isChatConnected}
           onSendMessage={handleSendMessage}
           showNotification={showNotification}
+          onStartTyping={handleStartTyping}
+          onStopTyping={handleStopTyping}
         />
       </div>
 
