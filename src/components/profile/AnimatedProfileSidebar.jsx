@@ -12,6 +12,7 @@ function AnimatedProfileSidebar() {
     getTotalUnseenCount,
     getUnseenFriendRequestsCount,
     getUnseenInvitationsCount,
+    getTotalUnseenDirectMessagesCount,
   } = useAuth();
   const navigate = useNavigate();
   const [showAuthPopup, setShowAuthPopup] = useState(false);
@@ -392,6 +393,15 @@ function AnimatedProfileSidebar() {
                       getUnseenInvitationsCount() > 0 && (
                         <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
                           {getUnseenInvitationsCount()}
+                        </span>
+                      )}
+
+                    {/* Show unseen direct messages count for Mesajlar */}
+                    {item.id === "messages" &&
+                      isAuthenticated &&
+                      getTotalUnseenDirectMessagesCount() > 0 && (
+                        <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                          {getTotalUnseenDirectMessagesCount()}
                         </span>
                       )}
 

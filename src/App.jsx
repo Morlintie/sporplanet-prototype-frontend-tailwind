@@ -15,6 +15,7 @@ import UserProfilePage from "./pages/UserProfilePage";
 import FollowersPage from "./pages/FollowersPage";
 import FollowingPage from "./pages/FollowingPage";
 import AdvertDetailPage from "./pages/AdvertDetailPage";
+import DirectMessaging from "./pages/DirectMessaging";
 import PrivateInvitePage from "./pages/PrivateInvitePage";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
@@ -51,6 +52,7 @@ function AppContent() {
         <Route path="/followers" element={<FollowersPage />} />
         <Route path="/following" element={<FollowingPage />} />
         <Route path="/user/:userId" element={<UserProfilePage />} />
+        <Route path="/messages/:userId" element={<DirectMessaging />} />
         <Route path="/auth/google-failure" element={<GoogleFailure />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
