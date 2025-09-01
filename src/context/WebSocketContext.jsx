@@ -349,22 +349,16 @@ export const WebSocketProvider = ({ children }) => {
         notificationSocketInstance.on("friendRequestAccepted", (data) => {
           console.log("Received global friendRequestAccepted event:", data);
 
-          if (data && data.userId) {
-            // The data.userId is the _id of the user who ACCEPTED our friend request
-            // We need to find this user in our selfFriendRequests (outgoing requests)
-            const acceptedUser = user?.selfFriendRequests?.find(
-              (req) => req._id === data.userId
-            );
-
-            console.log("Looking for accepted user with ID:", data.userId);
-            console.log(
-              "Current selfFriendRequests:",
-              user?.selfFriendRequests
-            );
-            console.log("Found accepted user:", acceptedUser);
-
+          if (data && data.user) {
+            // New data structure: { user: newCurrentUser }
+            // data.user is the FULL user data of the person who ACCEPTED our friend request
+            const acceptedUser = data.user;
+            const acceptedUserId = acceptedUser._id;
             const acceptedUserName =
-              acceptedUser?.name || "Bilinmeyen kullanıcı";
+              acceptedUser.name || "Bilinmeyen kullanıcı";
+
+            console.log("Friend request accepted by user:", acceptedUserId);
+            console.log("Accepted user data:", acceptedUser);
 
             // Show global notification
             showGlobalNotification(
@@ -373,11 +367,8 @@ export const WebSocketProvider = ({ children }) => {
             );
 
             // Update state: Remove from selfFriendRequests and add the accepter to friends
-            removeFriendRequest(data.userId);
-
-            if (acceptedUser) {
-              addFriend(acceptedUser);
-            }
+            removeFriendRequest(acceptedUserId);
+            addFriend(acceptedUser);
           }
         });
 

@@ -425,12 +425,19 @@ function AddFriends({ user }) {
           data
         );
 
-        if (data && data.userId) {
-          // data.userId is the ID of the user who ACCEPTED our friend request
+        if (data && data.user) {
+          // New data structure: { user: newCurrentUser }
+          // data.user is the FULL user data of the person who ACCEPTED our friend request
+          const acceptedUser = data.user;
+          const acceptedUserId = acceptedUser._id;
+
+          console.log("Friend request accepted by user:", acceptedUserId);
+          console.log("Accepted user data:", acceptedUser);
+
           // Update search results to reflect the accepted request
           setSearchResults((prevResults) =>
             prevResults.map((searchUser) => {
-              if (searchUser._id === data.userId) {
+              if (searchUser._id === acceptedUserId) {
                 return { ...searchUser, isPending: false, isFollowing: true };
               }
               return searchUser;

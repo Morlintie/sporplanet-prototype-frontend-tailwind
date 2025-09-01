@@ -585,10 +585,21 @@ function UserProfilePage() {
           data
         );
 
-        if (data && data.userId) {
-          // When our friend request gets accepted, the user becomes our friend
-          // AuthContext is updated globally, but we can show a local notification
-          showNotification("Arkadaşlık isteği kabul edildi!", "success");
+        if (data && data.user) {
+          // New data structure: { user: newCurrentUser }
+          // data.user is the FULL user data of the person who ACCEPTED our friend request
+          const acceptedUser = data.user;
+          const acceptedUserId = acceptedUser._id;
+          const acceptedUserName = acceptedUser.name || "Kullanıcı";
+
+          console.log("Friend request accepted by user:", acceptedUserId);
+          console.log("Accepted user data:", acceptedUser);
+
+          // Show local notification with the user's name
+          showNotification(
+            `${acceptedUserName} arkadaşlık isteğini kabul etti!`,
+            "success"
+          );
         }
       };
 
