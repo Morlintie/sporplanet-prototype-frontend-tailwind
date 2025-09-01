@@ -943,17 +943,26 @@ export const AuthProvider = ({ children }) => {
       if (!prevUser) return prevUser;
 
       console.log(
-        "Removing friend request from incoming requests for user:",
+        "Accepting friend request - removing from incoming requests and adding to friends for user:",
         senderUserId
       );
 
-      // Remove from incoming friend requests only
-      // Note: Adding to friends is handled separately via addFriend() call
+      // Find the sender user data before removing from friendRequests
+      const senderUserData = prevUser.friendRequests?.find(
+        (req) => req.user._id === senderUserId
+      )?.user;
+
+      console.log("Found sender user data for acceptance:", senderUserData);
+
+      // Remove from incoming requests AND add to friends list
       return {
         ...prevUser,
         friendRequests: (prevUser.friendRequests || []).filter(
           (req) => req.user._id !== senderUserId
         ),
+        friends: senderUserData
+          ? [...(prevUser.friends || []), senderUserData]
+          : prevUser.friends,
       };
     });
   };

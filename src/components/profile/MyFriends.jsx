@@ -441,28 +441,18 @@ function MyFriends({ user }) {
       console.log("Friend request accepted successfully:", data);
 
       // Update AuthContext with the response data
-      // The HTTP response contains { userId: id, accepted: true }
-      // Where userId is the ID of the user whose friend request we accepted
-      if (data && data.userId && data.accepted === true) {
+      // New HTTP response structure: { user: newSendUser, accepted: true }
+      // Where user is the FULL user data of the person whose friend request we accepted
+      if (data && data.user && data.accepted === true) {
         console.log(
-          "HTTP response - accepting friend request for user:",
-          data.userId
+          "HTTP response - accepting friend request from user:",
+          data.user._id,
+          "User data:",
+          data.user
         );
 
-        // Find the user data before removing from incoming requests
-        const acceptedUser = user?.friendRequests?.find(
-          (request) => request.user._id === data.userId
-        );
-
-        console.log("Found accepted user in incoming requests:", acceptedUser);
-
-        // Remove from incoming requests (acceptFriendRequest only removes, doesn't add to friends)
-        acceptFriendRequest(data.userId);
-
-        // Add the accepted user to our friends list
-        if (acceptedUser && acceptedUser.user) {
-          addFriend(acceptedUser.user);
-        }
+        // The acceptFriendRequest function now handles both removing from incoming requests AND adding to friends
+        acceptFriendRequest(data.user._id);
 
         // Increment follower count since user accepted someone's friend request
         incrementFollowerCount();
