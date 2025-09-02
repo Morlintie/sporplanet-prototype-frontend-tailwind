@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWebSocket } from "../context/WebSocketContext";
 import Header from "../components/shared/Header";
@@ -12,6 +12,7 @@ import UserFriends from "../components/user-profile/UserFriends";
 
 function UserProfilePage() {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const {
     isAuthenticated,
     addOutgoingFriendRequest,
@@ -210,7 +211,7 @@ function UserProfilePage() {
   };
 
   // Handle send message - navigate to DM page
-  const handleSendMessage = async (targetUserId) => {
+  const handleSendMessage = (targetUserId) => {
     navigate(`/messages/${targetUserId}`);
   };
 

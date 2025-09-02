@@ -2,7 +2,13 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 
 function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
-  const { user, getUserFriends, getBookings } = useAuth();
+  const {
+    user,
+    getUserFriends,
+    getBookings,
+    addCreatedAdvert,
+    getProfilePictureUrl,
+  } = useAuth();
 
   // Modal state - 3 steps for booking: choice -> booking-select -> booking-form, 2 steps for custom: choice -> custom
   const [step, setStep] = useState("choice");
@@ -242,7 +248,9 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
           booking: selectedBooking._id,
           playersNeeded: playersNeeded,
           goalKeepersNeeded: goalKeepersNeeded,
-          participants: formData.participants,
+          participants: formData.participants.map((userId) => ({
+            user: userId,
+          })),
           notes: formData.notes,
           adminAdvert: formData.adminAdvert,
           isRivalry: formData.isRivalry,
@@ -281,7 +289,9 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
           startsAt: formData.startsAt,
           playersNeeded: playersNeeded,
           goalKeepersNeeded: goalKeepersNeeded,
-          participants: formData.participants,
+          participants: formData.participants.map((userId) => ({
+            user: userId,
+          })),
           notes: formData.notes,
           adminAdvert: formData.adminAdvert,
           isRivalry: formData.isRivalry,
@@ -307,6 +317,12 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
 
       const data = await response.json();
       console.log("Advert created successfully:", data);
+
+      // Add the created advert to user's participation using the new response data
+      if (data.advert) {
+        addCreatedAdvert(data.advert);
+        console.log("Added created advert to participation:", data.advert.name);
+      }
 
       setNotification({
         show: true,
@@ -705,6 +721,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
           onFriendSelect={handleFriendSelection}
           onClose={() => setShowFriendsModal(false)}
           title="Katılımcı Seç"
+          getProfilePictureUrl={getProfilePictureUrl}
         />
       )}
 
@@ -719,6 +736,7 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
           onClose={() => setShowAdminModal(false)}
           title="Admin Seç"
           subtitle="Sadece katılımcılar admin olarak seçilebilir"
+          getProfilePictureUrl={getProfilePictureUrl}
         />
       )}
     </div>
@@ -1581,6 +1599,7 @@ function FriendsSelectionModal({
   onClose,
   title,
   subtitle,
+  getProfilePictureUrl,
 }) {
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-60 p-4">
@@ -1625,10 +1644,35 @@ function FriendsSelectionModal({
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-sm font-medium text-gray-600">
-                          {friend.name?.charAt(0)?.toUpperCase() || "?"}
-                        </span>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 overflow-hidden">
+                        {getProfilePictureUrl &&
+                        getProfilePictureUrl(friend.profilePicture) ? (
+                          <img
+                            src={getProfilePictureUrl(friend.profilePicture)}
+                            alt={friend.name || "Profil"}
+                            className="w-8 h-8 rounded-full object-cover"
+                            onError={(e) => {
+                              // Fallback to initials if image fails to load
+                              e.target.style.display = "none";
+                              e.target.nextElementSibling.style.display =
+                                "flex";
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center"
+                          style={{
+                            display:
+                              getProfilePictureUrl &&
+                              getProfilePictureUrl(friend.profilePicture)
+                                ? "none"
+                                : "flex",
+                          }}
+                        >
+                          <span className="text-sm font-medium text-gray-600">
+                            {friend.name?.charAt(0)?.toUpperCase() || "?"}
+                          </span>
+                        </div>
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">

@@ -2,14 +2,19 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function MyListings({ user }) {
+function MyListings() {
   const [activeSection, setActiveSection] = useState("myAdverts"); // myAdverts, joinedAdverts, waitingRequests
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
-  const { user: authUser, unseenMessages } = useAuth();
+  const {
+    user: authUser,
+    unseenMessages,
+    getAdvertParticipation,
+    getAdvertWaitingList,
+  } = useAuth();
   const navigate = useNavigate();
 
-  // Use authenticated user data directly from AuthContext
+  // Use authenticated user data directly from AuthContext for real-time updates
   const currentUser = authUser;
 
   // Helper function to get status label and color
@@ -64,17 +69,17 @@ function MyListings({ user }) {
   const getTimeRange = (advert) => {
     const startTime = new Date(advert.startsAt);
     const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Add 1 hour
-    
+
     const startTimeStr = startTime.toLocaleTimeString("tr-TR", {
       hour: "2-digit",
       minute: "2-digit",
     });
-    
+
     const endTimeStr = endTime.toLocaleTimeString("tr-TR", {
       hour: "2-digit",
       minute: "2-digit",
     });
-    
+
     return `${startTimeStr} - ${endTimeStr}`;
   };
 
@@ -144,19 +149,19 @@ function MyListings({ user }) {
     switch (activeSection) {
       case "myAdverts":
         // İlanlarım - advertParticipation array'inde createdBy ID'si eşleşenler
-        return (currentUser.advertParticipation || []).filter(
+        return getAdvertParticipation().filter(
           (advert) => advert.createdBy === userId
         );
 
       case "joinedAdverts":
         // Katıldığım İlanlar - advertParticipation array'inde createdBy ID'si eşleşmeyenler
-        return (currentUser.advertParticipation || []).filter(
+        return getAdvertParticipation().filter(
           (advert) => advert.createdBy !== userId
         );
 
       case "waitingRequests":
         // Bekleyenler ve İstekler - advertWaitingList array'indeki ilanlar
-        return currentUser.advertWaitingList || [];
+        return getAdvertWaitingList();
 
       default:
         return [];
@@ -177,22 +182,27 @@ function MyListings({ user }) {
     setCurrentPage(1);
   }, [activeSection]);
 
-  // Calculate counts for all sections using AuthContext user data
+  // Calculate counts for all sections using AuthContext helper functions for real-time updates
   const sectionCounts = {
     myAdverts:
-      currentUser?.advertParticipation?.filter(
-        (advert) => advert.createdBy === currentUser._id
+      getAdvertParticipation().filter(
+        (advert) => advert.createdBy === currentUser?._id
       ).length || 0,
     joinedAdverts:
-      currentUser?.advertParticipation?.filter(
-        (advert) => advert.createdBy !== currentUser._id
+      getAdvertParticipation().filter(
+        (advert) => advert.createdBy !== currentUser?._id
       ).length || 0,
-    waitingRequests: currentUser?.advertWaitingList?.length || 0,
+    waitingRequests: getAdvertWaitingList().length || 0,
   };
 
   // Handle navigation to advert detail - force page refresh
   const handleViewDetails = (advertId) => {
-    console.log("Navigating to advert with page refresh:", advertId, "Unseen count:", unseenMessages[advertId] || 0);
+    console.log(
+      "Navigating to advert with page refresh:",
+      advertId,
+      "Unseen count:",
+      unseenMessages[advertId] || 0
+    );
     // Force page refresh for reliable navigation
     window.location.href = `/advert-detail/${advertId}`;
   };
@@ -297,9 +307,14 @@ function MyListings({ user }) {
           // Get waiting request status for waitingRequests section
           const waitingInfo =
             activeSection === "waitingRequests" && advert.waitingList
-              ? advert.waitingList.find(
-                  (waiting) => waiting.user === currentUser?._id
-                )
+              ? advert.waitingList.find((waiting) => {
+                  // Handle both populated and non-populated user structures
+                  const waitingUserId =
+                    typeof waiting.user === "object"
+                      ? waiting.user._id
+                      : waiting.user;
+                  return waitingUserId === currentUser?._id;
+                })
               : null;
 
           // Get unseen message count for this advert
@@ -467,9 +482,7 @@ function MyListings({ user }) {
                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span className="truncate">
-                    {getTimeRange(advert)}
-                  </span>
+                  <span className="truncate">{getTimeRange(advert)}</span>
                 </div>
 
                 <div className="flex items-center text-gray-600 text-sm">

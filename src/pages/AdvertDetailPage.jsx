@@ -26,7 +26,11 @@ function AdvertDetailPage() {
     user,
     loading: authLoading,
     clearUnseenMessagesForAdvert,
+    markAdvertMessagesAsSeen,
     setCurrentlyViewingAdvert,
+    addAdvertToWaitingList,
+    removeAdvertFromWaitingList,
+    removeAdvertFromParticipation,
   } = useAuth();
   const [advert, setAdvert] = useState(null);
 
@@ -491,8 +495,8 @@ function AdvertDetailPage() {
               );
               setMessages(processedMessages);
 
-              // Clear unseen messages for this advert since user is viewing them
-              clearUnseenMessagesForAdvert(advertId);
+              // Mark messages as seen in backend after successfully fetching them
+              await markAdvertMessagesAsSeen(advertId);
             } else {
               // Handle message fetch errors (but don't fail the whole page)
               console.warn(
@@ -1835,10 +1839,19 @@ function AdvertDetailPage() {
 
       const data = await response.json();
 
+      // Add advert to user's waiting list using the new response data
+      if (data.advert) {
+        addAdvertToWaitingList(data.advert);
+        console.log("Added advert to waiting list:", data.advert.name);
+      }
+
       // Show success notification
       showNotification("Katılım talebiniz başarıyla gönderildi", "success");
 
-      console.log("Join request successful:", data.message);
+      console.log(
+        "Join request successful:",
+        data.advert?.name || "Unknown advert"
+      );
     } catch (err) {
       console.error("Error sending join request:", err);
 
@@ -2295,7 +2308,12 @@ function AdvertDetailPage() {
       }
 
       const data = await response.json();
-      console.log("Leave advert successful:", data.message);
+
+      // Remove advert from user's participation using the new response data
+      if (data.advertId) {
+        removeAdvertFromParticipation(data.advertId);
+        console.log("Removed advert from participation:", data.advertId);
+      }
 
       // Leave chat room when user successfully leaves the advert
       if (isChatConnected && user && user._id) {
@@ -2306,24 +2324,17 @@ function AdvertDetailPage() {
         });
       }
 
-      // Show success notification based on the response message
-      let successMessage = "İlandan başarıyla ayrıldınız";
-      if (data.message.includes("new creator has been assigned")) {
-        successMessage = "İlandan ayrıldınız ve yeni bir lider atandı";
-      } else if (data.message.includes("has been deleted")) {
-        successMessage = "İlandan ayrıldınız ve ilan silindi";
-      }
+      // Show success notification
+      showNotification("İlandan başarıyla ayrıldınız", "success");
 
-      showNotification(successMessage, "success");
+      console.log(
+        "Leave advert successful:",
+        data.advertId || "Unknown advert"
+      );
 
-      // Note: WebSocket will handle the real-time UI update
-      // For scenario 3 (advert deleted), we might want to redirect
-      if (data.message.includes("has been deleted")) {
-        // Redirect to home page after a short delay
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 2000);
-      }
+      // Note: WebSocket will handle the real-time UI update for other users
+      // For scenario where advert gets deleted (when owner leaves empty advert),
+      // the advertDeletedAdvert event will be handled by WebSocketContext
     } catch (err) {
       console.error("Error leaving advert:", err);
 
@@ -2506,12 +2517,22 @@ function AdvertDetailPage() {
       }
 
       const data = await response.json();
-      console.log("Revoke request successful:", data.user);
+
+      // Remove advert from user's waiting list using the new response data
+      if (data.advertId) {
+        removeAdvertFromWaitingList(data.advertId);
+        console.log("Removed advert from waiting list:", data.advertId);
+      }
 
       // Show success notification
       showNotification("Katılım isteğiniz başarıyla geri alındı", "success");
 
-      // Note: WebSocket will handle the real-time UI update
+      console.log(
+        "Revoke request successful:",
+        data.advertId || "Unknown advert"
+      );
+
+      // Note: WebSocket will handle the real-time UI update for other users
     } catch (err) {
       console.error("Error revoking join request:", err);
 
@@ -2558,8 +2579,8 @@ function AdvertDetailPage() {
         );
         setMessages(processedMessages);
 
-        // Clear unseen messages for this advert since user is viewing them
-        clearUnseenMessagesForAdvert(advertId);
+        // Mark messages as seen in backend after successfully refreshing them
+        await markAdvertMessagesAsSeen(advertId);
       } else {
         console.warn("Failed to refresh messages:", messagesResponse.status);
         if (messagesResponse.status === 400) {

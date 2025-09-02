@@ -18,33 +18,6 @@ function PrivateLinkDropdown({
 
   const friends = getUserFriends();
 
-  // Check if current user is an admin of this advert
-  const isCurrentUserAdmin = () => {
-    if (!user || !advert) return false;
-
-    // Check if user is the creator (always an admin)
-    const isCreator = advert.createdBy && advert.createdBy._id === user._id;
-    if (isCreator) return true;
-
-    // Check if user is in adminAdvert array
-    const isAdmin =
-      advert.adminAdvert &&
-      Array.isArray(advert.adminAdvert) &&
-      advert.adminAdvert.includes(user._id);
-
-    return isAdmin;
-  };
-
-  // Don't render anything if user is not an admin
-  if (!isCurrentUserAdmin()) {
-    return null;
-  }
-
-  // Filter friends based on search term
-  const filteredFriends = friends.filter((friend) =>
-    friend.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -111,6 +84,33 @@ function PrivateLinkDropdown({
     setSelectedFriends([]);
     setSearchTerm("");
   };
+
+  // Check if current user is an admin of this advert
+  const isCurrentUserAdmin = () => {
+    if (!user || !advert) return false;
+
+    // Check if user is the creator (always an admin)
+    const isCreator = advert.createdBy && advert.createdBy._id === user._id;
+    if (isCreator) return true;
+
+    // Check if user is in adminAdvert array
+    const isAdmin =
+      advert.adminAdvert &&
+      Array.isArray(advert.adminAdvert) &&
+      advert.adminAdvert.includes(user._id);
+
+    return isAdmin;
+  };
+
+  // Don't render anything if user is not an admin
+  if (!isCurrentUserAdmin()) {
+    return null;
+  }
+
+  // Filter friends based on search term
+  const filteredFriends = friends.filter((friend) =>
+    friend.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="relative" ref={dropdownRef}>
