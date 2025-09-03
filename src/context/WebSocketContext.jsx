@@ -463,19 +463,37 @@ export const WebSocketProvider = ({ children }) => {
             );
 
             // Real-time unseen count increment logic
-            // Only increment if user is NOT currently viewing "Gelen Davetler" "Güncel"
+            // Only increment if:
+            // 1. The invitation is actually unseen (invitation.seen === false)
+            // 2. User is NOT currently viewing "Gelen Davetler" "Güncel"
             const isViewingIncomingCurrent =
               isCurrentlyViewingIncomingCurrentInvitations();
 
-            if (isViewingIncomingCurrent) {
-              console.log(
-                "🔔 UNSEEN COUNT: User is viewing 'Gelen Davetler' 'Güncel', invitation will be seen immediately - no increment needed"
-              );
+            console.log(
+              "🔔 UNSEEN COUNT: Invitation seen status:",
+              invitation.seen
+            );
+            console.log(
+              "🔔 UNSEEN COUNT: User viewing incoming current:",
+              isViewingIncomingCurrent
+            );
+
+            // Check if invitation is actually unseen
+            if (invitation.seen === false) {
+              if (isViewingIncomingCurrent) {
+                console.log(
+                  "🔔 UNSEEN COUNT: Invitation is unseen but user is viewing 'Gelen Davetler' 'Güncel', invitation will be seen immediately - no increment needed"
+                );
+              } else {
+                console.log(
+                  "🔔 UNSEEN COUNT: Invitation is unseen and user is NOT viewing 'Gelen Davetler' 'Güncel', incrementing unseen count by +1"
+                );
+                incrementUnseenInvitationsCount();
+              }
             } else {
               console.log(
-                "🔔 UNSEEN COUNT: User is NOT viewing 'Gelen Davetler' 'Güncel', incrementing unseen count by +1"
+                "🔔 UNSEEN COUNT: Invitation is already seen (seen: true), not incrementing unseen count"
               );
-              incrementUnseenInvitationsCount();
             }
           }
         });
