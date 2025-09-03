@@ -699,7 +699,102 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  // Clear unseen messages for a specific advert (when user visits advert page)
+  // Mark advert messages as seen in backend and refresh unseen count
+  const markAdvertMessagesAsSeen = useCallback(
+    async (advertId) => {
+      if (!advertId) {
+        console.log("No advert ID provided for marking messages as seen");
+        return;
+      }
+
+      try {
+        console.log("Marking advert messages as seen for advert:", advertId);
+
+        const response = await fetch(`/api/v1/advert-chat/mark/${advertId}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          let errorMessage =
+            "Mesajlar okundu olarak işaretlenirken hata oluştu";
+
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.msg || errorData.message || errorMessage;
+          } catch {
+            // If we can't parse the error response, use status-based messages
+            switch (response.status) {
+              case 400:
+                errorMessage = "Gerekli bilgileri sağlayın";
+                break;
+              case 401:
+                errorMessage =
+                  "Oturum süreniz dolmuş. Lütfen tekrar giriş yapın";
+                break;
+              case 403:
+                errorMessage =
+                  "Bu mesajları okundu olarak işaretleme yetkiniz yok";
+                break;
+              case 404:
+                errorMessage = "İlan bulunamadı";
+                break;
+              case 429:
+                errorMessage = "Çok fazla istek. Lütfen biraz bekleyin";
+                break;
+              case 500:
+                errorMessage =
+                  "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin";
+                break;
+              default:
+                errorMessage = `Sunucu hatası: ${response.status}`;
+            }
+          }
+
+          throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        console.log("Advert messages marked as seen successfully:", data);
+
+        // Clear local unseen messages for this advert
+        if (unseenMessages[advertId]) {
+          setUnseenMessages((prev) => {
+            const updated = { ...prev };
+            delete updated[advertId];
+            return updated;
+          });
+          console.log(`Cleared local unseen messages for advert: ${advertId}`);
+        }
+
+        // Refresh unseen messages from backend to sync with server state
+        await refreshUnseenMessages();
+      } catch (err) {
+        console.error("Error marking advert messages as seen:", err);
+
+        // Enhanced error handling with Turkish messages
+        let errorMessage = "Mesajlar okundu olarak işaretlenirken hata oluştu";
+
+        if (err.name === "TypeError" && err.message.includes("fetch")) {
+          errorMessage =
+            "Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edin";
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+
+        // Only show error notification for critical errors, not for minor issues
+        console.error("Mark advert messages as seen error:", errorMessage);
+        // Don't show notification to user as this is a background operation
+      }
+    },
+    [unseenMessages, refreshUnseenMessages]
+  );
+
+  // Clear unseen messages for a specific advert (when user visits advert page) - DEPRECATED
+  // Use markAdvertMessagesAsSeen instead
   const clearUnseenMessagesForAdvert = useCallback(
     (advertId) => {
       if (advertId && unseenMessages[advertId]) {
@@ -1161,6 +1256,377 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
+  // Add newly created advert to user's advertParticipation array (when user creates advert)
+  const addCreatedAdvert = useCallback((advertData) => {
+    if (!advertData) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if advert already exists in participation
+      const exists = prevUser.advertParticipation?.some(
+        (participation) => participation._id === advertData._id
+      );
+      if (exists) {
+        console.log("User already participates in advert:", advertData.name);
+        return prevUser;
+      }
+
+      console.log(
+        "Adding created advert to user's participation:",
+        advertData.name
+      );
+      return {
+        ...prevUser,
+        advertParticipation: [
+          advertData, // Add at beginning so it appears first
+          ...(prevUser.advertParticipation || []),
+        ],
+      };
+    });
+
+    // Also add to participantAdverts for unseen message tracking
+    setParticipantAdverts((prevAdverts) => {
+      const exists = prevAdverts.some(
+        (advert) => advert._id === advertData._id
+      );
+      if (!exists) {
+        const newAdverts = [advertData, ...prevAdverts];
+        console.log(
+          "Added created advert to participant adverts for unseen message tracking:",
+          advertData.name
+        );
+        return newAdverts;
+      }
+      return prevAdverts;
+    });
+  }, []);
+
+  // Add advert to user's advertWaitingList array (when user sends join request)
+  const addAdvertToWaitingList = useCallback((advertData) => {
+    if (!advertData) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Check if advert already exists in waiting list
+      const exists = prevUser.advertWaitingList?.some(
+        (waiting) => waiting._id === advertData._id
+      );
+      if (exists) {
+        console.log("User already has request for advert:", advertData.name);
+        return prevUser;
+      }
+
+      console.log("Adding advert to user's waiting list:", advertData.name);
+      return {
+        ...prevUser,
+        advertWaitingList: [...(prevUser.advertWaitingList || []), advertData],
+      };
+    });
+  }, []);
+
+  // Remove advert from user's advertWaitingList array (when user revokes join request)
+  const removeAdvertFromWaitingList = useCallback((advertId) => {
+    if (!advertId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Filter out the advert from waiting list
+      const updatedWaitingList = (prevUser.advertWaitingList || []).filter(
+        (waiting) => waiting._id !== advertId
+      );
+
+      console.log("Removing advert from user's waiting list:", advertId);
+      return {
+        ...prevUser,
+        advertWaitingList: updatedWaitingList,
+      };
+    });
+  }, []);
+
+  // Move advert from waiting list to participation (when join request is accepted)
+  const moveAdvertFromWaitingToParticipation = useCallback((advertData) => {
+    if (!advertData) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      console.log(
+        "Moving advert from waiting list to participation:",
+        advertData.name
+      );
+
+      // Remove from waiting list and add to participation
+      const updatedWaitingList = (prevUser.advertWaitingList || []).filter(
+        (waitingAdvert) => waitingAdvert._id !== advertData._id
+      );
+
+      // Check if already in participation to avoid duplicates
+      const existsInParticipation = prevUser.advertParticipation?.some(
+        (participation) => participation._id === advertData._id
+      );
+
+      const updatedParticipation = existsInParticipation
+        ? prevUser.advertParticipation
+        : [...(prevUser.advertParticipation || []), advertData];
+
+      return {
+        ...prevUser,
+        advertWaitingList: updatedWaitingList,
+        advertParticipation: updatedParticipation,
+      };
+    });
+
+    // Add this advert to participantAdverts for unseen message tracking
+    setParticipantAdverts((prevAdverts) => {
+      const exists = prevAdverts.some(
+        (advert) => advert._id === advertData._id
+      );
+      if (!exists) {
+        console.log(
+          "Adding advert to participant adverts for unseen message tracking:",
+          advertData.name
+        );
+        return [...prevAdverts, advertData];
+      }
+      return prevAdverts;
+    });
+  }, []);
+
+  // Move advert from participation to owned adverts (when user becomes new owner)
+  const moveAdvertFromParticipationToOwned = useCallback(
+    (advertData) => {
+      if (!advertData) return;
+
+      setUser((prevUser) => {
+        if (!prevUser) return prevUser;
+
+        console.log(
+          "Moving advert from participation to owned adverts (new owner):",
+          advertData.name
+        );
+
+        // Remove from participation list (since user is no longer just a participant)
+        const updatedParticipation = (
+          prevUser.advertParticipation || []
+        ).filter((participation) => participation._id !== advertData._id);
+
+        // Add to participation list with updated createdBy (now user is the owner)
+        const updatedAdvertData = {
+          ...advertData,
+          createdBy: prevUser._id, // Update createdBy to current user
+        };
+
+        // Check if already in participation to avoid duplicates
+        const existsInParticipation = updatedParticipation.some(
+          (participation) => participation._id === advertData._id
+        );
+
+        const finalParticipation = existsInParticipation
+          ? updatedParticipation
+          : [...updatedParticipation, updatedAdvertData];
+
+        return {
+          ...prevUser,
+          advertParticipation: finalParticipation,
+        };
+      });
+
+      // Ensure this advert is in participantAdverts for unseen message tracking
+      setParticipantAdverts((prevAdverts) => {
+        const exists = prevAdverts.some(
+          (advert) => advert._id === advertData._id
+        );
+        if (!exists) {
+          console.log(
+            "Adding new owned advert to participant adverts for unseen message tracking:",
+            advertData.name
+          );
+          return [...prevAdverts, advertData];
+        }
+        return prevAdverts.map((advert) =>
+          advert._id === advertData._id
+            ? { ...advert, createdBy: user?._id }
+            : advert
+        );
+      });
+    },
+    [user?._id]
+  );
+
+  // Remove advert from participation (when user is expelled from advert)
+  const removeAdvertFromParticipation = useCallback((advertId) => {
+    if (!advertId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Find the advert being removed for logging
+      const removedAdvert = prevUser.advertParticipation?.find(
+        (participation) => participation._id === advertId
+      );
+
+      console.log(
+        "Removing advert from participation:",
+        removedAdvert?.name || advertId
+      );
+
+      // Remove from advertParticipation
+      const updatedParticipation = (prevUser.advertParticipation || []).filter(
+        (participation) => participation._id !== advertId
+      );
+
+      return {
+        ...prevUser,
+        advertParticipation: updatedParticipation,
+      };
+    });
+
+    // Remove from participantAdverts for unseen message tracking
+    setParticipantAdverts((prevAdverts) => {
+      const updatedAdverts = prevAdverts.filter(
+        (advert) => advert._id !== advertId
+      );
+      console.log(
+        "Removed advert from participant adverts for unseen message tracking:",
+        advertId
+      );
+      return updatedAdverts;
+    });
+
+    // Clear unseen messages for this advert
+    setUnseenMessages((prev) => {
+      if (prev[advertId]) {
+        const updated = { ...prev };
+        delete updated[advertId];
+        console.log(`Cleared unseen messages for expelled advert: ${advertId}`);
+        return updated;
+      }
+      return prev;
+    });
+  }, []);
+
+  // Remove advert completely (when advert is deleted - affects both participants and waiting list users)
+  const removeDeletedAdvert = useCallback((advertId) => {
+    if (!advertId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Find the advert being removed for logging (check both participation and waiting list)
+      const removedFromParticipation = prevUser.advertParticipation?.find(
+        (participation) => participation._id === advertId
+      );
+      const removedFromWaiting = prevUser.advertWaitingList?.find(
+        (waiting) => waiting._id === advertId
+      );
+
+      const advertName =
+        removedFromParticipation?.name || removedFromWaiting?.name || advertId;
+
+      console.log(
+        "Removing deleted advert from user data:",
+        advertName,
+        "- was participant:",
+        !!removedFromParticipation,
+        "- was in waiting list:",
+        !!removedFromWaiting
+      );
+
+      // Remove from both advertParticipation and advertWaitingList
+      const updatedParticipation = (prevUser.advertParticipation || []).filter(
+        (participation) => participation._id !== advertId
+      );
+
+      const updatedWaitingList = (prevUser.advertWaitingList || []).filter(
+        (waiting) => waiting._id !== advertId
+      );
+
+      return {
+        ...prevUser,
+        advertParticipation: updatedParticipation,
+        advertWaitingList: updatedWaitingList,
+      };
+    });
+
+    // Remove from participantAdverts for unseen message tracking (if user was a participant)
+    setParticipantAdverts((prevAdverts) => {
+      const wasParticipant = prevAdverts.some(
+        (advert) => advert._id === advertId
+      );
+      if (wasParticipant) {
+        const updatedAdverts = prevAdverts.filter(
+          (advert) => advert._id !== advertId
+        );
+        console.log(
+          "Removed deleted advert from participant adverts for unseen message tracking:",
+          advertId
+        );
+        return updatedAdverts;
+      }
+      return prevAdverts;
+    });
+
+    // Clear unseen messages for this advert (if user was a participant)
+    setUnseenMessages((prev) => {
+      if (prev[advertId]) {
+        const updated = { ...prev };
+        delete updated[advertId];
+        console.log(`Cleared unseen messages for deleted advert: ${advertId}`);
+        return updated;
+      }
+      return prev;
+    });
+  }, []);
+
+  // Mark join requests as seen for a specific advert (when admin views the advert)
+  const markAdvertJoinRequestsAsSeen = useCallback((advertId) => {
+    if (!advertId) return;
+
+    setUser((prevUser) => {
+      if (!prevUser) return prevUser;
+
+      // Find the advert in waiting list and mark the current user's request as seen
+      const updatedWaitingList = (prevUser.advertWaitingList || []).map(
+        (waitingAdvert) => {
+          if (waitingAdvert._id === advertId) {
+            console.log(
+              "Marking join request as seen for advert:",
+              waitingAdvert.name
+            );
+            // Update the waitingList array to mark the current user's request as seen
+            const updatedWaitingListArray = waitingAdvert.waitingList?.map(
+              (waiter) => {
+                // Check both possible structures: waiter.user (ID) or waiter.user._id (populated object)
+                const waiterUserId =
+                  typeof waiter.user === "object"
+                    ? waiter.user._id
+                    : waiter.user;
+                if (waiterUserId === prevUser._id) {
+                  return { ...waiter, seen: true };
+                }
+                return waiter;
+              }
+            );
+
+            return {
+              ...waitingAdvert,
+              waitingList: updatedWaitingListArray,
+            };
+          }
+          return waitingAdvert;
+        }
+      );
+
+      return {
+        ...prevUser,
+        advertWaitingList: updatedWaitingList,
+      };
+    });
+  }, []);
+
   const value = {
     // Core state
     user,
@@ -1178,6 +1644,7 @@ export const AuthProvider = ({ children }) => {
     getTotalUnseenCount,
     refreshUnseenMessages,
     clearUnseenMessagesForAdvert,
+    markAdvertMessagesAsSeen,
     setCurrentlyViewingAdvert,
     addUnseenMessageForAdvert,
 
@@ -1220,6 +1687,14 @@ export const AuthProvider = ({ children }) => {
 
     // Advert participation management
     addAdvertParticipation,
+    addCreatedAdvert,
+    addAdvertToWaitingList,
+    removeAdvertFromWaitingList,
+    removeAdvertFromParticipation,
+    moveAdvertFromWaitingToParticipation,
+    moveAdvertFromParticipationToOwned,
+    removeDeletedAdvert,
+    markAdvertJoinRequestsAsSeen,
 
     // Actions
     checkAuth,

@@ -36,6 +36,12 @@ export const WebSocketProvider = ({ children }) => {
     unseenDirectMessages,
     unseenDirectMessageSenders,
     applyBlockingLogic,
+    moveAdvertFromWaitingToParticipation,
+    moveAdvertFromParticipationToOwned,
+    removeAdvertFromParticipation,
+    removeAdvertFromWaitingList,
+    removeDeletedAdvert,
+    markAdvertJoinRequestsAsSeen,
   } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -457,20 +463,169 @@ export const WebSocketProvider = ({ children }) => {
             );
 
             // Real-time unseen count increment logic
-            // Only increment if user is NOT currently viewing "Gelen Davetler" "Güncel"
+            // Only increment if:
+            // 1. The invitation is actually unseen (invitation.seen === false)
+            // 2. User is NOT currently viewing "Gelen Davetler" "Güncel"
             const isViewingIncomingCurrent =
               isCurrentlyViewingIncomingCurrentInvitations();
 
-            if (isViewingIncomingCurrent) {
-              console.log(
-                "🔔 UNSEEN COUNT: User is viewing 'Gelen Davetler' 'Güncel', invitation will be seen immediately - no increment needed"
-              );
+            console.log(
+              "🔔 UNSEEN COUNT: Invitation seen status:",
+              invitation.seen
+            );
+            console.log(
+              "🔔 UNSEEN COUNT: User viewing incoming current:",
+              isViewingIncomingCurrent
+            );
+
+            // Check if invitation is actually unseen
+            if (invitation.seen === false) {
+              if (isViewingIncomingCurrent) {
+                console.log(
+                  "🔔 UNSEEN COUNT: Invitation is unseen but user is viewing 'Gelen Davetler' 'Güncel', invitation will be seen immediately - no increment needed"
+                );
+              } else {
+                console.log(
+                  "🔔 UNSEEN COUNT: Invitation is unseen and user is NOT viewing 'Gelen Davetler' 'Güncel', incrementing unseen count by +1"
+                );
+                incrementUnseenInvitationsCount();
+              }
             } else {
               console.log(
-                "🔔 UNSEEN COUNT: User is NOT viewing 'Gelen Davetler' 'Güncel', incrementing unseen count by +1"
+                "🔔 UNSEEN COUNT: Invitation is already seen (seen: true), not incrementing unseen count"
               );
-              incrementUnseenInvitationsCount();
             }
+          }
+        });
+
+        // Handle advert join request accepted event
+        notificationSocketInstance.on("advertJoinRequestAccepted", (data) => {
+          console.log("Received global advertJoinRequestAccepted event:", data);
+
+          if (data && data.advert) {
+            const advert = data.advert;
+            const advertName = advert.name || "Bir ilan";
+
+            // Move advert from waiting list to participation in AuthContext
+            moveAdvertFromWaitingToParticipation(advert);
+
+            // Show global notification
+            showGlobalNotification(
+              `${advertName} ilanına katılma isteğiniz kabul edildi!`,
+              "success"
+            );
+
+            console.log(
+              "Join request accepted for advert:",
+              advertName,
+              "- moved from waiting list to participation"
+            );
+          }
+        });
+
+        // Handle participant expelled from advert event
+        notificationSocketInstance.on("participantExpelledAdvert", (data) => {
+          console.log("Received global participantExpelledAdvert event:", data);
+
+          if (data && data.advertId) {
+            const advertId = data.advertId;
+
+            // Remove advert from participation in AuthContext
+            removeAdvertFromParticipation(advertId);
+
+            // Show global notification
+            showGlobalNotification("Bir ilandan atıldınız", "warning");
+
+            console.log(
+              "User expelled from advert:",
+              advertId,
+              "- removed from participation"
+            );
+          }
+        });
+
+        // Handle advert deleted event
+        notificationSocketInstance.on("advertDeletedAdvert", (data) => {
+          console.log("Received global advertDeletedAdvert event:", data);
+
+          if (data && data.advertId) {
+            const advertId = data.advertId;
+
+            // Remove advert completely (from both participation and waiting list) in AuthContext
+            removeDeletedAdvert(advertId);
+
+            // Show global notification
+            showGlobalNotification("Katıldığınız bir ilan silindi", "info");
+
+            console.log(
+              "Advert deleted:",
+              advertId,
+              "- removed from user's data"
+            );
+          }
+        });
+
+        // Handle new creator advert event (when user becomes new owner)
+        notificationSocketInstance.on("newCreatorAdvert", (data) => {
+          console.log("Received global newCreatorAdvert event:", data);
+
+          if (data && data.advert) {
+            const advert = data.advert;
+            const advertName = advert.name || "Bir ilan";
+
+            // Move advert from participation to owned adverts in AuthContext
+            moveAdvertFromParticipationToOwned(advert);
+
+            // Show global notification
+            showGlobalNotification(
+              `${advertName} ilanının yeni sahibi sizsiniz`,
+              "success"
+            );
+
+            console.log(
+              "User became new owner of advert:",
+              advertName,
+              "- moved from participation to owned"
+            );
+          }
+        });
+
+        // Handle advert join request seen event (when admin views the advert)
+        notificationSocketInstance.on("advertJoinRequestSeen", (data) => {
+          console.log("Received global advertJoinRequestSeen event:", data);
+
+          if (data && data.advertId) {
+            const advertId = data.advertId;
+
+            // Mark join requests as seen for this advert in AuthContext
+            markAdvertJoinRequestsAsSeen(advertId);
+
+            console.log(
+              "Join request marked as seen for advert:",
+              advertId,
+              "- updated waiting list status"
+            );
+          }
+        });
+
+        // Handle request rejected advert event (when user's join request is rejected)
+        notificationSocketInstance.on("requestRejectedAdvert", (data) => {
+          console.log("Received global requestRejectedAdvert event:", data);
+
+          if (data && data.advertId) {
+            const advertId = data.advertId;
+
+            // Remove advert from user's waiting list in AuthContext
+            removeAdvertFromWaitingList(advertId);
+
+            // Show global notification
+            showGlobalNotification("Katılım isteğiniz reddedildi", "warning");
+
+            console.log(
+              "Join request rejected for advert:",
+              advertId,
+              "- removed from waiting list"
+            );
           }
         });
       } catch (error) {

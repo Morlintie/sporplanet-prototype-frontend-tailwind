@@ -80,7 +80,7 @@ function ProfilePage() {
         return <MyFavoritePitches />;
 
       case "listings":
-        return <MyListings user={user} />;
+        return <MyListings />;
       case "reservations":
         return <MyReservations user={user} />;
       case "tournaments":
