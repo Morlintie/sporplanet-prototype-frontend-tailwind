@@ -7,6 +7,10 @@ function UserListings({ user }) {
 
   // Backend-compatible listings data using user's advertParticipation and advertWaitingList
   const listings = useMemo(() => {
+    console.log("UserListings: Full user data:", user);
+    console.log("UserListings: advertParticipation:", user?.advertParticipation);
+    console.log("UserListings: advertWaitingList:", user?.advertWaitingList);
+    
     return {
       participated: user?.advertParticipation || [],
       waiting: user?.advertWaitingList || [],
@@ -73,8 +77,166 @@ function UserListings({ user }) {
     return colorMap[status] || "bg-gray-100 text-gray-700";
   };
 
-  const handleAdvertClick = (advertId) => {
-    navigate(`/advert/${advertId}`);
+  // Helper function to get status label and color
+  const getAdvertStatus = (advert) => {
+    const now = new Date();
+    const startDate = new Date(advert.startsAt);
+
+    if (advert.isDeleted || advert.archived) {
+      return {
+        label: "Silindi",
+        color: "bg-red-500 text-white",
+        status: "deleted",
+      };
+    }
+
+    if (advert.status === "cancelled") {
+      return {
+        label: "İptal Edildi",
+        color: "bg-orange-500 text-white",
+        status: "cancelled",
+      };
+    }
+
+    if (advert.status === "full") {
+      return { label: "Dolu", color: "bg-blue-500 text-white", status: "full" };
+    }
+
+    if (startDate < now) {
+      return {
+        label: "Tamamlandı",
+        color: "bg-gray-500 text-white",
+        status: "completed",
+      };
+    }
+
+    if (advert.status === "open") {
+      return {
+        label: "Açık",
+        color: "bg-green-500 text-white",
+        status: "open",
+      };
+    }
+
+    return {
+      label: "Bilinmeyen",
+      color: "bg-gray-400 text-white",
+      status: "unknown",
+    };
+  };
+
+  // Helper function to get time range
+  const getTimeRange = (advert) => {
+    const startTime = new Date(advert.startsAt);
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Add 1 hour
+
+    const startTimeStr = startTime.toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const endTimeStr = endTime.toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return `${startTimeStr} - ${endTimeStr}`;
+  };
+
+  // Helper function to get pitch name
+  const getPitchName = (advert) => {
+    console.log("UserListings: getPitchName - advert:", advert);
+    
+    // Check for booking pitch name
+    if (advert.booking && advert.booking.pitch && advert.booking.pitch.name) {
+      return advert.booking.pitch.name;
+    }
+    // Check for custom pitch
+    if (advert.customPitch && advert.customPitch.name) {
+      return advert.customPitch.name;
+    }
+    // Check for direct pitch object
+    if (advert.pitch && typeof advert.pitch === "object" && advert.pitch.name) {
+      return advert.pitch.name;
+    }
+    // Fallback to the name field
+    if (advert.name) {
+      return advert.name;
+    }
+    return "Saha Bilgisi Yok";
+  };
+
+  // Helper function to get creator name
+  const getCreatorName = (advert) => {
+    console.log("UserListings: getCreatorName - advert.createdBy:", advert.createdBy);
+    console.log("UserListings: user data for comparison:", user);
+    
+    // If createdBy is an object with name, use it
+    if (typeof advert.createdBy === 'object' && advert.createdBy?.name) {
+      return advert.createdBy.name;
+    }
+    
+    // If createdBy is a string ID and matches current user's ID, show user's name
+    if (typeof advert.createdBy === 'string' && advert.createdBy === user?._id) {
+      return user.name;
+    }
+    
+    return "Bilinmiyor";
+  };
+
+  // Helper function to get creator ID
+  const getCreatorId = (advert) => {
+    if (typeof advert.createdBy === 'object' && advert.createdBy?._id) {
+      return advert.createdBy._id;
+    }
+    if (typeof advert.createdBy === 'string') {
+      return advert.createdBy;
+    }
+    return null;
+  };
+
+  // Helper function to get pitch ID
+  const getPitchId = (advert) => {
+    if (advert.booking && advert.booking.pitch && advert.booking.pitch._id) {
+      return advert.booking.pitch._id;
+    }
+    if (advert.pitch && typeof advert.pitch === "object" && advert.pitch._id) {
+      return advert.pitch._id;
+    }
+    return null;
+  };
+
+  const handleAdvertClick = (advert) => {
+    console.log("UserListings: handleAdvertClick - full advert object:", advert);
+    console.log("UserListings: advert._id:", advert._id);
+    console.log("UserListings: advert.id:", advert.id);
+    
+    const advertId = advert._id || advert.id;
+    console.log("UserListings: Final advertId to navigate:", advertId);
+    
+    if (advertId) {
+      navigate(`/advert/${advertId}`);
+    } else {
+      console.error("UserListings: No valid advert ID found:", advert);
+    }
+  };
+
+  const handleCreatorClick = (e, advert) => {
+    e.stopPropagation();
+    const creatorId = getCreatorId(advert);
+    if (creatorId) {
+      console.log("UserListings: Navigating to creator:", creatorId);
+      navigate(`/user/${creatorId}`);
+    }
+  };
+
+  const handlePitchClick = (e, advert) => {
+    e.stopPropagation();
+    const pitchId = getPitchId(advert);
+    if (pitchId) {
+      console.log("UserListings: Navigating to pitch:", pitchId);
+      navigate(`/pitch/${pitchId}`);
+    }
   };
 
   const currentListings = listings[activeTab] || [];
@@ -138,105 +300,120 @@ function UserListings({ user }) {
         </div>
       ) : (
         <div className="grid gap-6">
-          {currentListings.map((listing) => (
-            <div
-              key={listing._id}
-              onClick={() => handleAdvertClick(listing._id)}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
-            >
-              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {listing.name}
-                    </h3>
-                    <div className="flex gap-2 flex-shrink-0 ml-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          listing.status
-                        )}`}
+          {currentListings.map((listing) => {
+            const status = getAdvertStatus(listing);
+            const pitchName = getPitchName(listing);
+            const creatorName = getCreatorName(listing);
+            const timeRange = getTimeRange(listing);
+            
+            return (
+              <div
+                key={listing._id || listing.id}
+                onClick={() => handleAdvertClick(listing)}
+                className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
+              >
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {listing.name || "İlan Başlığı Yok"}
+                      </h3>
+                      <div className="flex gap-2 flex-shrink-0 ml-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                          {status.label}
+                        </span>
+                        {listing.level && (
+                          <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
+                            {getLevelText(listing.level)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {listing.description && (
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {listing.description}
+                      </p>
+                    )}
+
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                      {listing.startsAt && (
+                        <div className="flex items-center gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span>
+                            {formatDate(listing.startsAt)} - {timeRange}
+                          </span>
+                        </div>
+                      )}
+                      {listing.participants && (
+                        <div className="flex items-center gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                          </svg>
+                          <span>{listing.participants.length || 0} katılımcı</span>
+                        </div>
+                      )}
+                      {listing.waitingList && listing.waitingList.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span>{listing.waitingList.length} bekleyen</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Additional Info */}
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={(e) => handleCreatorClick(e, listing)}
+                        className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-200 transition-colors"
                       >
-                        {getStatusText(listing.status)}
-                      </span>
-                      {listing.level && (
-                        <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
-                          {getLevelText(listing.level)}
+                        Kurucu: {creatorName}
+                      </button>
+                      
+                      {getPitchId(listing) ? (
+                        <button
+                          onClick={(e) => handlePitchClick(e, listing)}
+                          className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs hover:bg-blue-200 transition-colors"
+                        >
+                          Saha: {pitchName}
+                        </button>
+                      ) : (
+                        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                          Saha: {pitchName}
                         </span>
                       )}
                     </div>
                   </div>
-
-                  {listing.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {listing.description}
-                    </p>
-                  )}
-
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
-                    <div className="flex items-center gap-1">
-                      <svg
-                        className="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span>
-                        {formatDate(listing.startsAt)} -{" "}
-                        {formatTime(listing.startsAt)}
-                      </span>
-                    </div>
-                    {listing.participants && (
-                      <div className="flex items-center gap-1">
-                        <svg
-                          className="w-4 h-4"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
-                        </svg>
-                        <span>{listing.participants.length} katılımcı</span>
-                      </div>
-                    )}
-                    {listing.waitingList && listing.waitingList.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        <svg
-                          className="w-4 h-4"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span>{listing.waitingList.length} bekleyen</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Additional Info */}
-                  <div className="flex flex-wrap gap-2">
-                    {listing.createdBy && (
-                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
-                        Organizatör ID: {listing.createdBy}
-                      </span>
-                    )}
-                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
-                      İlan ID: {listing._id}
-                    </span>
-                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

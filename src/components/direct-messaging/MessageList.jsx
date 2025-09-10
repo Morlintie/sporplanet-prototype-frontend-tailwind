@@ -15,24 +15,40 @@ function MessageList({
   shouldScrollToBottom = false,
   showNotification,
   isTypingUser = null,
+  containerRef,
 }) {
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
-  // Scroll to bottom of messages
+  // Scroll to bottom of messages container only (not page)
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = containerRef?.current || messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  };
+
+  // Smooth scroll to bottom of messages container
+  const smoothScrollToBottom = () => {
+    const container = containerRef?.current || messagesContainerRef.current;
+    if (container) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (shouldScrollToBottom) {
-      scrollToBottom();
+      smoothScrollToBottom();
     }
   }, [shouldScrollToBottom]);
 
-  // Auto-scroll to bottom when messages change or typing status changes
+  // Auto-scroll to bottom when messages change or typing status changes (only message container)
   useEffect(() => {
-    scrollToBottom();
+    smoothScrollToBottom();
   }, [messages, isTypingUser]);
 
   // Format message timestamp (time only)

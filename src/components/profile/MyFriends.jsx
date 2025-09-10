@@ -600,7 +600,7 @@ function MyFriends({ user }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md">
+    <div className="bg-white rounded-lg shadow-md pb-20">
       {/* Header - Profile Info */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">

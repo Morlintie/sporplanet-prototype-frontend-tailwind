@@ -322,6 +322,37 @@ function CreateAdModal({ isOpen, onClose, onSubmit, prefilledData }) {
       if (data.advert) {
         addCreatedAdvert(data.advert);
         console.log("Added created advert to participation:", data.advert.name);
+
+        // Send invitations to friends who were added as participants
+        if (formData.participants.length > 0) {
+          try {
+            console.log("Sending invitations to participants:", formData.participants);
+            
+            const invitationResponse = await fetch("/api/v1/invitation", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                advert: data.advert._id,
+                recipients: formData.participants,
+                role: "player",
+                message: "İlan oluşturuldu! Katılmak için davetinizi kabul edin.",
+              }),
+            });
+
+            if (invitationResponse.ok) {
+              const inviteData = await invitationResponse.json();
+              console.log("Invitations sent successfully to participants:", inviteData);
+            } else {
+              console.warn("Failed to send invitations to participants, but advert was created successfully");
+            }
+          } catch (inviteError) {
+            console.error("Error sending invitations to participants:", inviteError);
+            // Don't throw error here as advert was already created successfully
+          }
+        }
       }
 
       setNotification({

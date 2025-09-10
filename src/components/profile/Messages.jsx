@@ -63,9 +63,9 @@ function Messages() {
       </div>
 
       {/* Messages List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto p-4 pb-20">
         {individualMessages.length > 0 ? (
-          <div className="divide-y divide-gray-100">
+          <div className="space-y-3">
             {individualMessages.map((person) => (
               <div
                 key={person.id}
@@ -73,11 +73,11 @@ function Messages() {
                   // Navigate to direct messaging page
                   navigate(`/messages/${person.id}`);
                 }}
-                className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 cursor-pointer transition-all"
               >
                 <div className="flex items-start space-x-3">
                   <div className="relative">
-                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold overflow-hidden">
+                    <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold overflow-hidden">
                       {person.avatar ? (
                         <img
                           src={person.avatar}
@@ -93,7 +93,7 @@ function Messages() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-1">
                       <h4 className="text-sm font-semibold text-gray-900 truncate">
                         {person.name}
                       </h4>
@@ -103,11 +103,30 @@ function Messages() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-600 truncate mt-0.5">
+                    <p className="text-sm text-gray-600 truncate mb-1">
                       {person.lastMessage}
                     </p>
                     {person.location && (
-                      <p className="text-xs text-gray-400 truncate mt-1">
+                      <p className="text-xs text-gray-400 truncate">
+                        <svg
+                          className="w-3 h-3 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
                         {person.location.city}, {person.location.district}
                       </p>
                     )}

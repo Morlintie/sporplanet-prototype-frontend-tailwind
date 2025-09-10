@@ -177,7 +177,7 @@ function BlockedUsers({ user }) {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-6 pb-20">
       <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
         Engellenen Kullanıcılar
       </h2>

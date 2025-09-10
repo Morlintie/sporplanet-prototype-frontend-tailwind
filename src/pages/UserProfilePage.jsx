@@ -542,12 +542,18 @@ function UserProfilePage() {
   // Fetch user data when component mounts or userId changes
   useEffect(() => {
     if (userId) {
+      // Check if user is trying to view their own profile
+      if (user && user._id === userId) {
+        // Redirect to profile page for own profile
+        navigate('/profile');
+        return;
+      }
       fetchUserData(userId);
     } else {
       setError("Kullanıcı ID'si bulunamadı.");
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, user, navigate]);
 
   // Set up WebSocket listeners for friend request events
   useEffect(() => {
@@ -977,142 +983,6 @@ function UserProfilePage() {
                 </button>
               </nav>
 
-              {/* User Details */}
-              <div className="pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900 mb-4">
-                  Kullanıcı Bilgileri
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg
-                      className="w-4 h-4 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <span className="text-gray-700">
-                      {(userData || fallbackUserData).location?.city ||
-                      (userData || fallbackUserData).location?.district ? (
-                        <>
-                          {(userData || fallbackUserData).location?.city || ""}
-                          {(userData || fallbackUserData).location?.city &&
-                          (userData || fallbackUserData).location?.district
-                            ? ", "
-                            : ""}
-                          {(userData || fallbackUserData).location?.district ||
-                            ""}
-                        </>
-                      ) : (
-                        "Konum belirtilmemiş"
-                      )}
-                    </span>
-                  </div>
-
-                  {(userData || fallbackUserData).age && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <svg
-                        className="w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span className="text-gray-700">
-                        {(userData || fallbackUserData).age} yaşında
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg
-                      className="w-4 h-4 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-6 0v3a2 2 0 11-4 0V7m8 0v3a2 2 0 104 0V7"
-                      />
-                    </svg>
-                    <span className="text-gray-700">
-                      {(userData || fallbackUserData).role === "admin"
-                        ? "Admin"
-                        : (userData || fallbackUserData).role === "companyOwner"
-                        ? "Şirket Sahibi"
-                        : (userData || fallbackUserData).role === "banned"
-                        ? "Yasaklı"
-                        : "Kullanıcı"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg
-                      className="w-4 h-4 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-6 0v3a2 2 0 11-4 0V7m8 0v3a2 2 0 104 0V7"
-                      />
-                    </svg>
-                    <span className="text-gray-700">
-                      Üye:{" "}
-                      {new Date(
-                        (userData || fallbackUserData).createdAt
-                      ).toLocaleDateString("tr-TR", {
-                        year: "numeric",
-                        month: "long",
-                      })}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg
-                      className="w-4 h-4 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <span className="text-gray-700">
-                      {(userData || fallbackUserData).friends?.length || 0}{" "}
-                      arkadaş
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 

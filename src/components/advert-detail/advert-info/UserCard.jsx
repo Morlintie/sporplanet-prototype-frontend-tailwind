@@ -184,10 +184,10 @@ function UserCard({
         </div>
 
         <div className="flex items-center space-x-2">
-          {/* Admin controls */}
-          {shouldShowAdminMenu() && (
+          {/* Single unified menu for all users except self */}
+          {user._id !== currentUser?._id && (
             <div className="relative">
-              {/* Direct approve/reject buttons for waiting list users */}
+              {/* Direct approve/reject buttons for waiting list users with admin rights */}
               {isWaitingListUser && canCurrentUserManage() ? (
                 <div className="flex items-center space-x-1">
                   <button
@@ -255,128 +255,240 @@ function UserCard({
                     </svg>
                   </button>
                 </div>
-              ) : (
-                /* Three-dot menu for approved participants */
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (!isProcessingRequest) {
-                      toggleDropdown(user._id);
-                    }
-                  }}
-                  disabled={isProcessingRequest}
-                  className={`p-1 rounded-full transition-colors ${
-                    isProcessingRequest
-                      ? "cursor-not-allowed opacity-50"
-                      : "hover:bg-gray-100"
-                  }`}
-                  title={
-                    isProcessingRequest
-                      ? "İşlem devam ediyor..."
-                      : "Yönetim Seçenekleri"
-                  }
-                >
-                  <svg
-                    className="w-4 h-4 text-gray-500"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                  </svg>
-                </button>
-              )}
+              ) : null}
 
-              {/* Dropdown Menu - Only for approved participants */}
-              {openDropdownId === user._id && !isWaitingListUser && (
+              {/* Three-dot menu for all users */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!isProcessingRequest) {
+                    toggleDropdown(`unified-menu-${user._id}`);
+                  }
+                }}
+                disabled={isProcessingRequest}
+                className={`p-1 rounded-full transition-colors ${
+                  isProcessingRequest
+                    ? "cursor-not-allowed opacity-50"
+                    : "hover:bg-gray-100"
+                }`}
+                title={
+                  isProcessingRequest
+                    ? "İşlem devam ediyor..."
+                    : "Kullanıcı Seçenekleri"
+                }
+              >
+                <svg
+                  className="w-4 h-4 text-gray-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                </svg>
+              </button>
+
+              {/* Unified Dropdown Menu */}
+              {openDropdownId === `unified-menu-${user._id}` && (
                 <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="py-1">
-
-                    {/* Admin promotion controls */}
-                    {canPromoteToAdmin() && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          onPromoteToAdmin && onPromoteToAdmin(user._id);
-                        }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
+                    {/* View Profile */}
+                    <a
+                      href={`/user/${user._id}`}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDropdown(`unified-menu-${user._id}`);
+                      }}
+                    >
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        <svg
-                          className="w-4 h-4 mr-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        Admin Yap
-                      </button>
-                    )}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      Profili Görüntüle
+                    </a>
 
-                    {/* Admin demotion controls */}
-                    {canDemoteFromAdmin() && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          onDemoteFromAdmin && onDemoteFromAdmin(user._id);
-                        }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition-colors"
-                      >
-                        <svg
-                          className="w-4 h-4 mr-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                          />
-                        </svg>
-                        Adminlikten Çıkart
-                      </button>
-                    )}
-
-                    {/* User expulsion controls */}
-                    {canExpelUser() && (
+                    {/* Admin Actions Section */}
+                    {canCurrentUserManage() && (
                       <>
-                        {(canPromoteToAdmin() || canDemoteFromAdmin()) && (
-                          <div className="border-t border-gray-100 my-1"></div>
-                        )}
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onExpelUser && onExpelUser(user._id);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                        <div className="border-t border-gray-100 my-1"></div>
+                        
+                        {/* Add Player - Only if user has admin rights and target is waiting */}
+                        {isWaitingListUser && (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleAcceptRequest(user._id);
+                              toggleDropdown(`unified-menu-${user._id}`);
+                            }}
+                            className="flex items-center w-full px-4 py-2 text-sm text-green-700 hover:bg-green-50 transition-colors"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            />
-                          </svg>
-                          İlandan At
-                        </button>
+                            <svg
+                              className="w-4 h-4 mr-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                              />
+                            </svg>
+                            Oyuncu Olarak Ekle
+                          </button>
+                        )}
+
+                        {/* Admin promotion controls */}
+                        {canPromoteToAdmin() && (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              onPromoteToAdmin && onPromoteToAdmin(user._id);
+                              toggleDropdown(`unified-menu-${user._id}`);
+                            }}
+                            className="flex items-center w-full px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
+                          >
+                            <svg
+                              className="w-4 h-4 mr-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            Admin Yap
+                          </button>
+                        )}
+
+                        {/* Admin demotion controls */}
+                        {canDemoteFromAdmin() && (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              onDemoteFromAdmin && onDemoteFromAdmin(user._id);
+                              toggleDropdown(`unified-menu-${user._id}`);
+                            }}
+                            className="flex items-center w-full px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition-colors"
+                          >
+                            <svg
+                              className="w-4 h-4 mr-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                              />
+                            </svg>
+                            Adminlikten Çıkart
+                          </button>
+                        )}
+
+                        {/* User expulsion controls */}
+                        {canExpelUser() && (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              onExpelUser && onExpelUser(user._id);
+                              toggleDropdown(`unified-menu-${user._id}`);
+                            }}
+                            className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
+                          >
+                            <svg
+                              className="w-4 h-4 mr-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                              />
+                            </svg>
+                            İlandan At
+                          </button>
+                        )}
                       </>
                     )}
+
+                    {/* General User Actions Section */}
+                    <div className="border-t border-gray-100 my-1"></div>
+                    
+                    {/* Send Message */}
+                    <a
+                      href={`/messages/${user._id}`}
+                      className="flex items-center w-full px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDropdown(`unified-menu-${user._id}`);
+                      }}
+                    >
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                      </svg>
+                      Mesaj Gönder
+                    </a>
+
+                    {/* Block User */}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // TODO: Implement block user functionality
+                        console.log(`Block user ${user._id}`);
+                        toggleDropdown(`unified-menu-${user._id}`);
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"
+                        />
+                      </svg>
+                      Kullanıcıyı Engelle
+                    </button>
                   </div>
                 </div>
               )}

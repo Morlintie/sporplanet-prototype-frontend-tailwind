@@ -32,6 +32,9 @@ function DirectMessaging() {
   const [editingText, setEditingText] = useState(""); // Text content for editing
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
   const [isTypingUser, setIsTypingUser] = useState(null); // User ID who is currently typing
+  
+  // Ref for messages container to control scroll
+  const messagesContainerRef = useRef(null);
 
   // Notification state
   const [notification, setNotification] = useState({
@@ -343,7 +346,7 @@ function DirectMessaging() {
       });
 
       setSending(false);
-      setShouldScrollToBottom(true);
+      // Removed setShouldScrollToBottom to prevent automatic scrolling
 
       // Note: Real-time message for recipient will be handled via WebSocket listener
     } catch (err) {
@@ -721,6 +724,9 @@ function DirectMessaging() {
 
   // Initialize chat when component mounts
   useEffect(() => {
+    // Scroll to top when page loads
+    window.scrollTo(0, 0);
+
     // Don't redirect during auth loading
     if (authLoading) {
       return;
@@ -766,7 +772,7 @@ function DirectMessaging() {
           if (message.sender && message.sender._id === userId) {
             console.log("Adding received private message to chat:", message);
             setMessages((prev) => [...prev, message]);
-            setShouldScrollToBottom(true);
+            // Removed setShouldScrollToBottom to prevent automatic scrolling
 
             // Mark this message as seen since user is currently viewing this chat
             markMessagesAsSeen(userId);
@@ -948,18 +954,30 @@ function DirectMessaging() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
 
-      <div className="flex-1 flex flex-col pt-16">
-        {/* Chat Header */}
-        <ChatHeader
-          targetUser={targetUser}
-          isUserOnline={isUserOnline}
-          getProfilePictureUrl={getProfilePictureUrl}
-        />
+      {/* Main Chat Area with Box Design */}
+      <div className="flex-1 flex justify-center items-center py-8 px-4">
+        <div className="w-full max-w-6xl min-h-[600px] h-[calc(100vh-160px)] bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+          {/* Chat Header */}
+          <ChatHeader
+            targetUser={targetUser}
+            isUserOnline={isUserOnline}
+            getProfilePictureUrl={getProfilePictureUrl}
+          />
 
-        {/* Messages Container */}
-        <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto px-4 py-4">
-            <div className="max-w-4xl mx-auto">
+          {/* Messages Container */}
+          <div className="flex-1 overflow-hidden">
+            <div 
+              ref={messagesContainerRef}
+              className="h-full overflow-y-auto px-4 py-4"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('/images/mesajlaşma.png')",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed",
+              }}
+            >
               <MessageList
                 messages={messages}
                 currentUser={currentUser}
@@ -975,21 +993,22 @@ function DirectMessaging() {
                 shouldScrollToBottom={shouldScrollToBottom}
                 showNotification={showNotification}
                 isTypingUser={isTypingUser}
+                containerRef={messagesContainerRef}
               />
             </div>
           </div>
-        </div>
 
-        {/* Message Input */}
-        <MessageInput
-          targetUser={targetUser}
-          sending={sending}
-          isChatConnected={isChatConnected}
-          onSendMessage={handleSendMessage}
-          showNotification={showNotification}
-          onStartTyping={handleStartTyping}
-          onStopTyping={handleStopTyping}
-        />
+          {/* Message Input */}
+          <MessageInput
+            targetUser={targetUser}
+            sending={sending}
+            isChatConnected={isChatConnected}
+            onSendMessage={handleSendMessage}
+            showNotification={showNotification}
+            onStartTyping={handleStartTyping}
+            onStopTyping={handleStopTyping}
+          />
+        </div>
       </div>
 
       <Footer />
