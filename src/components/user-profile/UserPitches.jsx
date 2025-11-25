@@ -203,7 +203,7 @@ function UserPitches({ user }) {
                       <div className="text-center bg-yellow-50 rounded-lg p-3">
                         <div className="text-sm font-medium text-yellow-900">
                           {formatPrice(
-                            pitch.pricing.hourlyRate,
+                            pitch.pricing.hourlyRate / 100,
                             pitch.pricing.currency
                           )}
                         </div>

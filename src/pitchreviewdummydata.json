@@ -1,0 +1,497 @@
+[
+  {
+    "_id": "66f200000000000000000001",
+    "pitch": "66b0a1c1a4f2b9c0d1123a01",
+    "company": "66c2aa11bb22cc33dd44ee01",
+    "user": {
+      "_id": "66u000000000000000000001",
+      "name": "ahmet.toraman",
+      "email": "ahmet@example.com",
+      "profilePicture": "https://cdn.example.com/u/ahmet.jpg"
+    },
+    "rating": 4.7,
+    "title": "Gece aydınlatması çok iyi",
+    "comment": "Beşiktaş’ta zemin ve ışık dengesi harika.",
+    "photos": [
+      { "url": "https://cdn.example.com/rev/bjk1.jpg", "public_id": "rev_bjk_1" }
+    ],
+    "likes": ["66u000000000000000000101", "66u000000000000000000102"],
+    "isVerified": true,
+    "createdAt": "2025-07-20T19:30:00.000Z",
+    "updatedAt": "2025-07-20T19:30:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000002",
+    "pitch": "66b0a1c1a4f2b9c0d1123a01",
+    "company": "66c2aa11bb22cc33dd44ee01",
+    "user": {
+      "_id": "66u000000000000000000002",
+      "name": "elif.kaya",
+      "email": "elif.kaya@example.com",
+      "profilePicture": "https://cdn.example.com/u/elif.png"
+    },
+    "rating": 3.9,
+    "comment": "Soyunma odaları temiz ama otopark sınırlı.",
+    "dislikes": ["66u000000000000000000103"],
+    "isVerified": false,
+    "createdAt": "2025-07-18T18:00:00.000Z",
+    "updatedAt": "2025-07-18T18:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000003",
+    "pitch": "66b0a1c1a4f2b9c0d1123a02",
+    "company": "66c2aa11bb22cc33dd44ee02",
+    "user": {
+      "_id": "66u000000000000000000003",
+      "name": "moda.mert",
+      "email": "mert@moda.com",
+      "profilePicture": "https://cdn.example.com/u/mert.jpg"
+    },
+    "rating": 5.0,
+    "title": "Manzara efsane",
+    "comment": "Moda sahilde akşam maçı bir başka.",
+    "replies": [
+      {
+        "user": {
+          "_id": "66u000000000000000000201",
+          "name": "admin.moda",
+          "email": "destek@modaspor.com",
+          "profilePicture": "https://cdn.example.com/u/moda-admin.png"
+        },
+        "comment": "Güzel yorum için teşekkürler!",
+        "createdAt": "2025-07-22T10:00:00.000Z",
+        "updatedAt": "2025-07-22T10:00:00.000Z",
+        "isEdited": false
+      }
+    ],
+    "likes": ["66u000000000000000000104"],
+    "isVerified": true,
+    "createdAt": "2025-07-21T20:15:00.000Z",
+    "updatedAt": "2025-07-22T10:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000004",
+    "pitch": "66b0a1c1a4f2b9c0d1123a02",
+    "company": "66c2aa11bb22cc33dd44ee02",
+    "user": {
+      "_id": "66u000000000000000000004",
+      "name": "ayse.b",
+      "email": "ayse@example.com",
+      "profilePicture": "https://cdn.example.com/u/ayse.jpg"
+    },
+    "rating": 2.6,
+    "comment": "Yağmur sonrası zemin kaygandı.",
+    "isEdited": true,
+    "archived": true,
+    "archivedRating": 3.1,
+    "createdAt": "2025-07-10T17:45:00.000Z",
+    "updatedAt": "2025-07-11T09:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000005",
+    "pitch": "66b0a1c1a4f2b9c0d1123a03",
+    "company": "66c2aa11bb22cc33dd44ee03",
+    "user": {
+      "_id": "66u000000000000000000005",
+      "name": "kaan.oz",
+      "email": "kaan@example.com",
+      "profilePicture": "https://cdn.example.com/u/kaan.jpg"
+    },
+    "rating": 4.2,
+    "title": "Kışın kurtarıcı",
+    "comment": "Kapalı saha olması büyük avantaj.",
+    "likes": ["66u000000000000000000105", "66u000000000000000000106"],
+    "isVerified": true,
+    "createdAt": "2025-01-12T13:30:00.000Z",
+    "updatedAt": "2025-01-12T13:30:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000006",
+    "pitch": "66b0a1c1a4f2b9c0d1123a03",
+    "company": "66c2aa11bb22cc33dd44ee03",
+    "user": {
+      "_id": "66u000000000000000000006",
+      "name": "nur.erdem",
+      "email": "nur.erdem@example.com",
+      "profilePicture": "https://cdn.example.com/u/nur.jpg"
+    },
+    "rating": 3.5,
+    "comment": "Skorbord yoktu, eklenirse süper olur.",
+    "photos": [
+      { "url": "https://cdn.example.com/rev/cay1.jpg", "public_id": "rev_cay_1" },
+      { "url": "https://cdn.example.com/rev/cay2.jpg", "public_id": "rev_cay_2" }
+    ],
+    "createdAt": "2025-02-03T18:40:00.000Z",
+    "updatedAt": "2025-02-03T18:40:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000007",
+    "pitch": "66b0a1c1a4f2b9c0d1123a04",
+    "company": "66c2aa11bb22cc33dd44ee04",
+    "user": {
+      "_id": "66u000000000000000000007",
+      "name": "cemre.y",
+      "email": "cemre@example.com",
+      "profilePicture": "https://cdn.example.com/u/cemre.jpg"
+    },
+    "rating": 4.0,
+    "title": "Esinti güzel",
+    "comment": "Bostanlı’da akşam rüzgârı keyifli.",
+    "likes": [],
+    "dislikes": [],
+    "createdAt": "2025-05-14T20:00:00.000Z",
+    "updatedAt": "2025-05-14T20:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000008",
+    "pitch": "66b0a1c1a4f2b9c0d1123a04",
+    "company": "66c2aa11bb22cc33dd44ee04",
+    "user": {
+      "_id": "66u000000000000000000008",
+      "name": "ozan.can",
+      "email": "ozan@example.com",
+      "profilePicture": "https://cdn.example.com/u/ozan.jpg"
+    },
+    "rating": 1.8,
+    "comment": "Rezervasyonda karışıklık yaşandı.",
+    "isDeleted": true,
+    "createdAt": "2025-06-01T10:10:00.000Z",
+    "updatedAt": "2025-06-02T09:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000009",
+    "pitch": "66b0a1c1a4f2b9c0d1123a05",
+    "company": "66c2aa11bb22cc33dd44ee05",
+    "user": {
+      "_id": "66u000000000000000000009",
+      "name": "selin.ak",
+      "email": "selin@example.com",
+      "profilePicture": "https://cdn.example.com/u/selin.jpg"
+    },
+    "rating": 3.9,
+    "title": "Fiyat/performans iyi",
+    "photos": [
+      { "url": "https://cdn.example.com/rev/nil1.jpg", "public_id": "rev_nil_1" }
+    ],
+    "createdAt": "2025-03-09T16:25:00.000Z",
+    "updatedAt": "2025-03-09T16:25:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000000a",
+    "pitch": "66b0a1c1a4f2b9c0d1123a05",
+    "company": "66c2aa11bb22cc33dd44ee05",
+    "user": {
+      "_id": "66u00000000000000000000a",
+      "name": "yusuf.k",
+      "email": "yusuf@example.com",
+      "profilePicture": "https://cdn.example.com/u/yusuf.jpg"
+    },
+    "rating": 4.1,
+    "comment": "Personel ilgiliydi.",
+    "replies": [
+      {
+        "user": {
+          "_id": "66u000000000000000000202",
+          "name": "nilufer.owner",
+          "email": "iletisim@proarena.com",
+          "profilePicture": "https://cdn.example.com/u/nilufer-owner.png"
+        },
+        "comment": "Her zaman bekleriz 🙌",
+        "createdAt": "2025-03-10T08:00:00.000Z",
+        "updatedAt": "2025-03-10T08:00:00.000Z",
+        "isEdited": false
+      }
+    ],
+    "isVerified": true,
+    "createdAt": "2025-03-09T19:00:00.000Z",
+    "updatedAt": "2025-03-10T08:00:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000000b",
+    "pitch": "66b0a1c1a4f2b9c0d1123a06",
+    "company": "66c2aa11bb22cc33dd44ee06",
+    "user": {
+      "_id": "66u00000000000000000000b",
+      "name": "burak.s",
+      "email": "burak@example.com",
+      "profilePicture": "https://cdn.example.com/u/burak.jpg"
+    },
+    "rating": 4.1,
+    "title": "Turistik ama düzenli",
+    "comment": "Lara’da en temiz sahalardan biri.",
+    "likes": ["66u000000000000000000107"],
+    "createdAt": "2025-07-01T21:45:00.000Z",
+    "updatedAt": "2025-07-01T21:45:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000000c",
+    "pitch": "66b0a1c1a4f2b9c0d1123a06",
+    "company": "66c2aa11bb22cc33dd44ee06",
+    "user": {
+      "_id": "66u00000000000000000000c",
+      "name": "didem.u",
+      "email": "didem@example.com",
+      "profilePicture": "https://cdn.example.com/u/didem.jpg"
+    },
+    "rating": 2.3,
+    "comment": "Toplar yıpranmıştı.",
+    "dislikes": ["66u000000000000000000108", "66u000000000000000000109"],
+    "isEdited": true,
+    "createdAt": "2025-06-29T18:10:00.000Z",
+    "updatedAt": "2025-06-30T09:00:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000000d",
+    "pitch": "66b0a1c1a4f2b9c0d1123a07",
+    "company": "66c2aa11bb22cc33dd44ee07",
+    "user": {
+      "_id": "66u00000000000000000000d",
+      "name": "muhammed.a",
+      "email": "muhammed@example.com",
+      "profilePicture": "https://cdn.example.com/u/muhammed.jpg"
+    },
+    "rating": 4.8,
+    "title": "Doğal çim efsane",
+    "comment": "Adana sıcağında gece maçı keyifli.",
+    "createdAt": "2025-05-25T22:00:00.000Z",
+    "updatedAt": "2025-05-25T22:00:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000000e",
+    "pitch": "66b0a1c1a4f2b9c0d1123a07",
+    "company": "66c2aa11bb22cc33dd44ee07",
+    "user": {
+      "_id": "66u00000000000000000000e",
+      "name": "zeynep.z",
+      "email": "zeynep@example.com",
+      "profilePicture": "https://cdn.example.com/u/zeynep.jpg"
+    },
+    "rating": 3.2,
+    "comment": "Tribün güzel ama kantin pahalı.",
+    "archived": false,
+    "createdAt": "2025-05-27T18:30:00.000Z",
+    "updatedAt": "2025-05-27T18:30:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000000f",
+    "pitch": "66b0a1c1a4f2b9c0d1123a08",
+    "company": "66c2aa11bb22cc33dd44ee08",
+    "user": {
+      "_id": "66u00000000000000000000f",
+      "name": "tuna.er",
+      "email": "tuna@example.com",
+      "profilePicture": "https://cdn.example.com/u/tuna.jpg"
+    },
+    "rating": 3.7,
+    "title": "Kapalı saha ferah",
+    "comment": "Havalandırma başarılı.",
+    "likes": [],
+    "createdAt": "2025-02-15T14:00:00.000Z",
+    "updatedAt": "2025-02-15T14:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000010",
+    "pitch": "66b0a1c1a4f2b9c0d1123a08",
+    "company": "66c2aa11bb22cc33dd44ee08",
+    "user": {
+      "_id": "66u000000000000000000010",
+      "name": "hakan.tk",
+      "email": "hakan@example.com",
+      "profilePicture": "https://cdn.example.com/u/hakan.jpg"
+    },
+    "rating": 1.5,
+    "comment": "Rezervasyon iptali onaylanmadı.",
+    "isVerified": false,
+    "isDeleted": false,
+    "createdAt": "2025-04-01T11:15:00.000Z",
+    "updatedAt": "2025-04-01T11:15:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000011",
+    "pitch": "66b0a1c1a4f2b9c0d1123a09",
+    "company": "66c2aa11bb22cc33dd44ee09",
+    "user": {
+      "_id": "66u000000000000000000011",
+      "name": "gokce.t",
+      "email": "gokce@example.com",
+      "profilePicture": "https://cdn.example.com/u/gokce.jpg"
+    },
+    "rating": 4.3,
+    "title": "Işıklandırma iyi",
+    "comment": "Şahinbey’de akşam maçı keyifli.",
+    "photos": [
+      { "url": "https://cdn.example.com/rev/antep1.jpg", "public_id": "rev_antep_1" }
+    ],
+    "isVerified": true,
+    "createdAt": "2025-06-05T20:45:00.000Z",
+    "updatedAt": "2025-06-05T20:45:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000012",
+    "pitch": "66b0a1c1a4f2b9c0d1123a09",
+    "company": "66c2aa11bb22cc33dd44ee09",
+    "user": {
+      "_id": "66u000000000000000000012",
+      "name": "arda.k",
+      "email": "arda@example.com",
+      "profilePicture": "https://cdn.example.com/u/arda.jpg"
+    },
+    "rating": 0.9,
+    "comment": "Hakem tutumu agresifti, oyun bölündü.",
+    "replies": [],
+    "createdAt": "2025-06-06T19:10:00.000Z",
+    "updatedAt": "2025-06-06T19:10:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000013",
+    "pitch": "66b0a1c1a4f2b9c0d1123a10",
+    "company": "66c2aa11bb22cc33dd44ee10",
+    "user": {
+      "_id": "66u000000000000000000013",
+      "name": "ipek.yl",
+      "email": "ipek@example.com",
+      "profilePicture": "https://cdn.example.com/u/ipek.jpg"
+    },
+    "rating": 3.6,
+    "title": "Ulaşım kolay",
+    "comment": "Ağlar yeni, zemin idare eder.",
+    "likes": ["66u000000000000000000110"],
+    "createdAt": "2025-03-15T12:00:00.000Z",
+    "updatedAt": "2025-03-15T12:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000014",
+    "pitch": "66b0a1c1a4f2b9c0d1123a10",
+    "company": "66c2aa11bb22cc33dd44ee10",
+    "user": {
+      "_id": "66u000000000000000000014",
+      "name": "enes.bd",
+      "email": "enes@example.com",
+      "profilePicture": "https://cdn.example.com/u/enes.jpg"
+    },
+    "rating": 2.1,
+    "comment": "Toplar havasızdı, geç değişti.",
+    "dislikes": ["66u000000000000000000111"],
+    "createdAt": "2025-03-18T19:20:00.000Z",
+    "updatedAt": "2025-03-18T19:20:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000015",
+    "pitch": "66b0a1c1a4f2b9c0d1123a11",
+    "company": "66c2aa11bb22cc33dd44ee11",
+    "user": {
+      "_id": "66u000000000000000000015",
+      "name": "melis.b",
+      "email": "melis@example.com",
+      "profilePicture": "https://cdn.example.com/u/melis.jpg"
+    },
+    "rating": 4.0,
+    "title": "Sahil sonrası maç",
+    "comment": "Mezitli’de ortam güzel.",
+    "isVerified": true,
+    "archived": false,
+    "createdAt": "2025-05-02T17:05:00.000Z",
+    "updatedAt": "2025-05-02T17:05:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000016",
+    "pitch": "66b0a1c1a4f2b9c0d1123a12",
+    "company": "66c2aa11bb22cc33dd44ee12",
+    "user": {
+      "_id": "66u000000000000000000016",
+      "name": "baran.u",
+      "email": "baran@example.com",
+      "profilePicture": "https://cdn.example.com/u/baran.jpg"
+    },
+    "rating": 4.0,
+    "title": "Sur içinde keyifli maç",
+    "comment": "Görevliler ilgili.",
+    "likes": [],
+    "createdAt": "2025-04-11T16:40:00.000Z",
+    "updatedAt": "2025-04-11T16:40:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000017",
+    "pitch": "66b0a1c1a4f2b9c0d1123a13",
+    "company": "66c2aa11bb22cc33dd44ee13",
+    "user": {
+      "_id": "66u000000000000000000017",
+      "name": "ozge.c",
+      "email": "ozge@example.com",
+      "profilePicture": "https://cdn.example.com/u/ozge.jpg"
+    },
+    "rating": 4.4,
+    "comment": "Drenaj yağmurda çok işe yarıyor.",
+    "isVerified": true,
+    "createdAt": "2025-01-30T15:00:00.000Z",
+    "updatedAt": "2025-01-30T15:00:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000018",
+    "pitch": "66b0a1c1a4f2b9c0d1123a14",
+    "company": "66c2aa11bb22cc33dd44ee14",
+    "user": {
+      "_id": "66u000000000000000000018",
+      "name": "derya.m",
+      "email": "derya@example.com",
+      "profilePicture": "https://cdn.example.com/u/derya.jpg"
+    },
+    "rating": 3.0,
+    "title": "Mini ama kullanışlı",
+    "comment": "Kapalı saha küçük ama ekipman yeni.",
+    "replies": [
+      {
+        "user": {
+          "_id": "66u000000000000000000203",
+          "name": "odunpazari.mod",
+          "email": "destek@odunpazariarena.com",
+          "profilePicture": "https://cdn.example.com/u/odunpazari-mod.png"
+        },
+        "comment": "Skorbord bu ay geliyor.",
+        "createdAt": "2025-02-12T09:15:00.000Z",
+        "updatedAt": "2025-02-12T09:30:00.000Z",
+        "isEdited": true
+      }
+    ],
+    "isEdited": true,
+    "createdAt": "2025-02-11T19:00:00.000Z",
+    "updatedAt": "2025-02-12T09:30:00.000Z"
+  },
+  {
+    "_id": "66f200000000000000000019",
+    "pitch": "66b0a1c1a4f2b9c0d1123a22",
+    "company": "66c2aa11bb22cc33dd44ee22",
+    "user": {
+      "_id": "66u000000000000000000019",
+      "name": "tamer.gs",
+      "email": "tamer@example.com",
+      "profilePicture": "https://cdn.example.com/u/tamer.jpg"
+    },
+    "rating": 4.5,
+    "title": "Metroya çok yakın",
+    "comment": "Ulaşım kolay, ışıklandırma yeterli.",
+    "photos": [
+      { "url": "https://cdn.example.com/rev/umr1.jpg", "public_id": "rev_umr_1" }
+    ],
+    "likes": ["66u000000000000000000112", "66u000000000000000000113"],
+    "createdAt": "2025-06-20T20:00:00.000Z",
+    "updatedAt": "2025-06-20T20:00:00.000Z"
+  },
+  {
+    "_id": "66f20000000000000000001a",
+    "pitch": "66b0a1c1a4f2b9c0d1123a23",
+    "company": "66c2aa11bb22cc33dd44ee23",
+    "user": {
+      "_id": "66u00000000000000000001a",
+      "name": "sevda.p",
+      "email": "sevda@example.com",
+      "profilePicture": "https://cdn.example.com/u/sevda.jpg"
+    },
+    "rating": 2.8,
+    "comment": "Marina rüzgârı topu etkiliyor.",
+    "archived": true,
+    "archivedRating": 2.5,
+    "createdAt": "2025-07-02T18:10:00.000Z",
+    "updatedAt": "2025-07-02T18:10:00.000Z"
+  }
+]

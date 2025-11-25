@@ -34,7 +34,7 @@ function MyFavoritePitches() {
       }`,
       rating: fav.rating?.averageRating || 0,
       totalReviews: fav.rating?.totalReviews || 0,
-      price: `${fav.pricing?.hourlyRate || "N/A"}₺/saat`,
+      price: `${fav.pricing?.hourlyRate ? fav.pricing.hourlyRate / 100 : "N/A"}₺/saat`,
 
       category: fav.category || "Futbol",
       features: [

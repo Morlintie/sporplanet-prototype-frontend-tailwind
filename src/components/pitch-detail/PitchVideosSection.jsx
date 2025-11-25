@@ -207,9 +207,6 @@ function PitchVideosSection({ pitch }) {
             </span>
           )}
         </div>
-        <p className="text-sm text-gray-600">
-          Süre: {currentVideo?.duration || "Bilinmiyor"}
-        </p>
         {videos.length > 1 && (
           <p className="text-xs text-gray-500 mt-1">
             {currentVideoIndex + 1} / {videos.length} video
@@ -261,9 +258,6 @@ function PitchVideosSection({ pitch }) {
                 <div className="flex-grow min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {video.title || "Video"}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {video.duration || "Süre bilinmiyor"}
                   </p>
                 </div>
 

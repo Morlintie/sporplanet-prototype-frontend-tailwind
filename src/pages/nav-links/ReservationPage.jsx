@@ -48,20 +48,28 @@ function ReservationPage() {
     const getLocationData = () => {
       // Try different address field structures
       const address = item.address || item.location?.address || item.location;
-      
-      if (!address) return { location: "Lokasyon bilgisi yok", city: "Bilinmeyen Şehir", district: "Bilinmeyen İlçe" };
-      
+
+      if (!address)
+        return {
+          location: "Lokasyon bilgisi yok",
+          city: "Bilinmeyen Şehir",
+          district: "Bilinmeyen İlçe",
+        };
+
       // Build location string
       const locationParts = [];
       if (address.district) locationParts.push(address.district);
       if (address.city) locationParts.push(address.city);
-      
-      const location = locationParts.length > 0 ? locationParts.join(", ") : "Lokasyon bilgisi yok";
-      
+
+      const location =
+        locationParts.length > 0
+          ? locationParts.join(", ")
+          : "Lokasyon bilgisi yok";
+
       return {
         location,
         city: address.city || "Bilinmeyen Şehir",
-        district: address.district || "Bilinmeyen İlçe"
+        district: address.district || "Bilinmeyen İlçe",
       };
     };
 
@@ -129,9 +137,12 @@ function ReservationPage() {
 
       // Check pricePerHour field (like HomePage)
       if (item.pricePerHour) {
-        if (typeof item.pricePerHour === 'object' && item.pricePerHour.amount) {
+        if (typeof item.pricePerHour === "object" && item.pricePerHour.amount) {
           price = item.pricePerHour.amount;
-        } else if (typeof item.pricePerHour === 'number' || typeof item.pricePerHour === 'string') {
+        } else if (
+          typeof item.pricePerHour === "number" ||
+          typeof item.pricePerHour === "string"
+        ) {
           price = parseFloat(item.pricePerHour) || 0;
         }
       }
@@ -143,9 +154,12 @@ function ReservationPage() {
       }
       // Check price field
       else if (item.price) {
-        if (typeof item.price === 'object' && item.price.amount) {
+        if (typeof item.price === "object" && item.price.amount) {
           price = item.price.amount;
-        } else if (typeof item.price === 'number' || typeof item.price === 'string') {
+        } else if (
+          typeof item.price === "number" ||
+          typeof item.price === "string"
+        ) {
           price = parseFloat(item.price) || 0;
         }
       }
@@ -157,7 +171,10 @@ function ReservationPage() {
       // Handle night price
       if (item.pricing?.nightHourlyRate) {
         const nightHourlyRate = item.pricing.nightHourlyRate;
-        nightPrice = nightHourlyRate > 1000 ? Math.round(nightHourlyRate / 100) : nightHourlyRate;
+        nightPrice =
+          nightHourlyRate > 1000
+            ? Math.round(nightHourlyRate / 100)
+            : nightHourlyRate;
       } else {
         // Default night price is 20% more than day price
         nightPrice = Math.round(price * 1.2);
@@ -171,30 +188,73 @@ function ReservationPage() {
     // Handle image from backend
     const getImageUrl = () => {
       // Try different image field structures
+
+      // Handle images array with isPrimary field (new structure)
       if (item.images && Array.isArray(item.images) && item.images.length > 0) {
-        return item.images[0];
+        // First, try to find the primary image
+        const primaryImage = item.images.find(
+          (img) => img && img.isPrimary === true
+        );
+        if (primaryImage && primaryImage.url) {
+          return primaryImage.url;
+        }
+        // If no primary image found, use the first image with url
+        const firstImageWithUrl = item.images.find((img) => img && img.url);
+        if (firstImageWithUrl) {
+          return firstImageWithUrl.url;
+        }
+        // Fallback to first item if it's a string
+        if (typeof item.images[0] === "string") {
+          return item.images[0];
+        }
       }
+
+      // Handle image array (legacy)
       if (item.image && Array.isArray(item.image) && item.image.length > 0) {
         return item.image[0];
       }
-      if (item.images && typeof item.images === 'string') {
+
+      // Handle images as string
+      if (item.images && typeof item.images === "string") {
         return item.images;
       }
-      if (item.image && typeof item.image === 'string') {
+
+      // Handle image as string
+      if (item.image && typeof item.image === "string") {
         return item.image;
       }
-      if (item.media?.images?.find((img) => img.isPrimary)?.url) {
-        return item.media.images.find((img) => img.isPrimary).url;
+
+      // Handle media.images with isPrimary (legacy structure)
+      if (
+        item.media?.images &&
+        Array.isArray(item.media.images) &&
+        item.media.images.length > 0
+      ) {
+        const primaryImage = item.media.images.find(
+          (img) => img && img.isPrimary === true
+        );
+        if (primaryImage && primaryImage.url) {
+          return primaryImage.url;
+        }
+        // Fallback to first image with url
+        const firstImageWithUrl = item.media.images.find(
+          (img) => img && img.url
+        );
+        if (firstImageWithUrl) {
+          return firstImageWithUrl.url;
+        }
       }
-      if (item.media?.images?.[0]?.url) {
-        return item.media.images[0].url;
-      }
+
+      // Handle photos array (legacy)
       if (item.photos && Array.isArray(item.photos) && item.photos.length > 0) {
         return item.photos[0];
       }
+
+      // Handle direct imageUrl field
       if (item.imageUrl) {
         return item.imageUrl;
       }
+
       return null;
     };
 
@@ -437,8 +497,12 @@ function ReservationPage() {
     filterOverrides = {}
   ) => {
     console.log("🔄 [RESERVATION] Starting to fetch pitches from API...");
-    console.log("🔄 [RESERVATION] Parameters:", { page, sortValue, filterOverrides });
-    
+    console.log("🔄 [RESERVATION] Parameters:", {
+      page,
+      sortValue,
+      filterOverrides,
+    });
+
     setLoading(true);
     setError("");
 
@@ -449,7 +513,7 @@ function ReservationPage() {
         filterOverrides
       );
       const requestBody = buildFilterRequestBody(filterOverrides);
-      
+
       const fullUrl = `http://localhost:5000/api/v1/pitch/getAll?${queryParams}`;
       console.log("🔄 [RESERVATION] API URL:", fullUrl);
       console.log("🔄 [RESERVATION] Request body:", requestBody);
@@ -513,29 +577,47 @@ function ReservationPage() {
 
         // Debug: Log raw data for first few pitches
         if (activePitches.length > 0) {
-          console.log("🔍 [RESERVATION] Sample pitch data from backend:", activePitches[0]);
-          console.log("🔍 [RESERVATION] ALL FIELDS:", Object.keys(activePitches[0] || {}));
-          console.log("🔍 [RESERVATION] Address field:", activePitches[0]?.address);
-          console.log("🔍 [RESERVATION] Location field:", activePitches[0]?.location);
+          console.log(
+            "🔍 [RESERVATION] Sample pitch data from backend:",
+            activePitches[0]
+          );
+          console.log(
+            "🔍 [RESERVATION] ALL FIELDS:",
+            Object.keys(activePitches[0] || {})
+          );
+          console.log(
+            "🔍 [RESERVATION] Address field:",
+            activePitches[0]?.address
+          );
+          console.log(
+            "🔍 [RESERVATION] Location field:",
+            activePitches[0]?.location
+          );
           console.log("🔍 [RESERVATION] Price fields:", {
             pricePerHour: activePitches[0]?.pricePerHour,
             pricing: activePitches[0]?.pricing,
             price: activePitches[0]?.price,
-            cost: activePitches[0]?.cost
+            cost: activePitches[0]?.cost,
           });
           // Log the actual content of price fields
           if (activePitches[0]?.pricing) {
-            console.log("🔍 [RESERVATION] Pricing object content:", JSON.stringify(activePitches[0].pricing, null, 2));
+            console.log(
+              "🔍 [RESERVATION] Pricing object content:",
+              JSON.stringify(activePitches[0].pricing, null, 2)
+            );
           }
           if (activePitches[0]?.pricePerHour) {
-            console.log("🔍 [RESERVATION] PricePerHour object content:", JSON.stringify(activePitches[0].pricePerHour, null, 2));
+            console.log(
+              "🔍 [RESERVATION] PricePerHour object content:",
+              JSON.stringify(activePitches[0].pricePerHour, null, 2)
+            );
           }
           console.log("🔍 [RESERVATION] Image fields:", {
             images: activePitches[0]?.images,
             image: activePitches[0]?.image,
             media: activePitches[0]?.media,
             photos: activePitches[0]?.photos,
-            imageUrl: activePitches[0]?.imageUrl
+            imageUrl: activePitches[0]?.imageUrl,
           });
         }
 
@@ -546,10 +628,22 @@ function ReservationPage() {
 
         // Debug: Log transformed data for first pitch
         if (transformedPitches.length > 0) {
-          console.log("🔍 [RESERVATION] Sample transformed pitch data:", transformedPitches[0]);
-          console.log("🔍 [RESERVATION] Transformed price:", transformedPitches[0]?.price);
-          console.log("🔍 [RESERVATION] Transformed location:", transformedPitches[0]?.location);
-          console.log("🔍 [RESERVATION] Transformed image:", transformedPitches[0]?.image);
+          console.log(
+            "🔍 [RESERVATION] Sample transformed pitch data:",
+            transformedPitches[0]
+          );
+          console.log(
+            "🔍 [RESERVATION] Transformed price:",
+            transformedPitches[0]?.price
+          );
+          console.log(
+            "🔍 [RESERVATION] Transformed location:",
+            transformedPitches[0]?.location
+          );
+          console.log(
+            "🔍 [RESERVATION] Transformed image:",
+            transformedPitches[0]?.image
+          );
         }
 
         // Update pagination data from backend
@@ -587,14 +681,17 @@ function ReservationPage() {
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/pitch/surrounding`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ coordinates }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/v1/pitch/surrounding`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ coordinates }),
+        }
+      );
 
       if (!response.ok) {
         let errorMessage = "Something went wrong";
